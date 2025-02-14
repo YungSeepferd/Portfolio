@@ -1,7 +1,7 @@
 {
   "name": "my-ux-portfolio",
   "version": "0.1.0",
-  "homepage": "https://yungseepferd.github.io/portfolio",
+  "homepage": "https://yungseepferd.github.io/portfolio/my-ux-portfolio/",
   "private": true,
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
