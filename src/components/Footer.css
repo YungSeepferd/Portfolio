@@ -1,0 +1,20 @@
+footer {
+    background-color: var(--background-light);
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  footer p {
+    color: var(--text-dark);
+  }
+  
+  .social-icon {
+    color: var(--text-dark);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    transform: scale(1.2);
+    color: var(--primary-color);
+  }
+  

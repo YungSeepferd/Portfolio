@@ -1,0 +1,77 @@
+.outer-box {
+    border-top: 5px solid black;
+    border-bottom: 5px solid black;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Typography Styling */
+  
+  .text-container h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    padding: 60px;
+    color: #333; /* Dark gray for headers */
+  }
+  
+  .text-container h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333; /* Dark gray for headers */
+  }
+  
+  .text-container p {
+    font-size: 1.2rem;
+    color: #555; /* Mid-gray for main paragraph text */
+    line-height: 1.8;
+  }
+
+
+.project-section {
+    height: 100vh;
+    padding: 50px 0;
+    background-color: var(--background-light);
+  }
+  
+  .image-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-container {
+    padding: 15px;
+  }
+  
+  .project-section:nth-child(even) {
+    background-color: #f8f9fa; /* Lighter gray for alternating sections */
+  }
+  
+  /* Typography Styling */
+
+  .text-container h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333; /* Dark gray for headers */
+  }
+  .text-container h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333; /* Dark gray for headers */
+  }
+  
+  .text-container p {
+    font-size: 1.2rem;
+    color: #555; /* Mid-gray for main paragraph text */
+    line-height: 1.8;
+  }
+  

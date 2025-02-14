@@ -1,0 +1,42 @@
+.hero-section {
+    background-color: var(--background-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .hero-content {
+    position: absolute;
+    bottom: 240px;
+    left: 100px;
+    text-align: left;
+    z-index: 10;
+    animation: slideIn 1.5s ease forwards;
+    opacity: 0;
+  }
+  
+  .hero-content h1 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+  
+  .hero-content p {
+    font-size: 0.93rem;
+    color: var(--text-dark);
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  

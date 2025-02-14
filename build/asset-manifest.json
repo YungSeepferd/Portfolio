@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/portfolio/static/css/main.d7bc572c.css",
+    "main.js": "/portfolio/static/js/main.da4ed59d.js",
+    "static/media/heroBG.png": "/portfolio/static/media/heroBG.e0814dba48e51d729fed.png",
+    "static/media/Salzburg.jpg": "/portfolio/static/media/Salzburg.a519f10e2505bde24211.jpg",
+    "index.html": "/portfolio/index.html",
+    "main.d7bc572c.css.map": "/portfolio/static/css/main.d7bc572c.css.map",
+    "main.da4ed59d.js.map": "/portfolio/static/js/main.da4ed59d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d7bc572c.css",
+    "static/js/main.da4ed59d.js"
+  ]
+}
