@@ -1,32 +1,76 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 function Work() {
+  const projects = [
+    {
+      id: 1,
+      title: 'Fitness Tracker UX Design',
+      description: 'Developed a user-centered design for a fitness tracking app, focusing on intuitive navigation and real-time feedback to help users achieve goals.',
+      image: '/images/case-study-1-thumb.jpg',
+    },
+    {
+      id: 2,
+      title: 'Remote Team Food Delivery Concept',
+      description: 'Created a video prototype for a food delivery service aimed at remote teams, incorporating collaborative ordering and meal-sharing features.',
+      image: '/images/case-study-2-thumb.jpg',
+    },
+    {
+      id: 3,
+      title: 'VR Audio Meditation Experience',
+      description: 'Designed immersive audio experiences for VR-based meditation, enhancing mindfulness through dynamic soundscapes.',
+      image: '/images/AudioHaptics.png',
+    },
+    {
+      id: 4,
+      title: 'Haptic Feedback Prototyping Kit',
+      description: 'Built a prototyping kit for designers to explore haptic feedback in interaction design, simplifying iteration and testing processes.',
+      image: '/images/case-study-4-thumb.jpg',
+    },
+    {
+      id: 5,
+      title: 'Smart Home Audio Controls',
+      description: 'Developed a context-aware audio system for smart home environments, optimizing sound output based on user preferences and room acoustics.',
+      image: '/images/case-study-5-thumb.jpg',
+    },
+    {
+      id: 6,
+      title: 'Podcast Production Studio UX',
+      description: 'Redesigned the workflow for podcast creators, improving collaboration tools and simplifying the editing process.',
+      image: '../assets/css/images/heroBG.png',
+    },
+  ];
+
   return (
-    <section id="work-intro" className="text-center py-20">
-      <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold text-orange-500 mb-8">My UX Design & Audio Portfolio</h2>
-        <p className="text-gray-300 text-lg max-w-2xl mx-auto">A selection of case studies showcasing my approach to user-centered design, audio integration, and problem-solving across UX and audio domains.</p>
-      </div>
-
-      <section id="case-studies" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 py-16 max-w-6xl mx-auto">
-        <article className="case-study-item bg-gray-800 p-8 rounded-lg shadow-md hover:shadow-lg transform hover:translate-y-minus-2 transition-transform duration-300">
-          <img src="/images/case-study-1-thumb.jpg" alt="Fitness Application UX Design Thumbnail" className="rounded-lg mb-4" />
-          <h3 className="text-2xl font-bold text-orange-500 mb-2"><a href="/case-study-1" className="hover:text-gray-300">Fitness Application UX Design</a></h3>
-          <p className="text-gray-300">Ideation, sketching, research, wireframing, and prototyping for a fitness application developed during the LMU UX1 course.</p>
-        </article>
-
-        <article className="case-study-item bg-gray-800 p-8 rounded-lg shadow-md hover:shadow-lg transform hover:translate-y-minus-2 transition-transform duration-300">
-          <img src="/images/case-study-2-thumb.jpg" alt="Home Office Food Delivery Concept Thumbnail" className="rounded-lg mb-4" />
-          <h3 className="text-2xl font-bold text-orange-500 mb-2"><a href="/case-study-2" className="hover:text-gray-300">Home Office Food Delivery Concept</a></h3>
-          <p className="text-gray-300">Video prototype for a food delivery concept tailored for home office teams, created during the LMU UX3 workshop.</p>
-        </article>
-
-        <article className="case-study-item bg-gray-800 p-8 rounded-lg shadow-md hover:shadow-lg transform hover:translate-y-minus-2 transition-transform duration-300">
-          <img src="/images/case-study-3-thumb.jpg" alt="Breakout Audio Integration Prototype Thumbnail" className="rounded-lg mb-4" />
-          <h3 className="text-2xl font-bold text-orange-500 mb-2"><a href="/case-study-3" className="hover:text-gray-300">Breakout Audio Integration Prototype</a></h3>
-          <p className="text-gray-300">Prototyping boundaries of Adobe XD and Figma for audio integration in the "Breakout" project during a UX design internship.</p>
-        </article>
-      </section>
+    <section id="work" className="bg-dark text-white">
+      <h2 className="display-3 text-orange text-center py-5">My Work</h2>
+      {projects.map((project, index) => (
+        <motion.div
+          key={project.id}
+          className="project-section vh-100 d-flex align-items-center"
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <div className="container">
+            <div className={`row ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}>
+              <div className="col-md-6">
+                <motion.img
+                  src={project.image}
+                  alt={project.title}
+                  className="img-fluid rounded shadow-lg"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+              <div className="col-md-6 d-flex flex-column justify-content-center">
+                <h3 className="text-orange display-4">{project.title}</h3>
+                <p className="lead">{project.description}</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
     </section>
   );
 }

@@ -16,3 +16,5 @@ if (heroHeading) { // Check if the heroHeading element exists on the page
 }
 
 // You can add more JavaScript code for interactivity and enhancements as needed
+
+    

@@ -1,25 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { toast, ToastContainer } from 'react-toastify';
+import { motion } from 'framer-motion';
+import emailjs from 'emailjs-com';
+import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 
 function Contact() {
+  const [showModal, setShowModal] = useState(false);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+
+  const onSubmit = async (data) => {
+    try {
+      await emailjs.send(
+        'service_5yids6s',
+        'template_x0uio0w',
+        data,
+        'u71C5a82B1v2MCrE9'
+      );
+      toast.success('Message sent successfully!', { position: 'top-center' });
+      reset();
+      handleClose();
+    } catch (error) {
+      toast.error('Failed to send message. Please try again.', { position: 'top-center' });
+    }
+  };
+
   return (
-    <section id="contact-intro" className="text-center py-20">
-      <div className="max-w-3xl mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold text-orange-500 mb-8">Contact Me</h2>
-        <p className="text-gray-300 text-lg max-w-2xl mx-auto">I'd love to hear from you! Feel free to reach out for collaborations, job opportunities, or just to say hello.</p>
+    <section id="contact" className="bg-dark text-white py-5">
+      <div className="container text-center">
+        <h2 className="display-4 text-orange">Contact Me</h2>
+        <p className="lead">Want to collaborate or just say hi? Reach out!</p>
+        <Button variant="primary" size="lg" onClick={handleShow} className="mt-4">
+          Get in Touch
+        </Button>
       </div>
 
-      <section id="contact-details" className="py-12">
-        <ul className="list-none pl-0 max-w-lg mx-auto">
-          <li className="mb-8 text-center">
-            <strong className="block text-gray-100 mb-2">Email:</strong>
-            <a href="mailto:your-email@example.com" className="text-orange-500 text-lg font-bold hover:text-gray-300">your-email@example.com</a>
-          </li>
-          <li className="mb-8 text-center">
-            <strong className="block text-gray-100 mb-2">LinkedIn:</strong>
-            <a href="https://www.linkedin.com/in/your-linkedin-profile" target="_blank" rel="noopener noreferrer" className="text-orange-500 text-lg font-bold hover:text-gray-300">LinkedIn Profile</a>
-          </li>
-        </ul>
-      </section>
+      <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}>
+        <Modal show={showModal} onHide={handleClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Contact Me</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <Form.Group controlId="formName">
+                <Form.Label>Your Name</Form.Label>
+                <Form.Control type="text" placeholder="Enter your name" {...register('name', { required: 'Name is required' })} />
+                {errors.name && <small className="text-danger">{errors.name.message}</small>}
+              </Form.Group>
+
+              <Form.Group controlId="formEmail" className="mt-3">
+                <Form.Label>Email Address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter your email"
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                      message: 'Invalid email address'
+                    }
+                  })}
+                />
+                {errors.email && <small className="text-danger">{errors.email.message}</small>}
+              </Form.Group>
+
+              <Form.Group controlId="formMessage" className="mt-3">
+                <Form.Label>Message</Form.Label>
+                <Form.Control as="textarea" rows={4} placeholder="Write your message here..." {...register('message', { required: 'Message is required' })} />
+                {errors.message && <small className="text-danger">{errors.message.message}</small>}
+              </Form.Group>
+
+              <Button variant="success" className="mt-4" type="submit">
+                <FontAwesomeIcon icon={faPaperPlane} className="me-2" /> Send Message
+              </Button>
+            </Form>
+
+            <hr className="my-4" />
+            <div className="text-center">
+              <p>Or connect with me on:</p>
+              <a href="mailto:your-email@example.com" className="text-dark mx-3">
+                <FontAwesomeIcon icon={faEnvelope} size="2x" />
+              </a>
+              <a href="https://linkedin.com/in/your-profile" className="text-dark mx-3">
+                <FontAwesomeIcon icon={faLinkedin} size="2x" />
+              </a>
+              <a href="https://github.com/your-github" className="text-dark mx-3">
+                <FontAwesomeIcon icon={faGithub} size="2x" />
+              </a>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </motion.div>
+
+      <ToastContainer />
     </section>
   );
 }

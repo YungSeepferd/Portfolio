@@ -1,15 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import heroBG from '../assets/css/images/heroBG.png'; // Adjust the path as necessary
 
-function Hero() {
+const Hero = () => {
+  const [offsetY, setOffsetY] = useState(0);
+
+  const handleScroll = () => {
+    setOffsetY(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section id="hero" className="bg-transparent py-36 text-center">
-      <div className="hero-content max-w-2xl mx-auto px-4">
-        <h1 className="text-5xl md:text-6xl font-bold text-orange-500 mb-5 text-shadow">Vincent Göke</h1>
-        <p className="text-gray-300 text-xl max-w-xl mx-auto mb-8">Audio Design / UX Design & Research / Frontend Dev</p>
-        <a href="/work" className="button bg-orange-500 text-gray-100 px-8 py-3 rounded-lg font-bold uppercase tracking-wider hover:bg-transparent hover:text-orange-500 border-2 border-orange-500 transition-colors duration-300 transform hover:scale-105 shadow-md">See My Work</a>
-      </div>
+    <section
+      className="hero-section"
+      style={{
+        backgroundImage: `url(${heroBG})`,
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ transform: `translateY(${offsetY * 0.3}px)` }}
+      >
+        <h1 className="display-3 text-orange">WhoAmI</h1>
+        <p className="lead">Haptitian | UX Researcher | Haptic Designer</p>
+      </motion.div>
     </section>
   );
-}
+};
 
 export default Hero;
