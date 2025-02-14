@@ -11,6 +11,14 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script>
+      const password = "mySecretPassword"; // Change this to your desired password
+      const userInput = prompt("Enter the password to access this site:");
+      if (userInput !== password) {
+        document.body.innerHTML = "<h1>Access Denied</h1><p>You entered an incorrect password.</p>";
+      }
+    </script>
+    
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/tailwind.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
