@@ -39,7 +39,7 @@ const About = () => {
       ></div>
 
       <motion.div
-        className="container d-flex flex-wrap align-items-center justify-content-between"
+        className="container d-flex flex-wrap align-items-center"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -49,33 +49,30 @@ const About = () => {
           color: 'white',
         }}
       >
-        {/* Text Section */}
-        <div className="text-section col-md-6">
+        <div className="col-md-6">
           <h2 className="text-orange display-4">About Me</h2>
           <p className="lead">
-            Hi! I'm Vincent Göke, a passionate haptic designer and UX researcher with a background in
-            human-computer interaction. My work focuses on creating emotionally engaging and intuitive user
-            experiences that bridge the gap between technology and human interaction.
+            Hi! I'm Vincent Göke, a passionate haptic designer and UX researcher. I love combining technology and human-centered design to create innovative and intuitive user experiences.
           </p>
           <p className="lead">
-            With expertise spanning immersive audio experiences, smart home solutions, and prototyping for
-            haptic feedback, I bring ideas to life by seamlessly blending creativity and cutting-edge technology.
+            My journey includes working on immersive audio experiences, context-aware smart home systems, and developing tools for haptic feedback design.
           </p>
         </div>
 
-        {/* Photo Gallery Section */}
-        <div className="photo-gallery col-md-6 d-flex flex-wrap justify-content-between">
-          <div className="gallery-tile mb-4">
-            <img src="" alt="Gallery 1" className="img-fluid rounded shadow-lg gallery-img" />
-          </div>
-          <div className="gallery-tile mb-4">
-            <img src="images/photo2.jpg" alt="Gallery 2" className="img-fluid rounded shadow-lg gallery-img" />
-          </div>
-          <div className="gallery-tile mb-4">
-            <img src="images/photo3.jpg" alt="Gallery 3" className="img-fluid rounded shadow-lg gallery-img" />
-          </div>
-          <div className="gallery-tile mb-4">
-            <img src="images/photo4.jpg" alt="Gallery 4" className="img-fluid rounded shadow-lg gallery-img" />
+        <div className="col-md-6">
+          <div className="row">
+            <div className="col-6 mb-4">
+              <img src="assets/css/images/AudioHaptics.png" alt="Gallery 1" className="img-fluid rounded shadow-lg gallery-img" />
+            </div>
+            <div className="col-6 mb-4">
+              <img src="images/photo2.jpg" alt="Gallery 2" className="img-fluid rounded shadow-lg gallery-img" />
+            </div>
+            <div className="col-6 mb-4">
+              <img src="images/photo3.jpg" alt="Gallery 3" className="img-fluid rounded shadow-lg gallery-img" />
+            </div>
+            <div className="col-6 mb-4">
+              <img src="images/photo4.jpg" alt="Gallery 4" className="img-fluid rounded shadow-lg gallery-img" />
+            </div>
           </div>
         </div>
       </motion.div>
