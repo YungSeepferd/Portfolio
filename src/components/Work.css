@@ -1,77 +1,135 @@
-.outer-box {
-    border-top: 5px solid black;
-    border-bottom: 5px solid black;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Typography Styling */
-  
-  .text-container h2 {
-    font-size: 3rem;
-    font-weight: bold;
-    padding: 60px;
-    color: #333; /* Dark gray for headers */
-  }
-  
-  .text-container h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #333; /* Dark gray for headers */
-  }
-  
-  .text-container p {
-    font-size: 1.2rem;
-    color: #555; /* Mid-gray for main paragraph text */
-    line-height: 1.8;
-  }
+.work-container {
+  min-height: 100vh;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.project-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  perspective: 1000px;
+  flex-wrap: wrap;
+}
 
-.project-section {
-    height: 100vh;
-    padding: 50px 0;
-    background-color: var(--background-light);
-  }
-  
-  .image-container {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .project-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .text-container {
-    padding: 15px;
-  }
-  
-  .project-section:nth-child(even) {
-    background-color: #f8f9fa; /* Lighter gray for alternating sections */
-  }
-  
-  /* Typography Styling */
+.project-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 350px;
+  height: 450px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.5s ease;
+  transform-style: preserve-3d;
+}
 
-  .text-container h2 {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #333; /* Dark gray for headers */
-  }
-  .text-container h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #333; /* Dark gray for headers */
-  }
-  
-  .text-container p {
-    font-size: 1.2rem;
-    color: #555; /* Mid-gray for main paragraph text */
-    line-height: 1.8;
-  }
-  
+.project-card .project-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  padding: 1.5rem;
+}
+
+.project-card .project-content.back {
+  background: #f0f0f0;
+  color: #333;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.project-card:hover {
+  transform: rotateY(180deg);
+}
+
+.project-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.project-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.project-details {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.project-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+}
+
+.project-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.read-more-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.read-more-button:hover {
+  background-color: #D97706;
+}
+
+.project-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 350px;
+  height: 450px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Floating shadow */
+}
+
+.project-card:hover {
+  transform: rotateY(180deg) translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.2); /* More pronounced shadow */
+}

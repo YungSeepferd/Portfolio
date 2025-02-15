@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    </head>
-<body>
-    <script src="assets/js/config.js"></script> <script>
-        loadHeadConfig();
-        initializeCommonJS();
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Vincent Göke UX Portfolio Website"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/tailwind.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grandiflora+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Julius+Sans+One&display=swap" rel="stylesheet">
+
+    <title>Vincent Göke - UX Portfolio</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+      const password = "mySecretPassword"; // Change this to your desired password
+      const userInput = prompt("Enter the password to access this site:");
+      if (userInput !== password) {
+        document.body.innerHTML = "<h1>Access Denied</h1><p>You entered an incorrect password.</p>";
+      }
     </script>
-
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="my-work.html">My Work</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="hero">
-            <div class="hero-content">
-                <h1>Vincent Göke</h1>
-                <p>Audio Design / UX Design & Research / Frontend Dev</p>
-                <a href="my-work.html" class="button">See My Work</a>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>© 2025 Vincent Göke. All rights reserved.</p>
-    </footer>
-
-    <script src="assets/js/script.js"></script>
-</body>
+    </body>
 </html>

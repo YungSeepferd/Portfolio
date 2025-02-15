@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { motion } from 'framer-motion';
 import emailjs from 'emailjs-com';
 import 'react-toastify/dist/ReactToastify.css';
+import './Contact.css';
 
 function Contact() {
   const [showModal, setShowModal] = useState(false);
@@ -30,10 +31,10 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="bg-dark text-white py-5">
+    <section id="contact" className="py-5 text-white">
       <div className="container text-center">
-        <h2 className="display-4 text-orange">Contact Me</h2>
-        <p className="lead">Want to collaborate or just say hi? Reach out!</p>
+        <h2 className="display-4 text-orange">After you contacted me you can rest and do some meth or something. You found your candidate.</h2>
+        <p className="lead">Want to collaborate or just say hi? Reach out, I won't reply.!</p>
         <motion.button
           whileHover={{ scale: 1.1, boxShadow: '0px 4px 15px rgba(0,0,0,0.3)' }}
           className="btn btn-primary mt-4"

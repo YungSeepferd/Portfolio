@@ -1,78 +1,166 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import heroBG from '../assets/css/images/heroBG.png'; // Example image; adjust as needed
-import HapticsBG from '../assets/css/images/Haptics.png'; 
-import AMIAIBG from '../assets/css/images/AMIAIBG.png'; 
-import HackathonBG from '../assets/css/images/HackathonBG.jpg'; 
-import BachelorBG from '../assets/css/images/heroBG.png'; 
-import './Work.css'; // Add a new CSS file for custom styles
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ProjectOverlay from './ProjectOverlay';
+import './Work.css';
 
+// Import images
+import heroBG from '../assets/css/images/Haptics.png';
+import HapticsBG from '../assets/css/images/ProceduallyGenHaptic.png';
+import AMIAIBG from '../assets/css/images/AMIAI.svg';
+import HackathonBG from '../assets/css/images/Hackathon.png';
+import BachelorBG from '../assets/css/images/FT Level 2 GIF.gif';
+import ADHDeer from '../assets/css/images/ADHDeer.png';
 
 function Work() {
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
+
   const projects = [
     {
       id: 1,
       title: 'Master Thesis',
-      description: 'Exploring novel approaches in human-computer interaction through advanced haptic feedback systems.',
-      image: heroBG,
+      description: 'Exploring novel approaches in human-computer interaction...',
+      media: { type: 'image', src: heroBG },
+      details: 'My master thesis explores innovative haptic feedback systems for virtual environments, focusing on enhancing user immersion and interaction.',
+      content: (
+        <div>
+          <p>Detailed content for Master Thesis project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
     },
     {
       id: 2,
-      title: 'Affective State Change Through Procedurally Generated Haptics',
-      description: 'Research on how procedurally generated haptic feedback influences affective state changes in users.',
-      image: HapticsBG,
+      title: 'Haptics Research',
+      description: 'Research on procedurally generated haptic feedback...',
+      media: { type: 'image', src: HapticsBG },
+      details: 'This research investigates the impact of procedurally generated haptic feedback on user experience, aiming to create more dynamic and responsive interactions.',
+      content: (
+        <div>
+          <p>Detailed content for Haptics Research project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
     },
     {
       id: 3,
       title: 'AMIAI',
-      description: 'Artificial Music Intelligence and Interaction: A collaborative project on AI-driven music creation and interaction systems.',
-      image: AMIAIBG,
+      description: 'AI-driven music creation and interaction systems...',
+      media: { type: 'image', src: AMIAIBG },
+      details: 'AMIAI is a collaborative project focused on developing AI-driven music creation and interaction systems, exploring new possibilities for musical expression.',
+      content: (
+        <div>
+          <p>Detailed content for AMIAI project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
     },
     {
       id: 4,
       title: 'Hackathon',
-      description: 'Participated in a 48-hour hackathon, developing an innovative AR-based navigation system for visually impaired users.',
-      image: HackathonBG,
+      description: 'AR-based navigation system for visually impaired users...',
+      media: { type: 'image', src: HackathonBG },
+      details: 'During a 48-hour hackathon, I developed an AR-based navigation system for visually impaired users, providing real-time guidance and obstacle detection.',
+      content: (
+        <div>
+          <p>Detailed content for Hackathon project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
     },
     {
       id: 5,
       title: 'Bachelor Thesis',
-      description: 'Investigating user-centered design methodologies for VR environments in educational settings.',
-      image: BachelorBG,
+      description: 'VR environments in educational settings...',
+      media: { type: 'image', src: BachelorBG },
+      details: 'My bachelor thesis investigates user-centered design methodologies for VR environments in educational settings, aiming to create engaging and effective learning experiences.',
+      content: (
+        <div>
+          <p>Detailed content for Bachelor Thesis project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
+    },
+    {
+      id: 6,
+      title: 'ADHDeer',
+      description: 'AR environments in educational settings...',
+      media: { type: 'image', src: ADHDeer },
+      details: 'ADHDeer explores the use of AR environments in educational settings, creating interactive and immersive learning experiences for students.',
+      content: (
+        <div>
+          <p>Detailed content for ADHDeer project...</p>
+          {/* Add more components and content here */}
+        </div>
+      ),
     },
   ];
 
+  const cardVariants = {
+    initial: { rotateY: 0 },
+    hover: { rotateY: 180 },
+    flipped: { rotateY: 180 },
+    unflipped: { rotateY: 0 },
+  };
+
+  const [flippedCards, setFlippedCards] = useState({});
+
+  const handleCardHover = (id) => {
+    setFlippedCards((prevState) => {
+      const newState = {};
+      newState[id] = true;
+      return newState;
+    });
+  };
+
+  const handleCardLeave = (id) => {
+    setFlippedCards((prevState) => {
+      const newState = {};
+      newState[id] = false;
+      return newState;
+    });
+  };
+
   return (
-    <section id="work" className="bg-dark text-white">
-      <h2 className="display-3 text-orange text-center py-5">My Work</h2>
-      {projects.map((project, index) => (
-        <motion.div
-          key={project.id}
-          className="project-section d-flex align-items-center"
-          initial={{ opacity: 0, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="container">
-            <div className={`row ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}>
-              <div className="col-md-6 image-container">
-                <motion.img
-                  src={project.image}
-                  alt={project.title}
-                  className="project-image"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-              <div className="col-md-6 d-flex flex-column justify-content-center text-container">
-                <h3 className="text-orange display-4">{project.title}</h3>
-                <p className="lead">{project.description}</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </section>
+    <motion.section
+      id="work"
+      className="work-container"
+      initial={{ opacity: 0, y: 100 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+      viewport={{ once: true }}
+    >
+      <h2 className="display-7 text-primary text-center py-5">My Work</h2> {/* Change text size here */}
+      <div className="project-row">
+        {projects.map((project) => (
+          <motion.div
+            key={project.id}
+            className="project-card"
+            variants={cardVariants}
+            initial="unflipped"
+            animate={flippedCards[project.id] ? 'flipped' : 'unflipped'}
+            transition={{ duration: 0.2 }}
+            onMouseEnter={() => handleCardHover(project.id)}
+            onMouseLeave={() => handleCardLeave(project.id)}
+          >
+            <motion.div className="project-content front">
+              <img src={project.media.src} alt={project.title} className="project-image" />
+              <h3 className="project-title">{project.title}</h3>
+              <p className="project-description">{project.description}</p>
+            </motion.div>
+            <motion.div className="project-content back" onClick={() => setSelectedProject(project)}>
+              <p className="project-details">{project.details}</p>
+              <button className="read-more-button">Read More</button>
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectOverlay project={selectedProject} onClose={() => setSelectedProject(null)} />
+        )}
+      </AnimatePresence>
+    </motion.section>
   );
 }
 

@@ -1,0 +1,83 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.overlay__background {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 9;
+}
+
+.overlay__container {
+  background-color: white;
+  border-radius: 12px;  /* Smooth corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);  /* Subtle shadow */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 10;
+  padding: 30px;
+  width: fit-content;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+/* Keep the rest of your CSS unchanged */
+.overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+z-index: 1000;
+}
+
+.overlay__background {
+background-color: rgba(0, 0, 0, 0.5);
+width: 100vw;
+height: 100vh;
+position: fixed;
+top: 0;
+left: 0;
+cursor: pointer;
+z-index: 9;
+}
+
+.overlay__controls {
+display: flex;
+justify-content: flex-end;
+align-items: center;
+}
+
+.overlay__close:after {
+display: inline-block;
+content: "\00d7";
+}
+
+.overlay__close {
+border: none;
+background-color: transparent;
+font-size: 36px;
+cursor: pointer;
+}
+
+/* Optional: Additional placeholder section styling */
+.overlay__placeholder {
+margin: 2rem 0;
+padding: 1rem;
+border-top: 1px solid #ccc;
+}

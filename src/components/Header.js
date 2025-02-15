@@ -9,18 +9,8 @@ import './Header.css';
 function Header() {
   const [showModal, setShowModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const projects = [
-    { id: 1, title: 'Master Thesis' },
-    { id: 2, title: 'Affective State Change Through Haptics' },
-    { id: 3, title: 'AMIAI' },
-    { id: 4, title: 'Hackathon' },
-    { id: 5, title: 'Bachelor Thesis' },
-  ];
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <header className="header">
@@ -50,27 +40,9 @@ function Header() {
           <Link to="hero" smooth={true} duration={800} spy={true} offset={-70} className="mx-3 nav-link">
             Home
           </Link>
-          <div className="dropdown">
-            <button className="btn dropdown-toggle" type="button" onClick={toggleDropdown}>
-              My Work
-            </button>
-            {dropdownOpen && (
-              <ul className="dropdown-menu show">
-                <li>
-                  <Link to="work" smooth={true} duration={800} offset={-70} className="dropdown-item">
-                    My Work Overview
-                  </Link>
-                </li>
-                {projects.map((project) => (
-                  <li key={project.id}>
-                    <Link to={`project-${project.id}`} smooth={true} duration={800} offset={-70} className="dropdown-item">
-                      {project.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <Link to="work" smooth={true} duration={800} offset={-70} className="mx-3 nav-link">
+            My Work
+          </Link>
           <Link to="about" smooth={true} duration={800} spy={true} offset={-70} className="mx-3 nav-link">
             About Me
           </Link>
