@@ -1,0 +1,14 @@
+.project-bubble {
+    width: 250px;      /* Fixed frame width */
+    height: 250px;     /* Fixed frame height */
+    overflow: hidden;  /* Hide any overflow */
+    border-radius: 10px; /* Optional: smooth corners */
+    background-color: #eee; /* Fallback background color */
+  }
+  
+  .project-bubble-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      /* Ensures the image covers the frame */
+    object-position: center; /* Centers the image */
+  }

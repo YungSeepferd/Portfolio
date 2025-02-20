@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectOverlay from './ProjectOverlay';
+import Button from './Button';
 import './Work.css';
 
 // Import images
@@ -13,7 +14,6 @@ import ADHDeer from '../assets/css/images/ADHDeer.png';
 
 function Work() {
   const [selectedProject, setSelectedProject] = useState(null);
-  const [hoveredCard, setHoveredCard] = useState(null);
 
   const projects = [
     {
@@ -25,7 +25,7 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for Master Thesis project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -38,7 +38,7 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for Haptics Research project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -51,7 +51,7 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for AMIAI project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -64,7 +64,7 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for Hackathon project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -77,7 +77,7 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for Bachelor Thesis project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -90,36 +90,11 @@ function Work() {
       content: (
         <div>
           <p>Detailed content for ADHDeer project...</p>
-          {/* Add more components and content here */}
+          {/* Additional detailed content here */}
         </div>
       ),
     },
   ];
-
-  const cardVariants = {
-    initial: { rotateY: 0 },
-    hover: { rotateY: 180 },
-    flipped: { rotateY: 180 },
-    unflipped: { rotateY: 0 },
-  };
-
-  const [flippedCards, setFlippedCards] = useState({});
-
-  const handleCardHover = (id) => {
-    setFlippedCards((prevState) => {
-      const newState = {};
-      newState[id] = true;
-      return newState;
-    });
-  };
-
-  const handleCardLeave = (id) => {
-    setFlippedCards((prevState) => {
-      const newState = {};
-      newState[id] = false;
-      return newState;
-    });
-  };
 
   return (
     <motion.section
@@ -130,28 +105,23 @@ function Work() {
       transition={{ duration: 1 }}
       viewport={{ once: true }}
     >
-      <h2 className="display-7 text-primary text-center py-5">My Work</h2> {/* Change text size here */}
+      <h2 className="display-7 text-primary text-center py-5">My Work</h2>
       <div className="project-row">
         {projects.map((project) => (
           <motion.div
             key={project.id}
             className="project-card"
-            variants={cardVariants}
-            initial="unflipped"
-            animate={flippedCards[project.id] ? 'flipped' : 'unflipped'}
-            transition={{ duration: 0.2 }}
-            onMouseEnter={() => handleCardHover(project.id)}
-            onMouseLeave={() => handleCardLeave(project.id)}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           >
-            <motion.div className="project-content front">
+            <div className="project-content front">
               <img src={project.media.src} alt={project.title} className="project-image" />
               <h3 className="project-title">{project.title}</h3>
               <p className="project-description">{project.description}</p>
-            </motion.div>
-            <motion.div className="project-content back" onClick={() => setSelectedProject(project)}>
-              <p className="project-details">{project.details}</p>
-              <button className="read-more-button">Read More</button>
-            </motion.div>
+              <Button onClick={() => setSelectedProject(project)}>
+                Read More
+              </Button>
+            </div>
           </motion.div>
         ))}
       </div>

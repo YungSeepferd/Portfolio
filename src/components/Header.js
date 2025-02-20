@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +6,6 @@ import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 import './Header.css';
 
 function Header() {
-  const [showModal, setShowModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);

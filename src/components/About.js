@@ -1,154 +1,142 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import heroBG from '../assets/css/images/Moosach Musik Moritz.jpg';
-import VRGLASSES from '../assets/css/images/VRBrille.JPG';
 import gallery1 from '../assets/css/images/Cookout.png';
 import gallery2 from '../assets/css/images/AMIAIBG.png';
 import gallery3 from '../assets/css/images/AudioHaptics.png';
 import gallery4 from '../assets/css/images/Cookout.png';
-import project1Img from '../assets/css/images/FItnessapp.jpeg';
-import project2Img from '../assets/css/images/VRBrille.JPG';
+import podcastProduction from '../assets/css/images/P&K.jpg';
+import musicProduction from '../assets/css/images/Moosach Musik Moritz.jpg';
+import ProjectOverlay from './ProjectOverlay';
+import ProjectBubble from './ProjectBubble';
+import useSlider from '../hooks/useSlider';
 import './About.css';
+import Button from './Button';
 
 const About = () => {
-  const [offsetY, setOffsetY] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  const handleScroll = () => {
-    setOffsetY(window.scrollY);
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Overview projects array (6 projects)
+  const overviewProjects = [
+    {
+      id: 1,
+      title: "Coding",
+      description: "Passionate about building efficient and clean code.",
+      image: gallery1,
+      details: "Detailed information regarding the Coding project."
+    },
+    {
+      id: 2,
+      title: "Prototyping",
+      description: "Rapid prototyping to test innovative ideas.",
+      image: gallery2,
+      details: "Detailed information regarding the Prototyping project."
+    },
+    {
+      id: 3,
+      title: "Football",
+      description: "Embracing teamwork and strategic gameplay.",
+      image: gallery3,
+      details: "Detailed information regarding the Football project."
+    },
+    {
+      id: 4,
+      title: "Research",
+      description: "In-depth analysis to drive design decisions.",
+      image: gallery4,
+      details: "Detailed information regarding the Research project."
+    },
+    {
+      id: 5,
+      title: "Podcast Production",
+      description: "Creating engaging audio content and production.",
+      image: podcastProduction,
+      details: "Detailed information regarding the Podcast Production project."
+    },
+    {
+      id: 6,
+      title: "Music Production",
+      description: "Crafting soundscapes and producing original music.",
+      image: musicProduction,
+      details: "Detailed information regarding the Music Production project."
+    }
+  ];
+  
+  // Duplicate the array for an endless slider loop
+  const sliderItems = [...overviewProjects, ...overviewProjects];
+  
+  // Use our custom hook passing in card width and number of original cards
+  const cardWidth = 270; // card width + gap in px
+  const { sliderX, handleNext, handlePrev } = useSlider(cardWidth, overviewProjects.length, 3000);
 
   return (
     <section
       id="about"
       className="about-section"
       style={{
-        position: 'relative',
         backgroundImage: `url(${heroBG})`,
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center'
       }}
     >
-      {/* Overlay for improved text readability */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          pointerEvents: 'none'
-        }}
-      ></div>
-
+      <div className="about-overlay" />
       <motion.div
-        className="container d-flex flex-wrap align-items-center about-content"
+        className="container about-content"
+        style={{ padding: "50px 20px" }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        style={{
-          position: 'relative',
-          padding: '100px 0',
-          color: 'white',
-        }}
       >
-        <div className="col-md-6">
-          <h2 className="text-orange display-4">About Me</h2>
-          <p className="lead">
+        <div className="about-text">
+          <h2 className="about-heading">About Me</h2>
+          <p className="about-paragraph">
             Hi! I'm Vincent Göke, a passionate audio-haptic UX designer and UX researcher.
             I love combining technology and human-centered design to create innovative and intuitive user experiences.
           </p>
-          <p className="lead">
-            My journey includes working on immersive audio experiences, context-aware smart home systems, and developing tools for haptic feedback design.
+          <p className="about-paragraph">
+            My journey includes working on immersive audio experiences, context-aware smart home systems,
+            and developing tools for haptic feedback design.
           </p>
         </div>
-        {/* New 2x2 matrix for interest project cards */}
-        <div className="col-md-6">
-          <div className="row">
-            <div className="col-6 mb-4">
-              <div className="card">
-                <img src={gallery1} alt="Coding" className="card-img-top" />
-                <div className="card-body">
-                  <h5 className="card-title">Coding</h5>
-                  <p className="card-text">Passionate about building efficient and clean code.</p>
+
+        <div className="slider-container">
+          <div className="slider-wrapper">
+            <motion.div
+              className="overview-slider"
+              animate={{ x: sliderX }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              {sliderItems.map((project, index) => (
+                <div key={index} className="overview-card">
+                  <ProjectBubble image={project.image} alt={project.title} />
+                  <div className="overview-card-body">
+                    <h5 className="overview-card-title">{project.title}</h5>
+                    <p className="overview-card-text">{project.description}</p>
+                    <Button onClick={() => setSelectedProject(project)}>
+                      Learn More
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-6 mb-4">
-              <div className="card">
-                <img src={gallery2} alt="Prototyping" className="card-img-top" />
-                <div className="card-body">
-                  <h5 className="card-title">Prototyping</h5>
-                  <p className="card-text">Rapid prototyping to test innovative ideas.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-6 mb-4">
-              <div className="card">
-                <img src={gallery3} alt="Football" className="card-img-top" />
-                <div className="card-body">
-                  <h5 className="card-title">Football</h5>
-                  <p className="card-text">Embracing teamwork and strategic gameplay.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-6 mb-4">
-              <div className="card">
-                <img src={gallery4} alt="Research" className="card-img-top" />
-                <div className="card-body">
-                  <h5 className="card-title">Research</h5>
-                  <p className="card-text">In-depth analysis to drive design decisions.</p>
-                </div>
-              </div>
-            </div>
+              ))}
+            </motion.div>
+          </div>
+          <div className="slider-controls">
+            <button className="slider-btn prev" onClick={handlePrev}>&larr;</button>
+            <button className="slider-btn next" onClick={handleNext}>&rarr;</button>
           </div>
         </div>
       </motion.div>
-
-      {/* Additional Projects Section */}
-      <div className="container mt-5">
-        <h3 className="text-orange display-5 mb-4">Additional Projects</h3>
-        <div className="row">
-          <div className="col-md-6 mb-4">
-            <div className="card">
-              <img
-                src={project1Img}
-                alt="Project 1"
-                className="card-img-top"
-                style={{ borderTopLeftRadius: 'calc(.25rem - 1px)', borderTopRightRadius: 'calc(.25rem - 1px)' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">Project Title 1</h5>
-                <p className="card-text">
-                  Short description for project 1. Add details about the design process, technology used, and impact.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 mb-4">
-            <div className="card">
-              <img
-                src={project2Img}
-                alt="Project 2"
-                className="card-img-top"
-                style={{ borderTopLeftRadius: 'calc(.25rem - 1px)', borderTopRightRadius: 'calc(.25rem - 1px)' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">Project Title 2</h5>
-                <p className="card-text">
-                  Short description for project 2. This section can include key insights, user research findings, or prototyping stages.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {selectedProject && (
+        <ProjectOverlay
+          project={{
+            title: selectedProject.title,
+            details: selectedProject.details,
+            media: { type: 'image', src: selectedProject.image }
+          }}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </section>
   );
 };

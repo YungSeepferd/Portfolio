@@ -1,38 +1,18 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import './ProjectOverlay.css';
+import Overlay from './Overlay';
+import styles from './ProjectOverlay.module.css';
+import Button from './Button';
 
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const containerVariants = {
-  hidden: { scale: 0.8, opacity: 0, y: -50 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' },
-  },
-  exit: { scale: 0.8, opacity: 0, y: 50, transition: { duration: 0.3 } },
-};
-
+/**
+ * ProjectOverlay displays detailed project information inside an overlay.
+ * Props:
+ *   - project: Object containing title, details, and media information.
+ *   - onClose: Function to close the overlay.
+ */
 const ProjectOverlay = ({ project, onClose }) => {
   return (
-    <motion.div
-      className="overlay"
-      variants={overlayVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-    >
-      <div className="overlay__background" onClick={onClose} />
-      <motion.div className="overlay__container" variants={containerVariants}>
-        <div className="overlay__controls">
-          <button className="overlay__close" onClick={onClose} />
-        </div>
+    <Overlay onClose={onClose}>
+      <div className={styles.overlayContent}>
         <h2>{project.title}</h2>
         <img
           src={project.media.src}
@@ -45,23 +25,21 @@ const ProjectOverlay = ({ project, onClose }) => {
           }}
         />
         <p>{project.details}</p>
-        {/* Placeholder content for additional UX details */}
-        <div className="overlay__placeholder">
+        {/* Placeholder for additional UX designer notes */}
+        <div className={styles.overlayPlaceholder}>
           <h3>UX Designer Notes</h3>
           <p>
-            Add your detailed project breakdown, user research, design process,
-            and any iteration insights here.
+            Add your detailed breakdown, user research or design process insights here.
           </p>
           <ul>
-            <li>Problem Statement: [Enter description]</li>
-            <li>User Research & Insights: [Enter details]</li>
-            <li>Wireframes & Prototypes: [Enter notes]</li>
-            <li>Final Design Decisions: [Enter rationale]</li>
+            <li>Problem Statement: [Your description]</li>
+            <li>User Research: [Your insights]</li>
+            <li>Design Decisions: [Your rationale]</li>
           </ul>
         </div>
-        {project.content}
-      </motion.div>
-    </motion.div>
+        <Button onClick={onClose}>Close</Button>
+      </div>
+    </Overlay>
   );
 };
 
