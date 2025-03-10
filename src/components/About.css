@@ -1,12 +1,11 @@
-/* About Section Base */
+/* Base styles for About Section */
 .about-section {
   position: relative;
-  padding: 80px 20px; /* Overall padding; adjust as needed */
-  color: white;
+  padding: 100px 20px;
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-  overflow: hidden;
+  background-color: #f5f7fa;
 }
 
 .about-overlay {
@@ -15,173 +14,141 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(245, 247, 250, 0.8);
   pointer-events: none;
 }
 
 .about-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.about-text {
+/* Headings */
+.about-heading {
+  font-size: 2.8rem;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+/* Section blocks (core, bio, experience, extra, CTA) */
+.section-block {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   margin-bottom: 40px;
 }
 
-/* Smaller Heading and Paragraphs */
-.about-heading {
-  font-size: 2rem;
+/* Generic section texts */
+.section-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Competence & Tag groups */
+.tag-group, .tag-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.tag-group h4, .tag-section h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #4285F4;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 0;
+}
+
+.tag {
+  background-color: #e8f0fe;
+  color: #4285F4;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background-color: #d2e3fc;
+  transform: translateY(-2px);
+}
+
+/* Accordion Tabs */
+.accordion-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
   margin-bottom: 20px;
 }
 
-.about-paragraph {
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
-
-/* Slider Wrapper */
-.slider-wrapper {
-  overflow: hidden;
-  position: relative;
-  margin-top: 30px;
-}
-
-/* Overview Slider */
-.overview-slider {
-  display: flex;
-  gap: 20px;
-}
-
-/* Overview Card Styling */
-.overview-card {
-  background: white;
-  color: #333;
-  border-radius: 10px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 350px;
-  /* Fixed width plus a gap—should match the JS cardWidth (e.g., 250px + 20px gap) */
-  width: 250px;
-  flex-shrink: 0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.overview-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  transform: scale(1.02);
-}
-
-.overview-card-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.overview-card-body {
-  padding: 15px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.overview-card-title {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
-.overview-card-text {
-  font-size: 0.9rem;
-  flex-grow: 1;
-}
-
-.overview-card-btn {
-  background-color: var(--primary-color);
-  color: white;
+.accordion-tab {
+  background: #e8f0fe;
+  color: #4285F4;
   border: none;
   padding: 8px 16px;
-  border-radius: 5px;
-  font-size: 0.8rem;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  transition: background 0.3s ease;
 }
 
-.overview-card-btn:hover {
-  background-color: #D97706;
+.accordion-tab:hover,
+.accordion-tab.active {
+  background: #d2e3fc;
+  font-weight: 600;
 }
 
-/* Slider Control Buttons */
-.slider-controls {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.slider-btn {
-  pointer-events: all;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.slider-btn:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-/* Existing styles remain unchanged above... */
-
-/* New container for slider and controls */
-.slider-container {
-  position: relative;
-}
-
-/* Slider Wrapper remains the same */
-.slider-wrapper {
+/* Accordion Content */
+.accordion-content {
   overflow: hidden;
-  margin-top: 30px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #555;
 }
 
-/* Overview Slider, Cards, and Button styles remain unchanged */
-.overview-slider {
-  display: flex;
-  gap: 20px;
+/* Extra Details Layout */
+.extra-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  margin-top: 20px;
 }
 
-/* (Overview card styles already defined above) */
-
-/* Slider Control Buttons */
-.slider-controls {
-  position: absolute;
-  top: 50%;
-  width: calc(100% + 100px); /* Expand container so buttons sit outside */
-  left: -50px; /* Push container (and buttons) further out */
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  pointer-events: none;
+.extra-item h4 {
+  font-size: 1.3rem;
+  color: #4285F4;
+  margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
-.slider-btn {
-  pointer-events: all;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: white;
-  padding: 50px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.extra-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #666;
 }
 
-.slider-btn:hover {
-  background-color: rgba(0, 0, 0, 0.7);
+/* Call-to-Action */
+.cta-section {
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .extra-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

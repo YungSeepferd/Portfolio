@@ -1,142 +1,187 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import heroBG from '../assets/css/images/Moosach Musik Moritz.jpg';
-import gallery1 from '../assets/css/images/Cookout.png';
-import gallery2 from '../assets/css/images/AMIAIBG.png';
-import gallery3 from '../assets/css/images/AudioHaptics.png';
-import gallery4 from '../assets/css/images/Cookout.png';
-import podcastProduction from '../assets/css/images/P&K.jpg';
-import musicProduction from '../assets/css/images/Moosach Musik Moritz.jpg';
-import ProjectOverlay from './ProjectOverlay';
-import ProjectBubble from './ProjectBubble';
-import useSlider from '../hooks/useSlider';
+import { motion, useViewportScroll, useTransform, AnimatePresence } from 'framer-motion';
 import './About.css';
 import Button from './Button';
+import Tooltip from './Tooltip';
+
+// Core Competence Groups
+const jobTitles = ["Sound Designer", "Audio Engineer"];
+const expertiseFields = ["UX Research", "UI Design", "Human-Computer Interaction (HCI)"];
+const coreSkills = ["Hardware Prototyping", "Software Prototyping", "Coding (MacOS, Linux, Windows)"];
+
+// Additional Tag Lists for Distribution in different sections
+const bioTags = ["Sound Design", "UX Design", "Frontend Coding", "Teamplayer", "Innovative", "User Focused"];
+const experienceTags = ["Research", "Prototyping", "Collaboration"];
+const passionTags = ["Music", "Sports", "Family"];
+
+// Biography content for accordion tabs
+const bioSections = {
+  background: `I studied media informatics at LMU Munich with a focus on human-machine interaction 
+and trained as a certified audio designer at Deutsche Pop in Munich. 
+My preference for audio became evident during my bachelor's degree when I wrote a seminar paper on how audio guides our human perception in VR.`,
+  interests: `I'm passionate about exploring new haptic feedback solutions and immersive sound design, constantly merging technology with human-centred design.`,
+  aspirations: `I aim to join a large UX department where I can continue to expand my expertise 
+in interaction design and research to create transformative user experiences.`
+};
+
+// Framer Motion variant for sections
+const sectionVariant = {
+  offscreen: { opacity: 0, y: 50 },
+  onscreen: { 
+    opacity: 1, 
+    y: 0,
+    transition: { type: "spring", bounce: 0.2, duration: 0.8 }
+  }
+};
+
+// Reusable component for rendering a list of tags with an optional tooltip
+const TagList = ({ title, tags }) => (
+  <div className="tag-section">
+    {title && <h4>{title}</h4>}
+    <div className="tag-list">
+      {tags.map((tag, idx) => (
+        <Tooltip key={idx} text={`More about ${tag}`}>
+          <span className="tag">{tag}</span>
+        </Tooltip>
+      ))}
+    </div>
+  </div>
+);
+
+// Reusable component to render core competence tags (with section title)
+const CompetenceTagList = ({ title, competences }) => (
+  <div className="competence-tag-section">
+    <h4>{title}</h4>
+    <div className="competence-taglist">
+      {competences.map((comp, idx) => (
+        <Tooltip key={idx} text={`Learn more about ${comp}`}>
+          <span className="competence-tag">{comp}</span>
+        </Tooltip>
+      ))}
+    </div>
+  </div>
+);
 
 const About = () => {
-  const [selectedProject, setSelectedProject] = useState(null);
-
-  // Overview projects array (6 projects)
-  const overviewProjects = [
-    {
-      id: 1,
-      title: "Coding",
-      description: "Passionate about building efficient and clean code.",
-      image: gallery1,
-      details: "Detailed information regarding the Coding project."
-    },
-    {
-      id: 2,
-      title: "Prototyping",
-      description: "Rapid prototyping to test innovative ideas.",
-      image: gallery2,
-      details: "Detailed information regarding the Prototyping project."
-    },
-    {
-      id: 3,
-      title: "Football",
-      description: "Embracing teamwork and strategic gameplay.",
-      image: gallery3,
-      details: "Detailed information regarding the Football project."
-    },
-    {
-      id: 4,
-      title: "Research",
-      description: "In-depth analysis to drive design decisions.",
-      image: gallery4,
-      details: "Detailed information regarding the Research project."
-    },
-    {
-      id: 5,
-      title: "Podcast Production",
-      description: "Creating engaging audio content and production.",
-      image: podcastProduction,
-      details: "Detailed information regarding the Podcast Production project."
-    },
-    {
-      id: 6,
-      title: "Music Production",
-      description: "Crafting soundscapes and producing original music.",
-      image: musicProduction,
-      details: "Detailed information regarding the Music Production project."
-    }
-  ];
-  
-  // Duplicate the array for an endless slider loop
-  const sliderItems = [...overviewProjects, ...overviewProjects];
-  
-  // Use our custom hook passing in card width and number of original cards
-  const cardWidth = 270; // card width + gap in px
-  const { sliderX, handleNext, handlePrev } = useSlider(cardWidth, overviewProjects.length, 3000);
+  // State for accordion tabs in the biography section
+  const [activeTab, setActiveTab] = useState('background');
+  const { scrollY } = useViewportScroll();
+  const parallaxHeading = useTransform(scrollY, [0, 300], [0, -30]);
 
   return (
     <section
       id="about"
       className="about-section"
-      style={{
-        backgroundImage: `url(${heroBG})`,
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
-        backgroundPosition: 'center'
-      }}
+      style={{ backgroundImage: "url('../assets/css/images/Moosach Musik Moritz.jpg')" }}
     >
       <div className="about-overlay" />
       <motion.div
         className="container about-content"
-        style={{ padding: "50px 20px" }}
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
+        initial="offscreen"
+        whileInView="onscreen"
+        viewport={{ once: true, amount: 0.5 }}
       >
-        <div className="about-text">
-          <h2 className="about-heading">About Me</h2>
-          <p className="about-paragraph">
-            Hi! I'm Vincent Göke, a passionate audio-haptic UX designer and UX researcher.
-            I love combining technology and human-centered design to create innovative and intuitive user experiences.
-          </p>
-          <p className="about-paragraph">
-            My journey includes working on immersive audio experiences, context-aware smart home systems,
-            and developing tools for haptic feedback design.
-          </p>
-        </div>
+        {/* Intro Heading with Parallax & Fade-In */}
+        <motion.h2 
+          className="about-heading" 
+          style={{ y: parallaxHeading }}
+          initial={{ opacity: 0, y: -50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+        >
+          About Me
+        </motion.h2>
 
-        <div className="slider-container">
-          <div className="slider-wrapper">
+        {/* Core Competences Section */}
+        <motion.div className="about-core" variants={sectionVariant}>
+          <h3>Core Competences</h3>
+          <CompetenceTagList title="Professional Roles" competences={jobTitles} />
+          <CompetenceTagList title="Fields of Expertise" competences={expertiseFields} />
+          <CompetenceTagList title="Core Skills" competences={coreSkills} />
+        </motion.div>
+
+        {/* Biography Section with Accordion */}
+        <motion.div className="about-bio" variants={sectionVariant}>
+          <h3>Who Am I?</h3>
+          <div className="accordion-tabs">
+            {['background', 'interests', 'aspirations'].map((tab) => (
+              <button 
+                key={tab}
+                className={`accordion-tab ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+                aria-expanded={activeTab === tab}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+          <AnimatePresence exitBeforeEnter>
             <motion.div
-              className="overview-slider"
-              animate={{ x: sliderX }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              key={activeTab}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.5 }}
+              className="accordion-content"
             >
-              {sliderItems.map((project, index) => (
-                <div key={index} className="overview-card">
-                  <ProjectBubble image={project.image} alt={project.title} />
-                  <div className="overview-card-body">
-                    <h5 className="overview-card-title">{project.title}</h5>
-                    <p className="overview-card-text">{project.description}</p>
-                    <Button onClick={() => setSelectedProject(project)}>
-                      Learn More
-                    </Button>
-                  </div>
-                </div>
-              ))}
+              <p>{bioSections[activeTab]}</p>
             </motion.div>
+          </AnimatePresence>
+          {/* Additional Tags in Biography Section */}
+          <TagList title="My Focus:" tags={bioTags} />
+        </motion.div>
+
+        {/* Professional Experience Section */}
+        <motion.div className="about-experience" variants={sectionVariant}>
+          <h3>Professional Experience</h3>
+          <motion.p>
+            From 01.2020 to 12.2022, I worked as a research assistant in the nuclear medicine department at the University Hospital of Munich—setting up podcast environments focused on themes like women in the medical field.
+            In early 2022, I interned as a UX researcher and prototyper at DJay in Munich. Now, I aim to join a large UX department to expand my expertise in interaction design.
+          </motion.p>
+          {/* Experience Tags */}
+          <TagList title="Key Areas:" tags={experienceTags} />
+        </motion.div>
+
+        {/* Additional Interests Section */}
+        <motion.div className="about-extra" variants={sectionVariant}>
+          <h3>More About Me</h3>
+          <div className="extra-details">
+            <div className="extra-item">
+              <h4>User Experience Research</h4>
+              <p>
+                My professional journey began as a media informatics student where I conducted in-depth user interviews and testing across diverse fields such as automated driving, nuclear medicine, and audio engineering.
+              </p>
+            </div>
+            <div className="extra-item">
+              <h4>Prototyping</h4>
+              <p>
+                In my first UX design internship, I pushed the boundaries of prototyping using tools like Adobe XD, Figma, Fresco, After Effects, and Ableton Live 11.
+              </p>
+            </div>
+            <div className="extra-item">
+              <h4>When I'm Not Working</h4>
+              <p>
+                <strong>Music:</strong> I’ve been producing and mixing music since 2015—performing as Din-Z and occasionally working as a HipHop producer. I also sing and play multiple instruments.
+              </p>
+              <p>
+                <strong>Sports:</strong> A lifelong fussball player and enthusiast, I keep fit and enjoy professional matches, especially as a dedicated FC Schalke 04 fan.
+              </p>
+              <p>
+                <strong>Family:</strong> Being the seventh child in a large family, I frequently travel between Hamburg, München, Berlin, and Bonn to see loved ones.
+              </p>
+            </div>
           </div>
-          <div className="slider-controls">
-            <button className="slider-btn prev" onClick={handlePrev}>&larr;</button>
-            <button className="slider-btn next" onClick={handleNext}>&rarr;</button>
-          </div>
-        </div>
+          {/* Passion Tags */}
+          <TagList title="I Love:" tags={passionTags} />
+        </motion.div>
+
+        {/* Call-to-Action Section */}
+        <motion.div className="about-cta" variants={sectionVariant}>
+          <Button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            Back to Top
+          </Button>
+        </motion.div>
       </motion.div>
-      {selectedProject && (
-        <ProjectOverlay
-          project={{
-            title: selectedProject.title,
-            details: selectedProject.details,
-            media: { type: 'image', src: selectedProject.image }
-          }}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
     </section>
   );
 };

@@ -33,8 +33,8 @@ function Contact() {
   return (
     <section id="contact" className="py-5 text-white">
       <div className="container text-center">
-        <h2 className="display-4 text-orange">After you contacted me you can rest and do some meth or something. You found your candidate.</h2>
-        <p className="lead">Want to collaborate or just say hi? Reach out, I won't reply.!</p>
+        <h2 className="display-4 text-orange">After you contacted me you can rest.</h2>
+        <p className="lead">Want to collaborate or just say hi? Reach out!</p>
         <motion.button
           whileHover={{ scale: 1.1, boxShadow: '0px 4px 15px rgba(0,0,0,0.3)' }}
           className="btn btn-primary mt-4"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectOverlay from './ProjectOverlay';
 import Button from './Button';
+import ProjectFilter from './ProjectFilter';
 import './Work.css';
 
 // Import images
@@ -14,6 +15,7 @@ import ADHDeer from '../assets/css/images/ADHDeer.png';
 
 function Work() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [filterCategory, setFilterCategory] = useState(null);
 
   const projects = [
     {
@@ -22,23 +24,23 @@ function Work() {
       description: 'Exploring novel approaches in human-computer interaction...',
       media: { type: 'image', src: heroBG },
       details: 'My master thesis explores innovative haptic feedback systems for virtual environments, focusing on enhancing user immersion and interaction.',
+      categories: ['UX Research', 'Prototyping', 'Haptic Design'],
       content: (
         <div>
           <p>Detailed content for Master Thesis project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
     {
       id: 2,
-      title: 'Haptics Research',
+      title: 'Generative AI Affective Haptics Research',
       description: 'Research on procedurally generated haptic feedback...',
       media: { type: 'image', src: HapticsBG },
       details: 'This research investigates the impact of procedurally generated haptic feedback on user experience, aiming to create more dynamic and responsive interactions.',
+      categories: ['UX Research', 'Prototyping', 'Haptic Design'],
       content: (
         <div>
           <p>Detailed content for Haptics Research project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -48,10 +50,10 @@ function Work() {
       description: 'AI-driven music creation and interaction systems...',
       media: { type: 'image', src: AMIAIBG },
       details: 'AMIAI is a collaborative project focused on developing AI-driven music creation and interaction systems, exploring new possibilities for musical expression.',
+      categories: ['Prototyping', 'Audio Design'],
       content: (
         <div>
           <p>Detailed content for AMIAI project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -61,10 +63,10 @@ function Work() {
       description: 'AR-based navigation system for visually impaired users...',
       media: { type: 'image', src: HackathonBG },
       details: 'During a 48-hour hackathon, I developed an AR-based navigation system for visually impaired users, providing real-time guidance and obstacle detection.',
+      categories: ['UX Research', 'Prototyping'],
       content: (
         <div>
           <p>Detailed content for Hackathon project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -74,10 +76,10 @@ function Work() {
       description: 'VR environments in educational settings...',
       media: { type: 'image', src: BachelorBG },
       details: 'My bachelor thesis investigates user-centered design methodologies for VR environments in educational settings, aiming to create engaging and effective learning experiences.',
+      categories: ['UX Research'],
       content: (
         <div>
           <p>Detailed content for Bachelor Thesis project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
@@ -87,14 +89,21 @@ function Work() {
       description: 'AR environments in educational settings...',
       media: { type: 'image', src: ADHDeer },
       details: 'ADHDeer explores the use of AR environments in educational settings, creating interactive and immersive learning experiences for students.',
+      categories: ['Haptic Design', 'Prototyping'],
       content: (
         <div>
           <p>Detailed content for ADHDeer project...</p>
-          {/* Additional detailed content here */}
         </div>
       ),
     },
   ];
+
+  // Get unique list of project categories
+  const allCategories = Array.from(new Set(projects.flatMap(p => p.categories)));
+
+  const filteredProjects = filterCategory
+    ? projects.filter(project => project.categories.includes(filterCategory))
+    : projects;
 
   return (
     <motion.section
@@ -106,8 +115,14 @@ function Work() {
       viewport={{ once: true }}
     >
       <h2 className="display-7 text-primary text-center py-5">My Work</h2>
+      {/* Display filter buttons */}
+      <ProjectFilter 
+        categories={allCategories}
+        selectedCategory={filterCategory}
+        onSelect={(cat) => setFilterCategory(cat)}
+      />
       <div className="project-row">
-        {projects.map((project) => (
+        {filteredProjects.map((project) => (
           <motion.div
             key={project.id}
             className="project-card"
