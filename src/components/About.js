@@ -7,9 +7,9 @@ import Tooltip from './Tooltip';
 // Core Competence Groups
 const jobTitles = ["Sound Designer", "Audio Engineer"];
 const expertiseFields = ["UX Research", "UI Design", "Human-Computer Interaction (HCI)"];
-const coreSkills = ["Hardware Prototyping", "Software Prototyping", "Coding (MacOS, Linux, Windows)"];
+const coreSkills = ["Hardware Prototyping", "Software Prototyping", "Coding (Mac, Linux, Windows)"];
 
-// Additional Tag Lists for Distribution in different sections
+// Additional Tag Lists for Distribution
 const bioTags = ["Sound Design", "UX Design", "Frontend Coding", "Teamplayer", "Innovative", "User Focused"];
 const experienceTags = ["Research", "Prototyping", "Collaboration"];
 const passionTags = ["Music", "Sports", "Family"];
@@ -18,23 +18,22 @@ const passionTags = ["Music", "Sports", "Family"];
 const bioSections = {
   background: `I studied media informatics at LMU Munich with a focus on human-machine interaction 
 and trained as a certified audio designer at Deutsche Pop in Munich. 
-My preference for audio became evident during my bachelor's degree when I wrote a seminar paper on how audio guides our human perception in VR.`,
-  interests: `I'm passionate about exploring new haptic feedback solutions and immersive sound design, constantly merging technology with human-centred design.`,
-  aspirations: `I aim to join a large UX department where I can continue to expand my expertise 
-in interaction design and research to create transformative user experiences.`
+During my bachelor's I explored how audio can shape our perception in virtual reality.`,
+  interests: `I'm passionate about combining interactive sound and design to create better haptic feedback and immersive experiences.`,
+  aspirations: `I aim to join a large UX team where I can further evolve my interaction design and research expertise.`
 };
 
 // Framer Motion variant for sections
 const sectionVariant = {
-  offscreen: { opacity: 0, y: 50 },
+  offscreen: { opacity: 0, y: 40 },
   onscreen: { 
     opacity: 1, 
     y: 0,
-    transition: { type: "spring", bounce: 0.2, duration: 0.8 }
+    transition: { type: "spring", stiffness: 80, damping: 20, duration: 0.8 }
   }
 };
 
-// Reusable component for rendering a list of tags with an optional tooltip
+// Reusable component for rendering a list of tags with tooltips
 const TagList = ({ title, tags }) => (
   <div className="tag-section">
     {title && <h4>{title}</h4>}
@@ -48,14 +47,14 @@ const TagList = ({ title, tags }) => (
   </div>
 );
 
-// Reusable component to render core competence tags (with section title)
+// Reusable component for core competence tag groups
 const CompetenceTagList = ({ title, competences }) => (
-  <div className="competence-tag-section">
+  <div className="tag-group">
     <h4>{title}</h4>
-    <div className="competence-taglist">
+    <div className="tag-list">
       {competences.map((comp, idx) => (
         <Tooltip key={idx} text={`Learn more about ${comp}`}>
-          <span className="competence-tag">{comp}</span>
+          <span className="tag">{comp}</span>
         </Tooltip>
       ))}
     </div>
@@ -63,7 +62,6 @@ const CompetenceTagList = ({ title, competences }) => (
 );
 
 const About = () => {
-  // State for accordion tabs in the biography section
   const [activeTab, setActiveTab] = useState('background');
   const { scrollY } = useViewportScroll();
   const parallaxHeading = useTransform(scrollY, [0, 300], [0, -30]);
@@ -76,32 +74,32 @@ const About = () => {
     >
       <div className="about-overlay" />
       <motion.div
-        className="container about-content"
+        className="about-content container"
         initial="offscreen"
         whileInView="onscreen"
         viewport={{ once: true, amount: 0.5 }}
       >
-        {/* Intro Heading with Parallax & Fade-In */}
+        {/* Intro Heading */}
         <motion.h2 
-          className="about-heading" 
+          className="about-heading"
           style={{ y: parallaxHeading }}
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
         >
           About Me
         </motion.h2>
 
-        {/* Core Competences Section */}
-        <motion.div className="about-core" variants={sectionVariant}>
+        {/* Core Competences */}
+        <motion.div className="section-block competence-section" variants={sectionVariant}>
           <h3>Core Competences</h3>
           <CompetenceTagList title="Professional Roles" competences={jobTitles} />
           <CompetenceTagList title="Fields of Expertise" competences={expertiseFields} />
           <CompetenceTagList title="Core Skills" competences={coreSkills} />
         </motion.div>
 
-        {/* Biography Section with Accordion */}
-        <motion.div className="about-bio" variants={sectionVariant}>
+        {/* Biography Accordion */}
+        <motion.div className="section-block bio-section" variants={sectionVariant}>
           <h3>Who Am I?</h3>
           <div className="accordion-tabs">
             {['background', 'interests', 'aspirations'].map((tab) => (
@@ -119,7 +117,7 @@ const About = () => {
             <motion.div
               key={activeTab}
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5 }}
               className="accordion-content"
@@ -127,56 +125,47 @@ const About = () => {
               <p>{bioSections[activeTab]}</p>
             </motion.div>
           </AnimatePresence>
-          {/* Additional Tags in Biography Section */}
           <TagList title="My Focus:" tags={bioTags} />
         </motion.div>
 
-        {/* Professional Experience Section */}
-        <motion.div className="about-experience" variants={sectionVariant}>
+        {/* Professional Experience */}
+        <motion.div className="section-block experience-section" variants={sectionVariant}>
           <h3>Professional Experience</h3>
-          <motion.p>
-            From 01.2020 to 12.2022, I worked as a research assistant in the nuclear medicine department at the University Hospital of Munich—setting up podcast environments focused on themes like women in the medical field.
-            In early 2022, I interned as a UX researcher and prototyper at DJay in Munich. Now, I aim to join a large UX department to expand my expertise in interaction design.
+          <motion.p className="section-text">
+            From 01.2020 to 12.2022 I worked as a research assistant at the University Hospital of Munich – setting up podcast environments highlighting women in medicine.
+            In early 2022 I interned as a UX researcher and prototyper at DJay in Munich. I now seek to join a large UX department and grow my skills further.
           </motion.p>
-          {/* Experience Tags */}
           <TagList title="Key Areas:" tags={experienceTags} />
         </motion.div>
 
-        {/* Additional Interests Section */}
-        <motion.div className="about-extra" variants={sectionVariant}>
+        {/* Additional Interests */}
+        <motion.div className="section-block extra-section" variants={sectionVariant}>
           <h3>More About Me</h3>
           <div className="extra-details">
             <div className="extra-item">
               <h4>User Experience Research</h4>
               <p>
-                My professional journey began as a media informatics student where I conducted in-depth user interviews and testing across diverse fields such as automated driving, nuclear medicine, and audio engineering.
+                My journey started with in-depth user interviews and testing across diverse fields – from automotive to medicine.
               </p>
             </div>
             <div className="extra-item">
               <h4>Prototyping</h4>
               <p>
-                In my first UX design internship, I pushed the boundaries of prototyping using tools like Adobe XD, Figma, Fresco, After Effects, and Ableton Live 11.
+                I experimented with tools like Adobe XD, Figma, and After Effects, pushing the limits of interactive design.
               </p>
             </div>
             <div className="extra-item">
               <h4>When I'm Not Working</h4>
-              <p>
-                <strong>Music:</strong> I’ve been producing and mixing music since 2015—performing as Din-Z and occasionally working as a HipHop producer. I also sing and play multiple instruments.
-              </p>
-              <p>
-                <strong>Sports:</strong> A lifelong fussball player and enthusiast, I keep fit and enjoy professional matches, especially as a dedicated FC Schalke 04 fan.
-              </p>
-              <p>
-                <strong>Family:</strong> Being the seventh child in a large family, I frequently travel between Hamburg, München, Berlin, and Bonn to see loved ones.
-              </p>
+              <p><strong>Music:</strong> I've produced and mixed music since 2015 and perform as Din-Z.</p>
+              <p><strong>Sports:</strong> A passionate fussball player and dedicated FC Schalke 04 fan.</p>
+              <p><strong>Family:</strong> I often travel between Hamburg, München, Berlin, and Bonn to spend time with loved ones.</p>
             </div>
           </div>
-          {/* Passion Tags */}
           <TagList title="I Love:" tags={passionTags} />
         </motion.div>
 
-        {/* Call-to-Action Section */}
-        <motion.div className="about-cta" variants={sectionVariant}>
+        {/* Call-to-Action */}
+        <motion.div className="section-block cta-section" variants={sectionVariant}>
           <Button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             Back to Top
           </Button>
