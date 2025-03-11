@@ -10,4 +10,5 @@ yarn-error.log*
 node_modules/
 .cache/
 dist/
-build/
+build/node_modules/
+.cache/
