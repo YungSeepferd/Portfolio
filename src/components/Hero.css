@@ -1,42 +1,48 @@
 .hero-section {
-    background-color: var(--background-light);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
+  background-color: #ffffff;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  z-index: 10;
+  text-align: left;
+  animation: slideIn 1.5s ease forwards;
+  opacity: 0;
+}
+
+.hero-heading {
+  font-weight: 700;
+  color: #1976d2; /* Using the primary Material UI color */
+  margin-bottom: 1rem;
+}
+
+/* Responsive font size for hero heading */
+@media (min-width: 600px) {
+  .hero-heading {
+    font-size: 3rem;
   }
-  
-  .hero-content {
-    position: absolute;
-    bottom: 240px;
-    left: 100px;
-    text-align: left;
-    z-index: 10;
-    animation: slideIn 1.5s ease forwards;
+}
+@media (min-width: 960px) {
+  .hero-heading {
+    font-size: 4rem;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-50%);
     opacity: 0;
   }
-  
-  .hero-content h1 {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    font-weight: bold;
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  .hero-content p {
-    font-size: 0.93rem;
-    color: var(--text-dark);
-  }
-  
-  @keyframes slideIn {
-    0% {
-      transform: translateX(-50%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
+}

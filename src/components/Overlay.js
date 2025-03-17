@@ -4,7 +4,6 @@ import styles from './Overlay.module.css';
 
 const Overlay = ({ onClose, children }) => {
   useEffect(() => {
-    // Optionally play a sound or perform other actions when the overlay appears.
     const handleEsc = (e) => {
       if (e.key === 'Escape') onClose();
     };
@@ -17,9 +16,9 @@ const Overlay = ({ onClose, children }) => {
       className={styles.overlay}
       role="dialog"
       aria-modal="true"
-      initial={{ opacity: 0, scale: 0.8, x: '-100vw' }}
-      animate={{ opacity: 1, scale: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.8, x: '100vw' }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
     >
       <div 

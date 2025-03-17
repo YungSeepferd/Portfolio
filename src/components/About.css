@@ -1,27 +1,14 @@
 /* Base About Section styles */
-.about-section {
+.about {
   position: relative;
   padding: 80px 20px;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  background-color: #f5f7fa;
+  background-color: #ffffff;
 }
 
-.about-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(245, 247, 250, 0.8);
-  pointer-events: none;
-}
-
-/* Extra left/right padding for content */
+/* Content container */
 .about-content {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 10%;
@@ -32,158 +19,22 @@
   font-size: 2.8rem;
   text-align: center;
   margin-bottom: 40px;
-  color: #333;
+  color: #1976d2;
 }
 
-/* Simplified Tabs Navigation */
-.about-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 40px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.about-tab {
-  background: transparent;
-  color: #888;
-  border: none;
-  padding: 12px 24px;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  transition: color 0.3s, border-bottom 0.3s;
-  font-size: 1rem;
-}
-
-.about-tab:hover {
-  color: #555;
-}
-
-.about-tab.active {
-  color: #4285F4;
-  border-bottom: 3px solid #4285F4;
-}
-
-/* Remove frame/shadow: .tab-wrapper now just adds spacing */
-.tab-wrapper {
-  margin-top: 40px;
-  padding: 40px 30px;
-  background: transparent;
-}
-
-/* Generic Tile Content */
-.tile-content {
-  text-align: center;
-}
-
-.tile-content h3 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-/* Competence Groups */
-.competence-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.competence-group h4 {
-  font-size: 1.2rem;
-  color: #4285F4;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
-
-/* Tag List */
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
+/* Tag styling for competency elements */
 .tag {
   background-color: #e8f0fe;
-  color: #4285F4;
+  color: #1976d2;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
-  transition: background 0.3s, transform 0.3s;
+  margin: 4px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
 }
 
 .tag:hover {
   background-color: #d2e3fc;
   transform: translateY(-2px);
-}
-
-/* Interactive Tile (Highlights) */
-.interactive-tile .tile-tags {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tile-tag {
-  background: #e8f0fe;
-  color: #4285F4;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.tile-tag.active,
-.tile-tag:hover {
-  background: #d2e3fc;
-  font-weight: 600;
-}
-
-.tile-text {
-  min-height: 70px;
-  padding: 10px;
-  font-size: 1rem;
-  color: #555;
-}
-
-/* Biography Sub-tabs */
-.biography-section .sub-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.sub-tab {
-  background: #e8f0fe;
-  color: #4285F4;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background 0.3s;
-  font-size: 1rem;
-}
-
-.sub-tab.active,
-.sub-tab:hover {
-  background: #d2e3fc;
-  font-weight: 600;
-}
-
-/* Tag Section used in Biography */
-.tag-section h4 {
-  font-size: 1rem;
-  margin-bottom: 10px;
-  color: #4285F4;
-}
-
-/* Call-to-Action */
-.cta-section {
-  text-align: center;
-  margin-top: 40px;
 }

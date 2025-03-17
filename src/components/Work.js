@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import ProjectOverlay from './ProjectOverlay';
-import Button from './Button';
 import ProjectFilter from './ProjectFilter';
 import './Work.css';
 
@@ -98,11 +103,9 @@ function Work() {
     },
   ];
 
-  // Get unique list of project categories
-  const allCategories = Array.from(new Set(projects.flatMap(p => p.categories)));
-
+  const allCategories = Array.from(new Set(projects.flatMap((p) => p.categories)));
   const filteredProjects = filterCategory
-    ? projects.filter(project => project.categories.includes(filterCategory))
+    ? projects.filter((project) => project.categories.includes(filterCategory))
     : projects;
 
   return (
@@ -114,37 +117,54 @@ function Work() {
       transition={{ duration: 1 }}
       viewport={{ once: true }}
     >
-      <h2 className="display-7 text-primary text-center py-5">My Work</h2>
-      {/* Display filter buttons */}
-      <ProjectFilter 
-        categories={allCategories}
-        selectedCategory={filterCategory}
-        onSelect={(cat) => setFilterCategory(cat)}
-      />
-      <div className="project-row">
-        {filteredProjects.map((project) => (
-          <motion.div
-            key={project.id}
-            className="project-card"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="project-content front">
-              <img src={project.media.src} alt={project.title} className="project-image" />
-              <h3 className="project-title">{project.title}</h3>
-              <p className="project-description">{project.description}</p>
-              <Button onClick={() => setSelectedProject(project)}>
-                Read More
-              </Button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectOverlay project={selectedProject} onClose={() => setSelectedProject(null)} />
-        )}
-      </AnimatePresence>
+      <Container>
+        <Typography variant="h3" align="center" gutterBottom color="primary">
+          My Work
+        </Typography>
+        <ProjectFilter 
+          categories={allCategories}
+          selectedCategory={filterCategory}
+          onSelect={(cat) => setFilterCategory(cat)}
+        />
+        <Grid container spacing={4} justifyContent="center">
+          {filteredProjects.map((project) => (
+            <Grid item key={project.id} xs={12} sm={6} md={4}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setSelectedProject(project)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Card className="project-card">
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={project.media.src}
+                    alt={project.title}
+                    className="project-image"
+                  />
+                  <CardContent>
+                    <Typography variant="h5" className="project-title">
+                      {project.title}
+                    </Typography>
+                    <Typography variant="body2" className="project-description">
+                      {project.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
+        <AnimatePresence>
+          {selectedProject && (
+            <ProjectOverlay
+              project={selectedProject}
+              onClose={() => setSelectedProject(null)}
+            />
+          )}
+        </AnimatePresence>
+      </Container>
     </motion.section>
   );
 }

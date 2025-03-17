@@ -1,44 +1,15 @@
 .header {
-  background-color: var(--background-light);
-  padding: 20px 0;
+  background-color: var(--background-light, #f7f7f7);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Make the header fixed */
-  top: 0;
-  width: 100%;
-  z-index: 1000; /* Ensure it stays on top */
-}
-
-.brand-name {
-  font-size: 1.3rem;
-  color: var(--primary-color);
 }
 
 .nav-link {
-  font-size: 1.2rem;
-  color: var(--text-dark);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   transition: color 0.3s ease;
 }
 
-.nav-link:hover,
-.nav-link.active {
-  color: var(--primary-color);
-  font-weight: bold;
-}
-
-.dropdown-menu {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-.dropdown-item {
-  color: var(--text-dark);
-  padding: 10px 20px;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown-item:hover {
-  background-color: var(--primary-color);
-  color: var(--text-light);
-  border-radius: 5px;
+.nav-link:hover {
+  color: var(--primary-color, #1976d2);
 }

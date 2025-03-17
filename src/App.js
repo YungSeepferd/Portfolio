@@ -3,8 +3,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Work from './components/Work';
 import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import FooterContact from './components/FooterContact';
 
 function App() {
   return (
@@ -13,8 +12,7 @@ function App() {
       <Hero />
       <Work />
       <About />
-      <Contact />
-      <Footer />
+      <FooterContact />
     </div>
   );
 }

@@ -1,55 +1,113 @@
 import React, { useState } from 'react';
-import { Link } from 'react-scroll';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { Link as ScrollLink } from 'react-scroll';
 import './Header.css';
 
 function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const navLinks = [
+    { label: 'Home', to: 'hero' },
+    { label: 'My Work', to: 'work' },
+    { label: 'About Me', to: 'about' },
+    { label: 'Contact', to: 'contact' },
+  ];
+
+  // Mobile drawer content
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+      <Typography variant="h6" sx={{ my: 2, color: 'primary.main' }}>
+        Vincent Göke
+      </Typography>
+      <List>
+        {navLinks.map((item) => (
+          <ListItem key={item.label} disablePadding>
+            <ListItemText
+              primary={
+                <ScrollLink
+                  to={item.to}
+                  smooth={true}
+                  duration={800}
+                  offset={-70}
+                  className="nav-link"
+                >
+                  {item.label}
+                </ScrollLink>
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
-    <header className="header">
-      <div className="container d-flex justify-content-between align-items-center py-3">
-        <div className="d-flex align-items-center">
-          <h1 className="brand-name mb-0">Vincent Göke</h1>
-          <div className="ml-3">
-            <a href="mailto:your-email@example.com" className="text-dark mx-2">
-              <FontAwesomeIcon icon={faEnvelope} size="lg" />
-            </a>
-            <a href="https://linkedin.com/in/your-profile" className="text-dark mx-2">
-              <FontAwesomeIcon icon={faLinkedin} size="lg" />
-            </a>
-            <a href="https://github.com/your-github" className="text-dark mx-2">
-              <FontAwesomeIcon icon={faGithub} size="lg" />
-            </a>
-          </div>
-        </div>
-        <button
-          className="d-md-none btn text-dark"
-          onClick={toggleMobileMenu}
-          aria-label="Toggle navigation"
-        >
-          <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} size="2x" />
-        </button>
-        <div className={`d-md-flex ${isMobileMenuOpen ? 'd-block' : 'd-none d-md-flex'} align-items-center`}>
-          <Link to="hero" smooth={true} duration={800} spy={true} offset={-70} className="mx-3 nav-link">
-            Home
-          </Link>
-          <Link to="work" smooth={true} duration={800} offset={-70} className="mx-3 nav-link">
-            My Work
-          </Link>
-          <Link to="about" smooth={true} duration={800} spy={true} offset={-70} className="mx-3 nav-link">
-            About Me
-          </Link>
-          <Link to="contact" smooth={true} duration={800} spy={true} offset={-70} className="mx-3 nav-link">
-            Contact
-          </Link>
-        </div>
-      </div>
-    </header>
+    <>
+      <AppBar position="fixed" color="inherit" className="header">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, color: 'primary.main' }}
+          >
+            Vincent Göke
+          </Typography>
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            {navLinks.map((item) => (
+              <Button key={item.label} color="inherit">
+                <ScrollLink
+                  to={item.to}
+                  smooth={true}
+                  duration={800}
+                  offset={-70}
+                  className="nav-link"
+                >
+                  {item.label}
+                </ScrollLink>
+              </Button>
+            ))}
+          </Box>
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { sm: 'none' } }}
+            onClick={handleDrawerToggle}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      {/* Spacer to push the content below the fixed AppBar */}
+      <Toolbar />
+    </>
   );
 }
 
