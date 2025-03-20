@@ -1,148 +1,71 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+import { Box, Typography, Button, Grid, Card, CardMedia, CardContent, IconButton, useTheme, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import './Work.css';
+import { workData } from '../data/WorkData';
+import ErrorBoundary from './ErrorBoundary';
 
-// Example image imports (adjust import paths as needed)
-import heroBG from '../assets/css/images/Haptics.png';
-import HapticsBG from '../assets/css/images/ProceduallyGenHaptic.png';
-import AMIAIBG from '../assets/css/images/AMIAI.svg';
-import HackathonBG from '../assets/css/images/Hackathon.png';
-import BachelorBG from '../assets/css/images/FT Level 2 GIF.gif';
-import ADHDeer from '../assets/css/images/ADHDeer.png';
+// Define category groups and their colors from theme.js
+const categoryGroups = {
+  "UX": {
+    categories: ["UX Research", "Interaction Design", "Prototyping", "UX Testing"],
+    color: "primary.main", // Dark blue
+  },
+  "Graphic Design": {
+    categories: ["Graphic Design"],
+    color: "secondary.main", // Light blue
+  },
+  "AI & Haptics": {
+    categories: ["Haptic Design", "AI LLMs"],
+    color: "accent.main", // Earthy accent
+  },
+};
 
-// PROJECT DATA (case-study format)
-const projects = [
-  {
-    id: 1,
-    title: 'Master Thesis',
-    description: 'Exploring novel approaches in human-computer interaction...',
-    media: { type: 'image', src: heroBG },
-    details: 'An in-depth exploration of haptic feedback systems for immersive experiences.',
-    categories: ['UX Research', 'Prototyping', 'Haptic Design'],
-    problem: "How can we create immersive haptic feedback?",
-    research: "In-depth user interviews and prototype testing were conducted.",
-    solution: "Developed a responsive system using novel sensors.",
-    outcome: "Enhanced user immersion was observed in lab testing.",
-    images: [heroBG, HapticsBG],
-    tools: ['Figma', 'Adobe XD']
-  },
-  {
-    id: 2,
-    title: 'Generative AI Affective Haptics Research',
-    description: 'AI-generated audio for affective haptic feedback to induce relaxation and enhance emotional well-being.',
-    media: { type: 'image', src: HapticsBG },
-    details: 'Explores the capabilities of AI-generated audio for affective haptic feedback to create experiences that induce relaxation and enhance emotional well-being and productivity. This project was a university collaboration with Innovobot Labs.',
-    categories: ['UX Research', 'Prototyping', 'Haptic Design'],
-    problem: "The ongoing shift towards digital sedentary lifestyles has increased stress in daily life and calls for innovative approaches to improve mental and physical health.",
-    research: "Designed a web application that allows haptic designers to create customized haptic patterns for respiration-based relaxation practices. Used ChatGPT API call to generate initial MIDI compositions.",
-    solution: "Developed a React-based web application capable of generating customized haptic patterns to induce relaxation. Converted MIDI compositions into waveforms using a browser-based synthesizer, Tone.js, and played through various voice coil actuators.",
-    outcome: "Initial findings suggest that generative AI supports designers in creating personalized audio-haptic experiences, potentially reducing stress and improving relaxation.",
-    images: [HapticsBG, heroBG],
-    tools: ['React', 'ChatGPT API', 'Tone.js']
-  },
-  {
-    id: 3,
-    title: 'AMIAI',
-    description: 'AI-driven music creation and interaction systems...',
-    media: { type: 'image', src: AMIAIBG },
-    details: 'A collaborative project focusing on musical expression.',
-    categories: ['Prototyping', 'Graphic Design'], // Changed from ['Prototyping', 'Audio Design']
-    problem: "How to empower AI-driven collaboration in music?",
-    research: "Studied current music interaction interfaces and user behaviors.",
-    solution: "Developed an interactive UI with real-time AI feedback.",
-    outcome: "Users were delighted with the creative freedom offered.",
-    images: [AMIAIBG],
-    tools: ['Figma', 'Adobe Potoshop', 'Adobe Illustrator']
-  },
-  {
-    id: 4,
-    title: 'Hackathon',
-    description: 'AR-based navigation system for visually impaired users...',
-    media: { type: 'image', src: HackathonBG },
-    details: 'A rapid prototype developed over a 48-hour hackathon.',
-    categories: ['UX Research', 'Prototyping'],
-    problem: "How to create an accessible AR navigation experience?",
-    research: "Quick iterative testing with target users.",
-    solution: "Designed a minimalistic interface paired with AR cues.",
-    outcome: "Prototype validated with positive feedback.",
-    images: [HackathonBG],
-    tools: ['Adobe XD', 'React']
-  },
-  {
-    id: 5,
-    title: 'Bachelor Thesis',
-    description: 'VR environments in educational settings...',
-    media: { type: 'image', src: BachelorBG },
-    details: 'User-centered design for more effective learning in VR.',
-    categories: ['UX Research'],
-    problem: "How can VR be used to improve educational outcomes?",
-    research: "Evaluated existing VR education models.",
-    solution: "Developed a tailored interface based on learning theory.",
-    outcome: "Showed promising improvements in student engagement.",
-    images: [BachelorBG],
-    tools: ['Figma', 'Sketch', 'Zoom', 'Mobile Screenrecording', 'Google Forms']
-  },
-  {
-    id: 6,
-    title: 'ADHDeer',
-    description: 'ADHD tracker in educational settings...',
-    media: { type: 'image', src: ADHDeer },
-    details: 'Creating a tracker for ADHD patients.',
-    categories: ['Haptic Design', 'Prototyping'],
-    problem: "How to engage ADHD patients into educational self-tracking experiences?",
-    research: "Gathered input from educators and students.",
-    solution: "Built an mobile prototype with engaging interactive elements.",
-    outcome: "Positive pilot feedback; plans for further development.",
-    images: [ADHDeer],
-    tools: ['Figma', 'Miro']
-  },
-];
+// Flatten all categories into a single array with their group and color
+const categorizedFilters = Object.entries(categoryGroups).map(([group, { categories, color }]) => ({
+  group,
+  categories,
+  color,
+}));
 
-// FilterBar Component - allows selection of multiple categories.
-const FilterBar = ({ allCategories, selectedCategories, setSelectedCategories }) => {
-  const handleToggle = (category) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(cat => cat !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
+// FilterBar Component - allows selection of one category group at a time
+const FilterBar = ({ selectedGroup, setSelectedGroup }) => {
+  const theme = useTheme();
+
+  const handleSelection = (event, newGroup) => {
+    setSelectedGroup(newGroup);
   };
 
   return (
-    <div className="filter-bar">
-      {allCategories.map((cat) => (
-        <FormControlLabel
-          key={cat}
-          control={
-            <Checkbox
-              checked={selectedCategories.includes(cat)}
-              onChange={() => handleToggle(cat)}
-              color="primary"
-            />
-          }
-          label={cat}
-        />
-      ))}
-      {selectedCategories.length > 0 && (
-        <Button onClick={() => setSelectedCategories([])} color="secondary">
-          Clear Filters
-        </Button>
-      )}
-    </div>
+    <Box className="filter-bar" sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+      <ToggleButtonGroup
+        value={selectedGroup}
+        exclusive
+        onChange={handleSelection}
+        sx={{ gap: 2 }}
+      >
+        {categorizedFilters.map(({ group, color }) => (
+          <ToggleButton
+            key={group}
+            value={group}
+            sx={{
+              color: theme.palette[color],
+              borderColor: theme.palette[color],
+              '&.Mui-selected': {
+                backgroundColor: theme.palette[color],
+                color: theme.palette.common.white,
+              },
+            }}
+          >
+            {group}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+    </Box>
   );
 };
 
-// ProjectCard Component - displays project thumbnail and basic info.
+// ProjectCard Component - displays project thumbnail and basic info
 const ProjectCard = ({ project, onClick }) => {
   return (
     <motion.div
@@ -177,6 +100,7 @@ const ProjectCard = ({ project, onClick }) => {
 const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClose }) => {
   const [currentImg, setCurrentImg] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const theme = useTheme(); // Access theme colors
 
   if (!project) return null;
 
@@ -216,9 +140,9 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
         left: 0, 
         width: '100%', 
         height: '100%', 
-        backgroundColor:'rgba(0,0,0,0.7)', 
         zIndex: 1000,
-        overflow: 'auto' // Enable scroll on the backdrop
+        overflow: 'auto', // Enable scroll on the backdrop
+        backgroundColor: theme.palette.background.default // Set backdrop color from theme
       }}
     >
       <motion.div 
@@ -228,9 +152,8 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
         style={{ 
           position: 'relative', 
           margin: '5% auto', 
-          background: '#fff', 
           padding: '1rem', 
-          maxWidth: '800px', 
+          maxWidth: '1300px', 
           borderRadius: '12px',
           maxHeight: '90vh', // Limit the height of the modal content
           overflowY: 'auto' // Enable vertical scrolling within the modal
@@ -309,73 +232,83 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
 
 // Main Work Component
 function Work() {
-  // Multi-select filtering using an array of selected categories (OR logic)
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  // currentProjectIndex is used for modal navigation
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(null);
 
-  // Compute unique categories from project list
-  const allCategories = Array.from(new Set(projects.flatMap((p) => p.categories)));
-
-  // Filter projects: show a project if no filter is active or if at least one category matches.
-  const filteredProjects = projects.filter(project =>
-    selectedCategories.length === 0 || 
-    selectedCategories.some(cat => project.categories.includes(cat))
+  // Filter projects: show a project if no filter is active or if it matches the selected group
+  const filteredProjects = workData.filter((project) =>
+    !selectedGroup ||
+    categorizedFilters
+      .find((filter) => filter.group === selectedGroup)
+      .categories.some((cat) => project.categories.includes(cat))
   );
 
   // Get current project data if any is selected
-  const currentProject = currentProjectIndex !== null ? projects[currentProjectIndex] : null;
+  const currentProject = currentProjectIndex !== null ? workData[currentProjectIndex] : null;
 
   return (
-    <motion.section
-      id="work"
-      className="work-container"
-      initial={{ opacity: 0, y: 100 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 }}
-      viewport={{ once: true }}
-    >
-      <Container>
-        <Typography variant="h3" align="center" gutterBottom color="primary">
-          My Work
+    <ErrorBoundary>
+      <Box
+        className="work-section"
+        sx={{
+          minHeight: '100vh',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          p: { xs: 2, md: 4 },
+          boxSizing: 'border-box',
+        }}
+      >
+        <Typography variant="h2" component="h1">
+          Work Section
         </Typography>
-
-        {/* --- FilterBar Component --- */}
-        <FilterBar 
-          allCategories={allCategories} 
-          selectedCategories={selectedCategories} 
-          setSelectedCategories={setSelectedCategories} 
-        />
-
-        {/* --- Project Gallery --- */}
-        <Grid container spacing={4} justifyContent="center">
-          {filteredProjects.map(project => (
-            <Grid item key={project.id} xs={12} sm={6} md={4}>
-              <ProjectCard 
-                project={project} 
-                onClick={(proj) => {
-                  // Find index among all projects for modal navigation.
-                  const idx = projects.findIndex(p => p.id === proj.id);
-                  setCurrentProjectIndex(idx);
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        {/* --- Project Modal --- */}
-        <AnimatePresence>
-          {currentProject !== null && (
-            <ProjectModal 
-              project={currentProject} 
-              projects={projects} 
-              currentIndex={currentProjectIndex} 
-              setCurrentIndex={setCurrentProjectIndex} 
-              onClose={() => setCurrentProjectIndex(null)} 
+        <Box sx={{ width: '100%', mt: 4 }}>
+          <motion.section
+            id="work"
+            className="work-container"
+            initial={{ opacity: 0, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true }}
+          >
+            {/* --- FilterBar Component --- */}
+            <FilterBar
+              selectedGroup={selectedGroup}
+              setSelectedGroup={setSelectedGroup}
             />
-          )}
-        </AnimatePresence>
-      </Container>
-    </motion.section>
+
+            {/* --- Project Gallery --- */}
+            <Grid container spacing={4} justifyContent="center">
+              {filteredProjects.map((project) => (
+                <Grid item key={project.id} xs={12} sm={6} md={4}>
+                  <ProjectCard
+                    project={project}
+                    onClick={(proj) => {
+                      const idx = workData.findIndex((p) => p.id === proj.id);
+                      setCurrentProjectIndex(idx);
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {/* --- Project Modal --- */}
+            <AnimatePresence>
+              {currentProject !== null && (
+                <ProjectModal 
+                  project={currentProject} 
+                  projects={workData} 
+                  currentIndex={currentProjectIndex} 
+                  setCurrentIndex={setCurrentProjectIndex} 
+                  onClose={() => setCurrentProjectIndex(null)} 
+                />
+              )}
+            </AnimatePresence>
+          </motion.section>
+        </Box>
+      </Box>
+    </ErrorBoundary>
   );
 }
 

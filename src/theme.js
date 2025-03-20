@@ -1,24 +1,41 @@
+// Summary: This file sets the overall Material-UI theme values—including palette, typography, 
+// shape, and component-specific overrides—to maintain a consistent design across pages.
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2', // primary color
-      contrastText: '#ffffff',
+      main: '#0B5868',         // dark blue (primary)
+      contrastText: '#FFE44B', // bright yellow for high contrast
     },
     secondary: {
-      main: '#dc004e', // secondary color
-      contrastText: '#ffffff',
+      main: '#A1E3D8',         // light blue (secondary)
+      contrastText: '#05262D', // dark tone for text contrast
     },
     background: {
-      default: '#ffffff', // global background color
+      default: '#F6F09C',      // light yellow for global background
     },
     text: {
-      primary: '#333333',
+      primary: '#05262D',      // dark tone for primary text
+    },
+    // Additional custom theme properties:
+    accent: {
+      main: '#968445',         // earthy accent color
+    },
+    bubbles: {
+      background: '#F6F09C',   // use the light background tone
+      border: '#968445',       // accent for borders
+    },
+    card: {
+      background: '#ffffff',   // maintain white for card backgrounds
+      shadow: 'rgba(0, 0, 0, 0.2)',
+    },
+    filter: {
+      active: '#0B5868',       // use primary as active state
+      inactive: '#999999',
     },
   },
   shape: {
-    // use a larger borderRadius across components for rounded corners
     borderRadius: 12,
   },
   typography: {
@@ -35,13 +52,17 @@ const theme = createTheme({
     h3: {
       fontSize: '2rem',
       fontWeight: 700,
-      color: '#1976d2',
+      color: '#0B5868',
     },
+    h4: {
+      fontSize: '1.6rem',
+      fontWeight: 500,
+    },  
     body1: {
       fontSize: '1rem',
       lineHeight: 1.5,
     },
-    // Add additional typography variants as needed.
+    // Additional typography variants can be added here.
   },
   spacing: 8, // base spacing unit (8px)
   components: {
@@ -49,12 +70,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none', // disable uppercase
-          borderRadius: 12, // rounded corners, use same value as shape.borderRadius
+          textAlign: 'left',
+          borderRadius: 12,
           padding: '10px 20px',
-          boxShadow: 'none', // flat design – remove default box shadow
+          boxShadow: 'none',
           transition: 'background-color 0.3s ease, transform 0.2s ease',
           '&:hover': {
-            boxShadow: 'none', // flat hover state
+            boxShadow: 'none',
           },
         },
       },
@@ -76,13 +98,24 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         rounded: {
-          borderRadius: 12, // ensure Paper components use the same rounded corners
-          boxShadow: 'none', // remove any default shadow for a flat look
+          borderRadius: 12,
+          boxShadow: 'none',
         },
       },
     },
-    // Continue for other components if needed...
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          backgroundColor: 'secondary.light',
+          minHeight: '400px' // Norm all cards with the same height for a continuous stripe look
+        },
+      },
+    },
+    // Other components can be overridden here…
   },
 });
+
+// Alternatively, remove this block if it's not needed
 
 export default theme;

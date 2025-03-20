@@ -1,5 +1,4 @@
 .hero-section {
-  background-color: #ffffff;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -10,7 +9,7 @@
 
 .hero-content {
   position: absolute;
-  bottom: 10%;
+  bottom: 30%;
   left: 5%;
   z-index: 10;
   text-align: left;
@@ -20,7 +19,6 @@
 
 .hero-heading {
   font-weight: 700;
-  color: #1976d2; /* Using the primary Material UI color */
   margin-bottom: 1rem;
 }
 

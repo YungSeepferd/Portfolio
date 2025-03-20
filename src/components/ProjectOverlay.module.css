@@ -1,9 +1,56 @@
 .overlayContent {
-    text-align: center;
-  }
-  
-  .overlayPlaceholder {
-    margin: 2rem 0;
-    padding: 1rem;
-    border-top: 1px solid #ccc;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.title {
+  color: var(--text-primary); /* Use theme text color */
+}
+
+.projectImage {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.details {
+  color: var(--text-primary); /* Use theme text color */
+}
+
+.overlayPlaceholder {
+  margin: 2rem 0;
+  padding: 1rem;
+  border-top: 1px solid var(--bubbles-border); /* Use theme border color */
+}
+
+.sectionTitle {
+  color: var(--text-primary); /* Use theme text color */
+}
+
+.sectionContent {
+  color: var(--text-primary); /* Use theme text color */
+}
+
+.sectionList {
+  color: var(--text-primary); /* Use theme text color */
+}
+
+.canvasContainer {
+  width: 100%;
+  height: 200px;
+  margin: 2rem 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}

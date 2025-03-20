@@ -13,7 +13,12 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link as ScrollLink } from 'react-scroll';
+import EmailIcon from '@mui/icons-material/Email';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import './Header.css';
+
+const mailtoLink = "mailto:goeke.vincent@gmail.com?subject=Contact%20from%20Portfolio";
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -61,13 +66,23 @@ function Header() {
     <>
       <AppBar position="fixed" color="inherit" className="header">
         <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, color: 'primary.main' }}
-          >
-            Vincent Göke
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h6" component="div" sx={{ color: 'primary.main' }}>
+              Vincent Göke
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start', ml: 2 }}>
+              <IconButton color="inherit" aria-label="Email" href={mailtoLink}>
+                <EmailIcon sx={{ fontSize: 32 }} />
+              </IconButton>
+              <IconButton color="inherit" aria-label="LinkedIn" href="https://www.linkedin.com/in/vincent-g-193124194/">
+                <LinkedInIcon sx={{ fontSize: 32 }} />
+              </IconButton>
+              <IconButton color="inherit" aria-label="GitHub" href="https://github.com/YungSeepferd">
+                <GitHubIcon sx={{ fontSize: 32 }} />
+              </IconButton>
+            </Box>
+          </Box>
+          <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navLinks.map((item) => (
               <Button key={item.label} color="inherit">

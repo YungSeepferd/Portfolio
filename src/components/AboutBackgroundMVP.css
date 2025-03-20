@@ -1,0 +1,40 @@
+.parallax-container {
+  display: flex;
+  flex-direction: row;
+  width: calc(100vw * 4); /* 4 sections side by side */
+  transition: transform 0.3s ease-out;
+  z-index: -1;
+}
+
+.parallax-section {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the bubble horizontally */
+  overflow: hidden;
+}
+
+.parallax-wall {
+    padding: 2rem;               /* Increased padding for a larger bubble */
+    color: var(--mdc-theme-on-primary) !important;
+    border-radius: 8px !important; /* Use our border radius */
+    max-width: 80%;              /* Increased bubble size */
+    text-align: left;            /* Keep text left-oriented */
+    animation: fadeSlideIn 1s ease-out forwards;
+    opacity: 0;
+    box-shadow: none !important; /* Remove default shadow */
+  }
+
+/* Keyframes for fade+slide (from left) */
+@keyframes fadeSlideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

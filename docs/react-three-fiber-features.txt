@@ -1,0 +1,24 @@
+─────────────────────────────────────────
+• Modern Suspense Support & Lazy Loading:
+  – Use React Suspense together with “useLoader” to load textures, models, and fonts asynchronously.
+  – Simplifies resource handling and enables smooth loading indicators.
+
+• The <Html> Component (from Drei):
+  – Easily embed conventional HTML/CSS content within your 3D scene.
+  – Automatically handles occlusion and positioning relative to 3D objects.
+  – Allows for interactive text, images, and buttons that remain in sync with 3D objects.
+
+• Enhanced Hooks:
+  – useFrame – Provides a straightforward way to create animations and update properties on every frame.
+  – useThree – Exposes the Three.js context (camera, scene, renderer) for flexible scene adjustments.
+  – useLoader – Simplifies loading of textures, models, and fonts with built-in caching.
+
+• Declarative Event Handling:
+  – React-three-fiber supports pointer events directly on 3D objects.
+  – You can attach onClick, onPointerOver, etc., to meshes, making interactivity more declarative.
+
+• Component Portals:
+  – Create portals to manage layers of content. You can render UI elements directly onto objects or in separate layers.
+  
+─────────────────────────────────────────
+These features let you manage 2D overlays (text, images, etc.) that move with your 3D objects and integrate seamlessly with your established React UI.

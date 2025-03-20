@@ -100,12 +100,23 @@ const InteractiveShapes = () => {
   );
 };
 
+// Updated hero content: Change todo punchline and update tags to what you are looking for right now.
+const heroContent = {
+  punchline: "Design experiences",
+  tags: [
+    "Full Time",
+    "UX Design",
+    "Research Engineer",
+    "Start June 2025"
+  ]
+};
+
 // --- TagList Component ---
 const TagList = () => (
   <Box 
-    sx={{ display: 'flex', gap: '1rem', mt: 1, justifyContent: 'center', flexWrap: 'wrap' }}
+    sx={{ display: 'flex', gap: '1rem', mt: 1, justifyContent: 'flex-start', flexWrap: 'wrap' }}  // changed justifyContent from 'center' to 'flex-start'
   >
-    {['Human-Computer Interaction', 'UX Design', 'Audio Design', 'Haptic Design'].map((tag, idx) => (
+    {heroContent.tags.map((tag, idx) => (
       <Fragment key={idx}>
         {idx === 2 && <br style={{ flexBasis: '100%' }} />}
         <Box
@@ -143,9 +154,11 @@ const Hero = () => (
     {/* Hero Content Overlay */}
     <div className="hero-content">
       <Typography variant="h2" component="h1" className="hero-heading">
-        Todo
+        {heroContent.punchline}
       </Typography>
-      <TagList />
+      <div className="hero-tags" style={{ textAlign: 'left' }}>
+        <TagList />
+      </div>
     </div>
   </section>
 );
