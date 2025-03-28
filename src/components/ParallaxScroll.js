@@ -1,180 +1,190 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Typography } from '@mui/material';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Tabs, Tab, Box, IconButton, Fade, Typography, Container, useTheme } from '@mui/material';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { wallsData } from './Walls';
-import musicMoritz from '../assets/css/images/MusicMoritz.jpg';
-import skillsImg from '../assets/css/images/HackathonBG.jpg';
-import motivationsImg from '../assets/css/images/Salzburg.jpg';
-import visionImg from '../assets/css/images/VRBrille.JPG';
+import WallCard from './WallCard';
 import './ParallaxScroll.css';
 
-// Filtering out "Vision" slide and merging its content with "Motivations"
-const useFilteredWalls = () => {
-	return useMemo(() => {
-		const filtered = wallsData.filter(slide => slide.title !== 'Vision');
-		const visionSlide = wallsData.find(slide => slide.title === 'Vision');
-		if (visionSlide) {
-			const idx = filtered.findIndex(slide => slide.title === 'Motivations');
-			if (idx !== -1) {
-				filtered[idx] = {
-					...filtered[idx],
-					// Combine content of "Motivations" and "Vision"
-					content: filtered[idx].content + " " + visionSlide.content
-				};
-			}
-		}
-		return filtered;
-	}, []);
-};
+const Slideshow = ({ pictures }) => {
+  const defaultPics = pictures && pictures.length > 0 ? pictures : ['https://via.placeholder.com/300'];
+  const [current, setCurrent] = useState(0);
 
-const smoothScrollTo = (target, duration) => {
-	// Linear easing function for smooth snapping
-	const start = window.pageYOffset;
-	const change = target - start;
-	const startTime = performance.now();
-	const linearEase = t => t;
-	const animateScroll = currentTime => {
-		const elapsed = currentTime - startTime;
-		const t = Math.min(elapsed / duration, 1);
-		window.scrollTo(0, start + change * linearEase(t));
-		if (t < 1) {
-			requestAnimationFrame(animateScroll);
-		}
-	};
-	requestAnimationFrame(animateScroll);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrent((prev) => (prev + 1) % defaultPics.length);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [current, defaultPics.length]);
+
+  return (
+    <Box className="slideshow-container">
+      <Fade in timeout={800}>
+        <Box component="div"> {/* Wrap img in a div to avoid nesting issues */}
+          <img
+            key={defaultPics[current]}
+            src={defaultPics[current]}
+            alt="Slideshow"
+            className="slideshow-image"
+          />
+        </Box>
+      </Fade>
+      <Box className="dots">
+        {defaultPics.map((_, i) => (
+          <Box key={i} className={`dot ${i === current ? 'active' : ''}`} />
+        ))}
+      </Box>
+    </Box>
+  );
 };
 
 const ParallaxScroll = () => {
-	// Use filtered walls data (without Vision)
-	const filteredWalls = useFilteredWalls();
-	const numSlides = filteredWalls.length;
+  const [tabIndex, setTabIndex] = useState(0);
+  const theme = useTheme();
 
-	const [offset, setOffset] = useState(0);
-	const [currentSlide, setCurrentSlide] = useState(0);
-	const [isLocked, setIsLocked] = useState(false);
-	const lastScrollRef = useRef(0);
-	const lastImpulseRef = useRef(0);
-	const impulseThreshold = 10;      
+  const handleChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
 
-	const vh = window.innerHeight;
-	const vw = window.innerWidth;
-	const pauseThreshold = 2.7 * vh;
-	// Change multiplier from 1 to 0.7 to minimize scrolling time before footercontact appears.
-	const availableVerticalScroll = ((numSlides * vh) - pauseThreshold) * 7;
-	const maxOffset = pauseThreshold + availableVerticalScroll;
-	const horizontalScrollFactor = 1;
-	const perSlide = availableVerticalScroll / (numSlides - 1);
-  
-	// Continuously computed slide before snapping
-	const dynamicSlide = offset < pauseThreshold ? 0 : Math.min((offset - pauseThreshold) / perSlide, numSlides - 1);
-	const finalSlide = isLocked ? currentSlide : dynamicSlide;
-  
-	useEffect(() => {
-		let snapTimeout;
-		const handleScroll = () => {
-			const scrollY = window.pageYOffset;
-			// Minimal change protection
-			if (Math.abs(scrollY - lastScrollRef.current) < 5) return;
-      
-			// Clamp to pauseThreshold at the top
-			if (scrollY < pauseThreshold) {
-				setOffset(pauseThreshold);
-				setCurrentSlide(0);
-				lastScrollRef.current = pauseThreshold;
-				lastImpulseRef.current = pauseThreshold;
-				return;
-			}
-			if (scrollY > maxOffset) {
-				setOffset(scrollY);
-				return;
-			}
-			setOffset(scrollY);
-      
-			// Fallback: debounce snapping if user stops scrolling
-			if (snapTimeout) clearTimeout(snapTimeout);
-			snapTimeout = setTimeout(() => {
-				const effectiveOffset = Math.max(scrollY, pauseThreshold);
-				const rawSlide = (effectiveOffset - pauseThreshold) / perSlide;
-				 // Increase threshold to 0.35 for a smoother transition between slides.
-				let targetSlide = currentSlide;
-				if (rawSlide - currentSlide > 0.20) {
-					targetSlide = Math.min(numSlides - 1, currentSlide + 1);
-				} else if (currentSlide - rawSlide > 0.20) {
-					targetSlide = Math.max(0, currentSlide - 1);
-				}
-				const targetOffset = pauseThreshold + targetSlide * perSlide;
-				setIsLocked(true);
-				setCurrentSlide(targetSlide);
-				// Reduce snapping duration from 50ms to 30ms.
-				smoothScrollTo(targetOffset, 30);
-				lastScrollRef.current = targetOffset;
-				lastImpulseRef.current = targetOffset;
-				// Reduced lock duration to 30ms.
-				setTimeout(() => setIsLocked(false), 30);
-			}, 20); // reduced debounce delay from 50ms to 20ms
-      
-			lastScrollRef.current = scrollY;
-		};
-      
-		window.addEventListener('scroll', handleScroll, { passive: true });
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-			if (snapTimeout) clearTimeout(snapTimeout);
-		};
-	}, [pauseThreshold, perSlide, numSlides, maxOffset, currentSlide]);
-  
-	return (
-		<motion.div
-			className="parallax-scroll-container"
-			animate={{ x: -finalSlide * vw * horizontalScrollFactor }}
-			// Increase container transition duration slightly to 0.03 for smoother tweening.
-			transition={{ type: "tween", duration: 0.03, ease: "linear" }}
-		>
-			{filteredWalls.map((slide, index) => (
-				<motion.div
-					key={index}
-					className="parallax-slide"
-					initial={{ opacity: 0, scale: 0.8 }}
-					animate={
-						currentSlide === index
-							? { opacity: 1, scale: isLocked ? 1.02 : 1 }
-							: { opacity: 0.5, scale: 0.9 }
-					}
-					transition={{ duration: 0.2, ease: "easeInOut" }}
-				>
-					<div className="slide-left">
-						{ slide.title === "Motivations" ? (
-							<>
-								<img className="frame-image" src={motivationsImg} alt="Motivations" />
-								<img className="frame-image" src={visionImg} alt="Vision" />
-							</>
-						) : (
-							<img className="frame-image" src={slide.title === 'Interests' ? musicMoritz : slide.title === 'Skills' ? skillsImg : getImageForSlide(slide.title)} alt={slide.title} />
-						)}
-					</div>
-					<div className="slide-right">
-						<Typography variant="h2">{slide.title}</Typography>
-						<div className="section">
-							<Typography variant="h4">Overview</Typography>
-							<div>{slide.content}</div>
-						</div>
-						<div className="section">
-							<Typography variant="h4">Details</Typography>
-							<div>{slide.content ? 'Additional details about ' + slide.title : 'No details available.'}</div>
-						</div>
-					</div>
-				</motion.div>
-			))}
-		</motion.div>
-	);
-};
+  const handlePrev = () => {
+    setTabIndex((prev) => (prev === 0 ? wallsData.length - 1 : prev - 1));
+  };
 
-const getImageForSlide = (title) => {
-	// For Motivations, images are handled separately so fallback to relevant images
-	if (title === 'Interests') return musicMoritz;
-	if (title === 'Skills') return skillsImg;
-	if (title === 'Motivations') return motivationsImg;
-	return '';
+  const handleNext = () => {
+    setTabIndex((prev) => (prev === wallsData.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <Box
+      className="parallax-section"
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        p: { xs: 2, md: 4 },
+        boxSizing: 'border-box',
+        mb: 6, // Add bottom margin
+      }}
+    >
+      <Container maxWidth="lg">
+        <Typography variant="h2" component="h2" sx={{ mb: 4, textAlign: 'center' }}>
+          About Me
+        </Typography>
+        
+        <Box className="tabs-container" sx={{ width: '100%', overflow: 'hidden' }}>
+          <Tabs 
+            value={tabIndex} 
+            onChange={handleChange} 
+            variant="scrollable" 
+            scrollButtons="auto"
+            sx={{ 
+              mb: 2,
+              '& .MuiTabs-flexContainer': {
+                justifyContent: { xs: 'flex-start', md: 'center' },
+              },
+              '& .MuiTab-root': {
+                color: theme.palette.text.secondary,
+                '&.Mui-selected': {
+                  color: theme.palette.primary.main,
+                },
+                '&:hover': {
+                  color: theme.palette.secondary.main,
+                }
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: theme.palette.primary.main, 
+              }
+            }}
+          >
+            {wallsData.map((wall, index) => (
+              <Tab key={index} label={wall.title} />
+            ))}
+          </Tabs>
+          
+          <Box className="tab-content-container" sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton 
+              onClick={handlePrev} 
+              aria-label="previous"
+              sx={{ 
+                display: { xs: 'none', sm: 'flex' },
+                color: theme.palette.text.primary,
+              }}
+            >
+              <ArrowBackIosNewIcon />
+            </IconButton>
+            
+            <Fade in timeout={{ enter: 500, exit: 500 }} key={tabIndex}>
+              <Box className="tab-content" sx={{ 
+                width: '100%', 
+                mx: { xs: 0, sm: 2 },
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: theme.shape.borderRadius,
+              }}>
+                <WallCard variant="noBorder" sx={{ width: '100%' }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexDirection: { xs: 'column', md: 'row' },
+                    gap: 3,
+                  }}>
+                    <Box sx={{ 
+                      flex: { xs: '1', md: '0 0 300px' }, 
+                      mb: { xs: 3, md: 0 },
+                    }}>
+                      <Slideshow pictures={wallsData[tabIndex].pictures} />
+                    </Box>
+                    <Box sx={{ 
+                      flex: 1,
+                      color: theme.palette.text.primary,
+                    }}>
+                      <Typography variant="h4" component="div" sx={{ mb: 2 }}>
+                        {wallsData[tabIndex].title}
+                      </Typography>
+                      <Box component="div" sx={{
+                        '& .MuiTypography-root': { mb: 2 },
+                        '& a': { color: theme.palette.primary.main },
+                      }}>
+                        {wallsData[tabIndex].content}
+                      </Box>
+                    </Box>
+                  </Box>
+                </WallCard>
+              </Box>
+            </Fade>
+            
+            <IconButton 
+              onClick={handleNext} 
+              aria-label="next"
+              sx={{ 
+                display: { xs: 'none', sm: 'flex' },
+                color: theme.palette.text.primary,
+              }}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </Box>
+          
+          {/* Mobile navigation buttons */}
+          <Box 
+            sx={{ 
+              display: { xs: 'flex', sm: 'none' }, 
+              justifyContent: 'center',
+              gap: 2,
+              mt: 2
+            }}
+          >
+            <IconButton onClick={handlePrev} color="primary">
+              <ArrowBackIosNewIcon />
+            </IconButton>
+            <IconButton onClick={handleNext} color="primary">
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
 };
 
 export default ParallaxScroll;

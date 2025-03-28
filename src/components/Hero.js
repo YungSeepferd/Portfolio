@@ -1,18 +1,18 @@
-import React, { Fragment, useMemo, useRef, useState, Suspense } from 'react';
-import { Canvas, useFrame, extend } from '@react-three/fiber';
+import React, { useRef, useState, Suspense } from 'react';
+import { Box, Container, Typography, Chip, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
-import { Typography, Box } from '@mui/material';
 import * as THREE from 'three';
 import './Hero.css';
 
 // --- InteractiveShape Component ---
-// We wrap each shape in React.memo to prevent unnecessary re-renders.
 const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, setShapeIndex }) => {
   const meshRef = useRef();
   const [hovered, setHovered] = useState(false);
 
-  // Predefine our geometries as an array of JSX elements.
-  const geometries = useMemo(
+  // Predefine our geometries
+  const geometries = React.useMemo(
     () => [
       <sphereGeometry args={[0.2, 16, 16]} />,
       <boxGeometry args={[0.3, 0.3, 0.3]} />,
@@ -23,7 +23,6 @@ const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, se
   );
 
   useFrame((state) => {
-    // Simplified interactive logic to update position, rotation and scale.
     if (meshRef.current) {
       const { mouse, clock } = state;
       const target = new THREE.Vector3(mouse.x * 5, mouse.y * 5, 0);
@@ -73,7 +72,7 @@ const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, se
 // --- InteractiveShapes Component ---
 const InteractiveShapes = () => {
   const [shapeIndex, setShapeIndex] = useState(0);
-  const velocities = useMemo(() => (
+  const velocities = React.useMemo(() => (
     Array.from({ length: 30 }, () => new THREE.Vector3(
       THREE.MathUtils.randFloat(-0.02, 0.02),
       THREE.MathUtils.randFloat(-0.02, 0.02),
@@ -100,67 +99,205 @@ const InteractiveShapes = () => {
   );
 };
 
-// Updated hero content: Change todo punchline and update tags to what you are looking for right now.
-const heroContent = {
-  punchline: "Design experiences",
-  tags: [
-    "Full Time",
-    "UX Design",
-    "Research Engineer",
-    "Start June 2025"
-  ]
-};
+const Hero = () => {
+  const theme = useTheme();
+  
+  // Define skills/tags and split them into two rows
+  const skillsRow1 = ['UX Research', 'Interaction Design', 'Prototyping', 'UI Design'];
+  const skillsRow2 = ['Haptic Design', 'Sound Design', 'AI Integration', 'Frontend Development'];
 
-// --- TagList Component ---
-const TagList = () => (
-  <Box 
-    sx={{ display: 'flex', gap: '1rem', mt: 1, justifyContent: 'flex-start', flexWrap: 'wrap' }}  // changed justifyContent from 'center' to 'flex-start'
-  >
-    {heroContent.tags.map((tag, idx) => (
-      <Fragment key={idx}>
-        {idx === 2 && <br style={{ flexBasis: '100%' }} />}
-        <Box
-          component="span"
-          sx={{
-            backgroundColor: 'rgba(66,133,244,0.2)',
-            padding: '5px 10px',
-            borderRadius: '15px',
-            fontSize: '0.9rem',
-            cursor: 'pointer',
+  return (
+    <Box 
+      id="hero" 
+      component="section"
+      sx={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: theme.palette.background.default,
+        py: { xs: 8, md: 12 },
+        overflow: 'hidden',
+        width: '100%',
+      }}
+    >
+      {/* 3D Canvas Background */}
+      <Canvas
+        camera={{ position: [0, 0, 10] }}
+        style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%',
+          zIndex: 0,
+          pointerEvents: 'auto' // Ensure canvas receives pointer events
+        }}
+      >
+        <ambientLight intensity={0.7} />
+        <pointLight position={[10, 10, 10]} />
+        <Suspense fallback={<Html center>Loading...</Html>}>
+          <InteractiveShapes />
+        </Suspense>
+        <OrbitControls enableZoom={false} />
+      </Canvas>
+      
+      {/* Content Container with positioning for bottom left placement */}
+      <Container 
+        maxWidth={false} // Changed to false to allow full width positioning
+        sx={{ 
+          position: 'relative',
+          zIndex: 1,
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'flex-end', // Align to bottom
+          justifyContent: 'flex-start', // Align to left
+          p: 0, // Remove default padding
+          pointerEvents: 'none', // Allow events to pass through to canvas
+        }}
+      >
+        {/* Content box with left alignment */}
+        <Box 
+          sx={{ 
+            textAlign: 'left',
+            maxWidth: '650px',
+            mb: theme.heroBottomMargin || 15,
+            ml: theme.heroLeftMargin || 8,
+            userSelect: 'none',
+            pointerEvents: 'none',
           }}
         >
-          {tag}
-        </Box>
-      </Fragment>
-    ))}
-  </Box>
-);
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Typography 
+              variant="h1" 
+              component="h1"
+              sx={{ 
+                mb: 2, // Reduced from 4 to 2
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
+                fontWeight: 700,
+                color: theme.palette.text.primary,
+              }}
+            >
+              Vincent Göke
+            </Typography>
+          </motion.div>
 
-// --- Hero Component ---
-const Hero = () => (
-  <section id="hero" className="hero-section">
-    {/* The Canvas uses react-three-fiber to render interactive shapes */}
-    <Canvas
-      camera={{ position: [0, 0, 10] }}
-      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-    >
-      <ambientLight intensity={0.7} />
-      <pointLight position={[10, 10, 10]} />
-      <Suspense fallback={<Html center>Loading...</Html>}>
-        <InteractiveShapes />
-      </Suspense>
-      <OrbitControls enableZoom={false} />
-    </Canvas>
-    {/* Hero Content Overlay */}
-    <div className="hero-content">
-      <Typography variant="h2" component="h1" className="hero-heading">
-        {heroContent.punchline}
-      </Typography>
-      <div className="hero-tags" style={{ textAlign: 'left' }}>
-        <TagList />
-      </div>
-    </div>
-  </section>
-);
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <Typography 
+              variant="h4" 
+              component="h2"
+              sx={{ 
+                mb: 2, // Reduced from 4 to 2
+                color: theme.palette.primary.main,
+                fontWeight: 500,
+              }}
+            >
+              Creative Technologist & Interaction Designer
+            </Typography>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <Typography 
+              variant="body1"
+              sx={{ 
+                mb: 3, // Reduced from 5 to 3
+                fontSize: '1.1rem',
+                lineHeight: 1.7,
+                color: theme.palette.text.secondary,
+              }}
+            >
+              Fulltime | Available from June 2025 | Germany, Austria, Remote
+            </Typography>
+          </motion.div>
+
+          {/* First row of skills - adjusted for left alignment */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap',
+                justifyContent: 'flex-start',
+                gap: 1, // Reduced from 1.5 to 1
+                mb: 1, // Reduced from 2 to 1
+              }}
+            >
+              {skillsRow1.map((skill, index) => (
+                <Chip
+                  key={index}
+                  label={skill}
+                  sx={{
+                    bgcolor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    borderColor: theme.palette.divider,
+                    px: 1,
+                    fontSize: theme.typography.chipText?.fontSize || '0.9rem', // Use theme value or default
+                    '&:hover': {
+                      bgcolor: theme.palette.background.paper,
+                      color: theme.palette.secondary.main,
+                      borderColor: theme.palette.secondary.main,
+                    }
+                  }}
+                />
+              ))}
+            </Box>
+          </motion.div>
+
+          {/* Second row of skills */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap',
+                justifyContent: 'flex-start',
+                gap: 1, // Reduced from 1.5 to 1
+              }}
+            >
+              {skillsRow2.map((skill, index) => (
+                <Chip
+                  key={index}
+                  label={skill}
+                  sx={{
+                    bgcolor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    borderColor: theme.palette.divider,
+                    px: 1,
+                    fontSize: theme.typography.chipText?.fontSize || '0.9rem', // Use theme value or default
+                    '&:hover': {
+                      bgcolor: theme.palette.background.paper,
+                      color: theme.palette.secondary.main,
+                      borderColor: theme.palette.secondary.main,
+                    }
+                  }}
+                />
+              ))}
+            </Box>
+          </motion.div>
+        </Box>
+      </Container>
+    </Box>
+  );
+};
 
 export default Hero;

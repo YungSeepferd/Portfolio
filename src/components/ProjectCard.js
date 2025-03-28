@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import ProjectBubble from './ProjectBubble';
-import './ProjectCard.css';  // assume other project card styles are kept here
+import { Box, Typography, Button, Dialog, DialogContent, DialogTitle, DialogActions, useTheme } from '@mui/material';
+import './ProjectCard.css';
 
-/**
- * ProjectCard displays the project details (image, title, etc.)
- * It now uses ProjectBubble to render the image.
- */
 const ProjectCard = ({ project }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const theme = useTheme();
 
   const handleReadMore = () => {
     setIsPopupOpen(true);
@@ -18,23 +16,55 @@ const ProjectCard = ({ project }) => {
   };
 
   return (
-    <div className="project-card">
+    <Box 
+      className="project-card"
+      sx={{
+        borderRadius: theme.shape.borderRadius,
+        transition: `all ${theme.transitions?.short || '0.3s'} ease`,
+        boxShadow: `0 4px 12px ${theme.palette.shadow.light}`,
+        '&:hover': {
+          boxShadow: `0 12px 24px ${theme.palette.shadow.medium}`,
+        },
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: theme.spacing(2),
+      }}
+    >
       <ProjectBubble image={project.image} alt={project.name} />
-      <h3>{project.name}</h3>
-      <button onClick={handleReadMore}>Read More</button>
-      {isPopupOpen && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>{project.name}</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <button onClick={handleClosePopup}>Close</button>
-          </div>
-        </div>
-      )}
-    </div>
+      <Typography variant="h5" sx={{ mt: 2 }}>{project.name}</Typography>
+      <Button 
+        variant="contained" 
+        color="primary"
+        onClick={handleReadMore}
+        sx={{ mt: 2 }}
+      >
+        Read More
+      </Button>
+      
+      <Dialog 
+        open={isPopupOpen} 
+        onClose={handleClosePopup}
+        maxWidth="md"
+        PaperProps={{
+          sx: {
+            borderRadius: theme.shape.borderRadius,
+            p: theme.spacing(2)
+          }
+        }}
+      >
+        <DialogTitle variant="h4">{project.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePopup} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

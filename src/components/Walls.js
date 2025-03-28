@@ -1,97 +1,127 @@
-// Extensive summary: This data module supplies content for the parallax slides. 
-// Each slide entry contains its title, rich content using MUI Typography and framer-motion animations,
-// as well as default direction data that could later be used to drive individualized animation behaviors.
 import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
+// Expanded and refined wallsData with merged categories
 export const wallsData = [
   {
-    title: "Skills",
+    title: "🤓 About Me",
     content: (
       <>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', textAlign: 'left' }}>
-          <strong>Research &amp; UX:</strong> I began my career with a strong foundation in media informatics...
+        <Typography variant="body1" gutterBottom>
+          Hi! I’m Vincent Göke 🚀, a Human-Computer Interaction Master’s graduate, sound designer, and interaction technologist 💻. My work is centered around designing <strong>emotion-driven experiences 😊</strong> through <strong>affective haptics, UX research, and multi-sensory interaction design 🎨</strong>.
         </Typography>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', mt: 1, display: 'block', textAlign: 'left' }}>
-          <strong>Prototyping &amp; Tools:</strong> I’m proficient in Adobe XD, Figma, and advanced prototyping techniques...
+        <Typography variant="body1" gutterBottom>
+          With a background in media informatics and audio design 🎧, I transitioned into <strong>haptic interaction design</strong>—an underexplored but promising field that bridges touch, sound, and technology to create intuitive and immersive user experiences ✨.
         </Typography>
-        <motion.img
-          src="https://via.placeholder.com/400x300"
-          alt="Skills placeholder"
-          whileHover={{ scale: 1.05 }}
-          style={{ marginTop: '1rem', width: '100%', borderRadius: '8px' }}
-        />
+        <Typography variant="body1" gutterBottom>
+          🎶 <strong>Beyond Work</strong>: Producing and mixing music under the aliases <em>Din-Z</em> and <em>Superior Motive</em> since 2015. I occasionally contribute to <strong>HipHop production</strong> and <strong>audio post-production 🎚️</strong>.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          ⚽ <strong>Sports</strong>: Passionate about football, former player, and lifelong <strong>FC Schalke 04</strong> supporter ⚡.
+        </Typography>
       </>
     ),
-    defaultDirection: 0
   },
   {
-    title: "Interests",
-    content: (
-      <Box
-        sx={{
-          backgroundImage: 'url(/src/assets/images/moosach music moritz.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          padding: '1rem',
-          borderRadius: '8px'
-        }}
-      >
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', textAlign: 'left' }}>
-          <strong>Music &amp; Audio:</strong> My creative journey includes producing, mixing, and performance under the alias Din-Z...
-        </Typography>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', mt: 1, display: 'block', textAlign:'left' }}>
-          <strong>Sports &amp; Family:</strong> Whether it’s the thrill of Fussball or the warmth of family gatherings, I value the balance...
-        </Typography>
-        <motion.img
-          src="https://via.placeholder.com/400x300"
-          alt="Interests placeholder"
-          whileHover={{ scale: 1.05 }}
-          style={{ marginTop: '1rem', width: '100%', borderRadius: '8px' }}
-        />
-      </Box>
-    ),
-    defaultDirection: Math.PI / 2
-  },
-  {
-    title: "Motivations",
+    title: "🎓 Education",
     content: (
       <>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', textAlign: 'left' }}>
-          <strong>Academic &amp; Professional Journey:</strong> Currently pursuing a Joint M.Sc. in Human-Computer Interaction, I fuse academic rigor with real-world design challenges to create user-centered interfaces.
+        <Typography variant="body1" gutterBottom>
+          ✅ M.Sc. Human-Computer Interaction – FH Salzburg & PLUS Salzburg
         </Typography>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', mt: 1, display: 'block', textAlign: 'left' }}>
-          <strong>Growth &amp; Collaboration:</strong> I continuously seek innovative projects and collaborative opportunities that push the boundaries of UX design and software engineering.
+        <Typography variant="body1" gutterBottom>
+        ✅ B.Sc. Media Informatics – LMU Munich
         </Typography>
-        <motion.img
-          src="https://via.placeholder.com/400x300"
-          alt="Motivations placeholder"
-          whileHover={{ scale: 1.05 }}
-          style={{ marginTop: '1rem', width: '100%', borderRadius: '8px' }}
-        />
+        <Typography variant="body1" gutterBottom>
+        ✅ Diploma in Audio Design – Deutsche POP, Munich
+        </Typography>
       </>
     ),
-    defaultDirection: Math.PI
   },
   {
-    title: "Vision",
+    title: "🔍 My Evolution",
     content: (
       <>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', textAlign: 'left' }}>
-          <strong>Design Philosophy:</strong> I believe technology should empower users by being nearly invisible—seamless, intuitive, and supportive of their needs.
+        <Typography variant="body1" gutterBottom>
+          🎧 Originally trained in <strong>audio design & perceptual soundscapes</strong>, I explored how <strong>spatial sound and sound cues</strong> enhance user perception and guide attention.
         </Typography>
-        <Typography variant="body2" component="span" sx={{ fontSize: '1.25rem', mt: 1, display: 'block', textAlign: 'left' }}>
-          <strong>Innovative Projects:</strong> My projects, ranging from haptic feedback systems to cashless payment solutions, exemplify a blend of interdisciplinary research and cutting-edge design.
+        <Typography variant="body1" gutterBottom>
+          🔄 My research pivoted towards <strong>haptic interaction</strong>, where I apply my <strong>audio design background</strong> to explore the emotional and perceptual impact of <strong>tactile feedback</strong>.
         </Typography>
-        <motion.img
-          src="https://via.placeholder.com/400x300"
-          alt="Vision placeholder"
-          whileHover={{ scale: 1.05 }}
-          style={{ marginTop: '1rem', width: '100%', borderRadius: '8px' }}
-        />
+        <Typography variant="body1" gutterBottom>
+          🛠️ Today, I specialize in <strong>multi-sensory UX</strong>, integrating <strong>sound, touch, and AI-driven interaction</strong> to create intuitive, emotion-centered design solutions.
+        </Typography>
       </>
     ),
-    defaultDirection: -Math.PI / 2
+  },
+  {
+    title: "💡 Core Skills",
+    content: (
+      <>
+        <Typography variant="body1" gutterBottom>
+          🎛️ <strong>Affective Haptics & Sensory UX</strong> – Bridging emotional design & technology to enhance human perception.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🔊 <strong>Audio-Driven Interaction Design</strong> – Exploring how sound can serve as an intuitive guide for user experiences.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎨 <strong>UX Research & Prototyping</strong> – Merging cognitive science with hands-on iterative design and user testing.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🏎️ <strong>Automated Driving UX</strong> – Investigated user trust factors in self-driving car interfaces (Bachelor Thesis).
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🏥 <strong>Healthcare UX</strong> – Explored interaction design in <strong>nuclear medicine</strong> applications.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎵 <strong>Affective Computing & ADHD Support</strong> – Researched UX-driven approaches to <strong>emotional self-regulation</strong>.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎭 <strong>Emotion-Centered Interfaces</strong> – Applying psychological models to craft engaging, meaningful interactions.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🖥️ <strong>Frontend Development</strong> – Leveraging <strong>React, Three.js, Tone.js, AI APIs</strong> for interactive experiences.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🏗️ <strong>Prototyping Expertise</strong> – Developed <strong>on-body haptic feedback systems</strong> using <strong>Hapticlabs DevKit</strong>.
+        </Typography>
+      </>
+    ),
+  },
+  {
+    title: "🌟 Professional Experience",
+    content: (
+      <>
+        <Typography variant="body1" gutterBottom>
+          🎵 <strong>UX Intern @ DJay Munich (2022)</strong> – Conducted user research and prototyped new interaction models for music-related applications.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎧 <strong>IT & Podcast Production Support @ University Hospital Munich (2020–2022)</strong> – Provided technical support and developed an audio production pipeline for podcast content.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎼 <strong>Freelance Audio Producer / Sound Designer (Din-Z) – Since 2015</strong> – Created original music compositions, mixed audio for projects, and collaborated with artists.
+        </Typography>
+      </>
+    ),
+  },
+  {
+    title: "🎶 Tools & Tech",
+    content: (
+      <>
+        <Typography variant="body1" gutterBottom>
+          🎨 <strong>Design & Research</strong> – Figma, Miro, Adobe XD, Illustrator, After Effects.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🎧 <strong>Audio Processing</strong> – Ableton Live, Adobe Audition, spatial sound design.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🖥️ <strong>Frontend Development</strong> – React, Three.js, Tone.js, Bootstrap, EmailJS.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          🛠️ <strong>Prototyping Hardware</strong> – Hapticlabs DevKit + Studio, Arduino.
+        </Typography>
+      </>
+    ),
   }
 ];

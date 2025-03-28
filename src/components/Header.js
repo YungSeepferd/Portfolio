@@ -1,61 +1,127 @@
-import React, { useState } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Button, Box, useMediaQuery, IconButton, Drawer, List, ListItem, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
-import EmailIcon from '@mui/icons-material/Email';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import './Header.css';
 
-const mailtoLink = "mailto:goeke.vincent@gmail.com?subject=Contact%20from%20Portfolio";
-
-function Header() {
+const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width:768px)');
+  const theme = useTheme();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navLinks = [
-    { label: 'Home', to: 'hero' },
-    { label: 'My Work', to: 'work' },
-    { label: 'About Me', to: 'about' },
-    { label: 'Contact', to: 'contact' },
+  const navItems = [
+    { name: 'Home', target: 'hero' },
+    { name: 'Work', target: 'work' },
+    { name: 'About', target: 'about' },
+    { name: 'Contact', target: 'contact' }
   ];
 
-  // Mobile drawer content
+  const navButton = (item, index) => (
+    <ScrollLink
+      key={item.name}
+      to={item.target}
+      spy={true}
+      smooth={true}
+      offset={-70}
+      duration={500}
+    >
+      <Button
+        sx={{
+          mx: 1,
+          textTransform: 'none',
+          fontWeight: 500,
+          color: theme.palette.background.default,
+          position: 'relative',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: -2,
+            left: 0,
+            width: 0,
+            height: 2,
+            backgroundColor: theme.palette.primary.main,
+            transition: 'width 0.3s ease',
+          },
+          '&:hover': {
+            backgroundColor: 'transparent',
+            color: theme.palette.primary.main,
+            '&::after': {
+              width: '100%',
+            },
+          },
+          '&.active': {
+            color: theme.palette.primary.main,
+            '&::after': {
+              width: '100%',
+            },
+          }
+        }}
+      >
+        {item.name}
+      </Button>
+    </ScrollLink>
+  );
+
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2, color: 'primary.main' }}>
-        Vincent Göke
-      </Typography>
+    <Box
+      sx={{
+        height: '100%',
+        backgroundColor: '#f2f2f2',
+        display: 'flex',
+        flexDirection: 'column',
+        p: 2,
+      }}
+      onClick={handleDrawerToggle}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <IconButton 
+          edge="end" 
+          sx={{ color: theme.palette.background.default }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
       <List>
-        {navLinks.map((item) => (
-          <ListItem key={item.label} disablePadding>
-            <ListItemText
-              primary={
-                <ScrollLink
-                  to={item.to}
-                  smooth={true}
-                  duration={800}
-                  offset={-70}
-                  className="nav-link"
-                >
-                  {item.label}
-                </ScrollLink>
-              }
-            />
+        {navItems.map((item) => (
+          <ListItem key={item.name} disablePadding>
+            <ScrollLink
+              to={item.target}
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
+              style={{ width: '100%' }}
+            >
+              <Button
+                fullWidth
+                sx={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  py: 1.5,
+                  color: theme.palette.background.default,
+                  '&:hover': {
+                    color: theme.palette.primary.main,
+                    backgroundColor: 'rgba(83, 99, 238, 0.08)',
+                  },
+                }}
+              >
+                {item.name}
+              </Button>
+            </ScrollLink>
           </ListItem>
         ))}
       </List>
@@ -63,67 +129,84 @@ function Header() {
   );
 
   return (
-    <>
-      <AppBar position="fixed" color="inherit" className="header">
-        <Toolbar>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h6" component="div" sx={{ color: 'primary.main' }}>
-              Vincent Göke
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start', ml: 2 }}>
-              <IconButton color="inherit" aria-label="Email" href={mailtoLink}>
-                <EmailIcon sx={{ fontSize: 32 }} />
-              </IconButton>
-              <IconButton color="inherit" aria-label="LinkedIn" href="https://www.linkedin.com/in/vincent-g-193124194/">
-                <LinkedInIcon sx={{ fontSize: 32 }} />
-              </IconButton>
-              <IconButton color="inherit" aria-label="GitHub" href="https://github.com/YungSeepferd">
-                <GitHubIcon sx={{ fontSize: 32 }} />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navLinks.map((item) => (
-              <Button key={item.label} color="inherit">
-                <ScrollLink
-                  to={item.to}
-                  smooth={true}
-                  duration={800}
-                  offset={-70}
-                  className="nav-link"
-                >
-                  {item.label}
-                </ScrollLink>
-              </Button>
-            ))}
-          </Box>
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            sx={{ display: { sm: 'none' } }}
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        anchor="right"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
+    <motion.div
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
+      <AppBar 
+        position="sticky" 
+        elevation={isScrolled ? 4 : 0}
         sx={{
-          display: { xs: 'block', sm: 'none' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+          backgroundColor: '#f2f2f2',
+          borderBottom: isScrolled ? `1px solid rgba(14, 26, 39, 0.1)` : 'none',
+          transition: 'all 0.3s ease',
         }}
       >
-        {drawer}
-      </Drawer>
-      {/* Spacer to push the content below the fixed AppBar */}
-      <Toolbar />
-    </>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box 
+            component="div" 
+            sx={{ 
+              fontWeight: 'bold', 
+              fontSize: '1.5rem',
+              color: theme.palette.background.default,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Box 
+              component="span"
+              sx={{ 
+                color: theme.palette.primary.main,
+                mr: 0.5 
+              }}
+            >
+              VG
+            </Box> 
+            Portfolio
+          </Box>
+          
+          {isMobile ? (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleDrawerToggle}
+              sx={{ 
+                color: theme.palette.background.default 
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <Box sx={{ display: 'flex' }}>
+              {navItems.map((item, index) => navButton(item, index))}
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+      
+      <AnimatePresence>
+        {mobileOpen && (
+          <Drawer
+            anchor="right"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{ keepMounted: true }}
+            transitionDuration={{ enter: 300, exit: 200 }}
+            PaperProps={{
+              sx: {
+                width: '70%',
+                maxWidth: '300px',
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
-}
+};
 
 export default Header;

@@ -4,10 +4,12 @@ import Hero from './components/Hero';
 import Work from './components/Work';
 import About from './components/About';
 import FooterContact from './components/FooterContact';
+import CSSVariables from './CSSVariables';
 
 function App() {
   return (
     <div className="App">
+      <CSSVariables />
       <Header />
       <Hero />
       <Work />

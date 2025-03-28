@@ -1,18 +1,46 @@
 .parallax-scroll-container {
+  position: relative;
   display: flex;
-  flex-direction: row;
-  width: 400vw; /* 4 slides (each 100vw) */
-  /*background-color: black;*/
-  /*color: white;*/
-  transition: transform 1s ease-in-out; /* increased duration for smoother transform */
+  /* Total width spans all sections (for example, for 8 sections adjust accordingly) */
+  width: 800vw;
+  height: auto; /* Instead of 100vh */
+  overflow-x: hidden; /* hide horizontal scrollbar */
+  overflow-y: hidden; /* no native vertical scroll */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Webkit */
+.parallax-scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 .parallax-slide {
   width: 100vw;
   height: 100vh;
-  display: flex;
 }
 
+.parallax-section {
+  flex: 0 0 100vw;
+  height: auto; /* Instead of 100vh */
+  min-height: auto; /* Instead of 100vh */
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-content {
+  width: 100%;
+  max-width: 840px;  /* matches WallCard max width */
+  padding: 1rem;
+  background: var(--overlay-background); /* Use theme variable */
+  border-radius: 12px;
+  box-shadow: 0 2px 12px var(--shadow-medium); /* Use theme variable */
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+/* Additional slide-related rules if needed */
 .slide-left, .slide-right {
   width: 50%;
   height: 100%;
@@ -38,4 +66,55 @@
 
 .section {
   margin-top: 20px;
+}
+
+.tabs-container {
+  width: 100%;
+  padding: 1rem;
+}
+
+.tab-content-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.tab-content {
+  width: 100%;
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  height: 300px; /* fixed height for the image section */
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.slideshow-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dots {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--dots-inactive); /* Use theme variable */
+  border-radius: 50%;
+}
+
+.dot.active {
+  background-color: var(--dots-active); /* Use theme variable */
 }

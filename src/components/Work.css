@@ -1,15 +1,15 @@
 .work-container {
-  padding: 8rem 0; /* increased from 4rem 0 */
+  padding: var(--spacing-8) 0; /* Use theme spacing variable */
 }
 
 .project-card {
-  border-radius: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius); /* Use theme border radius */
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .project-card:hover {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 24px var(--shadow-medium);
 }
 
 .project-image {
@@ -17,10 +17,12 @@
 }
 
 .project-title {
-  margin-top: 1rem;
-  font-weight: bold;
+  margin-top: var(--spacing);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
 }
 
 .project-description {
-  margin-top: 0.5rem;
+  margin-top: var(--spacing-0.5);
+  color: var(--text-secondary);
 }

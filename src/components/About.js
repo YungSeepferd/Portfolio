@@ -1,19 +1,20 @@
-// Summary: The About page displays an “About Me” heading and then integrates the horizontal scrolling sections
-// via both AboutBackgroundMVP and ParallaxScroll components.
 import React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import AboutBackgroundMVP from './AboutBackgroundMVP';
-import './About.css';
+import { Box } from '@mui/material';
+import ParallaxScroll from './ParallaxScroll';
 
 const About = () => {
   return (
-    <div id="about" className="about">
-      <div className="horizontal-scroll-wrapper">
-        <AboutBackgroundMVP />
-      </div>
-      {/* Removed duplicate rendering of ParallaxScroll */}
-    </div>
+    <Box 
+      id="about" 
+      component="section"
+      sx={{ 
+        width: '100%',
+        mt: { xs: 10, md: 16 }, // Add significant top margin to push it below Work section
+        mb: { xs: 8, md: 10 },  // Add bottom margin before footer
+      }}
+    >
+      <ParallaxScroll />
+    </Box>
   );
 };
 
