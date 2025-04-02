@@ -105,7 +105,7 @@ function Work() {
     if (!projects || projects.length === 0) {
       return null;
     }
-    
+
     // For mobile, render as a single column
     if (isMobile) {
       return (
@@ -123,8 +123,8 @@ function Work() {
         </Grid>
       );
     }
-    
-    // For tablet and desktop, render as a 2x2 grid
+
+    // Render based on layoutType
     return (
       <Box
         component={motion.div}
@@ -149,10 +149,40 @@ function Work() {
           }}
         >
           {projects.map((project, index) => {
-            // Calculate position in 2x2 grid
+            const layoutType = project.layoutType || 'default';
+
+            if (layoutType === 'highlighted') {
+              return (
+                <Grid 
+                  item 
+                  key={project.id} 
+                  xs={12} 
+                  sm={12}
+                  component={motion.div}
+                  variants={matrixAnimations.item}
+                  sx={{ 
+                    height: '600px',
+                    display: 'flex',
+                    '&:hover': {
+                      zIndex: 10,
+                    },
+                  }} 
+                >
+                  <ProjectCard
+                    project={project}
+                    skillTags={skillTags}
+                    onClick={handleProjectClick}
+                    showAllTags={!isSecondary}
+                    isHighlighted={true}
+                  />
+                </Grid>
+              );
+            }
+
+            // Default layout
             const row = Math.floor(index / 2);
             const col = index % 2;
-            
+
             return (
               <Grid 
                 item 

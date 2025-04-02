@@ -1,79 +1,73 @@
 import React from 'react';
+import Typography from '@mui/material/Typography';
 
 /**
- * Parses project content from workData.js and extracts specific sections
- * based on Typography headers
+ * Parses project content into sections based on h3 headers
+ * @param {string} content - Raw project content string
+ * @returns {object} - Object containing parsed sections
  */
 export const parseProjectContent = (content) => {
-  // If content is not a valid React element, return empty sections
-  if (!React.isValidElement(content)) {
-    return {
-      overview: null,
-      problemStatement: null,
-      research: null,
-      solution: null,
-      outcomes: null,
-      fullContent: content
-    };
-  }
+  const sections = {};
+  let currentSection = null;
+  let currentContent = [];
 
-  // Initialize section containers
-  const sections = {
-    overview: null,
-    problemStatement: null,
-    research: null,
-    solution: null,
-    outcomes: null,
-    fullContent: content
-  };
-  
-  try {
-    // Extract children of the content element
-    const children = React.Children.toArray(content.props.children);
-    
-    // Find header indices
-    const headerIndices = [];
-    children.forEach((child, index) => {
-      if (
-        React.isValidElement(child) && 
-        child.props.variant === "h3"
-      ) {
-        headerIndices.push({ 
-          index, 
-          title: child.props.children.toLowerCase()
-        });
-      }
-    });
-    
-    // Extract content between headers
-    headerIndices.forEach((header, idx) => {
-      const nextHeaderIndex = idx < headerIndices.length - 1 
-        ? headerIndices[idx + 1].index 
-        : children.length;
-      
-      // Get content between this header and the next
-      const sectionContent = children.slice(header.index, nextHeaderIndex);
-      
-      // Determine section type based on header title
-      const title = header.title;
-      if (title.includes('overview') || title.includes('project')) {
-        sections.overview = sectionContent;
-      } else if (title.includes('problem')) {
-        sections.problemStatement = sectionContent;
-      } else if (title.includes('research') || title.includes('process')) {
-        sections.research = sectionContent;
-      } else if (title.includes('solution') || title.includes('technical')) {
-        sections.solution = sectionContent;
-      } else if (title.includes('outcome') || title.includes('learning') || title.includes('impact')) {
-        sections.outcomes = sectionContent;
-      }
-    });
-    
-    return sections;
-  } catch (error) {
-    console.error("Error parsing project content:", error);
-    return sections;
+  // Check if content is a string
+  if (typeof content !== 'string') {
+    console.error("Content is not a string:", content);
+    return sections; // Return empty sections if content is not a string
   }
+  
+  // Regular expression to match h3 headers
+  const headerRegex = /<h3.*?>(.*?)<\/h3>/i;
+  
+  // Split the content by <p> tags
+  const paragraphs = content.split(/<p>/i);
+  
+  paragraphs.forEach(paragraph => {
+    // Check if the paragraph contains an h3 header
+    const headerMatch = paragraph.match(headerRegex);
+    
+    if (headerMatch) {
+      // Extract the header text
+      const title = headerMatch[1];
+      
+      // Save the current section if it exists
+      if (currentSection) {
+        sections[currentSection] = currentContent;
+      }
+      
+      // Start a new section
+      currentSection = title.toLowerCase().replace(/ /g, '');
+      currentContent = [<Typography variant="h3" key={currentSection}>{title}</Typography>];
+      
+      // Add any remaining content after the header
+      const remainingContent = paragraph.replace(headerMatch[0], '').trim();
+      if (remainingContent) {
+        currentContent.push(<Typography variant="body1" key={currentContent.length}>{remainingContent}</Typography>);
+      }
+    } else {
+      // If no header, add the paragraph to the current section
+      const cleanParagraph = paragraph.replace(/<\/p>/i, '').trim();
+      
+      if (cleanParagraph) {
+        // Check if the paragraph contains a list
+        if (cleanParagraph.startsWith("<ul") || cleanParagraph.startsWith("<ol")) {
+          // If it's a list, add it directly without wrapping in a Typography
+          currentContent.push(<div dangerouslySetInnerHTML={{ __html: cleanParagraph }} key={currentContent.length} />);
+        } else {
+          // Otherwise, wrap the paragraph in a Typography component
+          currentContent.push(<Typography variant="body1" key={currentContent.length} dangerouslySetInnerHTML={{ __html: cleanParagraph }} />);
+        }
+      }
+    }
+  });
+  
+  // Save the last section
+  if (currentSection) {
+    sections[currentSection] = currentContent;
+  }
+  
+  return sections;
 };
 
 /**

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import { Tabs, Tab, Box, Fade, Typography, Container, useTheme, CircularProgress } from '@mui/material';
+import { Tabs, Tab, Box, Typography, Container, useTheme, CircularProgress } from '@mui/material';
 import { aboutData } from './AboutData';
 import WallCard from './AboutContent';
 import useDebounce from '../../hooks/useDebounce';
+import LazyImage from '../common/LazyImage';
 
 const Slideshow = ({ pictures }) => {
   const theme = useTheme();
@@ -126,20 +127,17 @@ const Slideshow = ({ pictures }) => {
         </Box>
       )}
       
-      <Fade in={loaded} timeout={500}>
-        <Box component="div" sx={{ height: '100%' }}>
-          <img
-            src={defaultPics[current]}
-            alt={`Slideshow ${current + 1}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
+      <Box component="div" sx={{ height: '100%' }}>
+        {defaultPics.map((src, index) => (
+          <LazyImage
+            key={index}
+            src={src}
+            alt={`Slideshow image ${index + 1}`}
+            style={{ display: current === index ? 'block' : 'none', width: '100%', height: '100%', objectFit: 'cover' }}
             onLoad={handleImageLoad}
           />
-        </Box>
-      </Fade>
+        ))}
+      </Box>
       
       {/* Only show dots if there are multiple pictures */}
       {defaultPics.length > 1 && (
@@ -351,7 +349,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
         {/* Content container - can be full width or constrained */}
         <ContentContainer {...containerProps}>
           <Box sx={{ pt: 4, pb: 2 }}>
-            <Fade in timeout={{ enter: 500, exit: 500 }} key={tabIndex}>
+            <Box key={tabIndex}>
               <Box
                 className="tab-content"
                 sx={{
@@ -439,7 +437,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
                   </Box>
                 </WallCard>
               </Box>
-            </Fade>
+            </Box>
           </Box>
         </ContentContainer>
       </Box>

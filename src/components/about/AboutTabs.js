@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Tabs, Tab, Container, useTheme } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { aboutData } from './AboutData';
 import TabContent from './TabContent';
 import { useSmoothScroll } from '../../hooks/useSmoothScroll';
@@ -44,23 +44,15 @@ const AboutTabs = ({ onSectionChange, nonScrollable = false, largePicture = fals
 
         <Box sx={{ ...theme.customSections.about.tabContent }}>
           <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSection}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-            >
-              <TabContent
-                data={aboutData[activeSection]}
-                ref={sectionRefs.current[activeSection]?.ref}
-                nonScrollable={nonScrollable}
-                largePicture={largePicture}
-                sx={{
-                  ...theme.customSections.about.contentCard,
-                }}
-              />
-            </motion.div>
+            <TabContent
+              data={aboutData[activeSection]}
+              ref={sectionRefs.current[activeSection]?.ref}
+              nonScrollable={nonScrollable}
+              largePicture={largePicture}
+              sx={{
+                ...theme.customSections.about.contentCard,
+              }}
+            />
           </AnimatePresence>
         </Box>
 

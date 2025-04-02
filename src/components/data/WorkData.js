@@ -1,7 +1,6 @@
 import theme from '../../theme';
 // Update image imports to use proper folder structure
 // Master Thesis
-import AudioHaptics from '../../assets/images/Masterthesis/AudioHaptics.png';
 import WorkshopRoomSetup from '../../assets/images/Masterthesis/Workshop_Room_Setup_defaced.jpg';
 import PrototypingGroupB from '../../assets/images/Masterthesis/Prototyping_Group_B_defaced.jpg';
 import PrototypingGroupC from '../../assets/images/Masterthesis/Prototyping_Group_C_defaced_2.jpeg';
@@ -9,8 +8,6 @@ import AP1 from '../../assets/images/Masterthesis/AP1.png';
 import AP2_2 from '../../assets/images/Masterthesis/AP2_defaced_2.png';
 import AP2_3 from '../../assets/images/Masterthesis/AP2_defaced_3.png';
 import CircumplexModel from '../../assets/images/Masterthesis/Circumplex Model of Affect.png';
-import BodyMaps from '../../assets/images/Masterthesis/Phase 2 - 2 Body maps.jpg';
-import GuidingQuestions from '../../assets/images/Masterthesis/Guiding questions body maps.jpg';
 import Phase2_1 from '../../assets/images/Masterthesis/Phase 2 - 1 Embodied Metaphor Elicitation and Emotional Object Sharing.jpg';
 import Phase2 from '../../assets/images/Masterthesis/Phase 2 - Preperation of Templates, Documentation of the Object and Ideas and Sheets for the Prototyping Session.jpg';
 import Phase3_1 from '../../assets/images/Masterthesis/Phase 3 - 1 Hapticlabs Hardware Kit Setup and Explanation.jpg';
@@ -132,9 +129,10 @@ const rawWorkData = [
     title: "Prototyping Emotions – Master Thesis",
     description: "Methodology for prototyping emotional haptic feedback using the Circumplex Model of Affect and body mapping.",
     categories: ["UX Research", "Interaction Design", "HCI Methodologies", "Haptic Design"],
+    layoutType: "image-heavy",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           This Master's thesis introduced a <strong>structured methodology</strong> for novice designers to prototype <strong>affective haptic feedback</strong>. The research explored how <strong>emotion-driven design</strong> can be integrated into UX workflows through <strong>tactile interaction design</strong>.
         </Typography>
@@ -173,7 +171,6 @@ const rawWorkData = [
       </>
     ),
     images: [
-      AudioHaptics,
       WorkshopRoomSetup,
       PrototypingGroupB,
       PrototypingGroupC,
@@ -181,8 +178,6 @@ const rawWorkData = [
       AP2_2,
       AP2_3,
       CircumplexModel,
-      BodyMaps,
-      GuidingQuestions,
       Phase2_1,
       Phase2,
       Phase3_1,
@@ -190,12 +185,12 @@ const rawWorkData = [
     ],
     tools: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
     cardStyle,
-    media: { type: 'image', src: AudioHaptics },
+    media: { type: 'image', src: WorkshopRoomSetup }, 
     featuredImages: {
-      overview: WorkshopRoomSetup,
+      overview: Phase2,
       problem: CircumplexModel, 
       solution: PrototypingGroupB,
-      prototypeShowcase: [Phase2_1, Phase3_1, AP2_3]
+      prototypeShowcase: [PrototypingGroupB, PrototypingGroupC, AP1]
     },
     links: [],
     keyTakeaways: [
@@ -211,9 +206,10 @@ const rawWorkData = [
     title: "Resonant Relaxation – AI-driven Audio-Haptic Web App",
     description: "Web-based stress relief combining AI sound synthesis with real-time haptic feedback.",
     categories: ["UX Research", "Prototyping", "Haptic Design", "AI Integration"],
+    layoutType: "balanced",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           <strong>Resonant Relaxation</strong> is a specialized web application that creates procedurally generated audio patterns
           aimed at inducing relaxation as a foundation for achieving flow states. Developed in collaboration with <strong>Daniel Shor from Innovobot Labs</strong>,
@@ -331,9 +327,10 @@ const rawWorkData = [
     title: "AMIAI – Visual Campaign for AI Awareness",
     description: "Critical design campaign exploring AI-generated media credibility using pixelation metaphors.",
     categories: ["Graphic Design"],
+    layoutType: "video-heavy",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           <strong>AMIAI</strong> is a <strong>critical design campaign</strong> exploring how <strong>AI-generated content affects media credibility</strong>. 
           The campaign uses <strong>pixelation metaphors</strong> to highlight <strong>digital distortion</strong> in AI-generated media.
@@ -408,9 +405,10 @@ const rawWorkData = [
     title: "Green Wallet – TTF Hackathon (MasterCard Challenge)",
     description: "Gamified financial app promoting cashless payments in local tourist markets.",
     categories: ["UX Research", "Prototyping", "UX Gamification"],
+    layoutType: "balanced",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           Green Wallet was a <strong>UX-driven financial application</strong> designed as part of the <strong>Tourism Technology Festival Hackathon 2022</strong>. 
           The challenge, set by MasterCard, focused on <strong>increasing cashless payments in local tourist markets</strong> through an engaging and 
@@ -505,9 +503,10 @@ const rawWorkData = [
     title: "ADHDeer – Self-Tracking App for ADHD Youth",
     description: "Mobile app supporting ADHD youth in self-management and emotional regulation.",
     categories: ["UX Research", "Prototyping", "Mental Health UX"],
+    layoutType: "balanced",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           <strong>ADHDeer</strong> is a UX-driven mobile app designed to support young adults with <strong>ADHD</strong> in <strong>self-management, emotional regulation, and daily structuring</strong>. The project was part of a <strong>Design Thinking course at FH Salzburg</strong>, aimed at bridging the gap between <strong>ADHD awareness, self-assessment, and mental health support</strong> through a <strong>gamified</strong> and <strong>intuitive UX approach</strong>.
         </Typography>
@@ -566,9 +565,10 @@ const rawWorkData = [
     title: "Phone-based Intervention in Self-driving Cars – Bachelor Thesis",
     description: "Mobile interface for trust and decision-making in autonomous vehicle rerouting scenarios.",
     categories: ["UX Research", "Interaction Design", "Automotive UX"],
+    layoutType: "image-heavy",
     details: (
       <>
-        <Typography variant="h3">Project Overview</Typography>
+        <Typography variant="h3">Overview</Typography>
         <Typography variant="body1">
           This <strong>Bachelor thesis</strong> investigated <strong>trust and decision-making in autonomous vehicles</strong> by designing a mobile interface 
           that helps users <strong>intervene in critical rerouting scenarios</strong>. The project tested <strong>how different UI information densities</strong> 

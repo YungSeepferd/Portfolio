@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Divider, Typography, useTheme } from '@mui/material';
+import { Box, Divider, Typography, useTheme, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import { parseProjectContent } from '../../utils/contentParser';
 import { isVideo } from '../../utils/mediaHelper';
@@ -276,36 +276,43 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
               Outcomes & Key Learnings
             </Typography>
             
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 6, mt: 4 }}>
-              <Box 
-                component={motion.div}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-                sx={{ flex: 1 }}
-              >
-                {parsedContent.outcomes?.length > 0 ? (
-                  parsedContent.outcomes.slice(1).map((content, idx) => (
-                    <React.Fragment key={idx}>{content}</React.Fragment>
-                  ))
-                ) : (
-                  <Typography variant="body1" paragraph>
-                    This project provided valuable insights into {project.categories?.[0]} processes and methodologies.
-                    {project.title.includes("Master Thesis") ? (
-                      <>{" The research successfully established a framework for haptic design that bridges emotion theory with tangible prototyping."}</>
-                    ) : project.title.includes("Relaxation") ? (
-                      <>{" The application demonstrated how AI-driven sound generation can be effectively combined with haptic feedback for enhanced user experiences."}</>
-                    ) : project.title.includes("Green Wallet") ? (
-                      <>{" The first-place victory at the hackathon validated our approach to gamifying sustainable financial transactions."}</>
-                    ) : (
-                      <>{" The outcomes demonstrate how design thinking can address complex user needs through innovative solutions."}</>
-                    )}
-                  </Typography>
-                )}
-              </Box>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="h4" component="h4" sx={{ mb: 2 }}>
+                  Outcomes
+                </Typography>
+                <Box
+                  component={motion.div}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  {parsedContent.outcomes?.length > 0 ? (
+                    parsedContent.outcomes.slice(1).map((content, idx) => (
+                      <React.Fragment key={idx}>{content}</React.Fragment>
+                    ))
+                  ) : (
+                    <Typography variant="body1" paragraph>
+                      This project provided valuable insights into {project.categories?.[0]} processes and methodologies.
+                      {project.title.includes("Master Thesis") ? (
+                        <>{" The research successfully established a framework for haptic design that bridges emotion theory with tangible prototyping."}</>
+                      ) : project.title.includes("Relaxation") ? (
+                        <>{" The application demonstrated how AI-driven sound generation can be effectively combined with haptic feedback for enhanced user experiences."}</>
+                      ) : project.title.includes("Green Wallet") ? (
+                        <>{" The first-place victory at the hackathon validated our approach to gamifying sustainable financial transactions."}</>
+                      ) : (
+                        <>{" The outcomes demonstrate how design thinking can address complex user needs through innovative solutions."}</>
+                      )}
+                    </Typography>
+                  )}
+                </Box>
+              </Grid>
               
-              <Box sx={{ flex: 1 }}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="h4" component="h4" sx={{ mb: 2 }}>
+                  Key Takeaways
+                </Typography>
                 <KeyTakeaways 
                   takeaways={project.keyTakeaways || [
                     project.categories.includes('UX Research') && 
@@ -320,12 +327,12 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
                       "Visual communication can effectively raise awareness about complex technological issues",
                     "Cross-disciplinary collaboration significantly enriches the design process"
                   ].filter(Boolean)}
-                  titleVariant="h4"
-                  titleComponent="h4"
+                  titleVariant="h5"
+                  titleComponent="h5"
                   headingColor={theme.palette.text.primary}
                 />
-              </Box>
-            </Box>
+              </Grid>
+            </Grid>
           </Box>
           
           {project.images?.length > 1 && (

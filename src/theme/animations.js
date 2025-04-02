@@ -5,6 +5,8 @@
  * throughout the application.
  */
 
+import { keyframes, css } from 'styled-components';
+
 // Define animation constants
 const animations = {
   durations: {
@@ -95,6 +97,62 @@ export const createGlobalAnimations = () => {
       100% { box-shadow: 0 0 0 0 rgba(194, 247, 80, 0); }
     }
   `;
+};
+
+// Define reusable animations for the application
+
+export const fadeIn = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.5 } },
+  exit: { opacity: 0, transition: { duration: 0.3 } },
+};
+
+export const hoverEffect = {
+  whileHover: { scale: 1.05, transition: { duration: 0.2 } },
+  whileTap: { scale: 0.95 },
+};
+
+export const slideIn = {
+  initial: { x: '-100%' },
+  animate: { x: 0, transition: { duration: 0.5 } },
+  exit: { x: '100%', transition: { duration: 0.3 } },
+};
+
+// Define keyframes for animations
+export const fadeInKeyframes = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+export const slideUpKeyframes = keyframes`
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
+
+export const hoverScaleKeyframes = keyframes`
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+`;
+
+// Export reusable animation styles
+export const animationStyles = {
+  fadeIn: css`animation: ${fadeInKeyframes} 0.5s ease-in-out;`,
+  slideUp: css`animation: ${slideUpKeyframes} 0.5s ease-in-out;`,
+  hoverScale: css`&:hover { animation: ${hoverScaleKeyframes} 0.3s ease-in-out; transform: scale(1.05); }`,
 };
 
 export default animations;

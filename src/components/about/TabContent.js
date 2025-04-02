@@ -1,6 +1,5 @@
 import React, { forwardRef } from 'react';
 import { Box, Grid, Paper, Typography, useTheme } from '@mui/material';
-import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
 
 const StyledPaper = styled(Paper)(({ theme, nonScrollable }) => ({
@@ -43,8 +42,6 @@ const TabContent = forwardRef(({ data, sx = {}, nonScrollable = false, largePict
         >
           {data.pictures && data.pictures.length > 0 && (
             <Box
-              component={motion.div}
-              whileHover={{ scale: 1.02 }}
               sx={{
                 width: '100%',
                 height: largePicture ? '450px' : '300px',

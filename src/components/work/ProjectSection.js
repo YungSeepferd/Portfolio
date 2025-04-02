@@ -70,7 +70,15 @@ const ProjectSection = ({
             )}
             
             <Box className="project-content">
-              {renderContentSection(content, fallbackContent)}
+              {Array.isArray(content) ? (
+                <ul>
+                  {content.map((item, index) => (
+                    <li key={index}>{renderContentSection(item, fallbackContent)}</li>
+                  ))}
+                </ul>
+              ) : (
+                renderContentSection(content, fallbackContent)
+              )}
             </Box>
           </Box>
         </Grid>

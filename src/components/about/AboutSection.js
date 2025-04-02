@@ -57,7 +57,7 @@ const AboutSection = () => {
                 color: theme.palette.text.primary 
               }}
             >
-              About Me
+              WhoAmI
             </Typography>
           </Box>
         </Container>
