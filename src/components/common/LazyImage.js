@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 
 /**
  * LazyImage component that loads images only when they're in viewport
+ * and preserves them in the DOM regardless of visibility
+ * 
  * @param {string} src - Image source URL
  * @param {string} alt - Alt text for the image
  * @param {Object} style - Additional styles for the image
@@ -22,17 +23,29 @@ const LazyImage = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
   const imgRef = useRef(null);
-  const isVisible = useIntersectionObserver(imgRef);
   
-  const handleLoad = () => {
-    setIsLoaded(true);
-    onLoad();
-  };
-  
-  const handleError = () => {
-    setError(true);
-    console.error(`Failed to load image: ${src}`);
-  };
+  // Load the image as soon as the component mounts
+  useEffect(() => {
+    const img = new Image();
+    
+    img.onload = () => {
+      setIsLoaded(true);
+      onLoad();
+    };
+    
+    img.onerror = () => {
+      setError(true);
+      console.error(`Failed to load image: ${src}`);
+    };
+    
+    img.src = src;
+    
+    // If the image is already cached, onload might not fire
+    if (img.complete) {
+      setIsLoaded(true);
+      onLoad();
+    }
+  }, [src, onLoad]);
   
   return (
     <Box 
@@ -60,12 +73,10 @@ const LazyImage = ({
         />
       )}
       
-      {isVisible && !error && (
+      {!error && (
         <img
           src={src}
           alt={alt}
-          onLoad={handleLoad}
-          onError={handleError}
           style={{
             width: '100%',
             height: '100%',

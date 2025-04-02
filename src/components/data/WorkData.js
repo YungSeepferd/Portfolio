@@ -67,7 +67,7 @@ import Endscreen from '../../assets/images/Bachelorthesis/Endscreen.png';
 import Routenuebersicht from '../../assets/images/Bachelorthesis/Routenuebersicht.PNG';
 
 import Typography from '@mui/material/Typography';
-import { processImageArray, analyzeImage } from '../../utils/imageAnalyzer';
+import { analyzeImage } from '../../utils/imageAnalyzer';
 import LaunchIcon from '@mui/icons-material/Launch';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ArticleIcon from '@mui/icons-material/Article';

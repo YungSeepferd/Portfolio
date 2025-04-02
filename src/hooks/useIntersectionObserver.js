@@ -8,18 +8,20 @@ import { useEffect, useState } from 'react';
  */
 function useIntersectionObserver(ref, options = {}) {
   const [isIntersecting, setIsIntersecting] = useState(false);
-
+  
   useEffect(() => {
     if (!ref.current) return;
     
+    const observerOptions = {
+      root: null,
+      rootMargin: '200px', // Increase the margin to load images earlier
+      threshold: 0.01, // Lower threshold so images load with minimal visibility
+      ...options,
+    };
+    
     const observer = new IntersectionObserver(([entry]) => {
       setIsIntersecting(entry.isIntersecting);
-    }, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1,
-      ...options,
-    });
+    }, observerOptions);
     
     observer.observe(ref.current);
     
@@ -29,7 +31,7 @@ function useIntersectionObserver(ref, options = {}) {
       }
     };
   }, [ref, options]);
-
+  
   return isIntersecting;
 }
 

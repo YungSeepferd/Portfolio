@@ -10,11 +10,15 @@ const PrototypeShowcase = ({
   content = null,
   prototypeImages = [],
   captions = [],
-  footerText = 'The prototyping process evolved through multiple iterations, each refining the user experience based on feedback and testing.'
+  footerText = 'The prototyping process evolved through multiple iterations, each refining the user experience based on feedback and testing.',
+  headingColor = null // Added headingColor prop
 }) => {
   const theme = useTheme();
   
   if (prototypeImages.length === 0) return null;
+  
+  // If headingColor is not provided, use the default from theme
+  const titleColor = headingColor || theme.palette.text.primary;
   
   return (
     <Box component="section" sx={{ py: 6 }}>
@@ -22,7 +26,16 @@ const PrototypeShowcase = ({
         {sectionNumber}
       </Typography>
       
-      <Typography variant="h4" sx={{ mt: 1, mb: 4 }}>{title}</Typography>
+      <Typography 
+        variant="h3" 
+        sx={{ 
+          mt: 1, 
+          mb: 4,
+          color: titleColor // Apply the heading color 
+        }}
+      >
+        {title}
+      </Typography>
       
       {/* Render content if available */}
       {renderContentSection(content)}

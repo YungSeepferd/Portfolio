@@ -1,105 +1,85 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, Container, useTheme, Chip, Stack } from '@mui/material';
+import { Box, Typography, Container, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
+import { aboutData } from './AboutData';
 import SmoothTabNavigator from './SmoothTabNavigator';
-import { wallsData } from './AboutData';
+import ErrorBoundary from '../common/ErrorBoundary';
 
 /**
  * AboutSection Component
  * 
- * Responsible for rendering the About section of the portfolio with tab navigation.
- * Uses SmoothTabNavigator for content and adds dot indicators at the bottom.
+ * Displays information about the user in a tabbed interface with
+ * smooth transitions between content sections.
  */
 const AboutSection = () => {
-  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const parallaxRef = useRef(null);
-  const maxSteps = wallsData.length;
-
-  const handleSectionChange = (sectionIndex) => {
-    if (sectionIndex >= 0 && sectionIndex < maxSteps) {
-      setActiveStep(sectionIndex);
+  const theme = useTheme();
+  
+  const handleSectionChange = (newStep) => {
+    try {
+      if (newStep >= 0 && newStep < aboutData.length) {
+        setActiveStep(newStep);
+      } else {
+        console.warn(`Invalid section index: ${newStep}, max index is ${aboutData.length - 1}`);
+      }
+    } catch (error) {
+      console.error("Error changing section:", error);
     }
   };
-
+  
   return (
-    <Box 
-      id="about" 
-      component="section"
-      sx={{ 
-        width: '100%',
-        mt: { xs: 8, md: 12 },
-        mb: { xs: 8, md: 12 },
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-      }}
-    >
-      <Container maxWidth="lg" sx={{ mb: 4 }}>
-        <Typography 
-          variant="h2" 
-          component="h2" 
-          sx={{ 
-            textAlign: 'center',
-            mb: { xs: 3, md: 5 },
-            fontSize: { xs: '2.5rem', md: '3.5rem' },
-            fontWeight: 700,
+    <ErrorBoundary>
+      <Box
+        id="about"
+        component="section"
+        sx={{
+          width: '100%',
+          py: { xs: 8, md: 12 },
+          backgroundColor: theme => theme.palette.background.default,
+          position: 'relative',
+        }}
+      >
+        {/* Section Header */}
+        <Container maxWidth="lg">
+          <Box 
+            sx={{ 
+              width: '100%', 
+              textAlign: 'center',
+              mb: { xs: 4, md: 6 },
+            }}
+          >
+            <Typography 
+              variant="h2" 
+              component="h2" 
+              sx={{ 
+                mb: 2,
+                color: theme.palette.text.primary 
+              }}
+            >
+              About Me
+            </Typography>
+          </Box>
+        </Container>
+        
+        {/* Tabs Navigation & Content */}
+        <SmoothTabNavigator 
+          ref={parallaxRef} 
+          onSectionChange={handleSectionChange}
+          currentSection={activeStep}
+          // Pass theme-related props for consistent styling
+          tagStyle={{
+            backgroundColor: 'rgba(83, 99, 238, 0.2)',
+            color: theme.palette.text.primary,
+            border: `1px solid ${theme.palette.primary.main}`,
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            height: 28,
+            borderRadius: '14px',
           }}
-        >
-          About Me
-        </Typography>
-      </Container>
-      
-      <SmoothTabNavigator 
-        ref={parallaxRef} 
-        onSectionChange={handleSectionChange}
-        currentSection={activeStep}
-      />
-      
-      {/* Dot indicators */}
-      <Container maxWidth="lg">
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            mt: 4, 
-            pb: 2,
-            gap: 1.5 
-          }}
-        >
-          {Array.from({ length: maxSteps }).map((_, index) => (
-            <Box
-              key={index}
-              onClick={() => {
-                setActiveStep(index);
-                parallaxRef.current?.scrollToSection(index);
-              }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  setActiveStep(index);
-                  parallaxRef.current?.scrollToSection(index);
-                }
-              }}
-              tabIndex={0}
-              role="button"
-              sx={{
-                width: theme.spacing(1.25),  // Use theme spacing for dot size
-                height: theme.spacing(1.25),
-                borderRadius: '50%',
-                backgroundColor: index === activeStep ? theme.palette.primary.main : theme.palette.divider,
-                cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                '&:hover': {
-                  transform: 'scale(1.3)',
-                  backgroundColor: index === activeStep 
-                    ? theme.palette.primary.main 
-                    : theme.palette.primary.light,
-                },
-              }}
-            />
-          ))}
-        </Box>
-      </Container>
-    </Box>
+        />
+      </Box>
+    </ErrorBoundary>
   );
 };
 

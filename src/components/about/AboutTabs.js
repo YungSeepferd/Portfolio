@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box, Tabs, Tab, Container, useTheme } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { wallsData } from './AboutData';
+import { aboutData } from './AboutData';
 import TabContent from './TabContent';
 import { useSmoothScroll } from '../../hooks/useSmoothScroll';
 
-const AboutTabs = ({ onSectionChange }) => {
+const AboutTabs = ({ onSectionChange, nonScrollable = false, largePicture = false }) => {
   const theme = useTheme();
-  const { activeSection, scrollToSection, sectionRefs } = useSmoothScroll(wallsData.length, { onChange: onSectionChange });
+  const { activeSection, scrollToSection, sectionRefs } = useSmoothScroll(aboutData.length, { onChange: onSectionChange });
 
   return (
     <Box className="about-tabs-container" sx={{ width: '100%' }}>
@@ -17,7 +17,6 @@ const AboutTabs = ({ onSectionChange }) => {
           onChange={(_, newValue) => scrollToSection(newValue)}
           variant="scrollable"
           scrollButtons="auto"
-          centered
           sx={{
             mb: 4,
             borderBottom: 1,
@@ -33,10 +32,10 @@ const AboutTabs = ({ onSectionChange }) => {
             },
           }}
         >
-          {wallsData.map((wall, index) => (
+          {aboutData.map((section, index) => (
             <Tab
               key={index}
-              label={wall.title}
+              label={section.title}
               id={`tab-${index}`}
               aria-controls={`tabpanel-${index}`}
             />
@@ -53,8 +52,10 @@ const AboutTabs = ({ onSectionChange }) => {
               transition={{ duration: 0.4 }}
             >
               <TabContent
-                data={wallsData[activeSection]}
+                data={aboutData[activeSection]}
                 ref={sectionRefs.current[activeSection]?.ref}
+                nonScrollable={nonScrollable}
+                largePicture={largePicture}
                 sx={{
                   ...theme.customSections.about.contentCard,
                 }}
@@ -71,7 +72,7 @@ const AboutTabs = ({ onSectionChange }) => {
             mt: theme.customSections.about.spacingBetweenSections,
           }}
         >
-          {wallsData.map((_, idx) => (
+          {aboutData.map((_, idx) => (
             <Box
               key={idx}
               onClick={() => scrollToSection(idx)}
@@ -89,7 +90,7 @@ const AboutTabs = ({ onSectionChange }) => {
                 transition: 'background-color 0.3s',
               }}
               role="button"
-              aria-label={`Go to ${wallsData[idx].title} section`}
+              aria-label={`Go to ${aboutData[idx].title} section`}
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && scrollToSection(idx)}
             />

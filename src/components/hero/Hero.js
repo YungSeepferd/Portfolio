@@ -1,9 +1,10 @@
-import React, { useRef, useState, Suspense } from 'react';
+import React, { useRef, useState, Suspense, useEffect } from 'react';
 import { Box, Container, Typography, Chip, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import ErrorBoundary from '../common/ErrorBoundary';
 
 // --- InteractiveShape Component ---
 const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, setShapeIndex }) => {
@@ -22,35 +23,40 @@ const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, se
   );
 
   useFrame((state) => {
-    if (meshRef.current) {
-      const { mouse, clock } = state;
-      const target = new THREE.Vector3(mouse.x * 5, mouse.y * 5, 0);
-      // Drifting movement based on velocity with boundary check.
-      meshRef.current.position.add(velocity);
-      ['x', 'y', 'z'].forEach(axis => {
-        if (Math.abs(meshRef.current.position[axis]) > 5) {
-          velocity[axis] *= -1;
+    try {
+      if (meshRef.current) {
+        const { mouse, clock } = state;
+        const target = new THREE.Vector3(mouse.x * 5, mouse.y * 5, 0);
+        // Drifting movement based on velocity with boundary check.
+        meshRef.current.position.add(velocity);
+        ['x', 'y', 'z'].forEach(axis => {
+          if (Math.abs(meshRef.current.position[axis]) > 5) {
+            velocity[axis] *= -1;
+          }
+        });
+        // When near the cursor, add a small interaction.
+        const distance = meshRef.current.position.distanceTo(target);
+        if (distance < 2) {
+          if (shapeIndex === 0) {
+            meshRef.current.position.lerp(target, 0.05);
+          } else if (shapeIndex === 1) {
+            const dodgeDir = meshRef.current.position.clone().sub(target).normalize();
+            meshRef.current.position.addScaledVector(dodgeDir, 0.1);
+          } else if (shapeIndex === 2) {
+            meshRef.current.rotation.x += 0.02;
+            meshRef.current.rotation.y += 0.02;
+          } else if (shapeIndex === 3) {
+            const scale = 1 + Math.sin(clock.getElapsedTime() * 5) * 0.3;
+            meshRef.current.scale.set(scale, scale, scale);
+          }
         }
-      });
-      // When near the cursor, add a small interaction.
-      const distance = meshRef.current.position.distanceTo(target);
-      if (distance < 2) {
-        if (shapeIndex === 0) {
-          meshRef.current.position.lerp(target, 0.05);
-        } else if (shapeIndex === 1) {
-          const dodgeDir = meshRef.current.position.clone().sub(target).normalize();
-          meshRef.current.position.addScaledVector(dodgeDir, 0.1);
-        } else if (shapeIndex === 2) {
-          meshRef.current.rotation.x += 0.02;
-          meshRef.current.rotation.y += 0.02;
-        } else if (shapeIndex === 3) {
-          const scale = 1 + Math.sin(clock.getElapsedTime() * 5) * 0.3;
-          meshRef.current.scale.set(scale, scale, scale);
-        }
+        // Update color based on cursor proximity.
+        const hue = hovered ? 0 : (distance / 10) * 360;
+        meshRef.current.material.color.setHSL((hue % 360) / 360, 0.7, hovered ? 0.8 : 0.5);
       }
-      // Update color based on cursor proximity.
-      const hue = hovered ? 0 : (distance / 10) * 360;
-      meshRef.current.material.color.setHSL((hue % 360) / 360, 0.7, hovered ? 0.8 : 0.5);
+    } catch (error) {
+      console.error("Error in InteractiveShape animation:", error);
+      // Don't throw - we want to continue rendering even if one frame fails
     }
   });
 
@@ -71,13 +77,25 @@ const InteractiveShape = React.memo(({ initialPosition, velocity, shapeIndex, se
 // --- InteractiveShapes Component ---
 const InteractiveShapes = () => {
   const [shapeIndex, setShapeIndex] = useState(0);
-  const velocities = React.useMemo(() => (
-    Array.from({ length: 30 }, () => new THREE.Vector3(
-      THREE.MathUtils.randFloat(-0.02, 0.02),
-      THREE.MathUtils.randFloat(-0.02, 0.02),
-      THREE.MathUtils.randFloat(-0.02, 0.02)
-    ))
-  ), []);
+  const [hasError, setHasError] = useState(false);
+
+  const velocities = React.useMemo(() => {
+    try {
+      return Array.from({ length: 30 }, () => new THREE.Vector3(
+        THREE.MathUtils.randFloat(-0.02, 0.02),
+        THREE.MathUtils.randFloat(-0.02, 0.02),
+        THREE.MathUtils.randFloat(-0.02, 0.02)
+      ));
+    } catch (error) {
+      console.error("Error creating velocities:", error);
+      setHasError(true);
+      return [];
+    }
+  }, []);
+
+  if (hasError) {
+    return <Html center>Error loading 3D shapes</Html>;
+  }
 
   return (
     <group>
@@ -103,9 +121,49 @@ export const skillsRow1 = ['UX Research & UI Design', 'Interaction Design'];
 export const skillsRow2 = ['Haptic Prototyping', 'Sound Design', 'AI Integration', 'Frontend Development'];
 export const allSkills = [...skillsRow1, ...skillsRow2];
 
+// Fallback component when canvas fails
+const Canvas3DFallback = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        backgroundColor: theme.palette.background.paper,
+        opacity: 0.8,
+      }}
+    />
+  );
+};
+
 const Hero = () => {
   const theme = useTheme();
-  
+  const [canvasError, setCanvasError] = useState(false);
+
+  // Performance monitoring for WebGL canvas
+  useEffect(() => {
+    // Check for WebGL support
+    const canvas = document.createElement('canvas');
+    const hasWebGL = !!(
+      window.WebGLRenderingContext && 
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+
+    if (!hasWebGL) {
+      console.warn("WebGL not supported - using fallback");
+      setCanvasError(true);
+    }
+
+    // Clean up
+    return () => {
+      // Any cleanup needed for the 3D canvas
+    };
+  }, []);
+
   return (
     <Box 
       id="hero" 
@@ -123,39 +181,46 @@ const Hero = () => {
       }}
     >
       {/* 3D Canvas Background */}
-      <Canvas
-        camera={{ position: [0, 0, 10] }}
-        style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%',
-          zIndex: 0,
-          pointerEvents: 'auto' // Ensure canvas receives pointer events
-        }}
-      >
-        <ambientLight intensity={0.7} />
-        <pointLight position={[10, 10, 10]} />
-        <Suspense fallback={<Html center>Loading...</Html>}>
-          <InteractiveShapes />
-        </Suspense>
-        <OrbitControls enableZoom={false} />
-      </Canvas>
+      <ErrorBoundary fallback={<Canvas3DFallback />}>
+        {!canvasError ? (
+          <Canvas
+            camera={{ position: [0, 0, 10] }}
+            style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%',
+              zIndex: 0,
+              pointerEvents: 'auto'
+            }}
+            onError={() => setCanvasError(true)}
+          >
+            <ambientLight intensity={0.7} />
+            <pointLight position={[10, 10, 10]} />
+            <Suspense fallback={<Html center>Loading 3D elements...</Html>}>
+              <InteractiveShapes />
+            </Suspense>
+            <OrbitControls enableZoom={false} />
+          </Canvas>
+        ) : (
+          <Canvas3DFallback />
+        )}
+      </ErrorBoundary>
       
       {/* Content Container with positioning for bottom left placement */}
       <Container 
-        maxWidth={false} // Changed to false to allow full width positioning
+        maxWidth={false} 
         sx={{ 
           position: 'relative',
           zIndex: 1,
           height: '100%',
           width: '100%',
           display: 'flex',
-          alignItems: 'flex-end', // Align to bottom
-          justifyContent: 'flex-start', // Align to left
-          p: 0, // Remove default padding
-          pointerEvents: 'none', // Allow events to pass through to canvas
+          alignItems: 'flex-end', 
+          justifyContent: 'flex-start', 
+          p: 0, 
+          pointerEvents: 'none', 
         }}
       >
         {/* Content box with left alignment */}
@@ -170,7 +235,7 @@ const Hero = () => {
           }}
         >
           {/* Group 1: Name and Title */}
-          <Box sx={{ mb: 5 }}> {/* 40px space between groups (5 units) */}
+          <Box sx={{ mb: 5 }}> 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -180,16 +245,15 @@ const Hero = () => {
                 variant="h1" 
                 component="h1"
                 sx={{ 
-                  fontSize: '5rem !important', // Changed from 4.5rem to 5rem
+                  fontSize: '5rem !important',
                   fontWeight: 700,
                   color: theme.palette.text.primary,
-                  lineHeight: 1.2, // Added to maintain proper line height with larger font
+                  lineHeight: 1.2,
                 }}
               >
                 Vincent Göke
               </Typography>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -207,7 +271,7 @@ const Hero = () => {
               </Typography>
             </motion.div>
           </Box>
-
+          
           {/* Group 2: Status and Skills */}
           <Box sx={{ gap: 0 }}>
             {/* First div - Keep unchanged */}
@@ -228,7 +292,7 @@ const Hero = () => {
                 Fulltime | Available from June 2025 | On-Site, Hybrid, Remote
               </Typography>
             </motion.div>
-
+            
             {/* Second div - Now contains both rows of skills */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -242,7 +306,7 @@ const Hero = () => {
                   flexWrap: 'wrap',
                   justifyContent: 'flex-start',
                   gap: 1,
-                  mb: 1, // Added margin bottom of 8
+                  mb: 1,
                   '& .MuiChip-root:hover': {
                     borderColor: theme.palette.accent.main,
                   }

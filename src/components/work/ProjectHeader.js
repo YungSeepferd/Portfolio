@@ -39,7 +39,7 @@ const ProjectHeader = ({ project }) => {
             <Typography 
               variant="projectTitle"
               sx={{ 
-                color: theme.palette.primary.main,
+                color: theme.palette.text.primary, // Changed to text.primary (white)
                 fontSize: '2.5rem',
                 fontWeight: 700,
                 lineHeight: 1.2,

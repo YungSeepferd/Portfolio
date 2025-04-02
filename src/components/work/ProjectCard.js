@@ -4,12 +4,13 @@ import { Box, Typography, Card, CardContent, useTheme } from '@mui/material';
 import { formatProjectTags } from '../../utils/dataHelpers';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import ContentAwareImage from '../common/ContentAwareImage';
-import SkillTag from '../common/SkillTag'; // Add this import
+import SkillTag from '../common/SkillTag';
 
 /**
  * Enhanced project card with lazy loading and proper animations
+ * Updated to provide larger display and better text visibility
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
+const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompact = false, gridPosition }) => {
   const theme = useTheme();
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
@@ -20,7 +21,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
   // Modify to show all tags if showAllTags is true
   const { tags, remaining } = showAllTags 
     ? { tags: project.categories, remaining: 0 }
-    : formatProjectTags(project.categories, skillTags, 2);
+    : formatProjectTags(project.categories, skillTags, isCompact ? 2 : 3);
   
   const coverImage = project.images?.[0] || project.media;
   
@@ -37,8 +38,19 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
     }
   };
 
+  // Determine image height based on type
+  const imageHeight = isCompact ? '45%' : '45%';
+  const contentHeight = isCompact ? '55%' : '55%';
+  
   return (
-    <Box ref={cardRef} sx={{ height: '100%', display: 'flex', aspectRatio: '1/1' }}> {/* Add aspectRatio for square shape */}
+    <Box 
+      ref={cardRef} 
+      sx={{ 
+        height: '100%', 
+        display: 'flex',
+        position: 'relative',
+      }}
+    >
       {isVisible && (
         <motion.div
           initial="hidden"
@@ -62,11 +74,11 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
               height: '100%',
               width: '100%',
               overflow: 'hidden',
-              borderRadius: theme.shape.borderRadius, // Fixed the typo here - removed the trailing 's'
+              borderRadius: theme.shape.borderRadius,
               boxShadow: `0 8px 16px ${theme.palette.shadow.light}`,
-              transition: `transform ${theme.palette.transitions.short} ease, box-shadow ${theme.palette.transitions.short} ease`,
+              transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
               '&:hover': {
-                boxShadow: `0 16px 32px ${theme.palette.shadow.medium}`,
+                boxShadow: `0 20px 40px ${theme.palette.shadow.medium}`,
               },
             }}
           >
@@ -75,7 +87,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
               sx={{
                 position: 'relative',
                 width: '100%',
-                height: '50%', // Adjusted to be 50% of the card height for better proportions
+                height: imageHeight,
                 flexShrink: 0,
                 overflow: 'hidden',
               }}
@@ -97,59 +109,61 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
                 flexGrow: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                p: 3, // Adjusted padding for better proportions
+                p: { xs: 2.5, sm: 3, md: 3.5 }, // Responsive padding that increases with screen size
                 height: 'auto',
-                minHeight: '50%', // Ensure content takes at least 50% of height
+                minHeight: contentHeight,
+                justifyContent: 'space-between',
               }}
             >
-              <Typography 
-                variant="h5" 
-                className="project-card-title"
-                sx={{
-                  mb: 3, // Increased margin bottom from 2 to 3
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  lineHeight: 1.3,
-                  height: '2.6em',
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                }}
-              >
-                {project.title}
-              </Typography>
-              
-              <Typography 
-                variant="body2" 
-                className="project-card-description"
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 3, // Reduced from 4 to 3 lines to fit square format
-                  WebkitBoxOrient: 'vertical',
-                  color: theme.palette.text.secondary,
-                  lineHeight: 1.5,
-                  flexGrow: 1,
-                  fontSize: '0.95rem',
-                  mb: 2, // Reduced margin bottom
-                }}
-              >
-                {project.description}
-              </Typography>
+              <Box>
+                <Typography 
+                  variant="h5" 
+                  className="project-card-title"
+                  sx={{
+                    mb: 2.5,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    lineHeight: 1.3,
+                    fontWeight: 600,
+                    color: theme.palette.primary.main,
+                    fontSize: { xs: '1.3rem', sm: '1.4rem', md: '1.5rem' }, // Larger text size
+                  }}
+                >
+                  {project.title}
+                </Typography>
+                
+                <Typography 
+                  variant="body1" // Changed from body2 to body1 for better visibility
+                  className="project-card-description"
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: isCompact ? 3 : 4, // Show more lines for non-compact cards
+                    WebkitBoxOrient: 'vertical',
+                    color: theme.palette.text.primary, // Changed from secondary to primary for better contrast
+                    lineHeight: 1.6,
+                    fontSize: { xs: '0.95rem', md: '1rem' }, // Slightly larger font
+                    mb: 3,
+                    fontWeight: 400,
+                  }}
+                >
+                  {project.description}
+                </Typography>
+              </Box>
               
               <Box 
                 className="project-card-tags"
                 sx={{ 
                   display: 'flex', 
                   flexWrap: 'wrap',
-                  gap: 1, // Increased gap between tags from 0.75 to 1
+                  gap: 1.2, // Increased gap for better spacing
                   overflowX: { xs: 'auto', md: 'visible' },
-                  padding: theme.spacing(2, 0), // Vertical padding only
-                  marginTop: theme.spacing(2),
-                  paddingTop: theme.spacing(2),
+                  padding: theme.spacing(2, 0, 0.5), // Adjusted padding
+                  marginTop: 'auto', // Push to bottom of container
                   borderTop: `1px solid ${theme.palette.divider}`,
                   flexShrink: 0,
                 }}
@@ -167,9 +181,9 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false }) => {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontSize: '0.75rem',
-                      py: 0.5,
-                      px: 1,
+                      fontSize: '0.8rem',
+                      py: 0.6,
+                      px: 1.2,
                       color: theme.palette.text.secondary,
                     }}
                   >

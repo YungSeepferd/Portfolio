@@ -6,9 +6,16 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
 import Salzburg from '../../assets/images/About Me/Salzburg.jpg';
 
-const FooterContact = () => {
+const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
-  const mailtoLink = "mailto:goeke.vincent@gmail.com?subject=Contact%20from%20Portfolio";
+  const mailtoLink = projectContext 
+    ? `mailto:goeke.vincent@gmail.com?subject=Regarding%20your%20${encodeURIComponent(projectContext)}%20project` 
+    : "mailto:goeke.vincent@gmail.com?subject=Contact%20from%20Portfolio";
+
+  // Generate project-specific message if a project context is provided
+  const contactMessage = projectContext 
+    ? `Interested in discussing more about the ${projectContext} project? I'd love to share insights about the process and outcomes!` 
+    : "If you want to chat about UX, haptic design, or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
 
   return (
     <Box 
@@ -75,7 +82,7 @@ const FooterContact = () => {
                         opacity: 0.9,
                       }}
                     >
-                      If you want to chat about UX, haptic design, or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.
+                      {contactMessage}
                     </Typography>
                     
                     {/* Contact Icons */}

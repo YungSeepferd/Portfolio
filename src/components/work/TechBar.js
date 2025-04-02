@@ -1,6 +1,7 @@
 import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 // Styled components using theme values instead of hardcoded colors
 const NavLink = styled(Typography)(({ theme }) => ({
@@ -10,7 +11,7 @@ const NavLink = styled(Typography)(({ theme }) => ({
   cursor: "pointer",
   display: "flex",
   alignItems: "center",
-  transition: theme.palette.transitions.short,
+  transition: `color ${theme.animationSettings.durations.short}ms ease`, // Fixed transition property
   '&:hover': {
     color: theme.palette.accent.light,
   }
@@ -28,9 +29,26 @@ const TechChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-const TechBar = ({ technologies = [], links = [] }) => {
+const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
   // Skip rendering if there's nothing to show
   if (technologies.length === 0 && links.length === 0) return null;
+  
+  // Add PDF download links for specific projects
+  const enhancedLinks = [...links];
+  
+  if (projectTitle === "Prototyping Emotions – Master Thesis") {
+    enhancedLinks.push({
+      label: "Download PDF",
+      url: "/assets/documents/Prototyping_Emotions_Thesis.pdf",
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+    });
+  } else if (projectTitle === "Phone-based Intervention in Self-driving Cars – Bachelor Thesis") {
+    enhancedLinks.push({
+      label: "Download PDF",
+      url: "/assets/documents/Phone_Based_Intervention_Thesis.pdf",
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+    });
+  }
   
   return (
     <Box
@@ -86,8 +104,7 @@ const TechBar = ({ technologies = [], links = [] }) => {
             </React.Fragment>
           ))}
         </Stack>
-
-        {links.length > 0 && (
+        {enhancedLinks.length > 0 && (
           <Stack 
             direction="row" 
             spacing={2} 
@@ -96,7 +113,7 @@ const TechBar = ({ technologies = [], links = [] }) => {
               justifyContent: { xs: "center", sm: "flex-end" },
             }}
           >
-            {links.map((link, index) => (
+            {enhancedLinks.map((link, index) => (
               <NavLink 
                 key={index} 
                 component="a" 
@@ -104,8 +121,12 @@ const TechBar = ({ technologies = [], links = [] }) => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
               >
-                {link.label} →
+                {link.label}{link.icon || " →"}
               </NavLink>
             ))}
           </Stack>

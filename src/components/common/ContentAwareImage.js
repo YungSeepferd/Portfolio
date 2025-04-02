@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Skeleton, useTheme } from '@mui/material';
+import { Box, Skeleton, Typography, useTheme } from '@mui/material';
 import { analyzeImage, getOptimalObjectFit } from '../../utils/imageAnalyzer';
 
 /**
@@ -19,6 +19,8 @@ import { analyzeImage, getOptimalObjectFit } from '../../utils/imageAnalyzer';
  * @param {string} objectFit - Explicit object-fit property
  * @param {string} containerOrientation - Orientation of the container
  * @param {function} onLoad - Callback function for image load event
+ * @param {function} onError - Callback function for image error event
+ * @param {string} fallbackSrc - Fallback image source if primary fails
  * @param {object} props - Additional props
  */
 const ContentAwareImage = ({ 
@@ -31,41 +33,83 @@ const ContentAwareImage = ({
   objectFit = null, // Allow explicit override
   containerOrientation = 'landscape',
   onLoad = () => {},
+  onError = () => {},
+  fallbackSrc = null,
   ...props
 }) => {
   const theme = useTheme();
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
   const [imageDetails, setImageDetails] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 2;
   
   // Process image data on component mount or when src changes
   useEffect(() => {
+    // Reset states when src changes
+    setLoaded(false);
+    setError(false);
+    setRetryCount(0);
+    
     // Use provided imageData if available, otherwise analyze from src
-    const processedImage = imageData || analyzeImage(src);
-    setImageDetails(processedImage);
+    try {
+      const processedImage = imageData || analyzeImage(src);
+      setImageDetails(processedImage);
+    } catch (err) {
+      console.error("Error analyzing image:", err);
+      setError(true);
+    }
   }, [src, imageData]);
   
   // Handle image loading and additional orientation detection
   const handleLoad = (e) => {
-    const img = e.target;
-    
-    // Update orientation based on actual dimensions if not already determined
-    if (imageDetails && imageDetails.orientation === 'unknown' && img.naturalWidth && img.naturalHeight) {
-      const isVertical = img.naturalHeight > img.naturalWidth;
-      setImageDetails({
-        ...imageDetails,
-        orientation: isVertical ? 'portrait' : 'landscape',
-        aspectRatio: img.naturalWidth / img.naturalHeight
-      });
+    try {
+      const img = e.target;
+      
+      // Update orientation based on actual dimensions if not already determined
+      if (imageDetails && imageDetails.orientation === 'unknown' && img.naturalWidth && img.naturalHeight) {
+        const isVertical = img.naturalHeight > img.naturalWidth;
+        setImageDetails({
+          ...imageDetails,
+          orientation: isVertical ? 'portrait' : 'landscape',
+          aspectRatio: img.naturalWidth / img.naturalHeight
+        });
+      }
+      
+      setLoaded(true);
+      setError(false);
+      onLoad(e);
+    } catch (err) {
+      console.error("Error in image load handler:", err);
+      setError(true);
     }
-    
-    setLoaded(true);
-    onLoad(e);
   };
   
-  // Handle image loading errors
+  // Handle image loading errors with retry mechanism
   const handleError = (e) => {
-    console.error("Failed to load image:", src);
-    e.target.src = theme.customDefaults?.placeholderImage || '/assets/placeholder.jpg';
+    if (retryCount < maxRetries) {
+      // Retry loading the image after a short delay
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        // Force reload by adding a cache-busting parameter
+        e.target.src = `${imageSrc}?retry=${retryCount + 1}`;
+      }, 1000);
+    } else {
+      console.error("Failed to load image after retries:", src);
+      setError(true);
+      
+      // Use fallback image if provided, otherwise use theme default
+      if (fallbackSrc) {
+        e.target.src = fallbackSrc;
+      } else if (theme.customDefaults?.placeholderImage) {
+        e.target.src = theme.customDefaults.placeholderImage;
+      } else {
+        // If no fallback is available, show the error state
+        e.target.style.display = 'none';
+      }
+      
+      onError(e);
+    }
   };
   
   // Determine the best object-fit property
@@ -85,7 +129,7 @@ const ContentAwareImage = ({
   const imageSrc = imageDetails?.src || src;
   const imageAlt = alt || imageDetails?.alt || 'Image';
   const finalObjectFit = determineObjectFit();
-
+  
   return (
     <Box
       sx={{
@@ -100,7 +144,7 @@ const ContentAwareImage = ({
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {!loaded && (
+      {!loaded && !error && (
         <Skeleton 
           variant="rectangular" 
           width="100%" 
@@ -108,6 +152,25 @@ const ContentAwareImage = ({
           animation="wave"
         />
       )}
+      
+      {error && !loaded && (
+        <Box 
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            padding: theme.spacing(2),
+            backgroundColor: 'rgba(0,0,0,0.05)',
+          }}
+        >
+          <Typography variant="body2" color="text.secondary" align="center">
+            Image could not be loaded
+          </Typography>
+        </Box>
+      )}
+      
       <Box
         component="img"
         src={imageSrc}
@@ -121,6 +184,7 @@ const ContentAwareImage = ({
           objectPosition: 'center',
           transition: theme.transitions.create(['transform', 'opacity']),
           opacity: loaded ? 1 : 0,
+          display: error && !loaded ? 'none' : 'block',
           ...(expandOnHover && {
             '&:hover': {
               transform: 'scale(1.05)',

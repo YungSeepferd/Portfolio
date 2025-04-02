@@ -20,24 +20,19 @@ import ExperienceImage from '../../assets/images/About Me/VRBrille.JPG';
 import EducationImage from '../../assets/images/About Me/vincentMain.JPG';
 
 /**
- * FUNCTIONALITY: Contains data for the About section tabs including content and images
- * ISSUES:
- * - Hard-coded image paths with TODO comments to change them
- * - Large React fragments could be extracted to separate components
- * - Inline styling in HTML elements (should use MUI styling)
- * - Some content is duplicated in multiple places
+ * Contains data for the About section tabs including content and images
  */
 
-export const wallsData = [
-  // About Me tab
+export const aboutData = [
+  // WhoAmI tab (previously About Me)
   {
-    title: "About Me",
+    title: "WhoAmI",
     subtitle: "UX Designer & Researcher",
     pictures: [ProfileImage],
     content: (
       <>
         <Typography variant="h4" component="div" gutterBottom>
-          About Me
+          WhoAmI
         </Typography>
         <Typography variant="body1" paragraph>
           Hi! I'm Vincent Göke, a Human-Computer Interaction Master's graduate, sound designer, and interaction technologist. My work is centered around designing <strong>emotion-driven experiences </strong> through <strong>affective haptics, UX research, and multi-sensory interaction design</strong>.
@@ -130,12 +125,12 @@ export const wallsData = [
                 <Typography variant="h6" sx={{ color: 'primary.main' }}>UX Intern @ DJay Munich (2022)</Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   Conducted user research and prototyped new interaction models for music-related applications.
-                  <ul style={{ paddingLeft: '1.5rem', margin: '0.5rem 0' }}>
-                    <li>Designed user flows and wireframes for mobile music applications</li>
-                    <li>Conducted usability testing with musicians and DJs</li>
-                    <li>Created prototypes using Figma and Adobe XD</li>
-                  </ul>
                 </Typography>
+                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
+                  <Box component="li"><Typography variant="body2">Designed user flows and wireframes for mobile music applications</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Conducted usability testing with musicians and DJs</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Created prototypes using Figma and Adobe XD</Typography></Box>
+                </Box>
               </Box>
             </Box>
           </Grid>
@@ -147,12 +142,12 @@ export const wallsData = [
                 <Typography variant="h6" sx={{ color: 'primary.main' }}>IT & Podcast Production Support @ University Hospital Munich (2020–2022)</Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   Provided technical support and developed an audio production pipeline for podcast content.
-                  <ul style={{ paddingLeft: '1.5rem', margin: '0.5rem 0' }}>
-                    <li>Managed IT infrastructure for medical education department</li>
-                    <li>Produced and edited educational podcast content</li>
-                    <li>Trained staff on audio recording and editing software</li>
-                  </ul>
                 </Typography>
+                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
+                  <Box component="li"><Typography variant="body2">Managed IT infrastructure for medical education department</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Produced and edited educational podcast content</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Trained staff on audio recording and editing software</Typography></Box>
+                </Box>
               </Box>
             </Box>
           </Grid>
@@ -164,12 +159,12 @@ export const wallsData = [
                 <Typography variant="h6" sx={{ color: 'primary.main' }}>Freelance Audio Producer / Sound Designer (Since 2015)</Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   Created original music compositions (Superior Motive, Din-Z), mixed audio for projects, and collaborated with artists.
-                  <ul style={{ paddingLeft: '1.5rem', margin: '0.5rem 0' }}>
-                    <li>Produced original music for independent artists</li>
-                    <li>Designed sound effects and atmospheres for digital media</li>
-                    <li>Mixed and mastered audio for commercial release</li>
-                  </ul>
                 </Typography>
+                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
+                  <Box component="li"><Typography variant="body2">Produced original music for independent artists</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Designed sound effects and atmospheres for digital media</Typography></Box>
+                  <Box component="li"><Typography variant="body2">Mixed and mastered audio for commercial release</Typography></Box>
+                </Box>
               </Box>
             </Box>
           </Grid>

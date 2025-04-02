@@ -2,34 +2,28 @@ import React from 'react';
 import { Box, IconButton, Button, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CloseIcon from '@mui/icons-material/Close';
 
 const ProjectNavigation = ({ onClose, onPrev, onNext }) => {
   const theme = useTheme();
   
   return (
     <>
-      {/* Close button - Using Button instead of IconButton for better theme consistency */}
+      {/* Close button - Styled like the contact button in FooterContact */}
       <Box sx={{ position: 'fixed', top: theme.spacing(2.5), right: theme.spacing(2.5), zIndex: 10 }}>
         <Button 
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={onClose}
-          startIcon={<CloseIcon />}
           sx={{ 
-            ...theme.customButtons.close,
-            ...theme.customButtons.contact,
-            minWidth: 'unset',
-            borderRadius: '50%',
-            width: theme.spacing(6),
-            height: theme.spacing(6),
-            p: 0,
-            '& .MuiButton-startIcon': {
-              margin: 0,
-            }
+            textTransform: 'none',
+            fontWeight: 'bold',
+            px: 3,
+            py: 1,
+            borderRadius: theme.shape.borderRadius,
+            boxShadow: theme.shadows[4],
           }}
         >
-          <span className="sr-only">Close</span>
+          Close
         </Button>
       </Box>
       

@@ -5,13 +5,22 @@ import ContentAwareImage from '../common/ContentAwareImage';
 import { renderContentSection } from '../../utils/contentParser';
 import { getAnimation } from '../../utils/themeUtils';
 
+/**
+ * ProjectSection Component
+ * 
+ * Renders a project section with title, content and image.
+ * Supports consistent heading hierarchy through titleVariant and titleComponent props.
+ */
 const ProjectSection = ({
   sectionNumber,
   title,
+  titleVariant = "h4",
+  titleComponent = "h4",
   content,
   imageData,
   direction = 'normal',
   fallbackContent = null,
+  headingColor = null, // Added headingColor prop
 }) => {
   const theme = useTheme();
   const isReversed = direction === 'reverse';
@@ -19,6 +28,9 @@ const ProjectSection = ({
   // Use theme animations instead of hardcoded values
   const textAnimation = getAnimation(theme, 'fadeIn');
   const imageAnimation = getAnimation(theme, 'slideUp');
+  
+  // If headingColor is not provided, use the default from theme
+  const titleColor = headingColor || theme.palette.text.primary;
   
   return (
     <Box component="section">
@@ -44,7 +56,17 @@ const ProjectSection = ({
             </Typography>
             
             {title && (
-              <Typography variant="h4" sx={{ mt: 1, mb: 3 }}>{title}</Typography>
+              <Typography 
+                variant={titleVariant} 
+                component={titleComponent} 
+                sx={{ 
+                  mt: 1, 
+                  mb: 3,
+                  color: titleColor, // Apply the heading color
+                }}
+              >
+                {title}
+              </Typography>
             )}
             
             <Box className="project-content">

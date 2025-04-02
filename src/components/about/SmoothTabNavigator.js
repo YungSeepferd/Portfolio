@@ -1,17 +1,51 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
-import { Tabs, Tab, Box, Fade, Typography, Container, useTheme, CircularProgress, Chip, Stack } from '@mui/material';
-import { wallsData } from './AboutData';
-import WallCard from './WallCard';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import { Tabs, Tab, Box, Fade, Typography, Container, useTheme, CircularProgress } from '@mui/material';
+import { aboutData } from './AboutData';
+import WallCard from './AboutContent';
 import useDebounce from '../../hooks/useDebounce';
 
 const Slideshow = ({ pictures }) => {
   const theme = useTheme();
-  const defaultPics = pictures && pictures.length > 0 ? pictures : ['https://via.placeholder.com/300'];
+  const defaultPics = useMemo(() => {
+    return pictures && pictures.length > 0 ? pictures : ['https://via.placeholder.com/300'];
+  }, [pictures]);
+  
   const [current, setCurrent] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [loadedImages, setLoadedImages] = useState({});
   const timerRef = useRef(null);
   
-  // Handle image loading
+  // Pre-load all images in the slideshow to prevent loading skeletons during transitions
+  useEffect(() => {
+    const preloadImages = async () => {
+      // Create promises for all images to load
+      const imagePromises = defaultPics.map((src, index) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            setLoadedImages(prev => ({...prev, [index]: true}));
+            resolve();
+          };
+          img.onerror = () => {
+            console.error('Failed to preload image:', src);
+            resolve();
+          };
+          img.src = src;
+        });
+      });
+      
+      // Wait for all images to be loaded
+      await Promise.all(imagePromises);
+    };
+    
+    preloadImages();
+    
+    return () => {
+      // Cleanup function - no need to abort image loading as browser handles this
+    };
+  }, [defaultPics]);
+  
+  // Handle image loading for the current image
   const handleImageLoad = () => {
     setLoaded(true);
   };
@@ -25,26 +59,31 @@ const Slideshow = ({ pictures }) => {
   };
 
   useEffect(() => {
-    // Reset loaded state when picture changes
-    setLoaded(false);
-    
-    // Create a new Image object to preload the image
-    const img = new Image();
-    
-    // Set handlers before setting src to ensure they catch all events
-    img.onload = handleImageLoad;
-    img.onerror = () => {
-      console.error('Failed to load image:', defaultPics[current]);
-      setLoaded(true); // Allow UI to proceed even if image fails
-    };
-    
-    // Set the source to start loading
-    img.src = defaultPics[current];
-    
-    // If the image is already cached, the onload might have fired 
-    // before we set the handler, so we check here
-    if (img.complete) {
-      handleImageLoad();
+    // If we already loaded this image before, mark it as loaded immediately
+    if (loadedImages[current]) {
+      setLoaded(true);
+    } else {
+      // Otherwise reset loaded state when picture changes
+      setLoaded(false);
+      
+      // Create a new Image object to preload the image
+      const img = new Image();
+      
+      // Set handlers before setting src to ensure they catch all events
+      img.onload = handleImageLoad;
+      img.onerror = () => {
+        console.error('Failed to load image:', defaultPics[current]);
+        setLoaded(true); // Allow UI to proceed even if image fails
+      };
+      
+      // Set the source to start loading
+      img.src = defaultPics[current];
+      
+      // If the image is already cached, the onload might have fired 
+      // before we set the handler, so we check here
+      if (img.complete) {
+        handleImageLoad();
+      }
     }
 
     // Set up the timer for moving to the next image
@@ -54,7 +93,7 @@ const Slideshow = ({ pictures }) => {
 
     // Cleanup on unmount or when dependencies change
     return cleanup;
-  }, [current, defaultPics]);
+  }, [current, defaultPics, loadedImages]);
 
   return (
     <Box 
@@ -66,7 +105,7 @@ const Slideshow = ({ pictures }) => {
         overflow: 'hidden',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: theme.palette.background.default,
-        boxShadow: theme.shadows[1], // Add subtle shadow for depth
+        boxShadow: theme.shadows[1],
       }}
     >
       {!loaded && (
@@ -91,7 +130,7 @@ const Slideshow = ({ pictures }) => {
         <Box component="div" sx={{ height: '100%' }}>
           <img
             src={defaultPics[current]}
-            alt={`Slideshow image ${current + 1}`}
+            alt={`Slideshow ${current + 1}`}
             style={{
               width: '100%',
               height: '100%',
@@ -124,7 +163,9 @@ const Slideshow = ({ pictures }) => {
                 backgroundColor: i === current ? theme.palette.dots.active : theme.palette.dots.inactive,
                 borderRadius: '50%',
                 transition: 'background-color 0.3s ease',
+                cursor: 'pointer',
               }} 
+              onClick={() => setCurrent(i)}
             />
           ))}
         </Box>
@@ -134,7 +175,7 @@ const Slideshow = ({ pictures }) => {
 };
 
 const ParallaxScroll = forwardRef((props, ref) => {
-  const { onSectionChange, currentSection = 0, tagStyle } = props;
+  const { onSectionChange, currentSection = 0, tagStyle, fullWidth = false } = props;
   const [tabIndex, setTabIndex] = useState(currentSection);
   const scrollRef = useRef(null);
   const theme = useTheme();
@@ -181,7 +222,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     scrollToSection: (sectionIndex) => {
-      if (sectionIndex >= 0 && sectionIndex < wallsData.length) {
+      if (sectionIndex >= 0 && sectionIndex < aboutData.length) {
         setIsScrolling(true); // Prevent competing updates
         setTabIndex(sectionIndex);
 
@@ -223,6 +264,15 @@ const ParallaxScroll = forwardRef((props, ref) => {
     }, 500);
   };
 
+  // Determine container component based on fullWidth prop
+  const ContentContainer = fullWidth ? Box : Container;
+  const containerProps = fullWidth 
+    ? { 
+        className: "full-width-container", 
+        sx: { width: '100%' } 
+      }
+    : { maxWidth: "lg" };
+
   return (
     <Box
       className="parallax-container"
@@ -244,33 +294,38 @@ const ParallaxScroll = forwardRef((props, ref) => {
           alignItems: 'center',
           boxSizing: 'border-box',
           overflowY: 'hidden',
-          // Use the theme customSections settings
-          ...theme.customSections.about.container,
+          // Conditionally apply container styles based on fullWidth
+          ...(fullWidth ? {} : theme.customSections.about.container),
         }}
       >
-        <Container maxWidth="lg">
-          <Box className="tabs-container" 
-            sx={{ 
-              width: '100%', 
-              overflow: 'hidden',
-              mb: theme.customSections.about.spacingBetweenSections,
-            }}
-          >
+        {/* Tabs container - always full width */}
+        <Box 
+          className="tabs-container"
+          sx={{ 
+            width: '100%',
+            backgroundColor: theme.palette.background.paper,
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            position: 'relative',
+            zIndex: 2,
+          }}
+        >
+          <Container maxWidth="lg">
             <Tabs
               value={tabIndex}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
               sx={{
-                mb: 3, // Increased spacing between tabs and content
+                mb: 0,
                 '& .MuiTabs-flexContainer': {
-                  justifyContent: { xs: 'flex-start', md: 'center' },
+                  justifyContent: 'center', // Ensure tabs are centered on all screens
                 },
                 '& .MuiTab-root': {
-                  px: 3, // More padding for tab buttons
+                  px: 3,
                   py: 1.5,
                   fontSize: '1rem',
                   fontWeight: 500,
+                  fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`, // Use Montserrat font for tabs
                   color: theme.palette.text.secondary,
                   '&.Mui-selected': {
                     color: theme.palette.primary.main,
@@ -278,29 +333,37 @@ const ParallaxScroll = forwardRef((props, ref) => {
                   '&:hover': {
                     color: theme.palette.secondary.main,
                   },
+                  transition: 'color 0.3s ease', // Smooth color transition on hover/selection
                 },
                 '& .MuiTabs-indicator': {
-                  backgroundColor: theme.palette.primary.main,
-                  height: 3, // Thicker indicator for emphasis
+                  backgroundColor: theme.palette.secondary.main,
+                  height: 3,
                 },
               }}
             >
-              {wallsData.map((wall, index) => (
+              {aboutData.map((wall, index) => (
                 <Tab key={index} label={wall.title} />
               ))}
             </Tabs>
+          </Container>
+        </Box>
 
+        {/* Content container - can be full width or constrained */}
+        <ContentContainer {...containerProps}>
+          <Box sx={{ pt: 4, pb: 2 }}>
             <Fade in timeout={{ enter: 500, exit: 500 }} key={tabIndex}>
               <Box
                 className="tab-content"
                 sx={{
                   width: '100%',
-                  // Apply standard tab content styling from theme
-                  ...theme.customSections.about.tabContent,
+                  // Conditionally apply tab content styling
+                  ...(fullWidth ? {
+                    px: { xs: 2, md: 3 },
+                  } : theme.customSections.about.tabContent),
                 }}
               >
                 <WallCard 
-                  variant="noBorder" 
+                  variant={fullWidth ? "transparent" : "noBorder"}
                   sx={{ 
                     width: '100%',
                     // Apply content card styling from theme
@@ -321,7 +384,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
                         ...theme.customSections.about.imageContainer,
                       }}
                     >
-                      <Slideshow pictures={wallsData[tabIndex].pictures} />
+                      <Slideshow pictures={aboutData[tabIndex].pictures} />
                     </Box>
                     <Box
                       sx={{
@@ -333,8 +396,16 @@ const ParallaxScroll = forwardRef((props, ref) => {
                     >
                       {/* Only show title if it's not the first tab */}
                       {tabIndex !== 0 && (
-                        <Typography variant="h4" component="div" sx={{ mb: 2 }}>
-                          {wallsData[tabIndex].title}
+                        <Typography 
+                          variant="h4" 
+                          component="div" 
+                          sx={{ 
+                            mb: 2,
+                            color: theme.palette.text.primary, // Ensure heading is white
+                            fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif` // Use Montserrat font for headings
+                          }}
+                        >
+                          {aboutData[tabIndex].title}
                         </Typography>
                       )}
                       <Box
@@ -362,7 +433,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
                           },
                         }}
                       >
-                        {wallsData[tabIndex].content}
+                        {aboutData[tabIndex].content}
                       </Box>
                     </Box>
                   </Box>
@@ -370,7 +441,7 @@ const ParallaxScroll = forwardRef((props, ref) => {
               </Box>
             </Fade>
           </Box>
-        </Container>
+        </ContentContainer>
       </Box>
     </Box>
   );
