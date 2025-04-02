@@ -1,0 +1,293 @@
+Portfolio Content
+About me
+My name is Vincent Göke and I'm currently studying Human-Computer Interaction at the FH Salzburg and Paris Lodron University Salzburg in a Joint Masters Degree Program.
+I studied media informatics at LMU Munich with a focus on human-machine interaction and trained as a certified audio designer at Deutsche Pop in Munich.
+My preference for audio became evident during my bachelor's degree. I wrote a seminar paper on the guiding function of audio in our human perception and how this can be used for guided audio-meditative purposes in VR.
+Technology that has been designed with a variety of use cases and constraints in mind, and that communicates the limits of system usability, becomes invisible and indispensable in the everyday lives of the product's target audience.
+01.2020-12.2022, I have been working as a research assistant in the nuclear medicine department of the University Hospital of Munich. My job here was basic IT support and I helped to set up a podcast environment for my boss with focus on women in the medical field.
+In early 2022 I worked for 3 months at the DJ company "DJay" in Munich as an intern UX researcher and prototyper, but would now like to experience the working environment of a UX department of a large company.
+My goal would be to gain new experience in the field of interaction design, consolidate and expand my knowledge as a UX designer or software engineer, and meet like-minded people in an interesting and innovative work environment.
+
+User Experience Research
+
+I started my professional career as a media informatics student, which gave me a lot of experience in creating, designing and conducting in-depth interviews and user testing methods. I have already conducted online and offline research studies in various fields like automated driving, nuclear medicine, ADHD, audio engineering, political activism, interior design, and technology induced affective state change.
+
+
+
+Prototyping
+
+In my first UX design internship, I had the opportunity to put my prototyping skills to the test by pushing the prototyping boundaries of XD and Figma for a simple audio integration.
+My favorite tools are Fresco, Adobe After Effects, Adobe Audition, Ableton Live 11, Mockup, Adobe XD, and Figma.
+
+
+
+What I do when I'm not working
+Music
+I've been creating concepts and producing and mixing my music (aka Din-Z) since 2015 and occasionally work as a HipHop producer for other artists. It started as a hobby and it still is, but recently advanced towards band creation and small-level marketing. I can sing, and play the piano, guitar, ukulele, and drums.
+I also occasionally helped out in podcast post-production.
+Sports
+I played fussball for the longest period of my life, still enjoy watching professional Fussball matches, and am a fan of FC Schalke 04. I regularly work out to stay in shape for whenever the pitch calls!
+Family
+I am the seventh child in a family of eight children and many nieces and nephews. I often travel between Hamburg, München, Berlin, and Bonn to see family and friends.
+
+
+
+
+LANDING PAGE: Vincent Göke
+
+Audio Design/ UX Design & Research / Frontend Dev
+
+Sound Designer & Audio Engineer
+Hardware and Software Prototyping
+User Experience Research (UX) & UI Design
+Intermediate Coding Skills for MacOS, Linux and Windows
+Human-Computer Interaction (HCI)
+
+
+I am a diploma Audio Designer with a B.Sc in Media Informatic and a M.Sc. in Human-Computer-Interaction as a joint master at the PLUS and the FH Salzburg in Salzburg, Austria.
+Working on music and podcast production and now in UX Design and software engineering has shown me, the impact acoustic cues and context-based design decisions can have on the user experience.
+In the realm of Audio, I am currently involved with indie band music production, producing other artists, and working as an independent artist.
+For now, I aim to participate in a bigger professional UX design or frontend team to gain further practical experience in the field and contribute my ideas, workings, and specialized expertise to make technology human-centred.
+
+
+
+
+Project 1: Affective State Change Via Procedually Generated Haptics
+In the course of the Industry Project course at FH Salzburg and the PLUS I worked with a team and Innovobot Labs on a concept for affective state change through procedually generated haptics
+Project Overview
+This project embarked on an innovative journey to explore the intersection of technology and human emotion, specifically focusing on the development of a system that leverages procedurally generated haptics to influence and modulate affective states. Aimed at enhancing emotional well-being, the initiative sought to create a nuanced method for transitioning users between states of relaxation and flow, thereby improving productivity and overall mental health. With my team we also wrote a “work-in-progress” paper that was published on the Interhaptics Conference 2024 in Lille. 
+
+
+Research and Development
+The project was grounded in comprehensive research, drawing insights from a variety of sources including academic papers, industry practices, and cutting-edge technological tools. Key areas of focus included:
+	•	Haptic Feedback: Investigating the potential of haptic feedback as a medium for emotional communication and state change.
+	•	Personalization: Emphasizing the importance of personalized experiences in the effectiveness of haptic feedback.
+	•	User Comfort and Design: Prioritizing ergonomic design in the development of wearable haptic devices to ensure user comfort and prolonged engagement.
+	•	Mood Representation: Exploring the representation of specific moods through haptic patterns and textures.
+Technological Exploration
+A significant portion of the project was dedicated to technological exploration and application, particularly in the realms of AI and audio engineering. This included:
+	•	AI-Driven Haptics: Utilizing AI to generate dynamic haptic feedback patterns capable of inducing targeted emotional states.
+	•	Audio-Haptic Integration: Considering the integration of audio elements to complement haptic feedback, enhancing the overall user experience.
+Project Evolution
+The project's trajectory evolved from a broad concept of emotional enhancement through technology to a more focused application in haptic feedback design. This evolution was influenced by:
+	•	Interdisciplinary Insights: Incorporating findings from neuroscience, psychology, and design to inform the development process.
+	•	User-Centered Design: Shifting towards a design that prioritizes user experience, based on feedback and iterative testing.
+Outcomes and Reflections
+The project culminated in the development of a prototype system that represents a significant step forward in the use of technology for emotional well-being. Key outcomes included:
+	•	Innovative Haptic System: A prototype system that demonstrates the feasibility and potential of using procedurally generated haptics for emotional state modulation.
+	•	Research Contributions: Contributions to the body of knowledge on the relationship between haptic feedback and emotional states, offering insights for future exploration.
+Reflections and Future Directions
+Reflecting on the project, several key learnings and future directions were identified:
+	•	Importance of Flexibility: The need for adaptability in the face of technological and user experience challenges.
+	•	Potential for Broader Application: The project's findings hold promise for broader applications in areas such as therapeutic devices, VR, and gaming.
+	•	Continued Research: The necessity for ongoing research to further refine and enhance the system's effectiveness.
+This project represents a pioneering exploration into the use of haptics for emotional regulation, setting the stage for future innovations in the field.
+
+
+
+Project 2: TTF 2023 Hackathon
+
+Hackathon - Tourism Technology Festival 2022
+"Alles für den Gast" Gastronomy Convention Salzburg
+Sponsored by CTA, Österreich Werbung & Alles für den Gast
+GreenWallet by HCIsland - 1st Place in Stream 1
+11.-12. November 2022
+Our innovative idea, the "Green Wallet", was a hit!
+The synergy and creativity of our team was truly remarkable, and I couldn't be more proud of what we've accomplished together. A huge shout-out to my amazing teammates, Anica Hummel, Elisabeth Hendsel, Moritz Sender, and Tobias Mocka! Your hard work, talent, and relentless dedication were the key to our success. 🙌
+But this experience at the Tourism Technology Festival was not just about winning. With over 200+ great minds that competed with us, it was a fantastic opportunity to learn, innovate, and collaborate. I am incredibly grateful to everyone involved, especially the trade fair "Alles für den Gast" and our host Florian Bauer for providing us with this platform. 🌍
+After an intense 24 hours, we were thrilled to share that our team "HCIsland" secured 🥇 1st place in the Stream 1 category, focusing on "Cashless Payment Adoption" problem statement proposed by Mastercard.
+
+
+Problem Statement: Cashless Payment Adoptionby Mastercard
+Cashless payments offer a swift, secure, and straightforward means for restaurants and tourist-centric shops to accept payments. Yet, many retail outlets and kiosks still gravitate towards cash as their primary mode of transaction.
+Our internal research suggests that shop owners could potentially boost their revenue by opting for cashless payment methods over traditional cash transactions.
+
+
+Challenge:
+How can we design an application in collaboration with tourism regions that promote the adoption of cashless payments through gamification? How can you visualize the benefits of cashless payments?
+Our Approach:
+We wanted to motivate companies to adopt cashless payment and contribute to tourist distribution and regional sustainability with event gamification.
+
+
+User Research: Semi-Structured Interviews
+During the hackathon, extensive research was conducted into the realm of cashless payment systems, particularly focusing on their adoption challenges and benefits within the gastronomy sector. This exploration was enriched by engaging directly with vendors at a gastronomy convention, where insights were gathered from three different companies specializing in seamless cashless payment hardware and systems. These discussions revealed several pros and cons of adopting cashless payment methods for shop owners.
+Types of Cashless Systems Observed:
+	•	Fast Food Chains: Utilize large ordering terminals for customer self-service, followed by collection upon preparation and call.
+	•	Restaurants: Prefer waiter-delivered service, with a growing interest in QR code-based ordering and payment systems.
+This user research, conducted through semi-structured interviews, provided valuable insights into the current landscape of cashless payment systems in the gastronomy sector. It highlighted the tangible benefits and existing barriers to adoption, informing the development of a solution that addresses these challenges while promoting the advantages of going cashless.
+
+
+
+
+Pros:
+	•	Automated Accounting: Shop owners benefit from time savings due to automated bookkeeping processes.
+	•	Increased Average Revenue: The ability to accept card payments often leads to higher customer spending, as purchases are not limited by the cash they carry.
+	•	Accessibility in Rural Areas: In some parts of Austria, withdrawing cash can be challenging, making cashless options more appealing.
+	•	Reduced Cash Handling Errors: Cash transactions are prone to errors in handling and accounting, issues that are mitigated with cashless systems.
+	•	Internet Connectivity Through SIM Cards: Portable devices equipped with SIM cards can access the internet even in areas with poor broadband connectivity, facilitating cashless transactions.
+
+Cons:
+	•	Security Concerns: Some shop owners are wary of card payments due to perceived risks around data security, although this is largely considered a myth.
+	•	High Fees: The transaction fees charged by card companies are seen as prohibitively high by some business owners.
+	•	Internet Dependency: While local transactions do not require the Internet, online services do, which can be a barrier for some establishments.
+	•	Maintenance Costs: Ongoing maintenance of cashless systems represents a constant cost factor.
+
+
+Prototyping
+Technical Background
+We wanted to use Flutter for the UI creation, but since the user research consumed a lot of time, we decided to focus on the visual conceptualization of the concept and a great narrative to convey our idea to the jury in the best way possible. We created Figma prototypes for the shop side and the customer side, posing the following benefits of cashless payment for the stakeholders involved:
+Customer:
+	•	Fun, gamified shopping experience
+	•	Environmental impact
+	•	Attractive Discounts
+	•	Accessibility of Payment in Rural Areas
+Shopowner:
+	•	Automated Accounting
+	•	More Payment Options
+	•	Reduces Cash Handling Errors
+	•	Internet Connectivity Through SIM Cards in Rural Areas
+	•	Increased Average Revenue
+
+
+This is the shop owner's UI.
+In the concept development, we split the tasks, and a teammate and I took over the conceptualization of the owner's side. This worked out well since I interviewed the cashless payment companies at the convention site. Taking their arguments into account, we developed a gamified, yet real-life awarding interface that displays the most interesting information for the shop owners.
+
+
+Presentation
+Here is our roleplay presentation to convey the user flows of the shop owners and customers.
+
+
+
+
+Project 3:
+
+Back
+
+Design
+
+Settings
+
+Pages
+Home
+
+Phone-based Intervention in Self-driving Cars
+Saved
+
+View
+
+Share
+
+7
+Publish case study
+
+
+
+
+My Work
+
+About Me
+
+Contact
+
+
+Bachelor Thesis
+"Phone-based Intervention In Self-Driving Cars" at LMU Munich
+
+
+
+
+
+
+
+
+
+
+
+
+
+Add button
+
+
+Bachelor LMU Munich
+UX Thesis by Vincent Göke
+In my media informatics studies at LMU Munich I wrote about the trust relationship of rear-seat passengers of an automated vehicle and mobile UI design in rerouting situations.
+	•	Research Task: Ideate on a cooperative driving scenario in which the participant intervenes in the route picking process of an autonomous driving system on a mobile user interface.
+	•	Target audience: were the hypothetical rear-seat passengers in an fully automated car scenario. The goal was to create a mobile UI and evaluating trust factors in different settings (moving car, parked car).
+	•	UX Prototyping: I created 2 time restrained scenarios. Fast thinking (FT, 3 mins for task completion) for a moving car and slow thinking (ST, 15 mins for task completion) for a parking car. Within each scenario there are three similar levels of information density to further examine possible cognitive overload.
+	•	Study Design: Due to corona regulations the Figma prototype was tested with 30 participants within a remote study design. The participants were split even in two groups. One group of 15 participants performed the moving car levels, the other 15 the parking car levels.
+	•	Special thanks for the guidance and support of my LMU supervisor Jingyi Li.
+
+
+
+
+
+Demonstration of the prototype on a participants' screen recording via Figma Mirror
+
+
+
+
+Study Design
+Pilot Study (n=11)
+For my first design wireframes I conducted a semi-structured qualitative interview from 11 participants to finalize the first iteration of the design process.
+Main Study (n=30)
+I clustered the findings of the pilot study into main components and redesigned 2x3 interact-able UI levels to test perceived trust under two different time constraints. With Zoom, the prototyping tool Figma Mirror, mobile screen recording and an online-survey, I was able to set up a in-between group remote user testing environment with allowed the integration of the participants' private devices. I set up an online schedule on Doodle and later conducted approximately 2-4 daily interviews for 2 weeks.
+Online-Questionnaire
+Main questionnaire consisted of 3 sections:
+Pre-testing:
+	•	Demographic questions
+	•	Baseline Trust (TO)
+Testing:
+	•	User A/B/C testing Interface 1,2 or 3 (n=15 FT, n=15 ST)
+	•	Trust towards UI (T1)
+	•	System Usability Scale (SUS)
+	•	Experience (self defined questions)
+	•	Repeat for other levels
+Post-testing:
+	•	Semi-structured Final Interview. (qualitative feedback, comments, opinion)Results
+	•	Time restrained decision making causes more distress in situations of a moving car in comparison to a parked scenario.
+	•	The more information is displayed on an interface, the longer the participant needs to make a considerate rerouting decision.
+	•	Overall SUS rating 75.38 on a scale of 100 "good" to "excellent".
+	•	Self-defined experiences questions indicate a lack of shop information, but they had a feeling of control and enough time to make a considerate decision
+
+
+
+
+
+Level overview for all 6 use case scenarios
+
+UI Design
+Concept:
+Once the pilot studiy results sorted out all obvious usability/ design mistakes, I started designing the final prototype flows in Figma.
+Core Information:
+	•	I decided to incorporate an overall flat design to make use already established user experiences with known maps applications
+	•	For my features I closely inspected a paper about an UI elements in driving interfaces that foster trust.
+	•	The scenario depicts a preexisting route to a final destination and the participants task is to use the interface to achieve a stopover at one of the two offered shop locations.
+	•	I was especially surprised to hear about participants' mixed feelings about the picture-in-picture AR live feed.
+	•	The key is to find a balance for information display to grant engaging cognitive workload, but also ensuring freedom to enjoy the car ride.
+
+
+
+
+
+
+Figma File Overview with screen recording tutorial flow on the left
+
+Results
+
+
+
+
+What I learned from this project:
+For one I was able to run through all the phases of a iterative UX design process, create a multiple Figma prototype variants, set up an online-study design that fit the health crisis situation at that time and was able to structure and execute it properly.
+My biggest challenge was the end state complexity of the prototype (mini adjustments took a long time). Everything paned out for the testing and I was able to conduct a decent dataset for evaluation.
+I am really proud of this project and am looking forward to gather my first insights into professional UX teamwork.
+
+
+	⁃	41 Interview
+	⁃	30 Usability Tests
+	⁃	6 Prototype flows
+
+
+
+
+

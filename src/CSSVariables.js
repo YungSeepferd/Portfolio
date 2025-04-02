@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import theme from './theme';
+import theme, { globalStyles } from './theme';
 
 // This component generates CSS variables from the theme object
 // to be used in regular CSS files
@@ -7,6 +7,11 @@ const CSSVariables = () => {
   useEffect(() => {
     // Extract colors from theme and set as CSS variables
     const root = document.documentElement;
+
+    // Add global animation keyframes
+    const styleEl = document.createElement('style');
+    styleEl.textContent = globalStyles;
+    document.head.appendChild(styleEl);
 
     // Primary colors
     root.style.setProperty('--primary-color', theme.palette.primary.main);
@@ -91,6 +96,16 @@ const CSSVariables = () => {
     root.style.setProperty('--z-index-appbar', '1100');
     root.style.setProperty('--z-index-drawer', '1200');
     
+    // Add custom component values from theme
+    root.style.setProperty('--project-bubble-width', theme.customComponents.projectBubble.width);
+    root.style.setProperty('--project-bubble-height', theme.customComponents.projectBubble.height);
+    root.style.setProperty('--parallax-container-width', theme.customComponents.parallax.container.width);
+    root.style.setProperty('--slideshow-height', theme.customComponents.parallax.slideshow.height);
+    root.style.setProperty('--dot-size', theme.customComponents.parallax.dot.size);
+    
+    return () => {
+      document.head.removeChild(styleEl);
+    };
   }, []);
 
   return null; // This component doesn't render anything

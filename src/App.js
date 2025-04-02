@@ -1,21 +1,23 @@
 import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Work from './components/Work';
-import About from './components/About';
-import FooterContact from './components/FooterContact';
+import Header from './components/header/Header';
+import Hero from './components/hero/Hero';
+import Work from './components/work/Work';
+import AboutSection from './components/about/AboutSection';
+import FooterContact from './components/contact/FooterContact';
 import CSSVariables from './CSSVariables';
+import { CssBaseline, Box } from '@mui/material';
 
 function App() {
   return (
-    <div className="App">
+    <Box className="App">
+      <CssBaseline /> {/* Properly position CssBaseline here */}
       <CSSVariables />
       <Header />
       <Hero />
       <Work />
-      <About />
+      <AboutSection />
       <FooterContact />
-    </div>
+    </Box>
   );
 }
 

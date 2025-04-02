@@ -9,25 +9,22 @@
       name="description"
       content="Vincent Göke UX Portfolio Website"
     />
+    <meta property="og:title" content="Vincent Göke - UX Portfolio" />
+    <meta property="og:description" content="Explore the UX portfolio of Vincent Göke." />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
+    <meta property="og:url" content="https://www.vincentgoeke.com" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script>
-      const password = "mySecretPassword"; // Change this to your desired password
-      const userInput = prompt("Enter the password to access this site:");
-      if (userInput !== password) {
-        document.body.innerHTML = "<h1>Access Denied</h1><p>You entered an incorrect password.</p>";
-      }
-    </script>
-    
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/tailwind.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/tailwind.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Grandiflora+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Julius+Sans+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <title>Vincent Göke - UX Portfolio</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    </body>
+    <div id="root" role="main"></div>
+  </body>
 </html>

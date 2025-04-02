@@ -1,125 +1,225 @@
+// FUNCTIONALITY: Defines the Material UI theme for the entire application
 // Summary: This file sets the overall Material-UI theme values with the new color scheme.
-import { createTheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-const theme = createTheme({
+// Define reusable color variables
+const colors = {
+  primaryMain: '#5363EE',
+  primaryContrastText: '#FFFFFF',
+  primaryDark: '#4353D9',
+  primaryLight: '#6E7CFF',
+  secondaryMain: '#C2F750',
+  secondaryContrastText: '#0E1A27',
+  secondaryDark: '#ABDF3A',
+  secondaryLight: '#D4FF69',
+  backgroundDefault: '#0E1A27',
+  backgroundPaper: '#131F2D',
+  backgroundAlternatePanel: '#1A2736',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#CCCCCC',
+  textMuted: '#A0A0A0',
+  textAccent: '#C2F750',
+  accentMain: '#C2F750',
+  accentDark: '#ABDF3A',
+  accentLight: '#D4FF69',
+  accentContrast: '#0E1A27',
+  bubblesBackground: '#1A2736',
+  bubblesBorder: '#3545D6',
+  cardBackground: '#131F2D',
+  cardShadow: 'rgba(5, 10, 15, 0.4)',
+  cardActiveGlow: 'rgba(194, 247, 80, 0.25)',
+  cardBorder: '#3545D6',
+  filterActive: '#C2F750',
+  filterInactive: '#505050',
+  actionHover: 'rgba(194, 247, 80, 0.15)',
+  actionSelected: 'rgba(194, 247, 80, 0.25)',
+  actionDisabled: 'rgba(255, 255, 255, 0.3)',
+  actionDisabledBackground: 'rgba(255, 255, 255, 0.12)',
+  divider: '#3545D6',
+  shadowLight: 'rgba(5, 10, 15, 0.3)',
+  shadowMedium: 'rgba(5, 10, 15, 0.5)',
+  shadowDark: 'rgba(5, 10, 15, 0.7)',
+  overlayBackground: 'rgba(14, 26, 39, 0.85)',
+  overlayDark: 'rgba(10, 18, 28, 0.9)',
+  dotsInactive: '#3545D6',
+  placeholder: '#1A2736',
+  statusSuccess: '#C2F750',
+  statusWarning: '#FFA726',
+  statusError: '#F44336',
+  statusInfo: '#5363EE',
+  focusOutline: '#C2F750',
+  structureBorders: '#3545D6',
+  structureLines: '#3545D6',
+  structureOutlines: '#3545D6',
+};
+
+// Define animation constants - new section to consolidate animation values
+const animations = {
+  durations: {
+    short: 300,  // in ms
+    medium: 500,
+    long: 800,
+    veryLong: 1500
+  },
+  easings: {
+    // CSS string formats for CSS transitions
+    css: {
+      standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      accelerate: 'cubic-bezier(0.4, 0, 1, 1)',
+      decelerate: 'cubic-bezier(0, 0, 0.2, 1)',
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)'
+    },
+    // Framer Motion compatible formats (arrays)
+    motion: {
+      standard: [0.4, 0, 0.2, 1],
+      accelerate: [0.4, 0, 1, 1],
+      decelerate: [0, 0, 0.2, 1],
+      sharp: [0.4, 0, 0.6, 1]
+    }
+  },
+  transitions: {
+    hover: 'all 0.3s ease',
+    active: 'all 0.2s ease-in',
+    layout: 'all 0.5s ease-out'
+  }
+};
+
+// Define spacing constants to ensure consistent spacing
+const spacing = {
+  unit: 8, // Base unit = 8px
+  xs: 4,   // 4px - Extra small spacing
+  sm: 8,   // 8px - Small spacing
+  md: 16,  // 16px - Medium spacing
+  lg: 24,  // 24px - Large spacing
+  xl: 32,  // 32px - Extra large spacing
+  xxl: 48, // 48px - Double extra large spacing
+  section: 64 // 64px - Section spacing
+};
+
+// Create base theme
+const baseTheme = createTheme({
   palette: {
-    mode: 'dark', // Keep dark mode
+    mode: 'dark',
     primary: {
-      main: '#5363EE',         // Blue-purple for headings and footer
-      contrastText: '#FFFFFF', // White text on primary buttons
-      dark: '#4353D9',         // Slightly darker primary 
-      light: '#6E7CFF',        // Lighter primary variant
+      main: colors.primaryMain,
+      contrastText: colors.primaryContrastText,
+      dark: colors.primaryDark,
+      light: colors.primaryLight,
     },
     secondary: {
-      main: '#C2F750',         // Bright lime green for interactive elements
-      contrastText: '#0E1A27', // Dark text on secondary buttons for contrast
-      dark: '#ABDF3A',         // Darker secondary shade
-      light: '#D4FF69',        // Lighter secondary shade
+      main: colors.secondaryMain,
+      contrastText: colors.secondaryContrastText,
+      dark: colors.secondaryDark,
+      light: colors.secondaryLight,
     },
     background: {
-      default: '#0E1A27',      // Dark blue background as requested
-      paper: '#131F2D',        // Slightly lighter for cards and components
-      alternatePanel: '#1A2736', // Subtle lighter panel for alternating sections
+      default: colors.backgroundDefault,
+      paper: colors.backgroundPaper,
+      alternatePanel: colors.backgroundAlternatePanel,
     },
     text: {
-      primary: '#FFFFFF',      // White text for primary content
-      secondary: '#CCCCCC',    // Light gray for secondary text
-      light: '#FFFFFF',        // White text kept the same
-      muted: '#A0A0A0',        // Mid gray for less important content
-      accent: '#C2F750',       // Green text accents
+      primary: colors.textPrimary,
+      secondary: colors.textSecondary,
+      muted: colors.textMuted,
+      accent: colors.textAccent,
     },
     accent: {
-      main: '#C2F750',         // Lime green as accent color
-      dark: '#ABDF3A',         // Darker accent
-      light: '#D4FF69',        // Lighter accent
-      contrast: '#0E1A27',     // Dark text on accent backgrounds
+      main: colors.accentMain,
+      dark: colors.accentDark,
+      light: colors.accentLight,
+      contrast: colors.accentContrast,
     },
     bubbles: {
-      background: '#1A2736',   // Dark bubble background
-      border: '#3545D6',       // Blue border as specified
+      background: colors.bubblesBackground,
+      border: colors.bubblesBorder,
     },
     card: {
-      background: '#131F2D',   // Slightly lighter than main background
-      shadow: 'rgba(5, 10, 15, 0.4)', // Dark shadows
-      activeGlow: 'rgba(194, 247, 80, 0.25)', // Green-tinted glow
-      border: '#3545D6',       // Border color as specified
+      background: colors.cardBackground,
+      shadow: colors.cardShadow,
+      activeGlow: colors.cardActiveGlow,
+      border: colors.cardBorder,
     },
     filter: {
-      active: '#C2F750',       // Green for active state
-      inactive: '#505050',     // Muted gray for inactive state
+      active: colors.filterActive,
+      inactive: colors.filterInactive,
     },
     action: {
-      hover: 'rgba(194, 247, 80, 0.15)', // Green-tinted hover
-      selected: 'rgba(194, 247, 80, 0.25)', // Green-tinted selection
-      disabled: 'rgba(255, 255, 255, 0.3)', // Light disabled state
-      disabledBackground: 'rgba(255, 255, 255, 0.12)', // Light disabled background
+      hover: colors.actionHover,
+      selected: colors.actionSelected,
+      disabled: colors.actionDisabled,
+      disabledBackground: colors.actionDisabledBackground,
     },
-    divider: '#3545D6', // Blue divider as specified for content separation
+    divider: colors.divider,
     shadow: {
-      light: 'rgba(5, 10, 15, 0.3)', // Dark theme shadows
-      medium: 'rgba(5, 10, 15, 0.5)',
-      dark: 'rgba(5, 10, 15, 0.7)',
+      light: colors.shadowLight,
+      medium: colors.shadowMedium,
+      dark: colors.shadowDark,
     },
     overlay: {
-      background: 'rgba(14, 26, 39, 0.85)', // Dark overlay
-      dark: 'rgba(10, 18, 28, 0.9)', // Darker overlay
+      background: colors.overlayBackground,
+      dark: colors.overlayDark,
     },
     dots: {
-      inactive: '#3545D6', // Blue inactive dots
-      active: '#C2F750',   // Green active dots
+      inactive: colors.dotsInactive,
+      active: theme => theme.palette.secondary.main,
     },
-    placeholder: '#1A2736', // Dark placeholder
+    placeholder: colors.placeholder,
     transitions: {
       short: '0.3s',
       medium: '0.5s',
       long: '0.8s',
     },
     status: {
-      success: '#C2F750', // Use the green for success
-      warning: '#FFA726', // Keep warning
-      error: '#F44336',   // Keep error bright
-      info: '#5363EE',    // Use primary blue for info
+      success: colors.statusSuccess,
+      warning: colors.statusWarning,
+      error: colors.statusError,
+      info: colors.statusInfo,
     },
     focus: {
-      outline: '#C2F750', // Green focus outline
+      outline: colors.focusOutline,
     },
-    // Additional structural color
     structure: {
-      borders: '#3545D6', // Deep blue for borders and structural elements
-      lines: '#3545D6',   // Same blue for lines
-      outlines: '#3545D6', // Same blue for outlines
+      borders: colors.structureBorders,
+      lines: colors.structureLines,
+      outlines: colors.structureOutlines,
     },
   },
   shape: {
-    borderRadius: 6, // Reduced from 12px to 6px for less rounded corners
+    borderRadius: 4, // Reduced from 6px to 4px for less rounded corners globally
   },
   typography: {
-    fontFamily: `'Roboto', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     h1: {
       fontSize: '3rem',
       fontWeight: 700,
       lineHeight: 1.2,
+      letterSpacing: '-0.01em',
     },
     h2: {
       fontSize: '2.5rem',
       fontWeight: 700,
+      letterSpacing: '-0.01em',
     },
     h3: {
       fontSize: '2rem',
       fontWeight: 700,
-      color: '#5363EE', // Updated to primary blue for headings
+      color: colors.primaryMain,
+      letterSpacing: '-0.01em',
     },
     h4: {
       fontSize: '1.6rem',
       fontWeight: 500,
+      letterSpacing: '-0.01em',
     },
     h5: {
       fontSize: '1.4rem',
       fontWeight: 500,
+      letterSpacing: '-0.01em',
     },
     h6: {
       fontSize: '1.2rem',
       fontWeight: 500,
+      letterSpacing: '-0.01em',
     },
     subtitle1: {
       fontSize: '1rem',
@@ -132,10 +232,12 @@ const theme = createTheme({
     body1: {
       fontSize: '1rem',
       lineHeight: 1.5,
+      letterSpacing: '0.01em',
     },
     body2: {
       fontSize: '0.875rem',
       lineHeight: 1.43,
+      letterSpacing: '0.01em',
     },
     caption: {
       fontSize: '0.75rem',
@@ -151,28 +253,60 @@ const theme = createTheme({
       fontWeight: 600,
     },
     projectTitle: {
-      fontSize: '2.5rem', // Larger than h4 (1.6rem)
-      fontWeight: 700,    // Bold
-      lineHeight: 1.2,    // Tighter line height
-      letterSpacing: '-0.02em', // Slightly tighter letter spacing
-      color: '#5363EE', // Primary color for project titles
+      fontSize: '2.5rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
+      letterSpacing: '-0.02em',
+      color: colors.primaryMain,
     },
     chipText: {
-      fontSize: '1rem', // New typography variant for chip text
+      fontSize: '1rem',
       fontWeight: 500,
       lineHeight: 1.5,
     },
   },
-  spacing: 8, // base spacing unit (8px)
+  spacing: spacing.unit, // Set the base spacing unit
+  
+  // Add standardized media query values for responsive design
+  mediaQueries: {
+    xs: '@media (max-width:599px)',
+    sm: '@media (min-width:600px) and (max-width:899px)',
+    md: '@media (min-width:900px) and (max-width:1199px)',
+    lg: '@media (min-width:1200px) and (max-width:1535px)',
+    xl: '@media (min-width:1536px)',
+    smUp: '@media (min-width:600px)',
+    mdUp: '@media (min-width:900px)',
+    lgUp: '@media (min-width:1200px)',
+    xlUp: '@media (min-width:1536px)',
+    smDown: '@media (max-width:599px)',
+    mdDown: '@media (max-width:899px)',
+    lgDown: '@media (max-width:1199px)',
+    xlDown: '@media (max-width:1535px)',
+  },
+  
+  // Add elevation styles for consistency
+  elevations: {
+    1: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+    2: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+    3: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
+    4: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
+    5: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)',
+  },
+  
   customSizes: {
-    bigCardHeight: '400px',      // full height for the big card
-    bigCardImageWidth: '300px'     // fixed width for the left-side image section
+    bigCardHeight: '400px',
+    bigCardImageWidth: '300px',
+    projectBubbleSize: '250px',
+    projectImageMaxWidth: '800px',
+    overlayWidth: '90%',
+    overlayMaxWidth: '800px',
+    overlayMaxHeight: '90%',
   },
   spacingSizes: {
-    section: 8, // 8 * spacing unit (64px)
-    container: 4, // 4 * spacing unit (32px)
-    cardPadding: 3, // 3 * spacing unit (24px)
-    elementGap: 2, // 2 * spacing unit (16px)
+    section: 8,
+    container: 4,
+    cardPadding: 3,
+    elementGap: 2,
   },
   zIndex: {
     mobileStepper: 1000,
@@ -191,227 +325,232 @@ const theme = createTheme({
     lg: '1200px',
     xl: '1536px',
   },
+  animations: {
+    slideIn: {
+      from: {
+        transform: 'translateX(-50%)',
+        opacity: 0,
+      },
+      to: {
+        transform: 'translateX(0)',
+        opacity: 1,
+      },
+      duration: '1.5s',
+      easing: 'ease',
+      fillMode: 'forwards',
+    },
+  },
+  animationSettings: {
+    ...animations,
+    variants: {
+      fadeIn: {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { 
+          duration: animations.durations.medium / 1000,
+          ease: animations.easings.motion.standard // Use motion format for Framer Motion
+        }
+      },
+      slideUp: {
+        initial: { y: 20, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        transition: { 
+          duration: animations.durations.medium / 1000,
+          ease: animations.easings.motion.decelerate // Use motion format for Framer Motion
+        }
+      },
+      slideIn: {
+        initial: { x: -30, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        transition: { 
+          duration: animations.durations.medium / 1000,
+          ease: animations.easings.motion.decelerate // Use motion format for Framer Motion
+        }
+      }
+    }
+  },
+  customComponents: {
+    work: {
+      container: {
+        padding: '64px 0',
+      },
+    },
+    parallax: {
+      container: {
+        width: '800vw',
+        scrollSnapType: 'x mandatory',
+        scrollBehavior: 'smooth',
+      },
+      section: {
+        flex: '0 0 100vw',
+        scrollSnapAlign: 'start',
+      },
+      content: {
+        maxWidth: '840px',
+        transition: 'transform 0.5s ease-out, opacity 0.5s ease-out',
+      },
+      slideshow: {
+        height: '300px',
+      },
+      dot: {
+        size: '8px',
+      },
+    },
+    projectBubble: {
+      width: '250px',
+      height: '250px',
+      hoverScale: 1.05,
+    },
+    hero: {
+      contentPosition: {
+        bottom: '30%',
+        left: '5%',
+      },
+    },
+    filter: {
+      buttonRadius: '20px',
+      buttonPadding: '0.5rem 1rem',
+    },
+    overlay: {
+      zIndex: 2000,
+      backdropZIndex: 1999,
+      padding: '40px',
+      backdropOpacity: 0.6,
+    },
+  },
   components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none', // disable uppercase
-          textAlign: 'left',
-          borderRadius: 6, // Updated to match the new shape.borderRadius
-          padding: '10px 20px',
-          boxShadow: 'none',
-          transition: 'background-color 0.3s ease, transform 0.2s ease',
-          '&:hover': {
-            boxShadow: '0 0 8px rgba(194, 247, 80, 0.5)', // Green glow on hover
-          },
-          '&.MuiButton-containedPrimary': {
-            backgroundColor: '#5363EE',
-            color: '#FFFFFF',
-          },
-          '&.MuiButton-containedSecondary': {
-            backgroundColor: '#C2F750',
-            color: '#0E1A27',
-          },
-          '&.MuiButton-outlinedPrimary': {
-            borderColor: '#5363EE',
-            color: '#5363EE',
-          },
-          '&.MuiButton-outlinedSecondary': {
-            borderColor: '#C2F750',
-            color: '#C2F750',
-          },
-        },
-      },
-    },
-    MuiTabs: {
-      styleOverrides: {
-        root: {
-          marginBottom: '1rem',
-          '& .MuiTabs-indicator': {
-            backgroundColor: '#5363EE', // Changed from #C2F750 (green) to primary blue
-            height: 3, // Slightly thicker indicator for better visibility
-          },
-        },
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          fontSize: '1rem',
-          transition: 'color 0.3s ease',
-          '&.Mui-selected': {
-            color: '#5363EE', // Changed from #C2F750 (green) to primary blue
-          },
-          '&:hover': {
-            color: '#C2F750', // Keep hover state as green for interactive feedback
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 6, // Updated to match the new shape.borderRadius
-          boxShadow: 'none',
-          backgroundColor: '#131F2D', // Dark background for papers
-          border: '1px solid #3545D6', // Default border
-        },
-      },
-      variants: [
-        {
-          props: { variant: 'overlay' },
-          style: ({ theme }) => ({
-            backgroundColor: 'rgba(14, 26, 39, 0.9)',
-            color: theme.palette.common.white,
-            padding: theme.spacing(4),
-            borderRadius: theme.shape.borderRadius,
-          }),
-        },
-        {
-          props: { variant: 'bigCard' },
-          style: ({ theme }) => ({
-            padding: theme.spacing(2),
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: '#131F2D',
-          }),
-        },
-        {
-          props: { variant: 'aboutSection' },
-          style: ({ theme }) => ({
-            padding: theme.spacing(2),
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: '#131F2D',
-            border: 'none', // No border for About section
-          }),
-        },
-      ],
-    },
     MuiCard: {
       styleOverrides: {
-        root: {
-          borderRadius: 6, // Updated to match the new shape.borderRadius
-          backgroundColor: '#131F2D', // Dark background for cards
-          minHeight: '300px', // Changed from 400px to 300px to make cards smaller
-          border: '1px solid #3545D6',
+        root: ({ theme }) => ({
+          borderRadius: 4, // Explicitly setting card border radius to be less rounded
+          backgroundColor: theme.palette.card.background,
+          minHeight: '300px',
+          border: `1px solid ${theme.palette.structure.borders}`,
+          height: '100%',
+          transition: `transform ${theme.palette.transitions.short} ease, box-shadow ${theme.palette.transitions.short} ease`,
+          boxShadow: `0 4px 12px ${theme.palette.shadow.light}`,
           '&:hover': {
-            boxShadow: '0 6px 12px rgba(83, 99, 238, 0.3)', // Blue shadow for hover
-            borderColor: '#C2F750', // Green border on hover
+            boxShadow: `0 12px 24px ${theme.palette.shadow.medium}`,
+            borderColor: theme.palette.accent.main,
           },
-        },
-      },
-    },
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          borderTopLeftRadius: 0,  // remove top left rounding for the navigation bar
-          borderTopRightRadius: 0, // remove top right rounding
-          backgroundColor: '#f2f2f2', // White navigation bar
-          color: '#0E1A27', // Dark text for contrast on white background
-          // Add shadow for better separation from content
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          '& .MuiToolbar-root': {
-            // Additional styling for toolbar if needed
-          },
-          '& .MuiButton-root': {
-            color: '#0E1A27', // Ensure buttons in navbar are dark for visibility
-            '&:hover': {
-              color: '#5363EE', // Primary color on hover
-            },
-          },
-        },
-      },
-    },
-    MuiTypography: {
-      variants: [
-        {
-          props: { variant: 'projectTitle' },
-          style: {
-            fontSize: '2.5rem',
-            fontWeight: 700,
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-            color: '#5363EE', // Primary color for project titles
-          }
-        }
-      ]
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: 'inherit',
-          padding: 8,
-          transition: 'all 0.3s ease',
-          '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)',
-          },
-        },
-      },
-    },
-    MuiDivider: {
-      styleOverrides: {
-        root: {
-          margin: '24px 0',
-          backgroundColor: '#3545D6', // Blue divider as specified
-        },
-      },
-    },
-    MuiContainer: {
-      styleOverrides: {
-        root: {
-          paddingLeft: 16,
-          paddingRight: 16,
-          '@media (min-width: 600px)': {
-            paddingLeft: 24,
-            paddingRight: 24,
-          },
-        },
-      },
-    },
-    MuiGrid: {
-      styleOverrides: {
-        container: {
-          marginTop: -8,
-          marginBottom: -8,
-          width: 'calc(100% + 16px)',
-          marginLeft: -8,
-          marginRight: -8,
-        },
-        item: {
-          paddingTop: 8,
-          paddingBottom: 8,
-          paddingLeft: 8,
-          paddingRight: 8,
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(83, 99, 238, 0.2)', // Light blue background
-          color: '#FFFFFF',
-          border: '1px solid #3545D6',
-          fontSize: '1rem', // Increased font size for chips
-          fontWeight: 500,   // Medium weight for better readability
-          height: 'auto',    // Allow height to adjust to content
-          padding: '6px 0',  // Add vertical padding
-        },
-        label: {
-          padding: '0 12px', // Add horizontal padding to the label
-        },
-        colorPrimary: {
-          backgroundColor: 'rgba(83, 99, 238, 0.3)', // Light primary
-          color: '#FFFFFF',
-        },
-        colorSecondary: {
-          backgroundColor: 'rgba(194, 247, 80, 0.2)', // Light secondary
-          color: '#C2F750',
-        },
+        }),
       },
     },
   },
-  // Custom spacing for hero component
-  heroBottomMargin: 15, // Increased from 6 to 12 (96px)
-  heroLeftMargin: 8,   // Increased from 4 to 8 (64px)
+  customSections: {
+    about: {
+      container: {
+        maxWidth: '1200px',
+        py: { xs: 4, md: 6 },
+        px: { xs: 2, md: 3 },
+      },
+      tabContent: {
+        py: 3,
+        px: { xs: 2, sm: 3 },
+        borderRadius: 1,
+        backgroundColor: 'background.paper',
+      },
+      contentCard: {
+        p: { xs: 2, sm: 3, md: 4 },
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      imageContainer: {
+        height: { xs: 240, sm: 300, md: 360 },
+        borderRadius: 1,
+        overflow: 'hidden',
+        mb: { xs: 2, md: 0 },
+      },
+      textContent: {
+        maxHeight: { xs: 'auto', md: '460px' },
+        overflowY: 'auto',
+        pr: { md: 2 },
+        '& > *:last-child': {
+          mb: 0, // Remove margin from last child to avoid extra spacing
+        },
+      },
+      spacingBetweenSections: 4,
+    },
+    work: {
+      container: {
+        padding: '64px 0',
+      },
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+  responsiveStyles: {
+    hideOnMobile: {
+      display: { xs: 'none', sm: 'block' },
+    },
+    centerOnMobile: {
+      textAlign: { xs: 'center', sm: 'left' },
+    },
+    columnOnMobile: {
+      flexDirection: { xs: 'column', sm: 'row' },
+    },
+  },
+  heroBottomMargin: 15,
+  heroLeftMargin: 8,
+  customButtons: {
+    close: {
+      color: '#fff',
+      backgroundColor: 'rgba(19, 31, 45, 0.7)',
+      hoverBackgroundColor: 'rgba(19, 31, 45, 0.9)',
+    },
+    contact: {
+      padding: '8px 24px',
+      fontWeight: 600,
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    },
+  },
 });
 
+// Apply responsive font sizes
+const theme = responsiveFontSizes(baseTheme);
+
+// Add custom CSS animation keyframes that can't be directly added to the theme
+const globalStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Add additional keyframe animations here for reusability */
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(194, 247, 80, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(194, 247, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(194, 247, 80, 0); }
+  }
+`;
+
+// Export theme-related constants for use in other files
+export const themeConstants = {
+  colors,
+  spacing,
+  animations
+};
+
+export { globalStyles };
 export default theme;
