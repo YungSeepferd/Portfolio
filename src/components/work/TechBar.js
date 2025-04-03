@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Stack, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -31,10 +31,10 @@ const TechChip = styled(Chip)(({ theme }) => ({
 
 const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
   // Skip rendering if there's nothing to show
-  if (technologies.length === 0 && links.length === 0) return null;
+  if (technologies.length === 0 && !projectTitle) return null;
   
   // Add PDF download links for specific projects
-  const enhancedLinks = [...links];
+  const enhancedLinks = links ? [...links] : [];
   
   if (projectTitle === "Prototyping Emotions – Master Thesis") {
     enhancedLinks.push({
@@ -104,30 +104,45 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
             </React.Fragment>
           ))}
         </Stack>
+        
         {enhancedLinks.length > 0 && (
           <Stack 
-            direction="row" 
-            spacing={2} 
+            direction={{ xs: "column", sm: "row" }}
+            spacing={1.5} 
             alignItems="center"
-            sx={{
+            sx={(theme) => ({
               justifyContent: { xs: "center", sm: "flex-end" },
-            }}
+              mt: { xs: 1, sm: 0 }
+            })}
           >
             {enhancedLinks.map((link, index) => (
-              <NavLink 
-                key={index} 
-                component="a" 
-                href={link.url} 
-                target="_blank" 
+              <Button
+                key={index}
+                variant="outlined"
+                size="small"
+                color={
+                  link.label.includes("GitHub") ? "info" :
+                  link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
+                  "primary"
+                }
+                href={link.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
+                startIcon={link.icon}
+                sx={(theme) => ({
+                  minWidth: 'auto',
+                  fontWeight: 'medium',
+                  fontSize: '0.75rem',
+                  textTransform: 'none',
+                  borderRadius: theme.shape.borderRadius,
+                  '&:hover': {
+                    boxShadow: theme.shadows[1],
+                  }
+                })}
               >
-                {link.label}{link.icon || " →"}
-              </NavLink>
+                {link.label}
+              </Button>
             ))}
           </Stack>
         )}

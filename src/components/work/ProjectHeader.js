@@ -39,7 +39,7 @@ const ProjectHeader = ({ project }) => {
             <Typography 
               variant="projectTitle"
               sx={{ 
-                color: theme.palette.text.primary, // Changed to text.primary (white)
+                color: theme.palette.text.primary,
                 fontSize: '2.5rem',
                 fontWeight: 700,
                 lineHeight: 1.2,
@@ -65,7 +65,8 @@ const ProjectHeader = ({ project }) => {
         <Box sx={{ mb: 6 }}>
           <TechBar 
             technologies={project.tools} 
-            links={project.links || []}
+            projectTitle={project.title}
+            links={project.links} // Pass the links to TechBar
           />
         </Box>
       )}

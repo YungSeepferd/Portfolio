@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Card, CardContent, useTheme } from '@mui/material';
+import { Box, Typography, Card, CardContent, useTheme, Button, Stack } from '@mui/material';
 import { formatProjectTags } from '../../utils/dataHelpers';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import ContentAwareImage from '../common/ContentAwareImage';
@@ -41,6 +41,9 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
   // Determine image height based on type
   const imageHeight = isCompact ? '45%' : '45%';
   const contentHeight = isCompact ? '55%' : '55%';
+  
+  // Check if project has links to display
+  const hasLinks = project.links && project.links.length > 0;
   
   return (
     <Box 
@@ -101,6 +104,62 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
                 containerOrientation="landscape"
                 objectFit="cover"
               />
+              
+              {/* Add links overlay on hover */}
+              {hasLinks && (
+                <Box
+                  className="project-links-overlay"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)',
+                    padding: theme.spacing(2),
+                    transform: 'translateY(100%)',
+                    transition: 'transform 0.3s ease',
+                    '.project-card:hover &': {
+                      transform: 'translateY(0)',
+                    },
+                  }}
+                >
+                  <Stack 
+                    direction="row" 
+                    spacing={1.5} 
+                    justifyContent="center"
+                  >
+                    {project.links.map((link, index) => (
+                      <Button
+                        key={index}
+                        variant="contained"
+                        size="small"
+                        color={
+                          link.label.includes("GitHub") ? "info" :
+                          link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
+                          "primary"
+                        }
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        startIcon={link.icon}
+                        sx={{
+                          minWidth: 'auto',
+                          fontWeight: 'medium',
+                          fontSize: '0.75rem',
+                          textTransform: 'none',
+                          boxShadow: theme.shadows[2],
+                          '&:hover': {
+                            boxShadow: theme.shadows[4],
+                          }
+                        }}
+                      >
+                        {link.label}
+                      </Button>
+                    ))}
+                  </Stack>
+                </Box>
+              )}
             </Box>
             
             <CardContent 

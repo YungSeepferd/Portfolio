@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, Divider, Typography, useTheme, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
-import { parseProjectContent } from '../../utils/contentParser';
+import { parseProjectContent, formatSectionHeading, createNumberedSection } from '../../utils/contentParser';
 import { isVideo } from '../../utils/mediaHelper';
 import ErrorBoundary from '../common/ErrorBoundary';
 
@@ -12,8 +12,9 @@ import HeroVideo from './HeroVideo';
 import ProjectSection from './ProjectSection';
 import PrototypeShowcase from './PrototypeShowcase';
 import KeyTakeaways from './KeyTakeaways';
-import FooterContact from '../contact/FooterContact'; // Updated import path to use the main FooterContact
+import FooterContact from '../contact/FooterContact';
 import ProjectGallery from '../common/ProjectGallery';
+import ContentAwareImage from '../common/ContentAwareImage';
 
 /**
  * ProjectModal Component
@@ -29,15 +30,33 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
   const theme = useTheme();
   
   const parsedContent = useMemo(() => {
-    return project?.details ? parseProjectContent(project.details) : {
+    // Parse project details
+    const parsed = project?.details ? parseProjectContent(project.details) : {
       overview: null,
       problemStatement: null,
       research: null,
       solution: null,
       prototype: null,
       outcomes: null,
-      fullContent: null
+      fullContent: null,
+      sections: [],
+      sectionCount: 0
     };
+    
+    // If no content was categorized but we have fullContent, use it as overview
+    if (
+      !parsed.overview && 
+      !parsed.problemStatement && 
+      !parsed.research && 
+      !parsed.solution && 
+      !parsed.prototype && 
+      !parsed.outcomes && 
+      parsed.fullContent
+    ) {
+      parsed.overview = parsed.fullContent;
+    }
+    
+    return parsed;
   }, [project?.details]);
   
   const navigateProjects = (direction) => {
@@ -54,26 +73,17 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
     (typeof img === 'string' && isVideo(img))
   );
   
-  const hasOverview = true;
-  const hasProblemOrResearch = parsedContent.problemStatement || parsedContent.research;
-  const hasSolution = !!parsedContent.solution;
-  const hasPrototype = project.featuredImages?.prototypeShowcase?.length > 0 || !!parsedContent.prototype;
+  // Determine project layout type
+  const layoutType = project.layoutType || 'default';
   
-  // Calculate section numbers for consistent numbering
-  const sectionNumbers = {
-    overview: '01',
-    problemResearch: hasOverview ? '02' : '01',
-    solution: (hasOverview ? 1 : 0) + (hasProblemOrResearch ? 1 : 0) + 1,
-    prototype: (hasOverview ? 1 : 0) + (hasProblemOrResearch ? 1 : 0) + (hasSolution ? 1 : 0) + 1,
-    outcomes: (hasOverview ? 1 : 0) + (hasProblemOrResearch ? 1 : 0) + (hasSolution ? 1 : 0) + (hasPrototype ? 1 : 0) + 1
-  };
-  
-  // Ensure all section numbers are properly formatted as 2-digit strings
-  Object.keys(sectionNumbers).forEach(key => {
-    if (typeof sectionNumbers[key] === 'number') {
-      sectionNumbers[key] = sectionNumbers[key].toString().padStart(2, '0');
-    }
-  });
+  // Determine if we should show individual sections or just the full content
+  const useFullContentLayout = layoutType === 'single-column' || 
+                              !parsedContent.sections || 
+                              parsedContent.sections.length === 0 ||
+                              (parsedContent.fullContent && parsedContent.sectionCount <= 1);
+
+  // Get project accent color for section numbering
+  const projectAccentColor = project.color || theme.palette.primary.main;
   
   return (
     <ErrorBoundary componentName="ProjectModal">
@@ -165,104 +175,107 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
             </Box>
           )}
           
-          <Divider sx={{ my: 6 }} />
-          
-          <ProjectSection
-            sectionNumber={sectionNumbers.overview}
-            title="Project Overview"
-            titleVariant="h3"
-            titleComponent="h3"
-            content={parsedContent.overview?.length > 0 ? parsedContent.overview.slice(1) : null}
-            imageData={project.featuredImages?.overview || project.images?.[0]}
-            fallbackContent={<Typography variant="body1">{project.description}</Typography>}
-            headingColor={theme.palette.text.primary}
-          />
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {hasProblemOrResearch && (
+          {!useFullContentLayout ? (
             <>
-              <ProjectSection
-                sectionNumber={sectionNumbers.problemResearch}
-                title={parsedContent.problemStatement ? 'Problem Statement' : 'Research Methods'}
-                titleVariant="h3"
-                titleComponent="h3"
-                content={
-                  parsedContent.problemStatement?.length > 0 
-                    ? parsedContent.problemStatement.slice(1) 
-                    : (parsedContent.research?.length > 0 
-                      ? parsedContent.research.slice(1) 
-                      : null)
-                }
-                imageData={project.featuredImages?.problem || project.images?.[1]}
-                direction="reverse"
-                headingColor={theme.palette.text.primary}
-              />
               <Divider sx={{ my: 6 }} />
+              
+              {/* Dynamic section rendering based on parsed content sections */}
+              {parsedContent.sections.map((section, index) => (
+                <React.Fragment key={index}>
+                  <ProjectSection
+                    sectionNumber={section.number}
+                    title={section.title}
+                    titleVariant="h3"
+                    titleComponent="h3"
+                    content={section.content}
+                    imageData={project.featuredImages?.[sectionImageKeyMap(section.title)] || 
+                              (index < project.images?.length ? project.images[index] : null)}
+                    direction={index % 2 === 1 ? "reverse" : "default"}
+                    headingColor={theme.palette.text.primary}
+                    accentColor={projectAccentColor}
+                    fallbackContent={getFallbackContent(section.title, project)}
+                  />
+                  {index < parsedContent.sections.length - 1 && (
+                    <Divider sx={{ my: 6 }} />
+                  )}
+                </React.Fragment>
+              ))}
             </>
-          )}
-          
-          {hasSolution && (
+          ) : (
             <>
-              <ProjectSection
-                sectionNumber={sectionNumbers.solution}
-                title={parsedContent.research && parsedContent.problemStatement ? 'Solution Approach' : 'Technical Solution'}
-                titleVariant="h3"
-                titleComponent="h3"
-                content={parsedContent.solution?.length > 0 ? parsedContent.solution.slice(1) : null}
-                imageData={project.featuredImages?.solution || project.images?.[2]}
-                headingColor={theme.palette.text.primary}
-                fallbackContent={
-                  <Typography variant="body1">
-                    {project.categories.includes('UX Research') ? (
-                      <>
-                        The project employed <strong>user-centered methodologies</strong> including interviews, 
-                        usability testing, and iterative design to ensure solutions addressed actual user needs and pain points.
-                      </>
-                    ) : project.categories.includes('Haptic Design') ? (
-                      <>
-                        Implementation involved <strong>specialized haptic hardware</strong> including tactile actuators,
-                        motion sensors, and signal processing. The design utilized vibration patterns mapped to emotional responses.
-                      </>
-                    ) : project.categories.includes('AI Integration') ? (
-                      <>
-                        The project leveraged <strong>machine learning algorithms</strong> and neural networks to create
-                        adaptive experiences. API integration enabled real-time processing and response generation.
-                      </>
-                    ) : (
-                      <>
-                        This project implemented <strong>modern design principles</strong> and technical solutions
-                        to create an intuitive, efficient user experience across multiple touchpoints.
-                      </>
-                    )}
-                  </Typography>
-                }
-              />
               <Divider sx={{ my: 6 }} />
-            </>
-          )}
-          
-          {hasPrototype && (
-            <>
-              <PrototypeShowcase
-                sectionNumber={sectionNumbers.prototype}
-                title="Prototyping Showcase"
-                titleVariant="h3"
-                titleComponent="h3"
-                content={parsedContent.prototype?.length > 0 ? parsedContent.prototype.slice(1) : null}
-                prototypeImages={project.featuredImages?.prototypeShowcase || []}
-                headingColor={theme.palette.text.primary}
-              />
+              
+              <Box component="section" sx={{ py: 4 }}>
+                {parsedContent.fullContent ? (
+                  <Box 
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {parsedContent.fullContent}
+                  </Box>
+                ) : (
+                  <Typography variant="body1">{project.description}</Typography>
+                )}
+              </Box>
+              
+              {project.featuredImages && Object.keys(project.featuredImages).length > 0 && (
+                <Box 
+                  component="section" 
+                  sx={{ 
+                    mt: 6,
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                    gap: 4
+                  }}
+                >
+                  {Object.entries(project.featuredImages).map(([key, imageData]) => {
+                    if (!imageData || (Array.isArray(imageData) && imageData.length === 0)) return null;
+                    
+                    return (
+                      <Box 
+                        key={key}
+                        sx={{ 
+                          overflow: 'hidden',
+                          borderRadius: theme.shape.borderRadius,
+                          boxShadow: theme.shadows[2],
+                          height: { xs: '250px', md: '300px' }
+                        }}
+                      >
+                        <ContentAwareImage
+                          imageData={imageData}
+                          src={typeof imageData === 'string' ? imageData : 
+                               Array.isArray(imageData) ? 
+                                 (typeof imageData[0] === 'string' ? imageData[0] : imageData[0]?.src) : 
+                                 imageData?.src}
+                          alt={`${project.title} - ${key}`}
+                          containerHeight="100%"
+                          containerOrientation="landscape"
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
+              )}
+              
               <Divider sx={{ my: 6 }} />
             </>
           )}
           
           <Box component="section" sx={{ py: 6 }}>
+            {/* Format the Outcomes section with consistent numbering */}
             <Typography 
               variant="h5" 
-              sx={{ color: theme.palette.accent.main, fontWeight: 600, mb: 2 }}
+              sx={{ 
+                color: projectAccentColor,
+                fontWeight: 600,
+                mb: 2
+              }}
             >
-              {sectionNumbers.outcomes}
+              {parsedContent.sections.length > 0 
+                ? (parsedContent.sections.length + 1).toString().padStart(2, '0')
+                : "01"}
             </Typography>
             
             <Typography 
@@ -373,5 +386,96 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
     </ErrorBoundary>
   );
 };
+
+/**
+ * Maps section titles to featuredImages keys
+ * @param {string} sectionTitle - The title of the section
+ * @returns {string} - The key to use for featuredImages
+ */
+function sectionImageKeyMap(sectionTitle) {
+  const title = sectionTitle.toLowerCase();
+  
+  if (title.includes('overview') || title.includes('introduction') || title.includes('project')) {
+    return 'overview';
+  } else if (title.includes('problem') || title.includes('context') || title.includes('challenge') || title.includes('motivation')) {
+    return 'problem';
+  } else if (title.includes('solution') || title.includes('approach') || title.includes('implementation') || title.includes('technical')) {
+    return 'solution';
+  } else if (title.includes('prototype') || title.includes('component') || title.includes('toolkit') || title.includes('design')) {
+    return 'prototypeShowcase';
+  }
+  
+  // Default case
+  return null;
+}
+
+/**
+ * Provides fallback content for sections
+ * @param {string} sectionTitle - The title of the section
+ * @param {object} project - The project object
+ * @returns {JSX.Element|null} - Fallback content
+ */
+function getFallbackContent(sectionTitle, project) {
+  const title = sectionTitle.toLowerCase();
+  
+  if (title.includes('overview') || title.includes('introduction')) {
+    return (
+      <Typography variant="body1">
+        {project.description || `${project.title} explores innovative approaches to ${project.categories[0]}, 
+        creating solutions that address real-world challenges.`}
+      </Typography>
+    );
+  } else if (title.includes('problem') || title.includes('challenge')) {
+    return (
+      <Typography variant="body1">
+        {project.categories.includes('UX Research') ? (
+          <>
+            This project addressed key challenges within {project.categories[0]}, identifying user pain points
+            through systematic research methodologies and stakeholder interviews.
+          </>
+        ) : project.categories.includes('Haptic Design') ? (
+          <>
+            The project tackled the challenge of creating intuitive tactile experiences that effectively 
+            communicate information through non-visual means, addressing accessibility and engagement.
+          </>
+        ) : (
+          <>
+            This work identified critical gaps in existing approaches to {project.categories[0]},
+            focusing on opportunities to enhance user experiences through innovative design solutions.
+          </>
+        )}
+      </Typography>
+    );
+  } else if (title.includes('solution') || title.includes('approach')) {
+    return (
+      <Typography variant="body1">
+        {project.categories.includes('UX Research') ? (
+          <>
+            The solution involved <strong>user-centered methodologies</strong> including interviews, 
+            usability testing, and iterative design to ensure solutions addressed actual user needs.
+          </>
+        ) : project.categories.includes('Haptic Design') ? (
+          <>
+            Implementation involved <strong>specialized haptic hardware</strong> including tactile actuators,
+            motion sensors, and signal processing to create engaging multi-sensory experiences.
+          </>
+        ) : project.categories.includes('AI Integration') ? (
+          <>
+            The approach leveraged <strong>machine learning algorithms</strong> and neural networks to create
+            adaptive experiences with real-time processing capabilities.
+          </>
+        ) : (
+          <>
+            The solution implemented <strong>modern design principles</strong> and technical approaches
+            to create an intuitive, efficient user experience addressing the identified challenges.
+          </>
+        )}
+      </Typography>
+    );
+  }
+  
+  // Default case
+  return null;
+}
 
 export default ProjectModal;

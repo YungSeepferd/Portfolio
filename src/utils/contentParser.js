@@ -1,90 +1,212 @@
+/**
+ * Utility for parsing project content from JSX
+ * This helps break down complex JSX content into categorized sections
+ */
 import React from 'react';
-import Typography from '@mui/material/Typography';
+import { Typography, Box } from '@mui/material';
 
 /**
- * Parses project content into sections based on h3 headers
- * @param {string} content - Raw project content string
- * @returns {object} - Object containing parsed sections
+ * Extracts section headings and content from JSX project details
+ * @param {JSX.Element} details - The JSX content from project details
+ * @returns {Object} - Object with parsed section content and counts
  */
-export const parseProjectContent = (content) => {
-  const sections = {};
-  let currentSection = null;
-  let currentContent = [];
-
-  // Check if content is a string
-  if (typeof content !== 'string') {
-    console.error("Content is not a string:", content);
-    return sections; // Return empty sections if content is not a string
+export const parseProjectContent = (details) => {
+  if (!details || !details.props || !details.props.children) {
+    return {
+      fullContent: null,
+      sections: [],
+      sectionCount: 0
+    };
   }
   
-  // Regular expression to match h3 headers
-  const headerRegex = /<h3.*?>(.*?)<\/h3>/i;
+  // Initialize result object
+  const result = {
+    overview: null,
+    problemStatement: null,
+    research: null,
+    solution: null,
+    prototype: null,
+    outcomes: null,
+    fullContent: null,
+    sections: [], // New property to store all sections
+    sectionCount: 0 // Count of sections
+  };
   
-  // Split the content by <p> tags
-  const paragraphs = content.split(/<p>/i);
+  // Cache the full content
+  result.fullContent = details;
   
-  paragraphs.forEach(paragraph => {
-    // Check if the paragraph contains an h3 header
-    const headerMatch = paragraph.match(headerRegex);
+  // Flatten and process the children
+  const children = React.Children.toArray(details.props.children);
+  
+  // Track sections for dynamic rendering
+  let currentSectionTitle = '';
+  let currentSectionContent = [];
+  let sectionIndex = 0;
+  
+  // Process each child element
+  children.forEach((child, index) => {
+    // Check if this is a section heading (h3)
+    const isHeading = child?.props?.variant === 'h3';
     
-    if (headerMatch) {
-      // Extract the header text
-      const title = headerMatch[1];
-      
-      // Save the current section if it exists
-      if (currentSection) {
-        sections[currentSection] = currentContent;
+    if (isHeading) {
+      // If we already have a section in progress, save it before starting new one
+      if (currentSectionTitle) {
+        result.sections.push({
+          index: sectionIndex,
+          title: currentSectionTitle,
+          content: currentSectionContent,
+          number: (sectionIndex + 1).toString().padStart(2, '0') // Format as "01", "02", etc.
+        });
+        sectionIndex++;
       }
       
       // Start a new section
-      currentSection = title.toLowerCase().replace(/ /g, '');
-      currentContent = [<Typography variant="h3" key={currentSection}>{title}</Typography>];
+      currentSectionTitle = child.props.children;
+      currentSectionContent = [];
+    } else {
+      // Add to current section content if we have a section title
+      if (currentSectionTitle) {
+        currentSectionContent.push(child);
+      }
+    }
+    
+    // Check for specific section types by heading content
+    if (isHeading) {
+      const heading = child.props.children.toLowerCase();
       
-      // Add any remaining content after the header
-      const remainingContent = paragraph.replace(headerMatch[0], '').trim();
-      if (remainingContent) {
-        currentContent.push(<Typography variant="body1" key={currentContent.length}>{remainingContent}</Typography>);
+      if (heading.includes('overview') || heading.includes('introduction')) {
+        result.overview = result.overview || [];
+        result.overview.push(child);
+      } else if (heading.includes('problem')) {
+        result.problemStatement = result.problemStatement || [];
+        result.problemStatement.push(child);
+      } else if (heading.includes('research') || heading.includes('methodology') || heading.includes('approach')) {
+        result.research = result.research || [];
+        result.research.push(child);
+      } else if (heading.includes('solution') || heading.includes('implementation') || heading.includes('technical') || heading.includes('concept')) {
+        result.solution = result.solution || [];
+        result.solution.push(child);
+      } else if (heading.includes('prototype') || heading.includes('design') || heading.includes('component')) {
+        result.prototype = result.prototype || [];
+        result.prototype.push(child);
+      } else if (heading.includes('outcome') || heading.includes('result') || heading.includes('finding') || heading.includes('impact') || heading.includes('evaluation')) {
+        result.outcomes = result.outcomes || [];
+        result.outcomes.push(child);
       }
     } else {
-      // If no header, add the paragraph to the current section
-      const cleanParagraph = paragraph.replace(/<\/p>/i, '').trim();
-      
-      if (cleanParagraph) {
-        // Check if the paragraph contains a list
-        if (cleanParagraph.startsWith("<ul") || cleanParagraph.startsWith("<ol")) {
-          // If it's a list, add it directly without wrapping in a Typography
-          currentContent.push(<div dangerouslySetInnerHTML={{ __html: cleanParagraph }} key={currentContent.length} />);
-        } else {
-          // Otherwise, wrap the paragraph in a Typography component
-          currentContent.push(<Typography variant="body1" key={currentContent.length} dangerouslySetInnerHTML={{ __html: cleanParagraph }} />);
-        }
+      // Add content to the appropriate section
+      if (result.overview && result.overview.length > 0) {
+        result.overview.push(child);
+      } else if (result.problemStatement && result.problemStatement.length > 0) {
+        result.problemStatement.push(child);
+      } else if (result.research && result.research.length > 0) {
+        result.research.push(child);
+      } else if (result.solution && result.solution.length > 0) {
+        result.solution.push(child);
+      } else if (result.prototype && result.prototype.length > 0) {
+        result.prototype.push(child);
+      } else if (result.outcomes && result.outcomes.length > 0) {
+        result.outcomes.push(child);
       }
     }
   });
   
-  // Save the last section
-  if (currentSection) {
-    sections[currentSection] = currentContent;
+  // Don't forget to add the last section
+  if (currentSectionTitle) {
+    result.sections.push({
+      index: sectionIndex,
+      title: currentSectionTitle,
+      content: currentSectionContent,
+      number: (sectionIndex + 1).toString().padStart(2, '0')
+    });
+    sectionIndex++;
   }
   
-  return sections;
+  // Update section count
+  result.sectionCount = result.sections.length;
+  
+  return result;
 };
 
 /**
- * Renders a specific section from parsed content
+ * Formats a section heading with numbered prefix (e.g., "01 Overview")
+ * @param {String} title - The section title text
+ * @param {Number} index - The section index (0-based)
+ * @returns {String} - Formatted section title with number prefix
  */
-export const renderContentSection = (section, fallback = null) => {
-  if (!section || section.length === 0) {
-    return fallback;
-  }
+export const formatSectionHeading = (title, index) => {
+  const sectionNumber = (index + 1).toString().padStart(2, '0');
+  return `${sectionNumber} ${title}`;
+};
+
+/**
+ * Creates a numbered section component with consistent styling
+ * @param {String} title - Section title
+ * @param {Number} index - Section index for numbering
+ * @param {String} color - Optional color for the number (defaults to project color)
+ * @returns {JSX.Element} - Formatted section heading
+ */
+export const createNumberedSection = (title, index, color = null) => {
+  const sectionNumber = (index + 1).toString().padStart(2, '0');
   
   return (
-    <>
-      {section.map((element, index) => (
-        <React.Fragment key={index}>
-          {element}
-        </React.Fragment>
-      ))}
-    </>
+    <Typography variant="h3" component="h3" sx={{ position: 'relative', pl: 0 }}>
+      <Typography 
+        component="span" 
+        sx={{ 
+          color: color || 'inherit',
+          fontWeight: 700,
+          mr: 1,
+          display: 'inline-block'
+        }}
+      >
+        {sectionNumber}
+      </Typography>
+      {title}
+    </Typography>
   );
 };
+
+/**
+ * Renders content section with proper handling of JSX and string content
+ * @param {JSX.Element|Array|String|null} content - The content to render
+ * @returns {JSX.Element|null} - Rendered content or null if empty
+ */
+export const renderContentSection = (content) => {
+  if (!content) return null;
+  
+  // If content is an array, render each element
+  if (Array.isArray(content)) {
+    return (
+      <Box>
+        {content.map((item, idx) => (
+          <React.Fragment key={idx}>
+            {item}
+          </React.Fragment>
+        ))}
+      </Box>
+    );
+  }
+  
+  // If content is a string, wrap it in Typography
+  if (typeof content === 'string') {
+    return (
+      <Typography variant="body1" paragraph>
+        {content}
+      </Typography>
+    );
+  }
+  
+  // Otherwise, assume it's JSX and return as is
+  return content;
+};
+
+// Create a proper named export object
+const contentParserUtils = {
+  parseProjectContent,
+  formatSectionHeading,
+  createNumberedSection,
+  renderContentSection
+};
+
+export default contentParserUtils;
