@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Box, Typography, Card, CardContent, useTheme, Button, Stack } from '@mui/material';
 import { formatProjectTags } from '../../utils/dataHelpers';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
-import ContentAwareImage from '../common/ContentAwareImage';
+import ContentAwareImage from '../common/ContentAwareImage'; // Updated import path
 import SkillTag from '../common/SkillTag';
 
 /**

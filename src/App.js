@@ -4,7 +4,7 @@ import Hero from './components/hero/Hero';
 import Work from './components/work/Work';
 import AboutSection from './components/about/AboutSection';
 import FooterContact from './components/contact/FooterContact';
-import CSSVariables from './CSSVariables';
+import CSSVariables from './utils/cssVariables'; // Updated import path
 import { CssBaseline, Box } from '@mui/material';
 import ErrorBoundary from './components/common/ErrorBoundary';
 

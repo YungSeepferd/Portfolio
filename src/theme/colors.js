@@ -54,27 +54,40 @@ const colors = {
   structureBorders: '#3545D6',
   structureLines: '#3545D6',
   structureOutlines: '#3545D6',
+  errorMain: '#f44336',
+  warningMain: '#ff9800',
+  infoMain: '#2196f3',
+  successMain: '#4caf50',
 };
 
 /**
- * Creates a palette object for use with Material UI's createTheme
- * 
- * @returns {Object} Material UI compatible palette configuration
+ * Creates a palette configuration for Material UI's createTheme
  */
 export const createPalette = () => {
   return {
-    mode: 'dark',
     primary: {
       main: colors.primaryMain,
-      contrastText: colors.primaryContrastText,
       dark: colors.primaryDark,
       light: colors.primaryLight,
+      contrastText: colors.primaryContrastText,
     },
     secondary: {
       main: colors.secondaryMain,
-      contrastText: colors.secondaryContrastText,
       dark: colors.secondaryDark,
       light: colors.secondaryLight,
+      contrastText: colors.secondaryContrastText,
+    },
+    error: {
+      main: colors.errorMain,
+    },
+    warning: {
+      main: colors.warningMain,
+    },
+    info: {
+      main: colors.infoMain,
+    },
+    success: {
+      main: colors.successMain,
     },
     background: {
       default: colors.backgroundDefault,
@@ -87,15 +100,12 @@ export const createPalette = () => {
       muted: colors.textMuted,
       accent: colors.textAccent,
     },
+    divider: colors.divider,
     accent: {
       main: colors.accentMain,
       dark: colors.accentDark,
       light: colors.accentLight,
-      contrast: colors.accentContrast,
-    },
-    bubbles: {
-      background: colors.bubblesBackground,
-      border: colors.bubblesBorder,
+      contrastText: colors.accentContrast,
     },
     card: {
       background: colors.cardBackground,
@@ -103,21 +113,18 @@ export const createPalette = () => {
       activeGlow: colors.cardActiveGlow,
       border: colors.cardBorder,
     },
-    filter: {
-      active: colors.filterActive,
-      inactive: colors.filterInactive,
+    structure: {
+      borders: colors.structureBorders,
+      lines: colors.structureLines,
     },
-    action: {
-      hover: colors.actionHover,
-      selected: colors.actionSelected,
-      disabled: colors.actionDisabled,
-      disabledBackground: colors.actionDisabledBackground,
-    },
-    divider: colors.divider,
     shadow: {
       light: colors.shadowLight,
       medium: colors.shadowMedium,
       dark: colors.shadowDark,
+    },
+    bubbles: {
+      background: colors.bubblesBackground,
+      border: colors.bubblesBorder,
     },
     overlay: {
       background: colors.overlayBackground,
@@ -125,22 +132,13 @@ export const createPalette = () => {
     },
     dots: {
       inactive: colors.dotsInactive,
-      active: theme => theme.palette.secondary.main,
+      active: colors.secondaryMain,
     },
-    placeholder: colors.placeholder,
     status: {
       success: colors.statusSuccess,
       warning: colors.statusWarning,
       error: colors.statusError,
       info: colors.statusInfo,
-    },
-    focus: {
-      outline: colors.focusOutline,
-    },
-    structure: {
-      borders: colors.structureBorders,
-      lines: colors.structureLines,
-      outlines: colors.structureOutlines,
     },
   };
 };

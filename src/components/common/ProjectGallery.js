@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, Button } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import ContentAwareImage from './ContentAwareImage';
+import ContentAwareImage from './ContentAwareImage'; // Updated import path from same directory
 import VideoPlayer from './VideoPlayer';
 import { analyzeImage } from '../../utils/imageAnalyzer';
 import { isVideo, createVideoThumbnail } from '../../utils/mediaHelper';

@@ -1,38 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
- * Custom hook for lazy loading elements using Intersection Observer
- * @param {React.RefObject} ref - Reference to the element to observe
+ * Custom hook for intersection observer API with improved caching
  * @param {Object} options - IntersectionObserver options
- * @returns {boolean} - True if element is in viewport
+ * @param {Boolean} freezeOnceVisible - If true, element stays "visible" even after leaving viewport
+ * @returns {Array} [ref, isVisible, entry]
  */
-function useIntersectionObserver(ref, options = {}) {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  
+const useIntersectionObserver = ({
+  threshold = 0,
+  root = null,
+  rootMargin = '0px',
+  freezeOnceVisible = true, // Default to true so that images stay loaded
+} = {}) => {
+  const [entry, setEntry] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef(null);
+  const frozen = useRef(false);
+
+  const updateEntry = ([entry]) => {
+    setEntry(entry);
+    
+    // If element has already been visible once and we're freezing, don't update state
+    if (frozen.current && freezeOnceVisible) {
+      return;
+    }
+    
+    // Update visibility state
+    const isCurrentlyVisible = entry?.isIntersecting;
+    setIsVisible(isCurrentlyVisible);
+    
+    // If it's visible for the first time and we want to freeze, mark it
+    if (isCurrentlyVisible && freezeOnceVisible) {
+      frozen.current = true;
+    }
+  };
+
   useEffect(() => {
-    if (!ref.current) return;
+    const node = elementRef?.current;
+    if (!node) return;
     
-    const observerOptions = {
-      root: null,
-      rootMargin: '200px', // Increase the margin to load images earlier
-      threshold: 0.01, // Lower threshold so images load with minimal visibility
-      ...options,
-    };
+    const observerOptions = { threshold, root, rootMargin };
+    const observer = new IntersectionObserver(updateEntry, observerOptions);
     
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsIntersecting(entry.isIntersecting);
-    }, observerOptions);
-    
-    observer.observe(ref.current);
+    observer.observe(node);
     
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
+      observer.disconnect();
     };
-  }, [ref, options]);
-  
-  return isIntersecting;
-}
+  }, [threshold, root, rootMargin, freezeOnceVisible]);
+
+  return [elementRef, isVisible, entry];
+};
 
 export default useIntersectionObserver;
