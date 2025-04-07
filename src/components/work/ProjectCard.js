@@ -1,27 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Card, CardContent, useTheme, Button, Stack } from '@mui/material';
-import { formatProjectTags } from '../../utils/dataHelpers';
+import { Box, Typography, Card, CardContent, useTheme, Button, Stack, CircularProgress } from '@mui/material';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
-import ContentAwareImage from '../common/ContentAwareImage'; // Updated import path
+import ContentAwareImage from '../common/ContentAwareImage';
 import SkillTag from '../common/SkillTag';
+import { useModalContext } from '../../context/ModalContext';
 
 /**
  * Enhanced project card with lazy loading and proper animations
- * Updated to provide consistent display and better text visibility
+ * Updated to display links with popups
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPosition }) => {
+const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition }) => {
   const theme = useTheme();
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const { openPdf, openIframe } = useModalContext();
+
+  const handleImageLoad = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
   
   if (!project) return null;
   
-  // Determine whether to show all tags or a limited number
-  const { tags, remaining } = showAllTags 
-    ? { tags: project.categories, remaining: 0 }
-    : formatProjectTags(project.categories, skillTags, 3);
+  // Always show all tags by setting showAllTags to true for consistency
+  const { tags, remaining } = { tags: project.categories, remaining: 0 };
   
   const coverImage = project.images?.[0] || project.media;
   
@@ -39,17 +42,58 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
   };
 
   // Standardized heights for consistent card layout
-  const imageHeight = '45%';
-  const contentHeight = '55%';
+  const imageHeight = '45%'; // Fixed percentage for image section
+  const contentHeight = '55%'; // Fixed percentage for content section
   
   // Check if project has links to display
   const hasLinks = project.links && project.links.length > 0;
+
+  // Apply consistent styling based on either cardVariant or legacy cardStyle
+  const getCardStyle = () => {
+    if (project.cardVariant) {
+      // Use theme-based card variant
+      const variantColor = 
+        project.cardVariant === 'primary' ? theme.palette.primary.main :
+        project.cardVariant === 'secondary' ? theme.palette.secondary.main :
+        project.cardVariant === 'warning' ? theme.palette.warning.main :
+        project.cardVariant === 'info' ? theme.palette.info.main :
+        project.cardVariant === 'success' ? theme.palette.success.main :
+        theme.palette.primary.main;
+        
+      return {
+        borderLeft: `4px solid ${variantColor}`,
+        boxShadow: `0 3px 10px ${variantColor}22`,
+      };
+    } else if (project.cardStyle) {
+      // Fall back to legacy cardStyle if defined
+      return project.cardStyle;
+    }
+    
+    // Default style if neither is provided
+    return {
+      borderLeft: `4px solid ${theme.palette.primary.main}`,
+      boxShadow: `0 3px 10px ${theme.palette.primary.dark}22`,
+    };
+  };
+
+  // Handle link click
+  const handleLinkClick = (link, e) => {
+    e.stopPropagation(); // Prevent card click
+    
+    if (link.contentType === 'pdf') {
+      openPdf(link.url, link.label);
+    } else if (link.contentType === 'iframe') {
+      openIframe(link.url, link.label);
+    } else {
+      window.open(link.url, '_blank', 'noopener,noreferrer');
+    }
+  };
   
   return (
     <Box 
       ref={cardRef} 
       sx={{ 
-        height: '100%', 
+        height: '100%', // Take full height of container
         display: 'flex',
         position: 'relative',
       }}
@@ -63,7 +107,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
           onClick={() => onClick(project)}
           style={{ 
             cursor: 'pointer',
-            height: '100%',
+            height: '100%', // Take full height of parent
             opacity: isLoaded ? 1 : 0,
             width: '100%',
             display: 'flex',
@@ -74,7 +118,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
             sx={{ 
               display: 'flex',
               flexDirection: 'column',
-              height: '100%',
+              height: '100%', // Take full height
               width: '100%',
               overflow: 'hidden',
               borderRadius: theme.shape.borderRadius,
@@ -83,6 +127,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
               '&:hover': {
                 boxShadow: `0 20px 40px ${theme.palette.shadow.medium}`,
               },
+              ...getCardStyle(), // Apply consistent card styling
             }}
           >
             <Box 
@@ -90,8 +135,8 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
               sx={{
                 position: 'relative',
                 width: '100%',
-                height: imageHeight,
-                flexShrink: 0,
+                height: imageHeight, // Consistent percentage height
+                flexShrink: 0, // Prevent shrinking
                 overflow: 'hidden',
               }}
             >
@@ -99,10 +144,23 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
                 imageData={coverImage}
                 src={typeof coverImage === 'string' ? coverImage : coverImage?.src}
                 alt={project.title}
-                onLoad={() => setIsLoaded(true)}
+                onLoad={handleImageLoad}
                 containerHeight="100%"
                 containerOrientation="landscape"
                 objectFit="cover"
+                loading="lazy" // Add lazy loading
+                placeholder={
+                  <Box sx={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    bgcolor: theme.palette.background.paper,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <CircularProgress size={40} />
+                  </Box>
+                }
               />
               
               {/* Add links overlay on hover */}
@@ -114,7 +172,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%)',
                     padding: theme.spacing(2),
                     transform: 'translateY(100%)',
                     transition: 'transform 0.3s ease',
@@ -131,26 +189,25 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
                     {project.links.map((link, index) => (
                       <Button
                         key={index}
-                        variant="contained"
+                        variant="outlined"
                         size="small"
                         color={
                           link.label.includes("GitHub") ? "info" :
                           link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
                           "primary"
                         }
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => handleLinkClick(link, e)}
                         startIcon={link.icon}
                         sx={{
                           minWidth: 'auto',
                           fontWeight: 'medium',
                           fontSize: '0.75rem',
                           textTransform: 'none',
-                          boxShadow: theme.shadows[2],
+                          borderRadius: theme.shape.borderRadius,
+                          backgroundColor: 'rgba(19, 31, 45, 0.6)',
                           '&:hover': {
-                            boxShadow: theme.shadows[4],
+                            boxShadow: theme.shadows[1],
+                            backgroundColor: 'rgba(19, 31, 45, 0.8)',
                           }
                         }}
                       >
@@ -169,8 +226,8 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
                 display: 'flex',
                 flexDirection: 'column',
                 p: { xs: 2.5, sm: 3, md: 3.5 }, 
-                height: 'auto',
-                minHeight: contentHeight,
+                height: contentHeight, // Consistent percentage height
+                minHeight: 'auto', // Remove any min-height that could cause uneven sizes
                 justifyContent: 'space-between',
               }}
             >
@@ -258,4 +315,4 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPos
   );
 };
 
-export default ProjectCard;
+export default React.memo(ProjectCard);

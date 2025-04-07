@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Skeleton } from '@mui/material';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 

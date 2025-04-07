@@ -7,44 +7,49 @@
 
 // Define typography settings
 const typography = {
-  fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
+  // Base font is now Kumbh Sans for body text
+  fontFamily: `'Kumbh Sans', 'Helvetica', 'Arial', sans-serif`,
+  
+  // Headings use IBM Plex Mono
   h1: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '3rem',
     fontWeight: 700,
     lineHeight: 1.2,
     letterSpacing: '-0.01em',
   },
   h2: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '2.5rem',
     fontWeight: 700,
     letterSpacing: '-0.01em',
   },
   h3: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '2rem',
     fontWeight: 700,
     letterSpacing: '-0.01em',
   },
   h4: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '1.6rem',
     fontWeight: 500,
     letterSpacing: '-0.01em',
   },
   h5: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '1.4rem',
     fontWeight: 500,
     letterSpacing: '-0.01em',
   },
   h6: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
     fontSize: '1.2rem',
     fontWeight: 500,
     letterSpacing: '-0.01em',
   },
+  
+  // All other text elements use Kumbh Sans (inherited from base fontFamily)
   subtitle1: {
     fontSize: '1rem',
     fontWeight: 400,
@@ -77,7 +82,7 @@ const typography = {
     fontWeight: 600,
   },
   projectTitle: {
-    fontFamily: `'Montserrat', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`, // Updated to IBM Plex Mono
     fontSize: '2.5rem',
     fontWeight: 700,
     lineHeight: 1.2,

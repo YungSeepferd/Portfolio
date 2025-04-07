@@ -186,3 +186,39 @@ export const createCustomSizes = () => {
     overlayMaxHeight: '90%',
   };
 };
+
+/**
+ * Creates project card styles configuration
+ */
+export const createProjectCardStyles = () => {
+  return {
+    base: {
+      backgroundColor: 'card.background',
+      padding: 2.5,
+      borderRadius: 'shape.borderRadius',
+      boxShadow: (theme) => `0 3px 10px ${theme.palette.shadow.light}`
+    },
+    variants: {
+      primary: {
+        borderLeft: (theme) => `4px solid ${theme.palette.primary.main}`,
+        boxShadow: (theme) => `0 3px 10px ${theme.palette.primary.dark}22`
+      },
+      secondary: {
+        borderLeft: (theme) => `4px solid ${theme.palette.secondary.main}`,
+        boxShadow: (theme) => `0 3px 10px ${theme.palette.secondary.dark}22`
+      },
+      warning: {
+        borderLeft: (theme) => `4px solid ${theme.palette.warning.main}`,
+        boxShadow: (theme) => `0 3px 10px ${theme.palette.warning.dark}22`
+      },
+      info: {
+        borderLeft: (theme) => `4px solid ${theme.palette.info.main}`,
+        boxShadow: (theme) => `0 3px 10px ${theme.palette.info.dark}22`
+      },
+      success: {
+        borderLeft: (theme) => `4px solid ${theme.palette.success.main}`,
+        boxShadow: (theme) => `0 3px 10px ${theme.palette.success.dark}22`
+      }
+    }
+  };
+};

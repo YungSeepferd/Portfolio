@@ -1,6 +1,7 @@
-import { Box, Chip, Divider, Stack, Typography, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Box, Chip, Divider, Stack, Button } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 import React from "react";
+import { getLinkIcon, getLinkColor, getButtonStyles } from '../../utils/buttonStyles';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 // Styled components using theme values
@@ -17,6 +18,39 @@ const TechChip = styled(Chip)(({ theme }) => ({
 }));
 
 /**
+ * Create consistent themed button based on link type
+ * @param {Object} link - Link data
+ * @param {number} index - Button index
+ * @returns {JSX.Element} - Styled button
+ */
+const LinkButton = ({ link, index }) => {
+  // Use the theme from MUI hook here
+  const theme = useTheme();
+  
+  // Ensure link has an icon
+  const linkWithIcon = {
+    ...link,
+    icon: link.icon || getLinkIcon(link.label)
+  };
+  
+  return (
+    <Button
+      variant="outlined"
+      size="small"
+      color={getLinkColor(link.label)}
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      startIcon={linkWithIcon.icon}
+      sx={(theme) => getButtonStyles(theme)}
+    >
+      {link.label}
+    </Button>
+  );
+};
+
+/**
  * TechBar Component
  * 
  * Displays a project's technologies and links in a standardized format
@@ -25,6 +59,8 @@ const TechChip = styled(Chip)(({ theme }) => ({
  * @param {string} projectTitle - Title of the project, used for conditional link enhancement
  */
 const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
+  // We actually do use theme in the styled component above
+  
   // Skip rendering if there's nothing to show
   if (technologies.length === 0 && !projectTitle) return null;
   
@@ -111,33 +147,7 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
             })}
           >
             {enhancedLinks.map((link, index) => (
-              <Button
-                key={index}
-                variant="outlined"
-                size="small"
-                color={
-                  link.label.includes("GitHub") ? "info" :
-                  link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
-                  "primary"
-                }
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                startIcon={link.icon}
-                sx={(theme) => ({
-                  minWidth: 'auto',
-                  fontWeight: 'medium',
-                  fontSize: '0.75rem',
-                  textTransform: 'none',
-                  borderRadius: theme.shape.borderRadius,
-                  '&:hover': {
-                    boxShadow: theme.shadows[1],
-                  }
-                })}
-              >
-                {link.label}
-              </Button>
+              <LinkButton key={index} link={link} index={index} />
             ))}
           </Stack>
         )}

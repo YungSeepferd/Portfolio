@@ -67,28 +67,9 @@ export const getPublicMediaUrl = (source) => {
  * @returns {boolean} - True if the file is a video
  */
 export const isVideo = (path) => {
-  // Handle no path
   if (!path) return false;
-  
-  // Handle object with src property (e.g. {src: 'video.mp4'})
-  if (typeof path === 'object' && path !== null) {
-    // If it's an object, look for a src property
-    if (path.src) return isVideo(path.src);
-    
-    // If there's no src property, it's not a video
-    console.warn('Object passed to isVideo without src property:', path);
-    return false;
-  }
-  
-  // Ensure path is a string before calling toLowerCase
-  if (typeof path !== 'string') {
-    console.warn('Non-string path provided to isVideo:', path);
-    return false;
-  }
-  
-  // Now we know path is a string, continue with the check
-  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
-  return videoExtensions.some(ext => path.toLowerCase().endsWith(ext));
+  const str = String(path).toLowerCase();
+  return str.endsWith('.mp4') || str.endsWith('.mov') || str.endsWith('.webm') || str.endsWith('.m4v');
 };
 
 /**

@@ -1,77 +1,82 @@
 import React from 'react';
-import { Box, Button, Stack, useTheme } from '@mui/material';
+import { Box, useTheme, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import ActionButton from '../common/ActionButton';
+import { useModalContext } from '../../context/ModalContext';
 
 /**
- * ProjectLinks Component
- * 
- * Displays project links as prominent call-to-action buttons
- * between the project headline and content.
+ * Displays project links as styled action buttons
+ * Updated to handle pop-up PDFs and iframes
  */
-const ProjectLinks = ({ links = [], projectTitle = "" }) => {
+const ProjectLinks = ({ links = [], title = '', compact = false }) => {
   const theme = useTheme();
+  const { openPdf, openIframe } = useModalContext();
   
-  if (!links || links.length === 0) {
-    return null;
-  }
+  if (!links || links.length === 0) return null;
+  
+  // Handle click for different content types
+  const handleLinkClick = (link, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (link.contentType === 'pdf') {
+      openPdf(link.url, link.label);
+    } else if (link.contentType === 'iframe') {
+      openIframe(link.url, link.label);
+    } else {
+      window.open(link.url, '_blank', 'noopener,noreferrer');
+    }
+  };
   
   return (
-    <Box 
+    <Box
       component={motion.div}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.3 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
       sx={{
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        my: theme.spacing(3),
-        pt: theme.spacing(1),
-        pb: theme.spacing(3),
-        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: compact ? 'flex-start' : 'center',
+        mt: compact ? 3 : 4,
+        mb: compact ? 0 : 3,
       }}
     >
-      <Stack 
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={2} 
-        sx={{ 
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
+      {!compact && (
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 2,
+            opacity: 0.9,
+            color: theme.palette.text.secondary
+          }}
+        >
+          Learn more about {title}
+        </Typography>
+      )}
+      
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+          justifyContent: compact ? 'flex-start' : 'center',
         }}
       >
         {links.map((link, index) => (
-          <Button
+          <ActionButton
             key={index}
-            variant={index === 0 ? "contained" : "outlined"}
-            color={
-              link.label.includes("GitHub") ? "info" :
-              link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
-              link.label.includes("Demo") || link.label.includes("View") ? "primary" : 
-              "default"
-            }
+            label={link.label}
             href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            startIcon={link.icon}
-            size="large"
-            sx={{
-              minWidth: '180px',
-              fontWeight: 'medium',
-              textTransform: 'none',
-              boxShadow: index === 0 ? theme.shadows[2] : 'none',
-              px: theme.spacing(3),
-              '&:hover': {
-                boxShadow: index === 0 ? theme.shadows[4] : theme.shadows[1],
-              }
-            }}
-          >
-            {link.label}
-          </Button>
+            icon={link.icon}
+            variant={index === 0 ? 'contained' : 'outlined'}
+            size="medium"
+            contentType={link.contentType || 'external'}
+            onClick={(e) => handleLinkClick(link, e)}
+          />
         ))}
-      </Stack>
+      </Box>
     </Box>
   );
 };

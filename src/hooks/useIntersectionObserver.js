@@ -1,55 +1,56 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 /**
- * Custom hook for intersection observer API with improved caching
- * @param {Object} options - IntersectionObserver options
- * @param {Boolean} freezeOnceVisible - If true, element stays "visible" even after leaving viewport
- * @returns {Array} [ref, isVisible, entry]
+ * Custom hook for tracking when an element enters or exits the viewport
+ * 
+ * @param {Object} options
+ * @param {number} options.threshold - Value between 0 and 1 indicating visibility percentage
+ * @param {string} options.root - Element that is used as viewport for checking visibility
+ * @param {string} options.rootMargin - Margin around the root element
+ * @param {boolean} options.freezeOnceVisible - Stop observing after element becomes visible
+ * @returns {Array} [ref, isVisible, entry] - Ref to attach, visibility state, and IntersectionObserverEntry
  */
-const useIntersectionObserver = ({
+function useIntersectionObserver({
   threshold = 0,
   root = null,
   rootMargin = '0px',
-  freezeOnceVisible = true, // Default to true so that images stay loaded
-} = {}) => {
-  const [entry, setEntry] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef(null);
-  const frozen = useRef(false);
-
-  const updateEntry = ([entry]) => {
+  freezeOnceVisible = false
+} = {}) {
+  const [entry, setEntry] = useState();
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [node, setNode] = useState(null);
+  
+  const frozen = isIntersecting && freezeOnceVisible;
+  
+  // Memoize the updateEntry function to ensure consistent reference
+  const updateEntry = useCallback(([entry]) => {
+    setIsIntersecting(entry.isIntersecting);
     setEntry(entry);
-    
-    // If element has already been visible once and we're freezing, don't update state
-    if (frozen.current && freezeOnceVisible) {
-      return;
-    }
-    
-    // Update visibility state
-    const isCurrentlyVisible = entry?.isIntersecting;
-    setIsVisible(isCurrentlyVisible);
-    
-    // If it's visible for the first time and we want to freeze, mark it
-    if (isCurrentlyVisible && freezeOnceVisible) {
-      frozen.current = true;
-    }
-  };
-
+  }, []);
+  
+  // Setup the intersection observer
   useEffect(() => {
-    const node = elementRef?.current;
-    if (!node) return;
+    // Don't observe if frozen or no node to observe
+    if (frozen || !node) return;
     
-    const observerOptions = { threshold, root, rootMargin };
-    const observer = new IntersectionObserver(updateEntry, observerOptions);
+    const observer = new IntersectionObserver(updateEntry, {
+      threshold,
+      root,
+      rootMargin,
+    });
     
     observer.observe(node);
     
-    return () => {
-      observer.disconnect();
-    };
-  }, [threshold, root, rootMargin, freezeOnceVisible]);
-
-  return [elementRef, isVisible, entry];
-};
+    // Cleanup on unmount
+    return () => observer.disconnect();
+  }, [node, threshold, root, rootMargin, frozen, updateEntry]); // Added updateEntry dependency
+  
+  // Function to obtain the ref
+  const ref = useCallback(node => {
+    if (node) setNode(node);
+  }, []);
+  
+  return [ref, !!entry?.isIntersecting, entry];
+}
 
 export default useIntersectionObserver;

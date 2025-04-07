@@ -1,12 +1,154 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography, Grid, CircularProgress, Container } from '@mui/material';
-import { workData } from '../data/WorkData';
+import { workData, skillTags } from './data';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ProjectCard from './ProjectCard';
 import ProjectModal from './ProjectModal';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
+/**
+ * Renders a grid of projects with consistent styling
+ */
+const ProjectMatrix = React.memo(({ projects, isSecondary, skillTags, handleProjectClick }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
+  if (!projects || projects.length === 0) {
+    return null;
+  }
+
+  // For mobile, render as a single column
+  if (isMobile) {
+    return (
+      <Grid container spacing={5}>
+        {projects.map((project) => (
+          <Grid item xs={12} key={project.id} sx={{ minHeight: '550px' }}>
+            <ProjectCard
+              project={project}
+              skillTags={skillTags}
+              onClick={handleProjectClick}
+              showAllTags={false}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
+
+  // Animation variants for the matrix layers
+  const matrixAnimations = {
+    container: {
+      hidden: { opacity: 0 },
+      visible: { 
+        opacity: 1,
+        transition: { 
+          staggerChildren: 0.1,
+          delayChildren: 0.3
+        }
+      }
+    },
+    item: {
+      hidden: { opacity: 0, y: 20 },
+      visible: { 
+        opacity: 1, 
+        y: 0,
+        transition: { duration: 0.6 }
+      }
+    }
+  };
+
+  // Render based on layoutType
+  return (
+    <Box
+      component={motion.div}
+      variants={isSecondary ? {} : matrixAnimations.container}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      sx={{
+        width: '100%',
+        mb: isSecondary ? 0 : theme.spacing(10),
+        mt: isSecondary ? theme.spacing(10) : 0,
+        opacity: isSecondary ? 0.9 : 1,
+        transform: isSecondary ? 'scale(0.95)' : 'scale(1)',
+        zIndex: isSecondary ? 1 : 2,
+      }}
+    >
+      <Grid 
+        container 
+        spacing={5}
+        sx={{ 
+          height: '100%',
+        }}
+      >
+        {projects.map((project, index) => {
+          const layoutType = project.layoutType || 'default';
+
+          if (layoutType === 'highlighted') {
+            return (
+              <Grid 
+                item 
+                key={project.id} 
+                xs={12} 
+                sm={12}
+                component={motion.div}
+                variants={matrixAnimations.item}
+                sx={{ 
+                  height: '600px', // Exact fixed height
+                  display: 'flex',
+                  '&:hover': {
+                    zIndex: 10,
+                  },
+                }} 
+              >
+                <ProjectCard
+                  project={project}
+                  skillTags={skillTags}
+                  onClick={handleProjectClick}
+                  showAllTags={!isSecondary}
+                  isHighlighted={true}
+                />
+              </Grid>
+            );
+          }
+
+          // Default layout - FIXED HEIGHT FOR ALL CARDS
+          const row = Math.floor(index / 2);
+          const col = index % 2;
+
+          return (
+            <Grid 
+              item 
+              key={project.id} 
+              xs={12} 
+              sm={6}
+              component={motion.div}
+              variants={matrixAnimations.item}
+              sx={{ 
+                height: '580px', // Exact fixed height - removing the conditional based on isTablet
+                display: 'flex',
+                '&:hover': {
+                  zIndex: 10,
+                },
+              }} 
+            >
+              <ProjectCard
+                project={project}
+                skillTags={skillTags}
+                onClick={handleProjectClick}
+                showAllTags={!isSecondary}
+                gridPosition={{ row, col }}
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Box>
+  );
+});
 
 /**
  * Work Component
@@ -26,14 +168,6 @@ function Work() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  
-  // Define skillTags array locally since it's not exported from WorkData
-  const skillTags = [
-    'UX Research', 'Interaction Design', 'Prototyping', 'UI Design',
-    'Haptic Design', 'Sound Design', 'AI Integration', 'Frontend Development',
-    'UX Gamification', 'HCI Methodologies', 'Mental Health UX', 'Automotive UX', 
-    'Graphic Design'
-  ];
   
   const currentProject = currentProjectIndex !== null ? workData[currentProjectIndex] : null;
   
@@ -72,147 +206,6 @@ function Work() {
     }
   };
   
-  // Animation variants for the matrix layers
-  const matrixAnimations = {
-    container: {
-      hidden: { opacity: 0 },
-      visible: { 
-        opacity: 1,
-        transition: { 
-          staggerChildren: 0.1,
-          delayChildren: 0.3
-        }
-      }
-    },
-    item: {
-      hidden: { opacity: 0, y: 20 },
-      visible: { 
-        opacity: 1, 
-        y: 0,
-        transition: { duration: 0.6 }
-      }
-    }
-  };
-  
-  /**
-   * Renders a grid of projects with consistent styling
-   * @param {Array} projects - Projects to display in the grid
-   * @param {Boolean} isSecondary - Whether this is the secondary layer
-   * @returns {JSX.Element} A grid of project cards
-   */
-  const renderProjectMatrix = (projects, isSecondary = false) => {
-    if (!projects || projects.length === 0) {
-      return null;
-    }
-
-    // For mobile, render as a single column
-    if (isMobile) {
-      return (
-        <Grid container spacing={5}>
-          {projects.map((project) => (
-            <Grid item xs={12} key={project.id} sx={{ minHeight: '550px' }}>
-              <ProjectCard
-                project={project}
-                skillTags={skillTags}
-                onClick={handleProjectClick}
-                showAllTags={false}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      );
-    }
-
-    // Render based on layoutType
-    return (
-      <Box
-        component={motion.div}
-        variants={isSecondary ? {} : matrixAnimations.container}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        sx={{
-          width: '100%',
-          mb: isSecondary ? 0 : theme.spacing(10),
-          mt: isSecondary ? theme.spacing(10) : 0,
-          opacity: isSecondary ? 0.9 : 1,
-          transform: isSecondary ? 'scale(0.95)' : 'scale(1)',
-          zIndex: isSecondary ? 1 : 2,
-        }}
-      >
-        <Grid 
-          container 
-          spacing={5}
-          sx={{ 
-            height: '100%',
-          }}
-        >
-          {projects.map((project, index) => {
-            const layoutType = project.layoutType || 'default';
-
-            if (layoutType === 'highlighted') {
-              return (
-                <Grid 
-                  item 
-                  key={project.id} 
-                  xs={12} 
-                  sm={12}
-                  component={motion.div}
-                  variants={matrixAnimations.item}
-                  sx={{ 
-                    height: '600px',
-                    display: 'flex',
-                    '&:hover': {
-                      zIndex: 10,
-                    },
-                  }} 
-                >
-                  <ProjectCard
-                    project={project}
-                    skillTags={skillTags}
-                    onClick={handleProjectClick}
-                    showAllTags={!isSecondary}
-                    isHighlighted={true}
-                  />
-                </Grid>
-              );
-            }
-
-            // Default layout
-            const row = Math.floor(index / 2);
-            const col = index % 2;
-
-            return (
-              <Grid 
-                item 
-                key={project.id} 
-                xs={12} 
-                sm={6}
-                component={motion.div}
-                variants={matrixAnimations.item}
-                sx={{ 
-                  height: isTablet ? '520px' : '580px',
-                  display: 'flex',
-                  '&:hover': {
-                    zIndex: 10,
-                  },
-                }} 
-              >
-                <ProjectCard
-                  project={project}
-                  skillTags={skillTags}
-                  onClick={handleProjectClick}
-                  showAllTags={!isSecondary}
-                  gridPosition={{ row, col }}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
-    );
-  };
-  
   // Render any additional projects in a more traditional grid layout
   const renderAdditionalProjects = (projects) => {
     if (!projects || projects.length === 0) return null;
@@ -241,7 +234,7 @@ function Work() {
               md={4}
               lg={4}
               sx={{ 
-                height: { xs: '450px', sm: '500px', md: '550px' },
+                height: { xs: '580px', sm: '580px', md: '580px' }, // CONSISTENT HEIGHT
                 display: 'flex',
               }} 
             >
@@ -249,7 +242,7 @@ function Work() {
                 project={project}
                 skillTags={skillTags}
                 onClick={handleProjectClick}
-                showAllTags={false}
+                showAllTags={true} // ALWAYS show all tags
               />
             </Grid>
           ))}
@@ -291,18 +284,22 @@ function Work() {
         
         {/* Project matrices container */}
         <Container maxWidth="xl" sx={{ position: 'relative' }}>
-          <Box 
-            sx={{ 
-              width: '100%', 
-              position: 'relative',
-              perspective: '1000px'
-            }}
-          >
+          <Box sx={{ width: '100%', position: 'relative', perspective: '1000px' }}>
             {/* Primary matrix (front layer) */}
-            {renderProjectMatrix(matrixProjects.primary, false)}
+            <ProjectMatrix 
+              projects={matrixProjects.primary} 
+              isSecondary={false}
+              skillTags={skillTags}
+              handleProjectClick={handleProjectClick}
+            />
             
             {/* Secondary matrix (back layer) */}
-            {renderProjectMatrix(matrixProjects.secondary, true)}
+            <ProjectMatrix 
+              projects={matrixProjects.secondary} 
+              isSecondary={true}
+              skillTags={skillTags}
+              handleProjectClick={handleProjectClick}
+            />
             
             {/* Additional projects */}
             {renderAdditionalProjects(matrixProjects.additional)}

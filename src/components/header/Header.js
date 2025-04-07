@@ -179,9 +179,9 @@ const Header = () => {
                 mr: 0.5 
               }}
             >
-              VG
+              Vincent
             </Box> 
-            Portfolio
+            Göke
           </Box>
           
           {isMobile ? (
