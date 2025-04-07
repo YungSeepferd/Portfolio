@@ -3,32 +3,27 @@ import { styled } from "@mui/material/styles";
 import React from "react";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
-// Styled components using theme values instead of hardcoded colors
-const NavLink = styled(Typography)(({ theme }) => ({
-  fontWeight: "bold",
-  color: theme.palette.accent.main, // Using theme accent color instead of hardcoded "#c2f650"
-  fontSize: theme.typography.button.fontSize,
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  transition: `color ${theme.animationSettings.durations.short}ms ease`, // Fixed transition property
-  '&:hover': {
-    color: theme.palette.accent.light,
-  }
-}));
-
+// Styled components using theme values
 const TechChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper, // Using theme background instead of hardcoded rgba
+  backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(0.5, 1.5),
   "& .MuiChip-label": {
-    color: theme.palette.text.primary, // Using theme text color instead of hardcoded "#fbfbfb"
+    color: theme.palette.text.primary,
     fontSize: theme.typography.caption.fontSize,
     fontFamily: theme.typography.fontFamily,
     padding: 0,
   },
 }));
 
+/**
+ * TechBar Component
+ * 
+ * Displays a project's technologies and links in a standardized format
+ * @param {string[]} technologies - List of technologies used in the project
+ * @param {Object[]} links - List of link objects with label, url, and icon
+ * @param {string} projectTitle - Title of the project, used for conditional link enhancement
+ */
 const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
   // Skip rendering if there's nothing to show
   if (technologies.length === 0 && !projectTitle) return null;
@@ -71,7 +66,7 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
           p: theme.spacing(2),
           width: "100%",
           borderRadius: theme.shape.borderRadius,
-          border: `1px solid ${theme.palette.primary.main}`, // Using theme primary color
+          border: `1px solid ${theme.palette.primary.main}`,
           alignItems: "center",
           flexDirection: { xs: "column", sm: "row" },
           gap: { xs: theme.spacing(2), sm: 0 },
@@ -95,7 +90,7 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
                   orientation="vertical"
                   flexItem
                   sx={(theme) => ({ 
-                    bgcolor: theme.palette.divider, // Using theme divider color
+                    bgcolor: theme.palette.divider,
                     height: "21px", 
                     display: { xs: "none", md: "block" } 
                   })}

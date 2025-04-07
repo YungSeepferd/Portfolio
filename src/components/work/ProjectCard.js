@@ -8,9 +8,9 @@ import SkillTag from '../common/SkillTag';
 
 /**
  * Enhanced project card with lazy loading and proper animations
- * Updated to provide larger display and better text visibility
+ * Updated to provide consistent display and better text visibility
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompact = false, gridPosition }) => {
+const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, gridPosition }) => {
   const theme = useTheme();
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
@@ -18,10 +18,10 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
   
   if (!project) return null;
   
-  // Modify to show all tags if showAllTags is true
+  // Determine whether to show all tags or a limited number
   const { tags, remaining } = showAllTags 
     ? { tags: project.categories, remaining: 0 }
-    : formatProjectTags(project.categories, skillTags, isCompact ? 2 : 3);
+    : formatProjectTags(project.categories, skillTags, 3);
   
   const coverImage = project.images?.[0] || project.media;
   
@@ -38,9 +38,9 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
     }
   };
 
-  // Determine image height based on type
-  const imageHeight = isCompact ? '45%' : '45%';
-  const contentHeight = isCompact ? '55%' : '55%';
+  // Standardized heights for consistent card layout
+  const imageHeight = '45%';
+  const contentHeight = '55%';
   
   // Check if project has links to display
   const hasLinks = project.links && project.links.length > 0;
@@ -168,7 +168,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
                 flexGrow: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                p: { xs: 2.5, sm: 3, md: 3.5 }, // Responsive padding that increases with screen size
+                p: { xs: 2.5, sm: 3, md: 3.5 }, 
                 height: 'auto',
                 minHeight: contentHeight,
                 justifyContent: 'space-between',
@@ -188,24 +188,24 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
                     lineHeight: 1.3,
                     fontWeight: 600,
                     color: theme.palette.primary.main,
-                    fontSize: { xs: '1.3rem', sm: '1.4rem', md: '1.5rem' }, // Larger text size
+                    fontSize: { xs: '1.3rem', sm: '1.4rem', md: '1.5rem' }, 
                   }}
                 >
                   {project.title}
                 </Typography>
                 
                 <Typography 
-                  variant="body1" // Changed from body2 to body1 for better visibility
+                  variant="body1"
                   className="project-card-description"
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
-                    WebkitLineClamp: isCompact ? 3 : 4, // Show more lines for non-compact cards
+                    WebkitLineClamp: 4,
                     WebkitBoxOrient: 'vertical',
-                    color: theme.palette.text.primary, // Changed from secondary to primary for better contrast
+                    color: theme.palette.text.primary,
                     lineHeight: 1.6,
-                    fontSize: { xs: '0.95rem', md: '1rem' }, // Slightly larger font
+                    fontSize: { xs: '0.95rem', md: '1rem' },
                     mb: 3,
                     fontWeight: 400,
                   }}
@@ -219,10 +219,10 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
                 sx={{ 
                   display: 'flex', 
                   flexWrap: 'wrap',
-                  gap: 1.2, // Increased gap for better spacing
+                  gap: 1.2,
                   overflowX: { xs: 'auto', md: 'visible' },
-                  padding: theme.spacing(2, 0, 0.5), // Adjusted padding
-                  marginTop: 'auto', // Push to bottom of container
+                  padding: theme.spacing(2, 0, 0.5),
+                  marginTop: 'auto',
                   borderTop: `1px solid ${theme.palette.divider}`,
                   flexShrink: 0,
                 }}
@@ -232,7 +232,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = false, isCompa
                     key={idx}
                     label={tag}
                     size="small"
-                    onClick={(e) => e.stopPropagation()} // Prevent card click when clicking tag
+                    onClick={(e) => e.stopPropagation()}
                   />
                 ))}
                 

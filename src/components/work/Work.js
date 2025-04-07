@@ -52,7 +52,6 @@ function Work() {
       secondary: sortedProjects.slice(4, 8), // Next 4 projects for secondary matrix
       additional: sortedProjects.slice(8)    // Any remaining projects
     };
-    // Removed workData from the dependency array since it won't change
   }, []);
   
   const handleProjectClick = (project) => {
@@ -96,10 +95,10 @@ function Work() {
   };
   
   /**
-   * Renders a 2x2 grid of projects
+   * Renders a grid of projects with consistent styling
    * @param {Array} projects - Projects to display in the grid
    * @param {Boolean} isSecondary - Whether this is the secondary layer
-   * @returns {JSX.Element} A 2x2 grid of project cards
+   * @returns {JSX.Element} A grid of project cards
    */
   const renderProjectMatrix = (projects, isSecondary = false) => {
     if (!projects || projects.length === 0) {
@@ -251,7 +250,6 @@ function Work() {
                 skillTags={skillTags}
                 onClick={handleProjectClick}
                 showAllTags={false}
-                isCompact={true}
               />
             </Grid>
           ))}

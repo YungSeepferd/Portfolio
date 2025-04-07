@@ -5,6 +5,12 @@ import ContentAwareImage from '../common/ContentAwareImage';
 import TechBar from './TechBar';
 import SkillTag from '../common/SkillTag';
 
+/**
+ * ProjectHeader Component
+ * 
+ * Displays the main project information at the top of a project modal,
+ * including title, description, cover image, categories, and tech bar.
+ */
 const ProjectHeader = ({ project }) => {
   const theme = useTheme();
   
@@ -66,7 +72,7 @@ const ProjectHeader = ({ project }) => {
           <TechBar 
             technologies={project.tools} 
             projectTitle={project.title}
-            links={project.links} // Pass the links to TechBar
+            links={project.links}
           />
         </Box>
       )}
