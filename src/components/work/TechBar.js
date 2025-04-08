@@ -3,6 +3,8 @@ import { styled, useTheme } from "@mui/material/styles";
 import React from "react";
 import { getLinkIcon, getLinkColor, getButtonStyles } from '../../utils/buttonStyles';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { getPdfUrl } from '../../utils/pdfUtils';
+import { useModalContext } from '../../context/ModalContext';
 
 // Styled components using theme values
 const TechChip = styled(Chip)(({ theme }) => ({
@@ -26,6 +28,7 @@ const TechChip = styled(Chip)(({ theme }) => ({
 const LinkButton = ({ link, index }) => {
   // Use the theme from MUI hook here
   const theme = useTheme();
+  const { openPdf, openIframe } = useModalContext();
   
   // Ensure link has an icon
   const linkWithIcon = {
@@ -33,15 +36,30 @@ const LinkButton = ({ link, index }) => {
     icon: link.icon || getLinkIcon(link.label)
   };
   
+  // Handle click based on content type
+  const handleClick = (e) => {
+    e.stopPropagation();
+    
+    // Get the proper URL based on content type
+    const resolvedUrl = link.contentType === 'pdf' ? getPdfUrl(link.url) : link.url;
+    
+    if (link.contentType === 'pdf') {
+      openPdf(resolvedUrl, link.label);
+      return;
+    } else if (link.contentType === 'iframe') {
+      openIframe(resolvedUrl, link.label);
+      return;
+    }
+    
+    window.open(link.url, '_blank', 'noopener,noreferrer');
+  };
+  
   return (
     <Button
       variant="outlined"
       size="small"
       color={getLinkColor(link.label)}
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleClick}
       startIcon={linkWithIcon.icon}
       sx={(theme) => getButtonStyles(theme)}
     >
@@ -71,13 +89,15 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
     enhancedLinks.push({
       label: "Download PDF",
       url: "/assets/documents/Prototyping_Emotions_Thesis.pdf",
-      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />,
+      contentType: 'pdf'
     });
   } else if (projectTitle === "Phone-based Intervention in Self-driving Cars – Bachelor Thesis") {
     enhancedLinks.push({
       label: "Download PDF",
       url: "/assets/documents/Phone_Based_Intervention_Thesis.pdf",
-      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />,
+      contentType: 'pdf'
     });
   }
   

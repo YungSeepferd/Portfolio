@@ -3,10 +3,11 @@ import { Box, useTheme, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ActionButton from '../common/ActionButton';
 import { useModalContext } from '../../context/ModalContext';
+import { getPdfUrl } from '../../utils/pdfUtils';
 
 /**
  * Displays project links as styled action buttons
- * Updated to handle pop-up PDFs and iframes
+ * Updated to handle pop-up PDFs and iframes with proper URL resolution
  */
 const ProjectLinks = ({ links = [], title = '', compact = false }) => {
   const theme = useTheme();
@@ -19,14 +20,23 @@ const ProjectLinks = ({ links = [], title = '', compact = false }) => {
     e.preventDefault();
     e.stopPropagation();
     
+    // Get the proper URL based on content type
+    const resolvedUrl = link.contentType === 'pdf' ? getPdfUrl(link.url) : link.url;
+    
     if (link.contentType === 'pdf') {
-      openPdf(link.url, link.label);
+      openPdf(resolvedUrl, link.label);
     } else if (link.contentType === 'iframe') {
-      openIframe(link.url, link.label);
+      openIframe(resolvedUrl, link.label);
     } else {
-      window.open(link.url, '_blank', 'noopener,noreferrer');
+      window.open(resolvedUrl, '_blank', 'noopener,noreferrer');
     }
   };
+  
+  // Process links to ensure URLs are properly resolved
+  const processedLinks = links.map(link => ({
+    ...link,
+    resolvedUrl: link.contentType === 'pdf' ? getPdfUrl(link.url) : link.url
+  }));
   
   return (
     <Box
@@ -64,11 +74,11 @@ const ProjectLinks = ({ links = [], title = '', compact = false }) => {
           justifyContent: compact ? 'flex-start' : 'center',
         }}
       >
-        {links.map((link, index) => (
+        {processedLinks.map((link, index) => (
           <ActionButton
             key={index}
             label={link.label}
-            href={link.url}
+            href={link.resolvedUrl}
             icon={link.icon}
             variant={index === 0 ? 'contained' : 'outlined'}
             size="medium"

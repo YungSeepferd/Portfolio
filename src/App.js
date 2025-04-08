@@ -10,30 +10,35 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 import { ModalProvider } from './context/ModalContext';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
+import ThemeDebugger from './components/dev/ThemeDebugger';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ModalProvider>
-        <Box className="App">
-          <CSSVariables />
-          <ErrorBoundary fallback={<div>Something went wrong with the header. Please refresh the page.</div>}>
-            <Header />
-          </ErrorBoundary>
-          <ErrorBoundary fallback={<div>Something went wrong with the hero section. Please refresh the page.</div>}>
-            <Hero />
-          </ErrorBoundary>
-          <ErrorBoundary fallback={<div>Something went wrong with the work section. Please refresh the page.</div>}>
-            <Work />
-          </ErrorBoundary>
-          <ErrorBoundary fallback={<div>Something went wrong with the about section. Please refresh the page.</div>}>
-            <AboutSection />
-          </ErrorBoundary>
-          <ErrorBoundary fallback={<div>Something went wrong with the contact section. Please refresh the page.</div>}>
-            <FooterContact />
-          </ErrorBoundary>
-        </Box>
+        <Header />
+        <main>
+          <Box className="App">
+            <CSSVariables />
+            <ErrorBoundary fallback={<div>Something went wrong with the header. Please refresh the page.</div>}>
+              <Header />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={<div>Something went wrong with the hero section. Please refresh the page.</div>}>
+              <Hero />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={<div>Something went wrong with the work section. Please refresh the page.</div>}>
+              <Work />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={<div>Something went wrong with the about section. Please refresh the page.</div>}>
+              <AboutSection />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={<div>Something went wrong with the contact section. Please refresh the page.</div>}>
+              <FooterContact />
+            </ErrorBoundary>
+          </Box>
+        </main>
+        <ThemeDebugger />
       </ModalProvider>
     </ThemeProvider>
   );

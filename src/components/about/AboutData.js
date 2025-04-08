@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid, Box, Stack } from '@mui/material';
+import { Typography, Grid, Box, Stack, Chip } from '@mui/material';
 import SkillTag from '../common/SkillTag';
 // Import Material UI icons for visual enhancement
 import CodeIcon from '@mui/icons-material/Code';
@@ -22,7 +22,6 @@ import EducationImage from '../../assets/images/About Me/vincentMain.JPG';
 /**
  * Contains data for the About section tabs including content and images
  */
-
 export const aboutData = [
   // WhoAmI tab (previously About Me)
   {
@@ -64,7 +63,7 @@ export const aboutData = [
               <Typography variant="h6">Design</Typography>
             </Box>
             <Typography variant="body2" paragraph>
-              UI/UX Design, Interaction Design, Wireframing, Prototyping, Visual Design, Information Architecture
+              UI/UX Design, Interaction Design, Wireframing, Prototyping, Visual Design, User Flows, Information Architecture
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -230,3 +229,16 @@ export const aboutData = [
     )
   }
 ];
+
+// Define the renderSkillChip function
+export const renderSkillChip = (skill) => (
+  <Chip
+    key={skill}
+    label={skill}
+    sx={{ m: 0.5 }}
+  />
+);
+
+export const wallsData = aboutData; // For compatibility with existing components
+
+export default aboutData;

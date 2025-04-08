@@ -124,9 +124,6 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               borderRadius: theme.shape.borderRadius,
               boxShadow: `0 8px 16px ${theme.palette.shadow.light}`,
               transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
-              '&:hover': {
-                boxShadow: `0 20px 40px ${theme.palette.shadow.medium}`,
-              },
               ...getCardStyle(), // Apply consistent card styling
             }}
           >

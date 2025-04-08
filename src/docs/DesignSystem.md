@@ -1,161 +1,207 @@
-# Design System Documentation
+# Portfolio Design System
 
-This document outlines the design system architecture and implementation guidelines for the Portfolio project.
+## Overview
+
+This design system provides a comprehensive set of guidelines and components for maintaining a consistent visual language throughout the UX portfolio. It extends Material UI's theming capabilities with portfolio-specific components and patterns.
 
 ## Table of Contents
 
-1. [Theme Structure](#theme-structure)
+1. [Core System Structure](#core-system-structure)
 2. [Color System](#color-system)
 3. [Typography](#typography)
 4. [Spacing](#spacing)
-5. [Animation](#animation)
-6. [Component Patterns](#component-patterns)
-7. [Utilities](#utilities)
-8. [Best Practices](#best-practices)
+5. [Component Patterns](#component-patterns)
+6. [Animation Guidelines](#animation-guidelines)
+7. [Custom Theme Extensions](#custom-theme-extensions)
+8. [Usage Guidelines](#usage-guidelines)
 
-## Theme Structure
+## Core System Structure
 
-The design system is implemented using Material-UI's theming capabilities, with custom extensions for project-specific needs. The main theme file (`theme.js`) defines global design tokens and is organized into:
+The design system is modularized into specialized files:
 
-- **Color palette**: Base colors and functional color assignments
-- **Typography**: Font families, sizes, weights, and variants
-- **Spacing**: Standard spacing units and presets
-- **Animations**: Duration, easing functions, and presets
-- **Shape**: Border radii and other shape properties
-- **Breakpoints**: Responsive breakpoint definitions
-- **Elevations**: Shadow levels for depth
-- **Custom components**: Project-specific component styles
+- **colors.js** - Color palette, semantic color usage, and project-specific color variants
+- **typography.js** - Text styles, font families, and typographic scale
+- **spacing.js** - Spacing units and layout measurements
+- **breakpoints.js** - Responsive design breakpoints
+- **animations.js** - Motion design principles, durations, and easings
+- **components.js** - Shared component styling
+- **index.js** - Theme composition from individual modules
 
 ## Color System
 
-Colors are organized into:
+### Base Palette
 
-- **Base colors**: Reusable color variables defined at the top of theme.js
-- **Functional colors**: Semantic color assignments in the palette (primary, secondary, etc.)
-- **UI colors**: Specific use case colors (card.background, divider, etc.)
-
-Example usage:
 ```jsx
-// ✅ DO use theme color references
-<Box sx={{ backgroundColor: theme.palette.background.paper }}>
-
-// ❌ DON'T use hardcoded colors
-<Box sx={{ backgroundColor: '#131F2D' }}>
+const palette = {
+  mode: 'dark',
+  primary: {
+    main: '#5363EE', // Core brand blue
+    light: '#8A94F2',
+    dark: '#3545D6',
+    contrastText: '#FFFFFF',
+  },
+  secondary: {
+    main: '#E56B9E', // Accent pink
+    light: '#F1A0C2',
+    dark: '#C2477C',
+    contrastText: '#FFFFFF',
+  },
+  // ...additional colors
+}
 ```
+
+### Semantic Color Usage
+
+- **Primary** - Main actions, key highlights, primary brand elements
+- **Secondary** - Supporting actions, accents, secondary emphasis
+- **Error/Warning/Info/Success** - System feedback and states
+- **Project Colors** - Each project has a dedicated color theme:
+  - Master Thesis: Primary Blue
+  - Resonant Relaxation: Secondary Pink
+  - AMIAI: Error Red
+  - Green Wallet: Success Green
+  - ADHDeer: Warning Orange
+  - Bachelor Thesis: Info Teal
 
 ## Typography
 
-Typography follows a consistent hierarchy:
+### Font Families
 
-- **Font family**: IBM Plex Mono (primary)
-- **Variants**: h1-h6, body1-2, subtitle1-2, caption, overline, button
-- **Custom variants**: projectTitle, chipText
+- **Headings**: 'Montserrat', sans-serif
+- **Body**: 'Roboto', 'Helvetica', 'Arial', sans-serif
 
-Example usage:
+### Type Scale
+
 ```jsx
-// ✅ DO use typography variants
-<Typography variant="h4">Heading</Typography>
-
-// ❌ DON'T hardcode font styles
-<div style={{ fontSize: '24px', fontWeight: 500 }}>Heading</div>
+const typography = {
+  h1: {
+    fontFamily: 'Montserrat, sans-serif',
+    fontWeight: 700,
+    fontSize: '3rem',
+    lineHeight: 1.2,
+    letterSpacing: '-0.02em',
+  },
+  h2: { /* ... */ },
+  h3: { /* ... */ },
+  // ...additional type styles
+};
 ```
 
 ## Spacing
 
-Spacing uses an 8px base unit with semantic multipliers:
+Based on an 8px grid system, with multipliers for consistency:
 
-- **xs**: 4px (0.5x)
-- **sm**: 8px (1x)
-- **md**: 16px (2x)
-- **lg**: 24px (3x)
-- **xl**: 32px (4x)
-- **xxl**: 48px (6x)
-- **section**: 64px (8x)
-
-Example usage:
 ```jsx
-// ✅ DO use theme spacing
-<Box sx={{ padding: theme.spacing(2) }}>  // 16px
-
-// ✅ DO use responsive spacing
-<Box sx={{ mt: { xs: 2, md: 4 } }}>
-
-// ❌ DON'T use hardcoded spacing values
-<Box sx={{ padding: '16px' }}>
-```
-
-## Animation
-
-Animations are standardized with:
-
-- **Durations**: short (300ms), medium (500ms), long (800ms)
-- **Easings**: standard, accelerate, decelerate, sharp
-- **Presets**: fadeIn, slideUp, slideIn
-
-Example usage with framer-motion:
-```jsx
-import { getAnimation } from '../utils/themeUtils';
-
-// ✅ DO use animation presets
-<motion.div
-  initial={getAnimation(theme, 'fadeIn').initial}
-  animate={getAnimation(theme, 'fadeIn').animate}
-  transition={getAnimation(theme, 'fadeIn').transition}
->
-  Content
-</motion.div>
-
-// ❌ DON'T hardcode animations
-<motion.div 
-  initial={{ opacity: 0, y: 20 }} 
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
->
-  Content
-</motion.div>
+const spacing = (factor) => `${8 * factor}px`;
 ```
 
 ## Component Patterns
 
 ### Cards
-Cards should use ThemedCard component which provides:
-- Consistent elevation
-- Theme-based animations
-- Standard padding
-- Proper typography hierarchy
 
-### Buttons
-Buttons should use theme.customButtons styles:
-- contact
-- close
-- etc.
+Three primary card variants:
+- **Standard** - Default card with border and shadow
+- **Project** - Enhanced card for project displays with image section
+- **Feature** - Highlighted card with accent border
 
-### Layout Containers
-Layout containers should use theme.customSections styles.
+### Sections
 
-## Utilities
+Standardized section layouts:
+- **Hero** - Full-width introduction with media
+- **Content** - Standard text and media layouts
+- **Gallery** - Image/video collection with lightbox
+- **Outcomes** - Results presentation with metrics
 
-The `themeUtils.js` file provides helper functions:
+### Interactive Elements
 
-- **responsivePadding**: Create responsive padding objects
-- **getElevation**: Get consistent elevation shadow styles
-- **getAnimation**: Get animation presets for framer-motion
-- **createTransition**: Create transition strings for CSS
-- **getColorWithAlpha**: Create transparent color variations
-- **responsiveStyles**: Apply styles at different breakpoints
-- **getShadow**: Get shadow styles with different intensities
+- **Buttons** - Primary, secondary, and text variants with consistent sizing
+- **Links** - Standard, emphasize, and subtle variations
+- **Navigation** - Header and section navigation components
 
-## Best Practices
+## Animation Guidelines
 
-### Do:
-- ✅ Use theme references for all visual properties
-- ✅ Use responsive theme values for different screen sizes
-- ✅ Use animation presets for consistent motion
-- ✅ Use utility functions for complex theme operations
-- ✅ Use (theme) => {...} syntax for accessing theme in sx props
+Animation principles based on Material Motion:
 
-### Don't:
-- ❌ Use hardcoded colors, sizes, or spacing values
-- ❌ Create one-off animation configurations
-- ❌ Mix and match different elevation systems
-- ❌ Duplicate styles that could be shared through theme
+```jsx
+const animations = {
+  durations: {
+    short: 200,
+    medium: 300, 
+    long: 500
+  },
+  easings: {
+    standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
+    decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',
+    accelerate: 'cubic-bezier(0.4, 0.0, 1, 1)'
+  }
+};
+```
+
+## Custom Theme Extensions
+
+Beyond standard Material UI theme properties:
+
+```jsx
+const customExtensions = {
+  customSections: {
+    about: { /* ... */ },
+    work: { /* ... */ },
+    contact: { /* ... */ }
+  },
+  customComponents: {
+    projectCard: { /* ... */ },
+    heroVideo: { /* ... */ },
+    parallax: { /* ... */ }
+  },
+  customEffects: {
+    cardHover: { /* ... */ },
+    buttonFocus: { /* ... */ }
+  }
+};
+```
+
+## Usage Guidelines
+
+### Theme Hook
+
+```jsx
+import { useTheme } from '@mui/material';
+
+function MyComponent() {
+  const theme = useTheme();
+  
+  return (
+    <Box sx={{ 
+      padding: theme.spacing(3),
+      color: theme.palette.text.primary
+    }}>
+      Content
+    </Box>
+  );
+}
+```
+
+### Styled Components
+
+```jsx
+import { styled } from '@mui/material/styles';
+
+const StyledElement = styled('div')(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
+}));
+```
+
+### Responsive Design
+
+```jsx
+<Box
+  sx={{
+    padding: { xs: 2, sm: 3, md: 4 },
+    fontSize: { xs: '1rem', md: '1.2rem' }
+  }}
+>
+  Responsive content
+</Box>
+```
