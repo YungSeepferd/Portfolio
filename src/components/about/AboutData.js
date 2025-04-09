@@ -27,7 +27,13 @@ export const aboutData = [
   {
     title: "WhoAmI",
     subtitle: "UX Designer & Researcher",
-    pictures: [ProfileImage],
+    // Update object with specific position to focus on bottom of image
+    pictures: [
+      { 
+        src: ProfileImage,
+        position: 'center bottom 30%' // Modified to show more of the bottom part
+      }
+    ],
     content: (
       <>
         <Typography variant="h4" component="div" gutterBottom>
@@ -108,7 +114,7 @@ export const aboutData = [
       </>
     )
   },
-  // Professional Experience tab
+  // Professional Experience tab - REFORMATTED to use Grid layout
   {
     title: "Experience",
     subtitle: "Professional Journey",
@@ -117,53 +123,89 @@ export const aboutData = [
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Professional Experience</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-              <BusinessCenterIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>UX Intern @ DJay Munich (2022)</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Conducted user research and prototyped new interaction models for music-related applications.
-                </Typography>
-                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
-                  <Box component="li"><Typography variant="body2">Designed user flows and wireframes for mobile music applications</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Conducted usability testing with musicians and DJs</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Created prototypes using Figma and Adobe XD</Typography></Box>
+          {/* Experience 1 */}
+          <Grid item xs={12} md={6}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <BusinessCenterIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>UX Intern</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>DJay Munich | 2022</Typography>
                 </Box>
+              </Box>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                Conducted user research and prototyped new interaction models for music-related applications.
+              </Typography>
+              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
+                <Box component="li"><Typography variant="body2">Designed user flows and wireframes for mobile music applications</Typography></Box>
+                <Box component="li"><Typography variant="body2">Conducted usability testing with musicians and DJs</Typography></Box>
+                <Box component="li"><Typography variant="body2">Created prototypes using Figma and Adobe XD</Typography></Box>
               </Box>
             </Box>
           </Grid>
           
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-              <WorkIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>IT & Podcast Production Support @ University Hospital Munich (2020–2022)</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Provided technical support and developed an audio production pipeline for podcast content.
-                </Typography>
-                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
-                  <Box component="li"><Typography variant="body2">Managed IT infrastructure for medical education department</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Produced and edited educational podcast content</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Trained staff on audio recording and editing software</Typography></Box>
+          {/* Experience 2 */}
+          <Grid item xs={12} md={6}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <WorkIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>IT & Podcast Production Support</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>University Hospital Munich | 2020–2022</Typography>
                 </Box>
+              </Box>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                Provided technical support and developed an audio production pipeline for podcast content.
+              </Typography>
+              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
+                <Box component="li"><Typography variant="body2">Managed IT infrastructure for medical education department</Typography></Box>
+                <Box component="li"><Typography variant="body2">Produced and edited educational podcast content</Typography></Box>
+                <Box component="li"><Typography variant="body2">Trained staff on audio recording and editing software</Typography></Box>
               </Box>
             </Box>
           </Grid>
           
+          {/* Experience 3 */}
           <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <HeadsetMicIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>Freelance Audio Producer / Sound Designer (Since 2015)</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Created original music compositions (Superior Motive, Din-Z), mixed audio for projects, and collaborated with artists.
-                </Typography>
-                <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary' }}>
-                  <Box component="li"><Typography variant="body2">Produced original music for independent artists</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Designed sound effects and atmospheres for digital media</Typography></Box>
-                  <Box component="li"><Typography variant="body2">Mixed and mastered audio for commercial release</Typography></Box>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <HeadsetMicIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>Freelance Audio Producer / Sound Designer</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Self-employed | Since 2015</Typography>
                 </Box>
+              </Box>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                Created original music compositions (Superior Motive, Din-Z), mixed audio for projects, and collaborated with artists.
+              </Typography>
+              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
+                <Box component="li"><Typography variant="body2">Produced original music for independent artists</Typography></Box>
+                <Box component="li"><Typography variant="body2">Designed sound effects and atmospheres for digital media</Typography></Box>
+                <Box component="li"><Typography variant="body2">Mixed and mastered audio for commercial release</Typography></Box>
               </Box>
             </Box>
           </Grid>
@@ -171,7 +213,7 @@ export const aboutData = [
       </>
     )
   },
-  // Education tab
+  // Education tab - REFORMATTED to use Grid layout
   {
     title: "Education",
     subtitle: "Academic Background",
@@ -180,48 +222,75 @@ export const aboutData = [
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Academic Qualifications</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-              <SchoolIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>M.Sc. Human-Computer Interaction</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                  FH Salzburg & PLUS Salzburg | 2022 - 2024
-                </Typography>
-                <Typography variant="body2">
-                  Specialized in haptic interaction design and multi-sensory user experience. Master's thesis on emotion-driven haptic feedback design methodologies.
-                </Typography>
+          {/* Education 1 */}
+          <Grid item xs={12} md={6}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <SchoolIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>M.Sc. Human-Computer Interaction</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>FH Salzburg & PLUS Salzburg | 2022 - 2024</Typography>
+                </Box>
               </Box>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Specialized in haptic interaction design and multi-sensory user experience. Master's thesis on emotion-driven haptic feedback design methodologies.
+              </Typography>
             </Box>
           </Grid>
           
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-              <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>B.Sc. Media Informatics</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                  LMU Munich | 2017 - 2021
-                </Typography>
-                <Typography variant="body2">
-                  Focused on user interface design, web technologies, and interactive systems. Bachelor's thesis on trust in autonomous vehicle interfaces.
-                </Typography>
+          {/* Education 2 */}
+          <Grid item xs={12} md={6}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>B.Sc. Media Informatics</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>LMU Munich | 2017 - 2021</Typography>
+                </Box>
               </Box>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Focused on user interface design, web technologies, and interactive systems. Bachelor's thesis on trust in autonomous vehicle interfaces.
+              </Typography>
             </Box>
           </Grid>
           
+          {/* Education 3 */}
           <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-              <Box>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                  Deutsche POP, Munich | 2015 - 2017
-                </Typography>
-                <Typography variant="body2">
-                  Professional training in audio production, sound design, and music technology with emphasis on electronic music production.
-                </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              height: '100%',
+              p: 2,
+              borderRadius: 1,
+              backgroundColor: 'background.paper',
+              boxShadow: 1
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
+                <Box>
+                  <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2015 - 2017</Typography>
+                </Box>
               </Box>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Professional training in audio production, sound design, and music technology with emphasis on electronic music production.
+              </Typography>
             </Box>
           </Grid>
         </Grid>

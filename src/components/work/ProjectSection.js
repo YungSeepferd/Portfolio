@@ -68,15 +68,9 @@ const ProjectSection = ({
   // Determine layout based on direction prop
   const isReverse = direction === 'reverse';
   
-  return (
-    <Box 
-      component="section"
-      sx={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        py: 4
-      }}
-    >
+  // Create heading element that will be included with content
+  const headingElement = (
+    <Box>
       {/* Section number */}
       <Typography 
         variant="h5" 
@@ -100,7 +94,18 @@ const ProjectSection = ({
       >
         {title}
       </Typography>
-      
+    </Box>
+  );
+  
+  return (
+    <Box 
+      component="section"
+      sx={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        py: 4
+      }}
+    >
       {/* Content and media in responsive layout */}
       <Box 
         sx={{ 
@@ -124,7 +129,7 @@ const ProjectSection = ({
           }
         }}
       >
-        {/* Text content */}
+        {/* Text content with heading */}
         <Box
           component={motion.div}
           initial={{ opacity: 0, y: 20 }}
@@ -132,6 +137,10 @@ const ProjectSection = ({
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
+          {/* Include heading with content */}
+          {headingElement}
+
+          {/* Content */}
           {content ? (
             <>{content}</>
           ) : fallbackContent ? (

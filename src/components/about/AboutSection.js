@@ -55,15 +55,13 @@ const AboutSection = () => {
         component="section"
         sx={{
           width: '100%',
-          py: { xs: 8, md: 12 }, // Keep vertical padding
           backgroundColor: theme.palette.background.default,
           position: 'relative',
-          // Increase minimum height to accommodate expanded content
-          minHeight: { xs: 'auto', md: '900px', lg: '1000px' },
+          // Remove custom spacing values and rely on global theme settings
         }}
       >
         {/* Section Header */}
-        <Container maxWidth="xl"> {/* Changed from lg to xl for more width */}
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 5 } }}> {/* Match container padding */}
           <motion.div
             variants={sectionAnimation}
             initial="hidden"
@@ -83,7 +81,6 @@ const AboutSection = () => {
                 sx={{ 
                   mb: 2,
                   color: theme.palette.text.primary,
-                  fontWeight: 700
                 }}
               >
                 About
