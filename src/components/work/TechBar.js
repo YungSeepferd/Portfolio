@@ -3,7 +3,6 @@ import { styled } from "@mui/material/styles";
 import React from "react";
 import ActionButton from '../common/ActionButton';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { useModalContext } from '../../context/ModalContext';
 
 // Styled components using theme values
 const TechChip = styled(Chip)(({ theme }) => ({

@@ -101,7 +101,7 @@ const Header = () => {
                 color: theme.palette.primary.main
               }}
             >
-              VG
+              Vincent Göke
             </Box>
           </ScrollLink>
 
