@@ -55,13 +55,15 @@ const AboutSection = () => {
         component="section"
         sx={{
           width: '100%',
-          py: { xs: 8, md: 12 },
+          py: { xs: 8, md: 12 }, // Keep vertical padding
           backgroundColor: theme.palette.background.default,
           position: 'relative',
+          // Increase minimum height to accommodate expanded content
+          minHeight: { xs: 'auto', md: '900px', lg: '1000px' },
         }}
       >
         {/* Section Header */}
-        <Container maxWidth="lg">
+        <Container maxWidth="xl"> {/* Changed from lg to xl for more width */}
           <motion.div
             variants={sectionAnimation}
             initial="hidden"
