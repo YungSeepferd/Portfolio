@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
-import { Canvas } from '@react-three/fiber';
-// Make sure all scenes are properly imported
-import SphereScene from './background3d/scenes/SphereScene';
-import TorusScene from './background3d/scenes/TorusScene';
-import BoxScene from './background3d/scenes/BoxScene';
 import HeroContent from './HeroContent';
-// Import other necessary components
-
-// Ensure the ParticleComponent is imported early so it's registered
-import './background3d/ParticleComponent'; // This registers the Particle component
-
 import ErrorBoundary from '../common/ErrorBoundary';
 import ScrollIndicator from './ScrollIndicator';
 import Background3D from './background3d/Background3D';

@@ -1,7 +1,5 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
-import { SHAPE_TYPES } from '../constants';
 import Particle from '../ParticleComponent';
 
 const BoxScene = ({ isActive, ...props }) => {
@@ -24,6 +22,8 @@ const BoxScene = ({ isActive, ...props }) => {
   }, []);
 
   useFrame(() => {
+    if (!group.current) return;
+    
     particles.forEach((particle, i) => {
       let { t, factor, speed, xFactor, yFactor, zFactor } = particle;
       t = particle.t += speed * (isActive ? 1 : 0.5);
@@ -32,18 +32,22 @@ const BoxScene = ({ isActive, ...props }) => {
       const s = Math.cos(t);
       particle.mx += (0 - particle.mx) * 0.02;
       particle.my += (0 - particle.my) * 0.02;
-      group.current.children[i].position.set(
-        (particle.mx / aspect) * a + xFactor + Math.cos((t + factor) / 10) * 5,
-        (particle.my / aspect) * b + yFactor + Math.sin((t + factor) / 10) * 5,
-        (particle.my / aspect) * b + zFactor + Math.sin((t + factor) / 10) * 5
-      );
-      group.current.children[i].scale.set(s, s, s);
+      
+      // Check if the child exists before manipulating
+      if (i < group.current.children.length) {
+        group.current.children[i].position.set(
+          (particle.mx / aspect) * a + xFactor + Math.cos((t + factor) / 10) * 5,
+          (particle.my / aspect) * b + yFactor + Math.sin((t + factor) / 10) * 5,
+          (particle.my / aspect) * b + zFactor + Math.sin((t + factor) / 10) * 5
+        );
+        group.current.children[i].scale.set(s, s, s);
+      }
     });
   });
 
   return (
     <group ref={group}>
-      {particles.map((particle, i) => (
+      {particles.map((_, i) => (
         <Particle key={i} />
       ))}
     </group>

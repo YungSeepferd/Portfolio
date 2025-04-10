@@ -1,50 +1,41 @@
 import React from 'react';
-import { CssBaseline } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
+import { ThemeProvider, useThemeMode } from './context/ThemeContext';
+import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
-// import Work from './components/work'; // Commented out missing component
 import AboutSection from './components/about/AboutSection';
+import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
-import ErrorBoundary from './components/common/ErrorBoundary';
-import { ModalProvider } from './context/ModalContext';
-import { ThemeProvider } from './context/ThemeContext';
-import ThemeDebugger from './components/dev/ThemeDebugger';
 
-/**
- * Main App component
- */
-function App() {
+// Main app with theme applied
+const AppContent = () => {
+  // Only destructure theme from useThemeMode since we're not using mode directly
+  const { theme } = useThemeMode();
+
   return (
-    <ThemeProvider>
+    <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <ModalProvider>
-        <ErrorBoundary componentName="Header">
-          <Header />
-        </ErrorBoundary>
-        
-        <ErrorBoundary componentName="Hero">
+        <Header />
+        <main>
           <Hero />
-        </ErrorBoundary>
-        
-        {/* Work section temporarily disabled
-        <ErrorBoundary componentName="Work">
-          <Work />
-        </ErrorBoundary>
-        */}
-        
-        <ErrorBoundary componentName="About">
           <AboutSection />
-        </ErrorBoundary>
-        
-        <ErrorBoundary componentName="Contact">
-          <FooterContact />
-        </ErrorBoundary>
-        
-        {/* Only show theme debugger in development */}
-        {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
+          <Work />
+        </main>
+        <FooterContact />
       </ModalProvider>
+    </MuiThemeProvider>
+  );
+};
+
+// Root component that wraps the app with context providers
+const App = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
-}
+};
 
 export default App;

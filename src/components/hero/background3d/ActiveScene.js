@@ -6,7 +6,6 @@ import CubeScene from './scenes/CubeScene';
 
 /**
  * ActiveScene - Renders the currently active scene
- * CRITICAL FIX: Simplified to always show SphereScene initially for debugging
  */
 const ActiveScene = () => {
   const { currentShapeType, isTransitioning } = useSceneState();

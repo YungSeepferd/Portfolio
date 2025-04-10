@@ -1,14 +1,10 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
-import { useFrame, useThree, extend } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
-import Particle from '../ParticleComponent';
-// If you're importing P from elsewhere, make sure it's registered first
-// import P from '../particles/P'; // Example import
-
-// If P isn't imported and is used directly, register it
-// extend({ P: P });
+// Remove unused Particle import
+// import Particle from '../ParticleComponent';
 
 /**
  * TorusScene Component - Completely rebuilt to fix performance issues
@@ -18,7 +14,8 @@ const TorusScene = ({ isActive, ...props }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { mouse, clock } = useThree();
-  const { isTransitioning, scrollActive } = useSceneState(); // FIXED: Removed the unused themeColors variable
+  // Destructure only the isTransitioning property that we use
+  const { isTransitioning } = useSceneState();
   
   // Store trail points as individual meshes with position data
   const [trailPoints, setTrailPoints] = useState([]);
@@ -122,78 +119,40 @@ const TorusScene = ({ isActive, ...props }) => {
   });
   
   // MODIFIED: Ensure clicking torus only changes shape type, not scene
-  const handleTorusClick = (e) => {
+  // Wrap in useCallback to prevent recreating on every render
+  const handleTorusClick = useCallback((e) => {
     e.stopPropagation(); // Prevent event from reaching background
     // Change shape type only, not scene
     window.sceneContext?.switchShapeType && window.sceneContext.switchShapeType();
-  };
+  }, []);
   
-  // Render the torus trail
+  // Create actual torus meshes from trail points
+  const torusMeshes = useMemo(() => {
+    return trailPoints.map((point) => {
+      return (
+        <mesh
+          key={point.id}
+          position={point.position}
+          rotation={point.rotation}
+          scale={new THREE.Vector3(point.size, point.size, point.size)}
+          onClick={handleTorusClick}
+        >
+          <torusGeometry args={[0.5, 0.2, 16, 32]} />
+          <meshStandardMaterial
+            color={primary}
+            emissive={secondary}
+            emissiveIntensity={0.5}
+            metalness={0.8}
+            roughness={0.2}
+          />
+        </mesh>
+      );
+    });
+  }, [trailPoints, primary, secondary, handleTorusClick]);
+  
   return (
-    <group onClick={handleTorusClick}>
-      {/* Main torus trail */}
-      {trailPoints.map((point, i) => {
-        // Calculate progress through the trail (newer points are at the beginning)
-        const progress = i / Math.max(1, trailPoints.length);
-        const invertedProgress = 1 - progress;
-        
-        // MODIFIED: More subtle scroll effect
-        const time = clock.getElapsedTime();
-        const scrollFactor = scrollActive ? Math.sin(time * 3) * 0.03 : 0; // Reduced from 0.1
-        
-        // Size and thickness calculations
-        const size = (point.size || 0.15) * (0.6 + invertedProgress * 0.4) + scrollFactor;
-        const thickness = 0.025 * (0.5 + invertedProgress * 0.8);
-        
-        // Rotation factors with subtle animation
-        const rotX = point.rotation?.x || 0;
-        const rotY = point.rotation?.y || 0;
-        const rotZ = point.rotation?.z || 0;
-        
-        return (
-          <mesh
-            key={point.id}
-            position={[
-              point.position.x,
-              point.position.y,
-              0
-            ]}
-            rotation={[
-              rotX + invertedProgress * time * 0.1,
-              rotY + invertedProgress * time * 0.15,
-              rotZ
-            ]}
-          >
-            <torusGeometry args={[size, thickness, 16, 24]} />
-            <meshStandardMaterial
-              transparent={true}
-              opacity={invertedProgress * 0.8}
-              color={primary}
-              emissive={secondary}
-              emissiveIntensity={invertedProgress * 0.7}
-              metalness={0.4}
-              roughness={0.4}
-            />
-          </mesh>
-        );
-      })}
-      
-      {/* Current position indicator */}
-      <mesh 
-        position={trailPoints.length > 0 
-          ? [trailPoints[0].position.x, trailPoints[0].position.y, 0]
-          : [0, 0, 0]
-        }
-      >
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial 
-          color={secondary}
-          emissive={secondary}
-          emissiveIntensity={0.7}
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </mesh>
+    <group {...props}>
+      {torusMeshes}
     </group>
   );
 };

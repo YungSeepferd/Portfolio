@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
+// Fix: Either use motion or remove it
 import { motion } from 'framer-motion';
 import { aboutData } from './AboutData';
 import AboutTabNavigator from './AboutTabNavigator';
@@ -69,6 +70,7 @@ const AboutSection = () => {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
+            {/* We're using motion here, so the import is needed */}
             <Box 
               sx={{ 
                 width: '100%', 

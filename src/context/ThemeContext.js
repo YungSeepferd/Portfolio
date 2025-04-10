@@ -1,75 +1,60 @@
-import React, { createContext, useState, useContext, useMemo, useEffect } from 'react';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { darkTheme, lightTheme } from '../theme';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import createAppTheme from '../theme';
 
-// Create context
-const ThemeContext = createContext({
-  mode: 'dark',
-  toggleTheme: () => {},
-});
+// Create the context
+const ThemeContext = createContext();
 
 /**
- * Custom hook to use the theme context
- */
-export const useThemeMode = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useThemeMode must be used within a ThemeProvider');
-  }
-  return context;
-};
-
-/**
- * Theme Provider Component
+ * ThemeProvider Component
  * 
- * Provides theme context and switching functionality to the entire app
+ * Manages theme state (light/dark) and provides it to the entire application
+ * through context. Syncs with local storage for persistence.
  */
 export const ThemeProvider = ({ children }) => {
-  // Use localStorage to persist theme preference
-  const [mode, setMode] = useState(() => {
-    // Get saved preference or use system preference
-    const savedMode = localStorage.getItem('theme-mode');
+  // Check localStorage or system preference for initial theme
+  const getInitialMode = () => {
+    // Check if theme setting exists in localStorage
+    const savedMode = localStorage.getItem('themeMode');
     if (savedMode) {
       return savedMode;
     }
     
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
+    // If not, check user's system preference
+    const prefersDark = window.matchMedia && 
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    return 'dark'; // Default to dark mode
-  });
-  
-  // Toggle between light and dark modes
-  const toggleTheme = () => {
-    setMode(prevMode => {
-      const newMode = prevMode === 'dark' ? 'light' : 'dark';
-      // Save to localStorage
-      localStorage.setItem('theme-mode', newMode);
-      return newMode;
-    });
+    return prefersDark ? 'dark' : 'light';
   };
+  
+  // State for theme mode
+  const [mode, setMode] = useState(getInitialMode);
+  
+  // Toggle theme function
+  const toggleTheme = () => {
+    setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+  };
+  
+  // Update localStorage when theme changes
+  useEffect(() => {
+    localStorage.setItem('themeMode', mode);
+  }, [mode]);
   
   // Listen for system theme changes
   useEffect(() => {
-    if (!window.matchMedia) return;
-    
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
     const handleChange = (e) => {
       // Only change if user hasn't explicitly set a preference
-      if (!localStorage.getItem('theme-mode')) {
+      if (!localStorage.getItem('themeMode')) {
         setMode(e.matches ? 'dark' : 'light');
       }
     };
     
-    // Add listener for theme changes
+    // Add event listener
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange);
     } else {
-      // Older browsers
+      // For older browsers
       mediaQuery.addListener(handleChange);
     }
     
@@ -78,29 +63,35 @@ export const ThemeProvider = ({ children }) => {
       if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener('change', handleChange);
       } else {
-        // Older browsers
+        // For older browsers
         mediaQuery.removeListener(handleChange);
       }
     };
   }, []);
   
-  // Get the appropriate theme based on mode
-  const theme = mode === 'dark' ? darkTheme : lightTheme;
-  
-  // Context value
-  const value = {
+  // Create the context value
+  const contextValue = {
     mode,
     toggleTheme,
+    // Use the createAppTheme function directly instead of importing themes
+    theme: createAppTheme(mode)
   };
   
   return (
-    <ThemeContext.Provider value={value}>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </MuiThemeProvider>
+    <ThemeContext.Provider value={contextValue}>
+      {children}
     </ThemeContext.Provider>
   );
 };
 
+// Custom hook for using the theme mode
+export const useThemeMode = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useThemeMode must be used within a ThemeProvider');
+  }
+  return context;
+};
+
+// Export ThemeContext as default
 export default ThemeContext;

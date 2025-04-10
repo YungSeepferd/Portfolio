@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Grid, useTheme, Divider } from '@mui/material';
+import { Box, Typography, Grid, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import KeyTakeaways from './KeyTakeaways';
 

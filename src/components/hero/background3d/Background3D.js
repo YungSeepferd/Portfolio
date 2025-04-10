@@ -9,6 +9,9 @@ import ActiveScene from './ActiveScene';
 import LoadingFallback from './components/LoadingFallback';
 import PerformanceMonitor from './components/PerformanceMonitor';
 
+// Import Particle component explicitly
+import './ParticleComponent';
+
 // Auto-rotating camera component with improved rotation handling
 const AutoRotatingCamera = ({ isUserInteracting }) => {
   const controls = useRef();

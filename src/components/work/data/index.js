@@ -1,18 +1,22 @@
 /**
- * Data Entry Point
+ * Work Data Index
  * 
- * This file centralizes data exports for work section components.
+ * This file exports all work/project data from various sources.
+ * It consolidates all project data for easy access across the application.
  */
 
-// Import all projects from the projects directory
-import { allProjects, processedProjects } from './projects';
-
-// Import skill tags from a standardized location
+// Import project data from various files
+import { projects } from './projects';
 import { skillTags } from './skillTags';
+import { sectionConfig, workCategories } from './uiConfig';
 
-// Export data for use in components
-export const workData = processedProjects;
-export { skillTags, allProjects };
+// Re-export everything for easy access
+export { projects as workData };
+export { projects };
+export { skillTags };
 
-// Export UI configuration
-export * from './uiConfig';
+// Export UI configuration correctly using the actual exports from uiConfig
+export { sectionConfig, workCategories };
+
+// For legacy support - if any components are still using these
+export const allProjects = projects;

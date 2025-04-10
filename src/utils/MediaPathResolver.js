@@ -74,8 +74,11 @@ export const findMediaPath = (projectKey, fileName) => {
   return possiblePaths[0];
 };
 
-export default {
+// Create a named export instead of anonymous default export
+const mediaResolver = {
   resolveProjectMediaPath,
   processMediaItem,
   findMediaPath
 };
+
+export default mediaResolver;
