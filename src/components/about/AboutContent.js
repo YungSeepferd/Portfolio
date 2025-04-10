@@ -1,67 +1,53 @@
 import React, { useState } from 'react';
-import { Box, Typography, useTheme, Paper, IconButton } from '@mui/material';
-import { FullscreenOutlined } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ContentAwareImage from '../common/ContentAwareImage';
-import { analyzeImage } from '../../utils/imageAnalyzer';
+import AboutCard from './AboutCard';  // Updated to use AboutCard instead of WallCard
 
 /**
- * WallCard Component
+ * AboutContent Component
  * 
- * A versatile card component used in About section with multiple variants:
- * - Default: Standard bordered card with shadow
- * - noBorder: Card without border but with background color and shadow
- * - transparent: Completely borderless and transparent background
+ * Displays content for the About section with support for
+ * expandable sections, images, and consistent styling.
  * 
  * Features:
- * - Optional expandable image
- * - Responsive layout that changes based on screen size
- * - Customizable image position (left/right)
- * - Motion animations on hover
+ * - Expandable image sections
+ * - Responsive layout
+ * - Customizable styling based on theme
+ * - Content formatting with typography components
  */
-const WallCard = ({
-  title,
-  image,
-  children,
-  variant = "body2",
-  sx,
-  expandable = false,
-  imageOverlayColor,
+const AboutContent = ({ 
+  title, 
+  children, 
+  image, 
   imagePosition = "left",
+  expandable = false,
+  imageData,
+  imageOverlayColor,
+  variant = "default",
   onClick,
-  ...props
+  hasBackground = true,
+  hasBorder = true,
+  isTransparent = false,
+  sx = {},
+  ...props 
 }) => {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
   
-  // Determine styling based on variant
-  const isTransparent = variant === "transparent";
-  const hasBorder = variant !== "noBorder" && !isTransparent;
-  const hasBackground = !isTransparent;
-  
-  // Process image info to detect orientation
-  const imageData = React.useMemo(() => {
-    return image ? analyzeImage(image) : null;
-  }, [image]);
-  
-  // Determine component to use based on variant
-  const CardComponent = isTransparent ? Box : Paper;
-  
-  // Only apply motion effects for non-transparent cards
-  const motionProps = isTransparent ? {} : {
-    component: motion.div,
-    whileHover: {
-      y: theme.customEffects?.cardHover?.y || -5,
-      boxShadow: theme.customEffects?.cardHover?.boxShadow || theme.shadows[4],
-    },
-    transition: { type: "tween", duration: 0.2 }
+  const handleExpandToggle = (e) => {
+    e.stopPropagation();
+    setExpanded(!expanded);
   };
-
+  
   return (
-    <CardComponent
-      {...motionProps}
-      variant={isTransparent ? undefined : "bigCard"}
+    <AboutCard 
+      variant={variant}
       onClick={onClick}
+      hasBackground={hasBackground}
+      hasBorder={hasBorder}
+      isTransparent={isTransparent}
       sx={{
         ...sx,
         width: '100%',
@@ -126,64 +112,53 @@ const WallCard = ({
             
             {expandable && (
               <IconButton
-                aria-label={expanded ? "Collapse image" : "Expand image"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setExpanded(!expanded);
-                }}
+                onClick={handleExpandToggle}
                 sx={{
                   position: 'absolute',
                   bottom: 8,
                   right: 8,
                   backgroundColor: 'rgba(0,0,0,0.5)',
                   color: 'white',
-                  zIndex: 2,
                   '&:hover': {
                     backgroundColor: 'rgba(0,0,0,0.7)',
                   },
                 }}
               >
-                <FullscreenOutlined />
+                {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             )}
           </Box>
         )}
         
-        {/* Content Container */}
+        {/* Content */}
         <Box
           sx={{
             flex: 1,
-            p: isTransparent ? theme.spacing(3, 0) : theme.spacing(4),
+            p: { xs: 2, md: 3 },
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: 'transparent',
           }}
         >
           {title && (
             <Typography
-              variant="h4"
-              gutterBottom
-              sx={{
-                color: theme.palette.mode === 'dark'
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main,
+              variant="h5"
+              component="h3"
+              sx={{ 
+                mb: 2,
+                fontWeight: 600,
+                color: theme.palette.text.primary
               }}
             >
               {title}
             </Typography>
           )}
-          <Box component="div">
-            {React.isValidElement(children) ? children : (
-              <Typography variant={variant === "transparent" ? "body1" : variant}>
-                {children}
-              </Typography>
-            )}
-          </Box>
+          
+          <Box>{children}</Box>
         </Box>
       </Box>
-    </CardComponent>
+    </AboutCard>
   );
 };
 
-export default React.memo(WallCard);
+export default AboutContent;

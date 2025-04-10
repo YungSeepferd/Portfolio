@@ -1,7 +1,7 @@
-import { Box, Chip, Divider, Stack, Button } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { Box, Chip, Divider, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import React from "react";
-import { getLinkIcon, getLinkColor, getButtonStyles } from '../../utils/buttonStyles';
+import ActionButton from '../common/ActionButton';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 // Styled components using theme values
@@ -18,36 +18,68 @@ const TechChip = styled(Chip)(({ theme }) => ({
 }));
 
 /**
- * Create consistent themed button based on link type
- * @param {Object} link - Link data
- * @param {number} index - Button index
- * @returns {JSX.Element} - Styled button
+ * Determines appropriate color for links based on label content
+ * @param {string} label - Button label text
+ * @returns {string} - MUI color name
+ */
+const getLinkColor = (label) => {
+  if (!label) return 'primary';
+  
+  const normalizedLabel = label.toLowerCase();
+  
+  if (normalizedLabel.includes('github')) return 'info';
+  if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
+  if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
+  
+  return 'primary';
+};
+
+/**
+ * Create consistent action buttons using our shared ActionButton component
  */
 const LinkButton = ({ link, index }) => {
-  // Use the theme from MUI hook here
-  const theme = useTheme();
-  
-  // Ensure link has an icon
-  const linkWithIcon = {
+  // Ensure link has contentType
+  const enhancedLink = {
     ...link,
-    icon: link.icon || getLinkIcon(link.label)
+    contentType: link.contentType || determineContentType(link.url, link.label)
   };
   
   return (
-    <Button
+    <ActionButton
+      key={index}
+      label={enhancedLink.label}
+      href={enhancedLink.url}
+      icon={enhancedLink.icon}
       variant="outlined"
       size="small"
-      color={getLinkColor(link.label)}
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
-      startIcon={linkWithIcon.icon}
-      sx={(theme) => getButtonStyles(theme)}
-    >
-      {link.label}
-    </Button>
+      color={enhancedLink.color || getLinkColor(enhancedLink.label)}
+      contentType={enhancedLink.contentType}
+    />
   );
+};
+
+/**
+ * Determine content type from URL and label
+ */
+const determineContentType = (url, label) => {
+  if (!url) return 'external';
+  
+  const normalizedUrl = url.toLowerCase();
+  const normalizedLabel = label.toLowerCase();
+  
+  if (normalizedUrl.includes('.pdf') || 
+      normalizedLabel.includes('pdf') || 
+      normalizedLabel.includes('thesis')) {
+    return 'pdf';
+  }
+  
+  if (normalizedUrl.includes('figma.com') || 
+      normalizedUrl.includes('miro.com') || 
+      normalizedLabel.includes('prototype')) {
+    return 'iframe';
+  }
+  
+  return 'external';
 };
 
 /**
@@ -71,13 +103,15 @@ const TechBar = ({ technologies = [], links = [], projectTitle = "" }) => {
     enhancedLinks.push({
       label: "Download PDF",
       url: "/assets/documents/Prototyping_Emotions_Thesis.pdf",
-      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />,
+      contentType: 'pdf'
     });
   } else if (projectTitle === "Phone-based Intervention in Self-driving Cars – Bachelor Thesis") {
     enhancedLinks.push({
       label: "Download PDF",
       url: "/assets/documents/Phone_Based_Intervention_Thesis.pdf",
-      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />
+      icon: <PictureAsPdfIcon fontSize="small" sx={{ ml: 0.5 }} />,
+      contentType: 'pdf'
     });
   }
   

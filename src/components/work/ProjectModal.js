@@ -1,59 +1,65 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box, Divider, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import { isVideo } from '../../utils/mediaHelper';
 import ErrorBoundary from '../common/ErrorBoundary';
-import { processProjectContent } from '../../utils/projectContentParser';
+import { processProjectContent, sectionImageKeyMap, getFallbackContent } from '../../utils/projectContentParser';
 
-// Import FooterContact instead of ProjectCTA
 import ProjectHeader from './ProjectHeader';
 import ProjectNavigation from './ProjectNavigation';
 import HeroVideo from './HeroVideo';
 import ProjectSections from './ProjectSections';
 import ProjectOutcomes from './ProjectOutcomes';
-import FooterContact from '../contact/FooterContact'; // Changed from ProjectCTA
+import FooterContact from '../contact/FooterContact';
 import ProjectPrototypeEmbed from './ProjectPrototypeEmbed';
 import ProjectFullContent from './ProjectFullContent';
 import ProjectGallerySection from './ProjectGallerySection';
+import { skillTags } from './data/skillTags';
 
 /**
  * ProjectModal Component
- * 
  * Displays detailed information about a selected project.
  */
 const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClose }) => {
   const theme = useTheme();
-  
-  const parsedContent = useMemo(() => 
-    processProjectContent(project), [project]);
-  
+  const parsedContent = useMemo(() => processProjectContent(project), [project]);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
   if (!project) return null;
-  
+
   // Find hero video if available
   const heroVideo = project.images?.find(img => 
     (typeof img === 'object' && img.type === 'video') || 
     (typeof img === 'string' && isVideo(img))
   );
-  
+
   // Determine project layout type
   const layoutType = project.layoutType || 'default';
   
   // Determine if we should show individual sections or just the full content
   const useFullContentLayout = layoutType === 'single-column' || 
                               !parsedContent.sections || 
-                              parsedContent.sections.length === 0 ||
+                              parsedContent.sections.length === 0 || 
                               (parsedContent.fullContent && parsedContent.sectionCount <= 1);
 
   // Get project accent color for section numbering
   const projectAccentColor = project.color || theme.palette.primary.main;
-  
+
   // Define animation for the modal
   const modalAnimation = {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 }
   };
-  
+
+  const handleSectionChange = (sectionIndex) => {
+    setActiveSectionIndex(sectionIndex);
+    const sectionEl = document.getElementById(`project-section-${sectionIndex}`);
+    if (sectionEl) {
+      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <ErrorBoundary componentName="ProjectModal">
       <motion.div
@@ -84,7 +90,6 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
             setCurrentIndex(newIndex);
           }}
         />
-        
         <Box 
           component="article"
           sx={{ 
@@ -114,6 +119,7 @@ const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClos
               project={project} 
               sections={parsedContent.sections} 
               accentColor={projectAccentColor} 
+              onSectionChange={handleSectionChange}
             />
           ) : (
             <ProjectFullContent 

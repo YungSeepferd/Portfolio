@@ -15,7 +15,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
   const [isLoaded, setIsLoaded] = useState(false);
-  const { openPdf, openIframe } = useModalContext();
+  const { openPdf, openIframe, openExternalContent } = useModalContext();
 
   const handleImageLoad = useCallback(() => {
     setIsLoaded(true);
@@ -41,10 +41,6 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
     }
   };
 
-  // Standardized heights for consistent card layout
-  const imageHeight = '45%'; // Fixed percentage for image section
-  const contentHeight = '55%'; // Fixed percentage for content section
-  
   // Check if project has links to display
   const hasLinks = project.links && project.links.length > 0;
 
@@ -80,13 +76,41 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
   const handleLinkClick = (link, e) => {
     e.stopPropagation(); // Prevent card click
     
-    if (link.contentType === 'pdf') {
+    // Determine content type if not specified
+    const contentType = link.contentType || determineContentType(link.url, link.label);
+    
+    if (contentType === 'pdf') {
       openPdf(link.url, link.label);
-    } else if (link.contentType === 'iframe') {
+    } else if (contentType === 'iframe') {
       openIframe(link.url, link.label);
     } else {
-      window.open(link.url, '_blank', 'noopener,noreferrer');
+      // Use external content modal instead of window.open
+      openExternalContent(link.url, link.label);
     }
+  };
+
+  /**
+   * Determine content type from URL and label
+   */
+  const determineContentType = (url, label) => {
+    if (!url) return 'external';
+    
+    const normalizedUrl = url.toLowerCase();
+    const normalizedLabel = label.toLowerCase();
+    
+    if (normalizedUrl.includes('.pdf') || 
+        normalizedLabel.includes('pdf') || 
+        normalizedLabel.includes('thesis')) {
+      return 'pdf';
+    }
+    
+    if (normalizedUrl.includes('figma.com') || 
+        normalizedUrl.includes('miro.com') || 
+        normalizedLabel.includes('prototype')) {
+      return 'iframe';
+    }
+    
+    return 'external';
   };
   
   return (
@@ -96,6 +120,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
         height: '100%', // Take full height of container
         display: 'flex',
         position: 'relative',
+        width: '100%', // Add to ensure consistent width
       }}
     >
       {isVisible && (
@@ -103,13 +128,13 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
           variants={cardVariants}
-          whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
+          whileHover={{ scale: 1.02, transition: { duration: 0.3 } }} // Reduced scale to prevent overlap
           onClick={() => onClick(project)}
           style={{ 
             cursor: 'pointer',
             height: '100%', // Take full height of parent
+            width: '100%', // Take full width of parent
             opacity: isLoaded ? 1 : 0,
-            width: '100%',
             display: 'flex',
           }}
         >
@@ -119,14 +144,11 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               display: 'flex',
               flexDirection: 'column',
               height: '100%', // Take full height
-              width: '100%',
+              width: '100%', // Take full width
               overflow: 'hidden',
               borderRadius: theme.shape.borderRadius,
               boxShadow: `0 8px 16px ${theme.palette.shadow.light}`,
               transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
-              '&:hover': {
-                boxShadow: `0 20px 40px ${theme.palette.shadow.medium}`,
-              },
               ...getCardStyle(), // Apply consistent card styling
             }}
           >
@@ -135,7 +157,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               sx={{
                 position: 'relative',
                 width: '100%',
-                height: imageHeight, // Consistent percentage height
+                height: '40%', // Fixed percentage for ALL cards
                 flexShrink: 0, // Prevent shrinking
                 overflow: 'hidden',
               }}
@@ -226,8 +248,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                 display: 'flex',
                 flexDirection: 'column',
                 p: { xs: 2.5, sm: 3, md: 3.5 }, 
-                height: contentHeight, // Consistent percentage height
-                minHeight: 'auto', // Remove any min-height that could cause uneven sizes
+                height: '60%', // Fixed percentage for ALL cards
                 justifyContent: 'space-between',
               }}
             >
@@ -243,7 +264,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
                     lineHeight: 1.3,
-                    fontWeight: 600,
+                    fontWeight: theme.typography.fontWeightBold || 600,
                     color: theme.palette.primary.main,
                     fontSize: { xs: '1.3rem', sm: '1.4rem', md: '1.5rem' }, 
                   }}

@@ -43,13 +43,9 @@ const ProjectHeader = ({ project }) => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography 
-              variant="projectTitle"
+              variant="h2" // Change from "projectTitle" to standard variant
               sx={{ 
                 color: theme.palette.text.primary,
-                fontSize: '2.5rem',
-                fontWeight: 700,
-                lineHeight: 1.2,
-                letterSpacing: '-0.02em',
                 mb: 2
               }}
             >

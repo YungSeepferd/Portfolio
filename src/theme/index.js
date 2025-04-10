@@ -23,7 +23,14 @@ import {
 // Create base theme with all modules
 const baseTheme = createTheme({
   // Core theme settings
-  palette: createPalette(),
+  palette: {
+    ...createPalette(),
+    background: {
+      ...createPalette().background,
+      overlay: 'rgba(19, 31, 45, 0.7)',
+      overlayHover: 'rgba(19, 31, 45, 0.9)',
+    },
+  },
   typography: createTypography(colors),
   spacing: createSpacing(),
   breakpoints: createBreakpoints(),
@@ -74,7 +81,18 @@ const baseTheme = createTheme({
   },
   animationSettings: {
     ...animations,
-    variants: createAnimationVariants()
+    variants: createAnimationVariants(),
+    durations: {
+      short: 300,
+      medium: 500,
+      long: 800,
+    },
+    easings: {
+      default: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+      easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    },
   },
   
   // Custom components configuration
@@ -88,6 +106,23 @@ const baseTheme = createTheme({
   // Add default values needed by components
   customDefaults: {
     placeholderImage: '/images/placeholder.png'
+  },
+  
+  components: {
+    MuiTypography: {
+      variants: [
+        {
+          props: { variant: 'projectTitle' },
+          style: {
+            fontSize: '2.5rem',
+            fontWeight: 700,
+            lineHeight: 1.2,
+            letterSpacing: '-0.02em',
+          },
+        },
+        // Add other custom typography variants
+      ],
+    },
   }
 });
 

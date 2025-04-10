@@ -12,7 +12,7 @@ const ProjectNavigation = ({ onClose, onPrev, onNext }) => {
       <Box sx={{ position: 'fixed', top: theme.spacing(2.5), right: theme.spacing(2.5), zIndex: 10 }}>
         <Button 
           variant="contained"
-          color="secondary"
+          color="primary" // Changed to primary to match tab color scheme
           onClick={onClose}
           sx={{ 
             textTransform: 'none',
@@ -38,9 +38,12 @@ const ProjectNavigation = ({ onClose, onPrev, onNext }) => {
         <IconButton 
           onClick={onPrev}
           sx={{ 
-            color: theme.palette.text.primary,
-            backgroundColor: 'rgba(19, 31, 45, 0.7)',
-            '&:hover': { backgroundColor: 'rgba(19, 31, 45, 0.9)' }
+            color: theme.palette.primary.main, // Updated to primary color
+            backgroundColor: theme.palette.background.overlay || 'rgba(19, 31, 45, 0.7)',
+            '&:hover': { 
+              backgroundColor: theme.palette.background.overlayHover || 'rgba(19, 31, 45, 0.9)',
+              color: theme.palette.primary.light, // Add hover effect
+            }
           }}
         >
           <ArrowBackIcon fontSize="large" />
@@ -58,9 +61,12 @@ const ProjectNavigation = ({ onClose, onPrev, onNext }) => {
         <IconButton 
           onClick={onNext}
           sx={{ 
-            color: theme.palette.text.primary,
+            color: theme.palette.primary.main, // Updated to primary color
             backgroundColor: 'rgba(19, 31, 45, 0.7)',
-            '&:hover': { backgroundColor: 'rgba(19, 31, 45, 0.9)' }
+            '&:hover': { 
+              backgroundColor: 'rgba(19, 31, 45, 0.9)',
+              color: theme.palette.primary.light, // Add hover effect
+            }
           }}
         >
           <ArrowForwardIcon fontSize="large" />

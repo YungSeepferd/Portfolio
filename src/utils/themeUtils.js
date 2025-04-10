@@ -2,6 +2,8 @@
  * Theme utility functions that help with consistent theme usage across components
  */
 
+import { alpha } from '@mui/material/styles';
+
 /**
  * Creates responsive padding based on theme spacing
  * @param {Object} theme - The MUI theme object
@@ -23,13 +25,13 @@ export const responsivePadding = (theme, options = {}) => {
 };
 
 /**
- * Returns consistent elevation styles from theme
+ * Gets proper elevation from theme based on level
  * @param {Object} theme - The MUI theme object
  * @param {number} level - Elevation level (1-5)
- * @returns {string} Box-shadow CSS value
+ * @returns {string} CSS shadow value
  */
 export const getElevation = (theme, level = 1) => {
-  return theme.elevations[level] || theme.elevations[1];
+  return theme.elevations?.[level] || theme.elevations?.[1] || theme.shadows?.[level] || 'none';
 };
 
 /**
@@ -39,11 +41,20 @@ export const getElevation = (theme, level = 1) => {
  * @returns {Object} Animation settings object for framer-motion
  */
 export const getAnimation = (theme, variant = 'fadeIn') => {
-  return theme.animationSettings.variants[variant] || theme.animationSettings.variants.fadeIn;
+  return theme.animationSettings?.variants?.[variant] || 
+         theme.animationSettings?.variants?.fadeIn || 
+         {
+           initial: { opacity: 0 },
+           animate: { opacity: 1 },
+           transition: { 
+             duration: 0.5,
+             ease: [0.4, 0, 0.2, 1]
+           }
+         };
 };
 
 /**
- * Creates a transition string using theme values
+ * Creates a standardized transition string using theme values
  * @param {Object} theme - The MUI theme object
  * @param {Array} properties - CSS properties to transition
  * @param {string} duration - Duration key ('short', 'medium', 'long')
@@ -56,8 +67,8 @@ export const createTransition = (
   duration = 'medium', 
   easing = 'standard'
 ) => {
-  const durationValue = `${theme.animationSettings.durations[duration]}ms`;
-  const easingValue = theme.animationSettings.easings.css[easing]; // Use CSS format
+  const durationValue = theme.animations?.durations?.[duration] || '300ms';
+  const easingValue = theme.animations?.easings?.css?.[easing] || 'cubic-bezier(0.4, 0, 0.2, 1)';
   
   return properties
     .map(prop => `${prop} ${durationValue} ${easingValue}`)
@@ -110,37 +121,48 @@ export const getTypographyStyles = (theme, variant = 'body1', options = {}) => {
 };
 
 /**
- * Creates a color with alpha transparency
+ * Gets a color with specific alpha/opacity value
  * @param {Object} theme - The MUI theme object
- * @param {string} colorPath - Dot notation path to color in theme.palette
- * @param {number} alpha - Alpha value (0-1)
+ * @param {string} colorPath - Path to color in theme (e.g. 'primary.main')
+ * @param {number} alpha - Alpha value between 0-1
  * @returns {string} RGBA color string
  */
-export const getColorWithAlpha = (theme, colorPath = 'primary.main', alpha = 0.5) => {
-  // Split the color path
-  const pathParts = colorPath.split('.');
+export const getColorWithAlpha = (theme, colorPath, alpha = 0.5) => {
+  // Split path into parts
+  const parts = colorPath.split('.');
   
-  // Navigate to the color in theme
-  let color = theme.palette;
-  for (const part of pathParts) {
-    color = color[part];
-    if (!color) return `rgba(0,0,0,${alpha})`;
+  // Get base color by traversing theme object
+  let baseColor = theme;
+  for (const part of parts) {
+    baseColor = baseColor?.[part];
+    if (!baseColor) break;
   }
   
-  // If it's already an rgba color
-  if (color.startsWith('rgba')) {
-    return color.replace(/rgba\(([^,]+),([^,]+),([^,]+),([\d.]+)\)/, `rgba($1,$2,$3,${alpha})`);
+  // If we couldn't find the color, return a fallback
+  if (!baseColor) return `rgba(0, 0, 0, ${alpha})`;
+  
+  // Handle if color is already rgba
+  if (baseColor.startsWith('rgba')) {
+    // Replace the alpha in the existing rgba
+    return baseColor.replace(/rgba\((.+?),\s*[\d.]+\)/, `rgba($1, ${alpha})`);
   }
   
-  // If it's a hex color
-  if (color.startsWith('#')) {
-    const r = parseInt(color.slice(1, 3), 16);
-    const g = parseInt(color.slice(3, 5), 16);
-    const b = parseInt(color.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
+  // Handle if color is rgb
+  if (baseColor.startsWith('rgb')) {
+    return baseColor.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
   }
   
-  return `rgba(0,0,0,${alpha})`;
+  // Handle hex colors
+  if (baseColor.startsWith('#')) {
+    const hex = baseColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  
+  // Fallback
+  return `rgba(0, 0, 0, ${alpha})`;
 };
 
 /**
@@ -171,5 +193,136 @@ export const responsiveStyles = (theme, styles) => {
 export const getShadow = (theme, intensity = 'medium') => {
   return {
     boxShadow: `0 4px 12px ${theme.palette.shadow[intensity] || theme.palette.shadow.medium}`,
+  };
+};
+
+/**
+ * Get project accent color based on project cardVariant or id
+ * 
+ * @param {Object} project - The project object
+ * @param {Object} theme - The theme object
+ * @returns {string} - The accent color for the project
+ */
+export const getProjectAccentColor = (project, theme) => {
+  if (!project) return theme.palette.primary.main;
+  
+  // If project has a specific accent color defined, use it
+  if (project.accentColor) return project.accentColor;
+  
+  // Otherwise determine color from cardVariant
+  switch (project.cardVariant) {
+    case 'primary':
+      return theme.palette.primary.main;
+    case 'secondary':
+      return theme.palette.secondary.main;
+    case 'success':
+      return theme.palette.success.main;
+    case 'info':
+      return theme.palette.info.main;
+    case 'warning':
+      return theme.palette.warning.main;
+    case 'error':
+      return theme.palette.error.main;
+    default:
+      // Use modulo to assign consistent colors based on project ID
+      const colorOptions = [
+        theme.palette.primary.main,
+        theme.palette.secondary.main,
+        theme.palette.success.main,
+        theme.palette.info.main,
+        theme.palette.warning.main,
+        theme.palette.error.main
+      ];
+      
+      return project.id 
+        ? colorOptions[(project.id - 1) % colorOptions.length]
+        : theme.palette.primary.main;
+  }
+};
+
+/**
+ * Get text color that contrasts with the project accent color
+ * 
+ * @param {string} accentColor - The accent color
+ * @param {Object} theme - The theme object
+ * @returns {string} - A contrasting text color
+ */
+export const getContrastTextColor = (accentColor, theme) => {
+  // If no accent color is provided, return the main text color
+  if (!accentColor) return theme.palette.text.primary;
+  
+  // Check if the accent color is one of the theme's palette colors
+  let contrastText = null;
+  
+  Object.entries(theme.palette).forEach(([key, value]) => {
+    if (typeof value === 'object' && value.main === accentColor && value.contrastText) {
+      contrastText = value.contrastText;
+    }
+  });
+  
+  // If contrast text was found, return it
+  if (contrastText) return contrastText;
+  
+  // Otherwise determine contrast based on brightness
+  // Convert hex to RGB if it's a hex color
+  let r, g, b;
+  
+  if (accentColor.startsWith('#')) {
+    const hex = accentColor.slice(1);
+    const bigint = parseInt(hex, 16);
+    r = (bigint >> 16) & 255;
+    g = (bigint >> 8) & 255;
+    b = bigint & 255;
+  } else if (accentColor.startsWith('rgb')) {
+    const matches = accentColor.match(/\d+/g);
+    if (matches && matches.length >= 3) {
+      [r, g, b] = matches.map(Number);
+    }
+  }
+  
+  if (r !== undefined && g !== undefined && b !== undefined) {
+    // Calculate brightness using the luminance formula
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#FFFFFF';
+  }
+  
+  // Default fallback
+  return theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000';
+};
+
+/**
+ * Create background gradient based on project accent color
+ * 
+ * @param {string} accentColor - The accent color
+ * @returns {string} - CSS gradient string
+ */
+export const createProjectGradient = (accentColor) => {
+  if (!accentColor) return 'none';
+  
+  const transparent = alpha(accentColor, 0);
+  const subtle = alpha(accentColor, 0.05);
+  const light = alpha(accentColor, 0.1);
+  
+  return `radial-gradient(circle at top right, ${light} 0%, ${subtle} 30%, ${transparent} 70%)`;
+};
+
+/**
+ * Get consistent project card style based on project cardVariant
+ * 
+ * @param {Object} project - The project object 
+ * @param {Object} theme - The theme object
+ * @returns {Object} - Style object for the card
+ */
+export const getProjectCardStyle = (project, theme) => {
+  if (!project) return {};
+  
+  const accentColor = getProjectAccentColor(project, theme);
+  
+  return {
+    borderLeft: `4px solid ${accentColor}`,
+    boxShadow: `0 3px 10px ${alpha(accentColor, 0.15)}`,
+    '&:hover': {
+      boxShadow: `0 8px 20px ${alpha(accentColor, 0.25)}`,
+    }
   };
 };

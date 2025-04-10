@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, List, ListItem, ListItemText, useTheme } from '@mui/material';
+import { Box, Typography, List, ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /**
  * KeyTakeaways Component
@@ -35,22 +36,37 @@ const KeyTakeaways = ({
       component={motion.div}
       {...animationSettings}
     >
-      <Typography 
-        variant={titleVariant} 
-        component={titleComponent}
-        sx={{ 
-          mt: { xs: 4, md: 1 }, 
-          mb: 3,
-          color: titleColor // Apply the heading color
-        }}
-      >
-        {title}
-      </Typography>
+      {title && (
+        <Typography 
+          variant={titleVariant} 
+          component={titleComponent}
+          sx={{ 
+            mb: 3,
+            color: titleColor // Apply the heading color
+          }}
+        >
+          {title}
+        </Typography>
+      )}
       
-      <List>
+      <List sx={{ 
+        '& .MuiListItem-root': {
+          alignItems: 'flex-start',
+          pb: 1
+        }
+      }}>
         {takeaways.map((item, index) => (
           <ListItem key={index}>
-            <ListItemText primary={item} />
+            <ListItemIcon sx={{ minWidth: 36, mt: 0.5 }}>
+              <CheckCircleIcon fontSize="small" color="success" />
+            </ListItemIcon>
+            <ListItemText 
+              primary={item} 
+              primaryTypographyProps={{ 
+                variant: 'body1',
+                fontWeight: 400
+              }}
+            />
           </ListItem>
         ))}
       </List>
