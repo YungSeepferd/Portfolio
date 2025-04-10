@@ -5,6 +5,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import { useThemeMode } from '../../context/ThemeContext';
+import ThemeToggle from '../common/ThemeToggle';
 
 // Define navigation items
 const navItems = [
@@ -16,6 +18,7 @@ const navItems = [
 
 const Header = () => {
   const theme = useTheme();
+  const { mode, toggleTheme } = useThemeMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   
@@ -66,16 +69,16 @@ const Header = () => {
     >
       <AppBar 
         position="fixed" 
-        elevation={isScrolled ? 3 : 0}
+        elevation={isScrolled ? 4 : 0} // Increased elevation
         sx={{
           backgroundColor: isScrolled 
             ? theme.palette.background.paper
-            : 'transparent',
+            : 'rgba(14, 26, 39, 0.4)', // Added slight background even when not scrolled
           transition: theme.transitions.create(
             ['background-color', 'box-shadow'],
             { duration: 0.3 }
           ),
-          backdropFilter: isScrolled ? 'blur(10px)' : 'none',
+          backdropFilter: 'blur(10px)', // Always apply blur for better readability
           borderBottom: isScrolled 
             ? `1px solid ${theme.palette.divider}`
             : 'none',
@@ -83,9 +86,8 @@ const Header = () => {
           width: '100%',
         }}
       >
-        {/* EXPLICITLY SET PADDING: Using standard Container with direct padding */}
         <Container
-          maxWidth={false} // Allow full width
+          maxWidth={false}
           disableGutters={true}
           sx={{
             px: { 
@@ -115,21 +117,19 @@ const Header = () => {
                   fontSize: '1.5rem',
                   letterSpacing: '-0.5px',
                   color: theme.palette.primary.main,
-                  // Removed the fixed paddingLeft for better responsiveness
-                  paddingLeft: { xs: '0px', sm: '20px', md: '40px', lg: '60px' },
-                  transition: 'color 0.3s ease',
-                  '&:hover': {
-                    color: theme.palette.primary.light,
-                  }
+                  paddingLeft: { xs: '0', sm: '20px', md: '40px', lg: '60px' },
                 }}
               >
-                Vincent Göke
+                <Box component="span" sx={{ color: theme.palette.text.primary, mr: 0.5 }}>
+                  Vincent
+                </Box>
+                Göke
               </Box>
             </ScrollLink>
 
             {/* Desktop Navigation */}
             <Box sx={{ 
-              display: { xs: 'none', md: 'block' },
+              display: { xs: 'none', md: 'flex' },
               paddingRight: { md: '40px', lg: '60px' }
             }}>
               {navItems.map((item) => (
@@ -148,20 +148,46 @@ const Header = () => {
                     sx={{
                       ml: 2,
                       px: item.isCallToAction ? 3 : 2,
+                      py: item.isCallToAction ? 0.5 : 'auto',
                       borderRadius: item.isCallToAction ? '50px' : 'default',
-                      transition: 'all 0.3s ease',
+                      position: 'relative',
+                      textTransform: 'none',
                       fontWeight: 500,
+                      '&::after': !item.isCallToAction ? {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: 0,
+                        height: 2,
+                        backgroundColor: theme.palette.accent.main,
+                        transition: 'width 0.3s ease',
+                      } : {},
                       '&:hover': {
                         backgroundColor: item.isCallToAction 
                           ? theme.palette.secondary.dark
-                          : 'rgba(255, 255, 255, 0.08)',
+                          : 'transparent',
+                        color: item.isCallToAction 
+                          ? theme.palette.secondary.contrastText
+                          : theme.palette.accent.main,
+                        '&::after': !item.isCallToAction ? {
+                          width: '100%',
+                        } : {},
                       },
+                      '&.active': {
+                        color: theme.palette.accent.main,
+                        '&::after': !item.isCallToAction ? {
+                          width: '100%',
+                        } : {},
+                      }
                     }}
                   >
                     {item.name}
                   </Button>
                 </ScrollLink>
               ))}
+              {/* Theme Toggle */}
+              <ThemeToggle mode={mode} onToggle={toggleTheme} />
             </Box>
 
             {/* Mobile Navigation */}
@@ -242,6 +268,15 @@ const Header = () => {
                     sx={{
                       py: 1.5,
                       borderRadius: item.isCallToAction ? '50px' : 'default',
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: item.isCallToAction 
+                          ? theme.palette.secondary.dark
+                          : 'rgba(194, 247, 80, 0.08)',
+                        color: item.isCallToAction 
+                          ? theme.palette.secondary.contrastText
+                          : theme.palette.accent.main,
+                      }
                     }}
                   >
                     {item.name}

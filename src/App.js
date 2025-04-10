@@ -2,53 +2,45 @@ import React from 'react';
 import { CssBaseline } from '@mui/material';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
-import Work from './components/work/Work';
+// import Work from './components/work'; // Commented out missing component
 import AboutSection from './components/about/AboutSection';
 import FooterContact from './components/contact/FooterContact';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { ModalProvider } from './context/ModalContext';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
+import { ThemeProvider } from './context/ThemeContext';
 import ThemeDebugger from './components/dev/ThemeDebugger';
-import ContentContainer from './components/common/ContentContainer';
 
+/**
+ * Main App component
+ */
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      
+    <ThemeProvider>
+      <CssBaseline />
       <ModalProvider>
-        <ErrorBoundary>
-          <div className="App">
-            <Header />
-            <CssBaseline />
-            <main>
-              <ErrorBoundary fallback={<div>Something went wrong with the hero section. Please refresh the page.</div>}>
-                
-                  <Hero />
-                
-              </ErrorBoundary>
-
-              <ErrorBoundary fallback={<div>Something went wrong with the work section. Please refresh the page.</div>}>
-                <ContentContainer>
-                  <Work />
-                </ContentContainer>
-              </ErrorBoundary>
-              
-              <ErrorBoundary fallback={<div>Something went wrong with the about section. Please refresh the page.</div>}>
-                <ContentContainer>
-                  <AboutSection />
-                </ContentContainer>
-              </ErrorBoundary>
-              
-              <ErrorBoundary fallback={<div>Something went wrong with the contact section. Please refresh the page.</div>}>
-                <ContentContainer>
-                  <FooterContact />
-                </ContentContainer>
-              </ErrorBoundary>
-            </main>
-          </div>
+        <ErrorBoundary componentName="Header">
+          <Header />
         </ErrorBoundary>
         
+        <ErrorBoundary componentName="Hero">
+          <Hero />
+        </ErrorBoundary>
+        
+        {/* Work section temporarily disabled
+        <ErrorBoundary componentName="Work">
+          <Work />
+        </ErrorBoundary>
+        */}
+        
+        <ErrorBoundary componentName="About">
+          <AboutSection />
+        </ErrorBoundary>
+        
+        <ErrorBoundary componentName="Contact">
+          <FooterContact />
+        </ErrorBoundary>
+        
+        {/* Only show theme debugger in development */}
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
       </ModalProvider>
     </ThemeProvider>

@@ -4,7 +4,7 @@
  * This file simply re-exports the theme from the theme folder
  * to maintain backward compatibility with existing imports.
  */
-import theme, { globalStyles, themeConstants } from './theme/index';
+import theme, { darkTheme, lightTheme, tokens } from './theme/index';
 import { alpha } from '@mui/material/styles';
 
 // Modify the existing theme to add layout configuration
@@ -122,7 +122,28 @@ if (theme.components) {
   };
 }
 
-export { globalStyles, themeConstants };
+// Create our own theme constants to export
+const globalStyles = {
+  // You can define your global styles here
+  container: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+  },
+  // Add more as needed
+};
+
+const themeConstants = {
+  // Define constants like animation durations, etc.
+  animation: {
+    fast: 200,
+    medium: 300,
+    slow: 500
+  },
+  // Add more as needed
+};
+
+// Export all necessary theme items
+export { darkTheme, lightTheme, globalStyles, themeConstants, tokens };
 export default theme;
 
 // Export spacing or remove/comment it if not used

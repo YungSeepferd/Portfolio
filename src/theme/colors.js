@@ -7,22 +7,22 @@
 
 // Define reusable color variables
 const colors = {
-  primaryMain: '#5363EE',
+  primaryMain: '#5363EE', // Keep blue as primary
   primaryContrastText: '#FFFFFF',
   primaryDark: '#4353D9',
   primaryLight: '#6E7CFF',
-  secondaryMain: '#C2F750',
+  secondaryMain: '#C2F750', // Brighter green from old version
   secondaryContrastText: '#0E1A27',
   secondaryDark: '#ABDF3A',
   secondaryLight: '#D4FF69',
-  backgroundDefault: '#0E1A27',
+  backgroundDefault: '#0E1A27', // Dark blue background
   backgroundPaper: '#131F2D',
   backgroundAlternatePanel: '#1A2736',
   textPrimary: '#FFFFFF',
   textSecondary: '#CCCCCC',
   textMuted: '#A0A0A0',
-  textAccent: '#C2F750',
-  accentMain: '#C2F750',
+  textAccent: '#C2F750', // Use secondary color as accent
+  accentMain: '#C2F750', // Same as secondary for consistency
   accentDark: '#ABDF3A',
   accentLight: '#D4FF69',
   accentContrast: '#0E1A27',

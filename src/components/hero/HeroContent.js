@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Box, Typography, Chip, useTheme, useMediaQuery } from '@mui/material';
 import { skillsRow1, skillsRow2 } from './skillsData';
 
@@ -16,40 +16,6 @@ const HeroContent = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  const contentRef = useRef(null);
-  const contentControls = useAnimation();
-  
-  // Add subtle mouse parallax effect
-  useEffect(() => {
-    if (isMobile) return; // Don't apply on mobile
-    
-    // First ensure the initial animation completes
-    contentControls.start("visible").then(() => {
-      const handleMouseMove = (e) => {
-        if (!contentRef.current) return;
-        
-        // Calculate mouse position relative to center of screen
-        const { clientX, clientY } = e;
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        
-        // Calculate offsets (small movements)
-        const offsetX = (clientX - centerX) / 50;
-        const offsetY = (clientY - centerY) / 50;
-        
-        // Apply subtle transform via animation controls
-        // Remove opacity changes from mouse movement to prevent flicker
-        contentControls.start({
-          x: offsetX,
-          y: offsetY,
-          transition: { type: "spring", stiffness: 150, damping: 20, mass: 0.5 }
-        });
-      };
-      
-      window.addEventListener('mousemove', handleMouseMove);
-      return () => window.removeEventListener('mousemove', handleMouseMove);
-    });
-  }, [isMobile, contentControls]);
   
   // Animation variants for staggered appearance
   const containerVariants = {
@@ -76,22 +42,20 @@ const HeroContent = () => {
     <Box
       sx={{
         position: 'relative',
-        transform: 'none',
         width: '100%',
         maxWidth: '100%',
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        zIndex: 5, // Increased z-index to ensure content appears above background
+        zIndex: 10, // Make sure it's higher than background but allows interaction
         pointerEvents: 'none',
         userSelect: 'none',
-        paddingLeft: '70px'
+        pl: { xs: 2, sm: 4, md: 8, lg: 12 }, // Responsive padding
       }}
     >
       <motion.div
-        ref={contentRef}
-        animate={contentControls}
         initial="hidden"
+        animate="visible"
         variants={containerVariants}
         style={{
           maxWidth: isMobile ? '100%' : isTablet ? '80%' : '650px',
@@ -108,7 +72,7 @@ const HeroContent = () => {
                 xs: '2.5rem', // Mobile
                 sm: '3.5rem', // Tablet
                 md: '4.5rem', // Desktop
-                lg: '5rem'    // Large desktop (matching old version)
+                lg: '5rem'    // Large desktop
               },
               fontWeight: 700,
               lineHeight: 1.2,
@@ -132,7 +96,7 @@ const HeroContent = () => {
                 md: '1.35rem'
               },
               fontWeight: 500,
-              mb: 4, // Increased margin to match old spacing
+              mb: 4,
               color: theme.palette.accent?.main || theme.palette.primary.main,
             }}
           >
@@ -140,7 +104,7 @@ const HeroContent = () => {
           </Typography>
         </motion.div>
         
-        {/* Status Text - Added from old version */}
+        {/* Status Text */}
         <motion.div variants={itemVariants}>
           <Typography 
             variant="body1"

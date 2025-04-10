@@ -1,3 +1,4 @@
+// Renamed to sceneThemeUtils.js to avoid conflicts with global themeUtils.js
 import * as THREE from 'three';
 import { SHAPE_TYPES } from '../constants';
 
@@ -43,39 +44,56 @@ export const hexToHSL = (hex) => {
 
 /**
  * Extract theme colors for Three.js scenes
- * @param {Object} theme - MUI theme object
- * @returns {Object} Object containing color information for scenes
  */
 export const extractThemeColors = (theme) => {
+  if (!theme || !theme.palette) {
+    // Provide fallback colors if theme isn't available
+    return {
+      shapeColors: {
+        0: { h: 0.6, s: 0.6, l: 0.6 }, // Blue-ish
+        1: { h: 0.3, s: 0.6, l: 0.6 }, // Green-ish
+        2: { h: 0.1, s: 0.6, l: 0.6 }, // Orange-ish
+        hover: { h: 0.5, s: 0.8, l: 0.7 }
+      },
+      sceneColors: {
+        cubeGrid: {
+          primary: new THREE.Color('#5363EE'),
+          secondary: new THREE.Color('#C2F750'),
+          accent: new THREE.Color('#29b6f6')
+        },
+        torus: {
+          primary: '#5363EE',
+          secondary: '#C2F750',
+          trail: '#C2F750'
+        }
+      }
+    };
+  }
+
   // Extract colors from theme, using fallbacks if needed
-  const primary = hexToHSL(theme.palette.primary.main);
-  const secondary = hexToHSL(theme.palette.secondary.main);
+  const primary = hexToHSL(theme.palette.primary?.main || '#5363EE');
+  const secondary = hexToHSL(theme.palette.secondary?.main || '#C2F750');
   const info = hexToHSL(theme.palette.info?.main || '#29b6f6');
-  const warning = hexToHSL(theme.palette.warning?.main || '#ffa726');
-  // Remove unused variables
-  // const error = hexToHSL(theme.palette.error?.main || '#f44336');
-  // const success = hexToHSL(theme.palette.success?.main || '#4caf50');
   
   // Base scene color mapping
   const shapeColors = {
     [SHAPE_TYPES.SPHERE]: primary,
     [SHAPE_TYPES.BOX]: secondary,
-    [SHAPE_TYPES.CONE]: warning,
     [SHAPE_TYPES.TORUS]: info,
-    hover: hexToHSL(theme.palette.secondary.light),
+    hover: hexToHSL(theme.palette.secondary?.light || '#D4FF69'),
   };
   
   // Additional colors for other scenes
   const sceneColors = {
     cubeGrid: {
-      primary: new THREE.Color(theme.palette.primary.main),
-      secondary: new THREE.Color(theme.palette.secondary.main),
-      accent: new THREE.Color(theme.palette.info.main),
+      primary: new THREE.Color(theme.palette.primary?.main || '#5363EE'),
+      secondary: new THREE.Color(theme.palette.secondary?.main || '#C2F750'),
+      accent: new THREE.Color(theme.palette.info?.main || '#29b6f6'),
     },
     torus: {
-      primary: theme.palette.primary.main,
-      secondary: theme.palette.secondary.main,
-      trail: theme.palette.secondary.main
+      primary: theme.palette.primary?.main || '#5363EE',
+      secondary: theme.palette.secondary?.main || '#C2F750',
+      trail: theme.palette.secondary?.main || '#C2F750'
     }
   };
   
@@ -84,17 +102,17 @@ export const extractThemeColors = (theme) => {
 
 /**
  * Create a material with theme-based properties
- * @param {Object} theme - MUI theme object
- * @param {Object} options - Additional material options
- * @returns {THREE.Material} Three.js material
  */
 export const createThemedMaterial = (theme, options = {}) => {
   return new THREE.MeshStandardMaterial({
-    color: theme.palette.primary.main,
-    emissive: theme.palette.primary.light,
+    color: theme.palette.primary?.main || '#5363EE',
+    emissive: theme.palette.primary?.light || '#6E7CFF',
     emissiveIntensity: 0.2,
     metalness: 0.2,
     roughness: 0.7,
     ...options
   });
 };
+
+// Add direct alias for backward compatibility
+export const extractColorsFromTheme = extractThemeColors;

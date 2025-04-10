@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree, extend } from '@react-three/fiber';
 import * as THREE from 'three';
 import { SHAPE_LIMITS, SHAPE_TYPES } from '../constants';
 import { useSceneState } from '../SceneContext';
 import ObjectPool from '../utils/ObjectPool';
+// Import the particle component
+import Particle from '../ParticleComponent';
+
+// No need to redefine Particle class here - it's already imported above
+// and registered with extend() in ParticleComponent.js
 
 /**
- * SphereScene Component - Enhanced with automatic motion
+ * SphereScene Component - Enhanced with InstancedMesh for performance
  */
 const SphereScene = () => {
   const theme = useTheme();
@@ -15,53 +20,105 @@ const SphereScene = () => {
   const { mouse, clock, camera } = useThree();
   const { isTransitioning, scrollActive, currentShapeType, switchShapeType } = useSceneState();
   
-  // Set up pools of shapes for reuse
-  const [shapesPool] = useState(() => 
-    new ObjectPool(SHAPE_LIMITS.SPHERE.desktop, () => ({ 
-      position: new THREE.Vector3(), 
-      velocity: new THREE.Vector3(),
-      rotation: new THREE.Euler(),
-      scale: new THREE.Vector3(1, 1, 1),
-      type: SHAPE_TYPES.SPHERE,
-      hovered: false,
-      excitementLevel: 0,
-      ref: React.createRef(),
-      matrixAutoUpdate: false,
-      // Add auto-movement properties with REDUCED SPEED
-      autoMovement: {
-        speed: Math.random() * 0.005 + 0.001, // REDUCED from 0.01 + 0.002
-        direction: new THREE.Vector3(
-          Math.random() * 2 - 1,
-          Math.random() * 2 - 1,
-          Math.random() * 2 - 1
-        ).normalize(),
-        rotationSpeed: {
-          x: Math.random() * 0.005, // REDUCED from 0.01
-          y: Math.random() * 0.005, // REDUCED from 0.01
-          z: Math.random() * 0.005  // REDUCED from 0.01
-        },
-        timeOffset: Math.random() * 1000
-      }
-    }))
-  );
+  // Get count based on device type
+  const count = isMobile ? SHAPE_LIMITS.SPHERE.mobile : SHAPE_LIMITS.SPHERE.desktop;
   
-  // Store active shapes
-  const [activeShapes, setActiveShapes] = useState([]);
+  // Create instanced meshes for each shape type
+  const instancedMeshRefs = useRef({
+    [SHAPE_TYPES.SPHERE]: React.createRef(),
+    [SHAPE_TYPES.BOX]: React.createRef(),
+    [SHAPE_TYPES.TORUS]: React.createRef()
+  });
+  
+  // Reusable dummy object for matrix calculations
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  
+  // Shapes data
+  const [shapesData, setShapesData] = useState(() => {
+    const data = [];
+    for (let i = 0; i < count; i++) {
+      data.push({
+        position: new THREE.Vector3(
+          THREE.MathUtils.randFloatSpread(10),
+          THREE.MathUtils.randFloatSpread(10),
+          THREE.MathUtils.randFloatSpread(5)
+        ),
+        velocity: new THREE.Vector3(
+          THREE.MathUtils.randFloat(-0.002, 0.002),
+          THREE.MathUtils.randFloat(-0.002, 0.002),
+          THREE.MathUtils.randFloat(-0.002, 0.002)
+        ),
+        rotation: new THREE.Euler(
+          THREE.MathUtils.randFloat(0, Math.PI * 2),
+          THREE.MathUtils.randFloat(0, Math.PI * 2),
+          THREE.MathUtils.randFloat(0, Math.PI * 2)
+        ),
+        scale: new THREE.Vector3(1, 1, 1),
+        type: currentShapeType,
+        hovered: false,
+        excitementLevel: 0,
+        index: i,
+        // Auto-movement properties
+        autoMovement: {
+          speed: Math.random() * 0.005 + 0.001,
+          direction: new THREE.Vector3(
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1
+          ).normalize(),
+          rotationSpeed: {
+            x: Math.random() * 0.005,
+            y: Math.random() * 0.005,
+            z: Math.random() * 0.005
+          },
+          timeOffset: Math.random() * 1000
+        }
+      });
+    }
+    return data;
+  });
   
   // User's cursor position in 3D space - reuse this vector
   const cursorPosition = useRef(new THREE.Vector3());
-  // Reusable vectors for calculations to avoid memory allocations
+  // Reusable vectors for calculations
   const tempVector = useRef(new THREE.Vector3());
   const tempVector2 = useRef(new THREE.Vector3());
   
-  // Geometry options for different shape types - memoized to prevent recreations
+  // Geometry options for different shape types
   const geometries = useMemo(() => [
-    <sphereGeometry args={[0.2, 16, 16]} />, // SPHERE
-    <boxGeometry args={[0.3, 0.3, 0.3]} />,  // BOX
-    <torusGeometry args={[0.2, 0.08, 16, 32]} /> // TORUS
+    new THREE.SphereGeometry(0.2, 16, 16), // SPHERE
+    new THREE.BoxGeometry(0.3, 0.3, 0.3),  // BOX
+    new THREE.TorusGeometry(0.2, 0.08, 16, 32) // TORUS
   ], []);
 
-  // Get theme colors for each shape type to ensure consistent branding
+  // Materials with theme-based colors
+  const materials = useMemo(() => {
+    return [
+      new THREE.MeshStandardMaterial({
+        color: theme.palette.primary.main,
+        emissive: theme.palette.primary.light,
+        emissiveIntensity: 0.6,
+        metalness: 0.4,
+        roughness: 0.4
+      }),
+      new THREE.MeshStandardMaterial({
+        color: theme.palette.secondary.main,
+        emissive: theme.palette.secondary.light,
+        emissiveIntensity: 0.5,
+        metalness: 0.4,
+        roughness: 0.4
+      }),
+      new THREE.MeshStandardMaterial({
+        color: theme.palette.info?.main || '#29b6f6',
+        emissive: theme.palette.info?.light || '#4fc3f7',
+        emissiveIntensity: 0.5,
+        metalness: 0.4,
+        roughness: 0.4
+      })
+    ];
+  }, [theme.palette]);
+
+  // Color properties for theme integration
   const shapeColors = useMemo(() => {
     // Helper to convert hex to HSL
     const hexToHSL = (hex) => {
@@ -108,75 +165,11 @@ const SphereScene = () => {
       [SHAPE_TYPES.SPHERE]: primary,
       [SHAPE_TYPES.BOX]: secondary,
       [SHAPE_TYPES.TORUS]: info,
-      hover: hexToHSL(theme.palette.secondary.light), // Hover state color
+      hover: hexToHSL(theme.palette.secondary.light),
     };
   }, [theme.palette]);
   
-  // Initialize the shapes
-  useEffect(() => {
-    const count = isMobile ? SHAPE_LIMITS.SPHERE.mobile : SHAPE_LIMITS.SPHERE.desktop;
-    const nextActiveShapes = [];
-    
-    for (let i = 0; i < count; i++) {
-      const shape = shapesPool.get();
-      if (shape) {
-        // Random starting position
-        shape.position.set(
-          THREE.MathUtils.randFloatSpread(10),
-          THREE.MathUtils.randFloatSpread(10),
-          THREE.MathUtils.randFloatSpread(5)
-        );
-        
-        // Random velocity - REDUCED speed range
-        shape.velocity.set(
-          THREE.MathUtils.randFloat(-0.002, 0.002), // REDUCED from -0.005, 0.005
-          THREE.MathUtils.randFloat(-0.002, 0.002), // REDUCED from -0.005, 0.005
-          THREE.MathUtils.randFloat(-0.002, 0.002)  // REDUCED from -0.005, 0.005
-        );
-        
-        // Random rotation
-        shape.rotation.set(
-          THREE.MathUtils.randFloat(0, Math.PI * 2),
-          THREE.MathUtils.randFloat(0, Math.PI * 2),
-          THREE.MathUtils.randFloat(0, Math.PI * 2)
-        );
-        
-        shape.type = currentShapeType;
-        shape.hovered = false;
-        shape.excitementLevel = 0;
-        shape.scale.set(1, 1, 1);
-        
-        // Reset auto-movement properties with SLOWER speeds
-        shape.autoMovement = {
-          speed: Math.random() * 0.005 + 0.001, // REDUCED from 0.01 + 0.002
-          direction: new THREE.Vector3(
-            Math.random() * 2 - 1,
-            Math.random() * 2 - 1,
-            Math.random() * 2 - 1
-          ).normalize(),
-          rotationSpeed: {
-            x: Math.random() * 0.005, // REDUCED from 0.01
-            y: Math.random() * 0.005, // REDUCED from 0.01
-            z: Math.random() * 0.005  // REDUCED from 0.01
-          },
-          timeOffset: Math.random() * 1000
-        };
-        
-        nextActiveShapes.push(shape);
-      }
-    }
-    
-    setActiveShapes(nextActiveShapes);
-    
-    return () => {
-      // Clean up - return all shapes to the pool
-      nextActiveShapes.forEach(shape => {
-        shapesPool.release(shape);
-      });
-    };
-  }, [isMobile, shapesPool, currentShapeType]);
-  
-  // Update cursor position from mouse - reuse existing vector
+  // Update cursor position from mouse
   useFrame(() => {
     cursorPosition.current.set(
       (mouse.x * camera.position.z * camera.aspect),
@@ -185,164 +178,168 @@ const SphereScene = () => {
     );
   });
   
-  // Animation and physics logic with optimizations
+  // Animation and physics logic with instanced meshes
   useFrame(() => {
     if (isTransitioning) return;
     
-    // Apply a wave effect if user is scrolling
-    const scrollEffect = scrollActive ? Math.sin(clock.getElapsedTime() * 6) * 0.15 : 0;
     const currentTime = clock.getElapsedTime();
+    const scrollEffect = scrollActive 
+      ? Math.sin(currentTime * 3) * 0.05
+      : 0;
     
-    activeShapes.forEach(shape => {
-      // AUTOMATIC MOTION: Apply continuous gentle movement even when cursor is not near
+    // Update each shape's data
+    shapesData.forEach((shape, index) => {
+      // Auto movement
       const autoMove = shape.autoMovement;
-      const timeInfluence = Math.sin(currentTime + autoMove.timeOffset) * 0.5 + 0.5;
-      const autoVelocity = tempVector2.current.copy(autoMove.direction).multiplyScalar(autoMove.speed * timeInfluence);
+      const timeInfluence = (Math.sin(currentTime * 0.5 + autoMove.timeOffset) * 0.5 + 0.5) * 0.7;
       
-      // Add auto-movement to regular velocity
-      tempVector.current.copy(shape.velocity).add(autoVelocity);
+      tempVector2.current.copy(autoMove.direction).multiplyScalar(autoMove.speed * timeInfluence);
+      tempVector.current.copy(shape.velocity).add(tempVector2.current);
       shape.position.add(tempVector.current);
       
       // Auto-rotation
-      shape.rotation.x += autoMove.rotationSpeed.x;
-      shape.rotation.y += autoMove.rotationSpeed.y;
-      shape.rotation.z += autoMove.rotationSpeed.z;
+      const rotationFactor = 0.2 + (Math.sin(currentTime * 0.2 + index * 0.5) * 0.1);
+      shape.rotation.x += autoMove.rotationSpeed.x * rotationFactor;
+      shape.rotation.y += autoMove.rotationSpeed.y * rotationFactor;
+      shape.rotation.z += autoMove.rotationSpeed.z * rotationFactor;
       
-      // Bounce off boundaries
+      // Boundary checks
       ['x', 'y', 'z'].forEach(axis => {
         if (Math.abs(shape.position[axis]) > 5) {
-          shape.velocity[axis] *= -1;
-          // Also reverse auto-movement direction for this axis
-          autoMove.direction[axis] *= -1;
+          shape.velocity[axis] = -shape.velocity[axis] * 0.9;
+          autoMove.direction[axis] = -autoMove.direction[axis] * 0.95;
         }
       });
       
       // Apply scroll effect
       if (scrollActive) {
-        shape.position.y += scrollEffect;
+        const scrollScaleEffect = 1 + (scrollEffect * (index % 3 === 0 ? 0.05 : 0.03));
+        shape.scale.x = shape.type === SHAPE_TYPES.TORUS ? shape.scale.x : scrollScaleEffect;
+        shape.scale.y = shape.type === SHAPE_TYPES.BOX ? shape.scale.y : scrollScaleEffect * 1.05;
+        shape.position.y += scrollEffect * 0.02;
       }
       
-      // Calculate distance to cursor using our reused vector
+      // Cursor interactions
       tempVector.current.copy(shape.position);
       const distToCursor = tempVector.current.distanceTo(cursorPosition.current);
       
-      // Type-specific behavior when near cursor
       if (distToCursor < 3) {
-        // Calculate interaction strength based on distance
         const strength = 1 - (distToCursor / 3);
         
-        // Each shape type has different behavior
         if (shape.type === SHAPE_TYPES.SPHERE) {
-          // Spheres are attracted to cursor - use temp vectors
           tempVector.current.subVectors(cursorPosition.current, shape.position)
             .normalize()
-            .multiplyScalar(0.005 * strength); // REDUCED from 0.01 * strength
+            .multiplyScalar(0.004 * strength);
           
           shape.velocity.add(tempVector.current);
           shape.excitementLevel = Math.min(1, shape.excitementLevel + 0.015);
         } 
         else if (shape.type === SHAPE_TYPES.BOX) {
-          // Boxes run away from cursor
           tempVector.current.subVectors(shape.position, cursorPosition.current)
             .normalize()
-            .multiplyScalar(0.01 * strength); // REDUCED from 0.02 * strength
+            .multiplyScalar(0.008 * strength);
           
           shape.velocity.add(tempVector.current);
           shape.excitementLevel = Math.min(1, shape.excitementLevel + 0.015);
         }
         else if (shape.type === SHAPE_TYPES.TORUS) {
-          // Toruses pulse in size
-          const pulseScale = 1 + 0.4 * strength * Math.sin(clock.getElapsedTime() * 6);
+          const pulseScale = 1 + 0.3 * strength * Math.sin(clock.getElapsedTime() * 5);
           shape.scale.set(pulseScale, pulseScale, pulseScale);
-          
-          // Add rotation to torus when active
-          shape.rotation.x += 0.04 * strength;
-          shape.rotation.y += 0.06 * strength;
-          
-          shape.excitementLevel = Math.min(1, shape.excitementLevel + 0.04);
+          shape.rotation.x += 0.03 * strength;
+          shape.rotation.y += 0.04 * strength;
+          shape.excitementLevel = Math.min(1, shape.excitementLevel + 0.03);
         }
       } else {
-        // Reset when away from cursor - gentler decay
-        shape.excitementLevel = Math.max(0, shape.excitementLevel - 0.008);
+        shape.excitementLevel = Math.max(0, shape.excitementLevel - 0.005);
         
-        // Reset scale for special shapes
         if (shape.type === SHAPE_TYPES.TORUS) {
-          shape.scale.lerp(tempVector2.current.set(1, 1, 1), 0.08);
+          shape.scale.lerp(tempVector2.current.set(1, 1, 1), 0.05);
         }
       }
       
-      // Limit velocity - REDUCED maximum speed
-      const maxSpeed = 0.02; // REDUCED from 0.035
+      // Limit velocity
+      const maxSpeed = 0.015;
       if (shape.velocity.length() > maxSpeed) {
         shape.velocity.normalize().multiplyScalar(maxSpeed);
       }
       
-      // Add a stronger dampening factor to gradually slow shapes
-      shape.velocity.multiplyScalar(0.97); // INCREASED dampening from 0.99
-      
-      // Update the actual mesh
-      if (shape.ref.current) {
-        // Position and rotation updates
-        shape.ref.current.position.copy(shape.position);
-        shape.ref.current.rotation.copy(shape.rotation);
-        shape.ref.current.scale.copy(shape.scale);
+      // Apply damping
+      shape.velocity.multiplyScalar(0.985);
+
+      // Apply shape calculations to instanced meshes
+      const instancedMesh = instancedMeshRefs.current[shape.type].current;
+      if (instancedMesh) {
+        // Set transformation matrix for this instance
+        dummy.position.copy(shape.position);
+        dummy.rotation.copy(shape.rotation);
+        dummy.scale.copy(shape.scale);
+        dummy.updateMatrix();
         
-        // Manually update matrix for better performance since we disabled matrixAutoUpdate
-        shape.ref.current.updateMatrix();
+        // Apply matrix to the instance
+        instancedMesh.setMatrixAt(shape.index, dummy.matrix);
         
         // Update material color based on excitement
-        if (shape.ref.current.material) {
-          // Get the base color for this shape type from our theme-based colors
+        const material = materials[shape.type];
+        if (material && shape.excitementLevel > 0) {
           const baseColor = shapeColors[shape.type];
-          
-          // Excitement shifts toward hover/interactive color
           const hue = shape.hovered 
-            ? shapeColors.hover.h // Use hover color from theme
+            ? shapeColors.hover.h
             : THREE.MathUtils.lerp(baseColor.h, shapeColors.hover.h, shape.excitementLevel);
             
           const saturation = THREE.MathUtils.lerp(baseColor.s, 1.0, shape.excitementLevel);
           const lightness = THREE.MathUtils.lerp(baseColor.l, 0.7, shape.excitementLevel);
           
-          // Only update material color when there's a significant change
-          if (Math.abs(shape.ref.current.material.emissiveIntensity - shape.excitementLevel * 0.5) > 0.05) {
-            shape.ref.current.material.color.setHSL(hue, saturation, lightness);
-            shape.ref.current.material.emissive.setHSL(hue, saturation, lightness + 0.2);
-            shape.ref.current.material.emissiveIntensity = shape.excitementLevel * 0.5;
-            shape.ref.current.material.needsUpdate = true;
+          // We can't set individual colors for instances, so we apply a global effect
+          // This is the tradeoff for performance - more uniform color behavior
+          if (shape.excitementLevel > 0.5) {
+            material.emissiveIntensity = Math.max(material.emissiveIntensity, shape.excitementLevel * 0.6);
           }
         }
       }
     });
+    
+    // Update all the instance matrices after all calculations
+    Object.values(instancedMeshRefs.current).forEach(ref => {
+      if (ref.current) {
+        ref.current.instanceMatrix.needsUpdate = true;
+      }
+    });
   });
-  
-  // Switch shape type handler to ensure we cycle only through 3 shapes
-  const handleSwitchShapeType = () => {
-    switchShapeType((prev) => (prev + 1) % 3); // Ensure we only cycle through 3 shapes
+
+  // Click handler for shape type cycling
+  const handleShapeClick = (e) => {
+    e.stopPropagation();
+    switchShapeType((prev) => (prev + 1) % 3);
   };
 
+  // Cleanup on unmount - proper disposal of geometries and materials
+  useEffect(() => {
+    return () => {
+      // Dispose geometries and materials when component unmounts
+      geometries.forEach(geometry => geometry.dispose());
+      materials.forEach(material => material.dispose());
+    };
+  }, [geometries, materials]);
+
   return (
-    <>
-      {activeShapes.map((shape, i) => (
-        <mesh
-          key={i}
-          ref={shape.ref}
-          position={shape.position}
-          onPointerOver={() => { shape.hovered = true; }}
-          onPointerOut={() => { shape.hovered = false; }}
-          onClick={() => handleSwitchShapeType()}
-          matrixAutoUpdate={false} // Performance optimization - we'll update matrices manually
-        >
-          {geometries[shape.type]}
-          <meshStandardMaterial 
-            color={theme.palette.primary.main}
-            emissive={theme.palette.primary.light}
-            emissiveIntensity={0.2}
-            metalness={0.2} // Add metalness for better visual quality
-            roughness={0.7} // Add roughness for better visual quality
-          />
-        </mesh>
-      ))}
-    </>
+    <group onClick={handleShapeClick}>
+      {/* One instanced mesh per shape type */}
+      <instancedMesh 
+        ref={instancedMeshRefs.current[SHAPE_TYPES.SPHERE]}
+        args={[geometries[SHAPE_TYPES.SPHERE], materials[SHAPE_TYPES.SPHERE], count]}
+        visible={currentShapeType === SHAPE_TYPES.SPHERE}
+      />
+      <instancedMesh 
+        ref={instancedMeshRefs.current[SHAPE_TYPES.BOX]}
+        args={[geometries[SHAPE_TYPES.BOX], materials[SHAPE_TYPES.BOX], count]}
+        visible={currentShapeType === SHAPE_TYPES.BOX}
+      />
+      <instancedMesh 
+        ref={instancedMeshRefs.current[SHAPE_TYPES.TORUS]}
+        args={[geometries[SHAPE_TYPES.TORUS], materials[SHAPE_TYPES.TORUS], count]}
+        visible={currentShapeType === SHAPE_TYPES.TORUS}
+      />
+    </group>
   );
 };
 

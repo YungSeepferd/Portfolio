@@ -1,35 +1,41 @@
 import React, { useEffect } from 'react';
 import { useSceneState } from './SceneContext';
-import { SCENE_MODES } from './constants';
 import SphereScene from './scenes/SphereScene';
-import CubeScene from './scenes/CubeScene';
 import TorusScene from './scenes/TorusScene';
+import CubeScene from './scenes/CubeScene';
 
 /**
- * ActiveScene - Renders the currently active scene based on scene mode
- * Also exposes scene switching functionality to the window object
+ * ActiveScene - Renders the currently active scene
+ * CRITICAL FIX: Simplified to always show SphereScene initially for debugging
  */
 const ActiveScene = () => {
-  const { sceneMode, switchScene, requestRender } = useSceneState();
+  const { currentShapeType, isTransitioning } = useSceneState();
   
-  // Store scene context in window for external access
+  // Log scene status to help debug visibility issues
   useEffect(() => {
-    window.sceneContext = { 
-      switchScene,
-      requestRender
+    console.log("ActiveScene mounted, shape type:", currentShapeType);
+    
+    // Make scene visible for debugging
+    window.threeScene = {
+      currentShapeType,
+      isTransitioning,
     };
     
     return () => {
-      window.sceneContext = null;
+      console.log("ActiveScene unmounted");
     };
-  }, [switchScene, requestRender]);
+  }, [currentShapeType, isTransitioning]);
   
-  // Render the appropriate scene based on the current mode
+  // Always render at least one scene to ensure something is visible
   return (
     <group>
-      {sceneMode === SCENE_MODES.INTERACTIVE_SHAPES && <SphereScene />}
-      {sceneMode === SCENE_MODES.CUBE_ELEVATION && <CubeScene />}
-      {sceneMode === SCENE_MODES.TORUS_MOTION && <TorusScene />}
+      {/* Show appropriate scene based on shape type, fallback to SphereScene */}
+      {currentShapeType === 0 && <SphereScene />}
+      {currentShapeType === 1 && <CubeScene />}
+      {currentShapeType === 2 && <TorusScene />}
+      
+      {/* Fallback for debugging - ensure something is always visible */}
+      {(currentShapeType === undefined || currentShapeType === null) && <SphereScene />}
     </group>
   );
 };
