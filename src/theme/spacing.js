@@ -17,6 +17,40 @@ const spacing = {
   section: 64 // 64px - Section spacing
 };
 
+// Define the standard spacing units
+const themeSpacing = (factor) => `${8 * factor}px`;
+
+// Add special spacing values
+themeSpacing.contentPadding = {
+  xs: '20px',   // Mobile
+  sm: '40px',   // Small tablets
+  md: '80px',   // Large tablets
+  lg: '100px',  // Desktops
+};
+
+// Additional spacing configurations
+themeSpacing.pagePadding = {
+  xs: 2,  // 16px on mobile
+  sm: 4,  // 32px on tablet
+  md: 6,  // 48px on small desktop
+  lg: 12.5, // 100px on desktop (8px * 12.5 = 100px)
+};
+
+// Consistent section spacing
+themeSpacing.section = {
+  marginTop: 8,     // 64px top margin
+  marginBottom: 8,  // 64px bottom margin
+  paddingTop: 6,    // 48px top padding
+  paddingBottom: 6, // 48px bottom padding
+};
+
+// Card and element spacing
+themeSpacing.card = {
+  padding: 3,       // 24px padding inside cards
+  marginBottom: 4,  // 32px margin below cards
+  gap: 2,           // 16px gap between card elements
+};
+
 /**
  * Creates a spacing function for Material UI's createTheme
  *
@@ -34,4 +68,4 @@ export const getSpacing = (size) => {
   return `${spacing.unit * size}px`;
 };
 
-export default spacing;
+export default themeSpacing;

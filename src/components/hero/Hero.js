@@ -3,14 +3,8 @@ import { Box, useTheme, useMediaQuery } from '@mui/material';
 import ErrorBoundary from '../common/ErrorBoundary';
 import HeroContent from './HeroContent';
 import ScrollIndicator from './ScrollIndicator';
-import Background3D from './background3d'; // Updated import path
+import Background3D from './background3d';
 
-/**
- * Hero Component
- * 
- * Main hero section with interactive 3D background and content.
- * Uses a simplified, reliable Three.js implementation.
- */
 const Hero = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -22,56 +16,57 @@ const Hero = () => {
       sx={{
         width: '100%',
         minHeight: { 
-          xs: 'calc(100vh - 56px)', // Mobile header height
-          sm: 'calc(100vh - 64px)'  // Desktop header height
+          xs: 'calc(100vh - 56px)', 
+          sm: 'calc(100vh - 64px)'  
         },
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        overflow: 'hidden',
-        // Subtle gradient background as fallback if 3D fails
+        overflow: 'visible',
         background: `linear-gradient(145deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
-        // Use theme spacing for consistent vertical padding
         py: { xs: theme.spacing(4), md: theme.spacing(0) },
       }}
     >
-      {/* Interactive 3D Background with error boundary */}
-      <ErrorBoundary 
-        fallback={
-          <Box sx={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: `linear-gradient(145deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
-            zIndex: 1,
-          }}/>
-        }
-        componentName="Background3D"
-      >
-        <Background3D />
-      </ErrorBoundary>
-      
-      <Box 
+      {/* Full-width background container */}
+      <Box
         sx={{
-          minHeight: '100vh',
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '100%',
+          height: '100%',
+          overflow: 'visible',
+          zIndex: 1
+        }}
+      >
+        <ErrorBoundary componentName="Background3D">
+          <Background3D />
+        </ErrorBoundary>
+      </Box>
+      
+      {/* Content container with proper styling to ensure content is visible */}
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          minHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          // Use the theme's page padding
-          px: theme.spacing.pagePadding || { xs: 2, sm: 4, md: 6, lg: 12.5 },
           position: 'relative',
-          zIndex: 2, // Keep higher z-index for content visibility
-          pointerEvents: 'none', // IMPORTANT: Make the entire content area not capture mouse events
+          zIndex: 2,
+          px: { 
+            xs: '20px',
+            sm: '30px',
+            md: '40px',
+            lg: '50px', 
+          },
+          boxSizing: 'border-box',
         }}
       >
-        {/* Hero Content */}
         <HeroContent />
       </Box>
       
-      {/* Scroll Indicator - Only visible on larger screens */}
       {!isMobile && (
         <Box sx={{ position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
           <ScrollIndicator />

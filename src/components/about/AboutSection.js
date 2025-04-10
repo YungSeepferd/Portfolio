@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, Container, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import { aboutData } from './AboutData';
 import AboutTabNavigator from './AboutTabNavigator';
@@ -7,22 +7,12 @@ import ErrorBoundary from '../common/ErrorBoundary';
 
 /**
  * AboutSection Component
- * 
- * Main container for the About section of the portfolio.
- * Displays a heading and the AboutTabNavigator for browsing
- * different sections of information.
- * 
- * @component
  */
 const AboutSection = () => {
   const [activeSection, setActiveSection] = useState(0);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   
-  /**
-   * Updates the active section when tab navigation occurs
-   * @param {number} newSection - Index of the new active section
-   */
   const handleSectionChange = (newSection) => {
     try {
       if (newSection >= 0 && newSection < aboutData.length) {
@@ -57,11 +47,22 @@ const AboutSection = () => {
           width: '100%',
           backgroundColor: theme.palette.background.default,
           position: 'relative',
-          // Remove custom spacing values and rely on global theme settings
+          py: 8,
         }}
       >
-        {/* Section Header */}
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 5 } }}> {/* Match container padding */}
+        {/* MODIFIED: Use Box with direct styling instead of container wrappers */}
+        <Box 
+          sx={{ 
+            width: '100%',
+            px: { 
+              xs: '20px',
+              sm: '30px',
+              md: '40px',
+              lg: '50px',
+            },
+            boxSizing: 'border-box',
+          }}
+        >
           <motion.div
             variants={sectionAnimation}
             initial="hidden"
@@ -98,7 +99,7 @@ const AboutSection = () => {
               </Typography>
             </Box>
           </motion.div>
-        </Container>
+        </Box>
         
         {/* Tab Navigation & Content */}
         <AboutTabNavigator 

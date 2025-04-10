@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box, Container, Typography, IconButton, Button, useTheme, Paper, Grid, Card, CardContent } from '@mui/material';
+import { Box, Typography, IconButton, Button, useTheme, Paper, Grid, Card, CardContent } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
-import Salzburg from '../../assets/images/About Me/Salzburg.jpg';
+// Removed Salzburg image import
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
@@ -47,10 +47,23 @@ const FooterContact = ({ projectContext }) => {
             minHeight: '500px', // Min height instead of fixed height
           }}
         >
-          <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-            <Grid container spacing={4} alignItems="center">
-              {/* Left Column: Contact Info */}
-              <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              width: '100%',
+              px: { 
+                xs: '20px',
+                sm: '30px',
+                md: '40px',
+                lg: '50px',
+              },
+              boxSizing: 'border-box',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            <Grid container spacing={4} justifyContent="center">
+              {/* Content Box - Now full width */}
+              <Grid item xs={12}>
                 <Card 
                   elevation={6}
                   sx={{ 
@@ -59,6 +72,8 @@ const FooterContact = ({ projectContext }) => {
                     color: theme.palette.common.white,
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     height: '100%',
+                    maxWidth: '900px', // Add a max-width for better readability
+                    mx: 'auto', // Center the card horizontally
                   }}
                 >
                   <CardContent sx={{ p: 4 }}>
@@ -80,6 +95,7 @@ const FooterContact = ({ projectContext }) => {
                         color: theme.palette.common.white, 
                         mb: 3,
                         opacity: 0.9,
+                        maxWidth: '700px', // Constrain text width for readability
                       }}
                     >
                       {contactMessage}
@@ -147,32 +163,6 @@ const FooterContact = ({ projectContext }) => {
                   </CardContent>
                 </Card>
               </Grid>
-              
-              {/* Right Column: Image */}
-              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Box
-                  sx={{
-                    position: 'relative',
-                    width: '100%',
-                    maxWidth: '500px',
-                    height: '350px',
-                    overflow: 'hidden',
-                    borderRadius: theme.shape.borderRadius,
-                    boxShadow: `0 12px 24px ${theme.palette.shadow.dark}`,
-                  }}
-                >
-                  <motion.img
-                    src={Salzburg}
-                    alt="Contact Vincent"
-                    whileHover={{ scale: 1.05 }}
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Box>
-              </Grid>
             </Grid>
             
             {/* Footer Credits */}
@@ -208,7 +198,7 @@ const FooterContact = ({ projectContext }) => {
                 © 2025 Vincent Göke. All rights reserved.
               </Typography>
             </Box>
-          </Container>
+          </Box>
         </Paper>
       </motion.div>
     </Box>

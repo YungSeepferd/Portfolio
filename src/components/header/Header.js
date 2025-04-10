@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem } from '@mui/material';
+import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
@@ -80,74 +80,102 @@ const Header = () => {
             ? `1px solid ${theme.palette.divider}`
             : 'none',
           color: theme.palette.text.primary,
+          width: '100%',
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          {/* Logo/Brand */}
-          <ScrollLink
-            to="hero"
-            spy={true}
-            smooth={true}
-            offset={-70}
-            duration={500}
-          >
-            <Box 
-              component="div" 
-              sx={{ 
-                cursor: 'pointer',
-                fontWeight: 700,
-                fontSize: '1.5rem',
-                letterSpacing: '-0.5px',
-                color: theme.palette.primary.main
-              }}
+        {/* EXPLICITLY SET PADDING: Using standard Container with direct padding */}
+        <Container
+          maxWidth={false} // Allow full width
+          disableGutters={true}
+          sx={{
+            px: { 
+              xs: '20px',
+              sm: '30px',
+              md: '40px',
+              lg: '50px',
+            },
+            width: '100%',
+            mx: 0,
+          }}
+        >
+          <Toolbar sx={{ justifyContent: 'space-between', px: 0 }}>
+            {/* Logo/Brand */}
+            <ScrollLink
+              to="hero"
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
             >
-              Vincent Göke
-            </Box>
-          </ScrollLink>
-
-          {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-            {navItems.map((item) => (
-              <ScrollLink
-                key={item.target}
-                to={item.target}
-                spy={true}
-                smooth={true}
-                offset={-70}
-                duration={500}
-                style={{ textDecoration: 'none' }}
+              <Box 
+                component="div" 
+                sx={{ 
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  letterSpacing: '-0.5px',
+                  color: theme.palette.primary.main,
+                  // Removed the fixed paddingLeft for better responsiveness
+                  paddingLeft: { xs: '0px', sm: '20px', md: '40px', lg: '60px' },
+                  transition: 'color 0.3s ease',
+                  '&:hover': {
+                    color: theme.palette.primary.light,
+                  }
+                }}
               >
-                <Button
-                  variant={item.isCallToAction ? "contained" : "text"}
-                  color={item.isCallToAction ? "secondary" : "inherit"}
-                  sx={{
-                    ml: 2,
-                    px: item.isCallToAction ? 3 : 2,
-                    borderRadius: item.isCallToAction ? '50px' : 'default',
-                    '&:hover': {
-                      backgroundColor: item.isCallToAction 
-                        ? theme.palette.secondary.dark
-                        : 'rgba(255, 255, 255, 0.08)',
-                    },
-                  }}
-                >
-                  {item.name}
-                </Button>
-              </ScrollLink>
-            ))}
-          </Box>
+                Vincent Göke
+              </Box>
+            </ScrollLink>
 
-          {/* Mobile Navigation */}
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="end"
-            onClick={handleDrawerToggle}
-            sx={{ display: { md: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
+            {/* Desktop Navigation */}
+            <Box sx={{ 
+              display: { xs: 'none', md: 'block' },
+              paddingRight: { md: '40px', lg: '60px' }
+            }}>
+              {navItems.map((item) => (
+                <ScrollLink
+                  key={item.target}
+                  to={item.target}
+                  spy={true}
+                  smooth={true}
+                  offset={-70}
+                  duration={500}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Button
+                    variant={item.isCallToAction ? "contained" : "text"}
+                    color={item.isCallToAction ? "secondary" : "inherit"}
+                    sx={{
+                      ml: 2,
+                      px: item.isCallToAction ? 3 : 2,
+                      borderRadius: item.isCallToAction ? '50px' : 'default',
+                      transition: 'all 0.3s ease',
+                      fontWeight: 500,
+                      '&:hover': {
+                        backgroundColor: item.isCallToAction 
+                          ? theme.palette.secondary.dark
+                          : 'rgba(255, 255, 255, 0.08)',
+                      },
+                    }}
+                  >
+                    {item.name}
+                  </Button>
+                </ScrollLink>
+              ))}
+            </Box>
+
+            {/* Mobile Navigation */}
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="end"
+              onClick={handleDrawerToggle}
+              sx={{ display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+        </Container>
       </AppBar>
 
       {/* Mobile Drawer */}

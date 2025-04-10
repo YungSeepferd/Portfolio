@@ -102,11 +102,14 @@ export const aboutData = [
         </Grid>
 
         <Typography variant="h5" sx={{ mb: 3 }}>Tools & Technologies</Typography>
+        {/* Split skills into two rows with spacing between them */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
           <SkillTag label="Figma" />
           <SkillTag label="Adobe XD" />
           <SkillTag label="Sketch" />
           <SkillTag label="Prototyping" />
+        </Stack>
+        <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
           <SkillTag label="User Testing" />
           <SkillTag label="React.js" />
           <SkillTag label="HTML/CSS" />
@@ -153,7 +156,7 @@ export const aboutData = [
           </Grid>
           
           {/* Experience 2 */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column',

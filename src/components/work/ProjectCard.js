@@ -10,7 +10,7 @@ import { useModalContext } from '../../context/ModalContext';
  * Enhanced project card with lazy loading and proper animations
  * Updated to display links with popups
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition }) => {
+const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition, sx = {} }) => {
   const theme = useTheme();
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
@@ -121,6 +121,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
         display: 'flex',
         position: 'relative',
         width: '100%', // Add to ensure consistent width
+        ...sx
       }}
     >
       {isVisible && (
@@ -147,8 +148,8 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               width: '100%', // Take full width
               overflow: 'hidden',
               borderRadius: theme.shape.borderRadius,
-              boxShadow: `0 8px 16px ${theme.palette.shadow.light}`,
-              transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
+              boxShadow: `0 8px 16px ${theme.palette.shadow?.light || 'rgba(0,0,0,0.1)'}`,
+              transition: `transform ${theme.animationSettings?.durations?.short || 200}ms ease, box-shadow ${theme.animationSettings?.durations?.short || 200}ms ease`,
               ...getCardStyle(), // Apply consistent card styling
             }}
           >
@@ -288,7 +289,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                     fontWeight: 400,
                   }}
                 >
-                  {project.description}
+                  {project.shortDescription || project.description}
                 </Typography>
               </Box>
               
@@ -305,7 +306,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                   flexShrink: 0,
                 }}
               >
-                {tags.map((tag, idx) => (
+                {tags && tags.slice(0, 3).map((tag, idx) => (
                   <SkillTag
                     key={idx}
                     label={tag}

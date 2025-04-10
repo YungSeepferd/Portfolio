@@ -1,45 +1,52 @@
 import React from 'react';
+import { CssBaseline } from '@mui/material';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
 import Work from './components/work/Work';
 import AboutSection from './components/about/AboutSection';
 import FooterContact from './components/contact/FooterContact';
-// Removed unused CSSVariables import
-import { CssBaseline, Box } from '@mui/material';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { ModalProvider } from './context/ModalContext';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 import ThemeDebugger from './components/dev/ThemeDebugger';
+import ContentContainer from './components/common/ContentContainer';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      
       <ModalProvider>
         <ErrorBoundary>
-          <Box className="app-container">
+          <div className="App">
             <Header />
-            
+            <CssBaseline />
             <main>
               <ErrorBoundary fallback={<div>Something went wrong with the hero section. Please refresh the page.</div>}>
-                <Hero />
+                
+                  <Hero />
+                
               </ErrorBoundary>
 
               <ErrorBoundary fallback={<div>Something went wrong with the work section. Please refresh the page.</div>}>
-                <Work />
+                <ContentContainer>
+                  <Work />
+                </ContentContainer>
               </ErrorBoundary>
               
               <ErrorBoundary fallback={<div>Something went wrong with the about section. Please refresh the page.</div>}>
-                <AboutSection />
+                <ContentContainer>
+                  <AboutSection />
+                </ContentContainer>
               </ErrorBoundary>
-              
               
               <ErrorBoundary fallback={<div>Something went wrong with the contact section. Please refresh the page.</div>}>
-                <FooterContact />
+                <ContentContainer>
+                  <FooterContact />
+                </ContentContainer>
               </ErrorBoundary>
             </main>
-          </Box>
+          </div>
         </ErrorBoundary>
         
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
