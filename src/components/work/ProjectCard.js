@@ -8,9 +8,9 @@ import { useModalContext } from '../../context/ModalContext';
 
 /**
  * Enhanced project card with lazy loading and proper animations
- * Updated to display links with popups
+ * Updated to display links with popups and flexible content sizing
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition, sx = {} }) => {
+const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition }) => {
   const theme = useTheme();
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
@@ -113,6 +113,15 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
     return 'external';
   };
   
+  // FIX: Create a proper click handler that checks if onClick is a function
+  const handleCardClick = () => {
+    if (onClick && typeof onClick === 'function') {
+      onClick(project);
+    } else {
+      console.warn('ProjectCard: onClick prop is not a function or not provided');
+    }
+  };
+  
   return (
     <Box 
       ref={cardRef} 
@@ -121,7 +130,6 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
         display: 'flex',
         position: 'relative',
         width: '100%', // Add to ensure consistent width
-        ...sx
       }}
     >
       {isVisible && (
@@ -129,8 +137,8 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
           variants={cardVariants}
-          whileHover={{ scale: 1.02, transition: { duration: 0.3 } }} // Reduced scale to prevent overlap
-          onClick={() => onClick(project)}
+          whileHover={{ scale: 1.02, transition: { duration: 0.3 } }} 
+          onClick={handleCardClick} // FIX: Use our safe handler function
           style={{ 
             cursor: 'pointer',
             height: '100%', // Take full height of parent
@@ -149,7 +157,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               overflow: 'hidden',
               borderRadius: theme.shape.borderRadius,
               boxShadow: `0 8px 16px ${theme.palette.shadow?.light || 'rgba(0,0,0,0.1)'}`,
-              transition: `transform ${theme.animationSettings?.durations?.short || 200}ms ease, box-shadow ${theme.animationSettings?.durations?.short || 200}ms ease`,
+              transition: `transform ${theme.animationSettings?.durations?.short || 300}ms ease, box-shadow ${theme.animationSettings?.durations?.short || 300}ms ease`,
               ...getCardStyle(), // Apply consistent card styling
             }}
           >
@@ -158,7 +166,10 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
               sx={{
                 position: 'relative',
                 width: '100%',
-                height: '40%', // Fixed percentage for ALL cards
+                // CHANGED: More flexible height with min/max constraints
+                height: { xs: '180px', sm: '200px', md: '220px' },
+                minHeight: '180px',
+                maxHeight: '250px',
                 flexShrink: 0, // Prevent shrinking
                 overflow: 'hidden',
               }}
@@ -202,12 +213,15 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                     '.project-card:hover &': {
                       transform: 'translateY(0)',
                     },
+                    zIndex: 2,
                   }}
                 >
                   <Stack 
                     direction="row" 
                     spacing={1.5} 
                     justifyContent="center"
+                    flexWrap="wrap"
+                    gap={1}
                   >
                     {project.links.map((link, index) => (
                       <Button
@@ -249,7 +263,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                 display: 'flex',
                 flexDirection: 'column',
                 p: { xs: 2.5, sm: 3, md: 3.5 }, 
-                height: '60%', // Fixed percentage for ALL cards
+                // CHANGED: Use flex-grow instead of fixed height
                 justifyContent: 'space-between',
               }}
             >
@@ -258,7 +272,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                   variant="h5" 
                   className="project-card-title"
                   sx={{
-                    mb: 2.5,
+                    mb: 2,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
@@ -280,7 +294,8 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
-                    WebkitLineClamp: 4,
+                    // CHANGED: Increased line clamp for more text
+                    WebkitLineClamp: 5,
                     WebkitBoxOrient: 'vertical',
                     color: theme.palette.text.primary,
                     lineHeight: 1.6,
@@ -289,7 +304,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                     fontWeight: 400,
                   }}
                 >
-                  {project.shortDescription || project.description}
+                  {project.description}
                 </Typography>
               </Box>
               
@@ -298,7 +313,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                 sx={{ 
                   display: 'flex', 
                   flexWrap: 'wrap',
-                  gap: 1.2,
+                  gap: 1,
                   overflowX: { xs: 'auto', md: 'visible' },
                   padding: theme.spacing(2, 0, 0.5),
                   marginTop: 'auto',
@@ -306,7 +321,7 @@ const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosi
                   flexShrink: 0,
                 }}
               >
-                {tags && tags.slice(0, 3).map((tag, idx) => (
+                {tags.map((tag, idx) => (
                   <SkillTag
                     key={idx}
                     label={tag}
