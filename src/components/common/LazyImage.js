@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Skeleton } from '@mui/material';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 
 /**
  * LazyImage component that loads images only when they're in viewport
- * and preserves them in the DOM regardless of visibility
+ * with smart retry logic to prevent excessive loading attempts
  */
 const LazyImage = ({ 
   src, 
@@ -12,10 +12,15 @@ const LazyImage = ({
   style = {}, 
   onLoad = () => {}, 
   placeholderColor = 'rgba(0, 0, 0, 0.11)',
+  maxRetries = 3, // Default to 3 retries
+  retryDelay = 3000, // 3 seconds between retries
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [permanentError, setPermanentError] = useState(false);
+  const retryTimeoutRef = useRef(null);
   
   // Use our enhanced hook with freezeOnceVisible set to true
   const [ref, isVisible] = useIntersectionObserver({
@@ -25,18 +30,43 @@ const LazyImage = ({
 
   // Start loading the image when it becomes visible
   useEffect(() => {
-    if (!isVisible || isLoaded) return;
+    if (!isVisible || isLoaded || permanentError) return;
+    
+    // Clear any existing retry timeout
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
     
     const img = new Image();
     
     img.onload = () => {
       setIsLoaded(true);
+      setError(false);
+      setRetryCount(0);
       onLoad();
     };
     
     img.onerror = () => {
       setError(true);
-      console.error(`Failed to load image: ${src}`);
+      
+      // Implement retry logic with progressive backoff
+      if (retryCount < maxRetries) {
+        console.log(`Retry ${retryCount + 1}/${maxRetries} for image: ${src}`);
+        
+        // Increase delay progressively
+        const progressiveDelay = retryDelay * (1 + (retryCount * 0.5));
+        
+        retryTimeoutRef.current = setTimeout(() => {
+          setRetryCount(prev => prev + 1);
+          // Reload with a cache-busting parameter
+          img.src = `${src}?retry=${retryCount + 1}&time=${Date.now()}`;
+        }, progressiveDelay);
+      } else {
+        // Max retries reached
+        console.error(`Failed to load image after ${maxRetries} retries:`, src);
+        setPermanentError(true);
+      }
     };
     
     img.src = src;
@@ -46,7 +76,14 @@ const LazyImage = ({
       setIsLoaded(true);
       onLoad();
     }
-  }, [src, isVisible, onLoad, isLoaded]);
+    
+    // Cleanup on unmount or when dependencies change
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
+  }, [src, isVisible, onLoad, isLoaded, retryCount, maxRetries, retryDelay, permanentError]);
   
   return (
     <Box 
@@ -59,12 +96,12 @@ const LazyImage = ({
         ...style,
       }}
     >
-      {(!isLoaded && !error) && (
+      {(!isLoaded && !permanentError) && (
         <Skeleton 
           variant="rectangular" 
           width="100%" 
           height="100%" 
-          animation="wave"
+          animation={permanentError ? false : "wave"}
           sx={{ 
             position: 'absolute',
             top: 0,
@@ -74,7 +111,7 @@ const LazyImage = ({
         />
       )}
       
-      {(isVisible || isLoaded) && !error && (
+      {(isVisible && !permanentError) && (
         <img
           src={src}
           alt={alt}
@@ -90,7 +127,7 @@ const LazyImage = ({
         />
       )}
       
-      {error && (
+      {permanentError && (
         <Box 
           sx={{
             width: '100%',
@@ -103,7 +140,7 @@ const LazyImage = ({
             fontSize: '0.875rem',
           }}
         >
-          Image not available
+          Image unavailable
         </Box>
       )}
     </Box>

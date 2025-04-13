@@ -1,103 +1,80 @@
 import React from 'react';
-import { Box, Typography, Chip } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Box, Fade, useTheme } from '@mui/material';
+import TechBar from './TechBar';
+import ProjectLinks from './ProjectLinks';
 
 /**
- * ProjectCardPreview
- * 
- * Shows a preview of project details on card hover, including key takeaways
- * and tools used. Animates in from the bottom of the card.
+ * ProjectCardPreview Component
+ *
+ * Displays TechBar and ProjectLinks as an overlay on ProjectCard hover.
  */
-const ProjectCardPreview = ({ project, isVisible = false }) => {
-  if (!project || !isVisible) return null;
-  
+const ProjectCardPreview = ({ isVisible, technologies = [], tools = [], links = {} }) => {
+  const theme = useTheme();
+
+  // Only render if there's something to show
+  const hasContent = (technologies.length > 0 || tools.length > 0 || Object.keys(links).length > 0);
+  if (!hasContent) return null;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.3 }}
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        background: 'linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.9) 70%, rgba(15, 23, 42, 0) 100%)',
-        padding: '20px 16px',
-        borderBottomLeftRadius: '8px',
-        borderBottomRightRadius: '8px',
-        zIndex: 10,
-        backdropFilter: 'blur(5px)',
-      }}
-    >
-      <Typography 
-        variant="subtitle2" 
-        sx={{ 
-          color: 'primary.main',
-          fontWeight: 'bold',
-          mb: 1.5
+    <Fade in={isVisible} timeout={300}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)', // Dark overlay
+          color: theme.palette.common.white,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          p: 2,
+          boxSizing: 'border-box',
+          pointerEvents: 'none', // Allow clicks to pass through to the card
         }}
       >
-        Project highlights:
-      </Typography>
-      
-      {project.keyTakeaways?.length > 0 ? (
-        <Box sx={{ mb: 2 }}>
-          <Box component="ul" sx={{ pl: 2, mb: 0 }}>
-            {project.keyTakeaways.slice(0, 2).map((takeaway, idx) => (
-              <Box component="li" key={idx} sx={{ mb: 0.5 }}>
-                <Typography 
-                  variant="body2" 
-                  sx={{ 
-                    color: 'common.white',
-                    fontSize: '0.8rem',
-                    fontWeight: 300,
-                    lineHeight: 1.4
-                  }}
-                >
-                  {takeaway}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      ) : null}
-      
-      {project.tools?.length > 0 ? (
-        <Box>
-          <Typography 
-            variant="subtitle2" 
-            sx={{ 
-              color: 'primary.main',
-              fontWeight: 'bold',
-              mb: 1,
-              fontSize: '0.75rem'
+        {/* Tech Bar */}
+        {(technologies.length > 0 || tools.length > 0) && (
+          <TechBar
+            technologies={technologies}
+            tools={tools}
+            sx={{
+              mb: 2,
+              // Override TechBar styles for overlay
+              '& .MuiChip-root': {
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: theme.palette.common.white,
+                borderColor: 'rgba(255, 255, 255, 0.5)',
+              },
+              '& .MuiTypography-root': {
+                 color: theme.palette.common.white, // Ensure title is white
+              }
             }}
-          >
-            Tools used:
-          </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: 0.75
-          }}>
-            {project.tools.map((tool, idx) => (
-              <Chip 
-                key={idx} 
-                label={tool} 
-                size="small"
-                sx={{
-                  fontSize: '0.65rem',
-                  height: '20px',
-                  bgcolor: 'rgba(255, 255, 255, 0.1)',
-                  color: 'common.white',
-                }}
-              />
-            ))}
-          </Box>
-        </Box>
-      ) : null}
-    </motion.div>
+          />
+        )}
+
+        {/* Project Links */}
+        {Object.keys(links).length > 0 && (
+          <ProjectLinks
+            links={links}
+            sx={{
+              // Override ProjectLinks styles for overlay
+              '& .MuiButton-root': {
+                color: theme.palette.common.white,
+                borderColor: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  borderColor: theme.palette.common.white,
+                },
+              },
+            }}
+          />
+        )}
+      </Box>
+    </Fade>
   );
 };
 

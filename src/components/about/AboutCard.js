@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, Paper, IconButton } from '@mui/material';
 import { FullscreenOutlined } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
-import { analyzeImage } from '../../utils/imageAnalyzer';
+import { analyzeImage } from '../../utils/mediaUtils';
 
 /**
  * AboutCard Component
@@ -45,6 +45,9 @@ const AboutCard = ({
   const isTransparent = variant === "transparent";
   const hasBorder = variant !== "noBorder" && !isTransparent;
   const hasBackground = !isTransparent;
+  
+  // Use theme.palette.divider directly
+  const borderColor = theme.palette.divider || 'rgba(0, 0, 0, 0.12)';
   
   // Process image info to detect orientation
   const imageData = React.useMemo(() => {
@@ -89,7 +92,7 @@ const AboutCard = ({
       sx={{
         ...sx,
         width: '100%',
-        border: hasBorder ? `1px solid ${theme.palette.structure.borders}` : 'none',
+        border: hasBorder ? `1px solid ${borderColor}` : 'none',
         cursor: onClick ? 'pointer' : 'default',
         backgroundColor: hasBackground ? theme.palette.background.paper : 'transparent',
         boxShadow: isTransparent ? 'none' : undefined,

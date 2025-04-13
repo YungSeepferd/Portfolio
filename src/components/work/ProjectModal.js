@@ -1,160 +1,67 @@
-import React, { useMemo, useState } from 'react';
-import { Box, Divider, useTheme } from '@mui/material';
-import { motion } from 'framer-motion';
-import { isVideo } from '../../utils/mediaHelper';
-import ErrorBoundary from '../common/ErrorBoundary';
-import { processProjectContent, sectionImageKeyMap, getFallbackContent } from '../../utils/projectContentParser';
-
-import ProjectHeader from './ProjectHeader';
-import ProjectNavigation from './ProjectNavigation';
-import HeroVideo from './HeroVideo';
-import ProjectSections from './ProjectSections';
-import ProjectOutcomes from './ProjectOutcomes';
-import FooterContact from '../contact/FooterContact';
-import ProjectPrototypeEmbed from './ProjectPrototypeEmbed';
+import React from 'react';
+import { Modal, Box, IconButton, useTheme } from '@mui/material'; // Removed useMediaQuery
+import CloseIcon from '@mui/icons-material/Close';
 import ProjectFullContent from './ProjectFullContent';
-import ProjectGallerySection from './ProjectGallerySection';
-import { skillTags } from './data/skillTags';
+import ProjectNavigation from './ProjectNavigation';
 
 /**
  * ProjectModal Component
- * Displays detailed information about a selected project.
+ *
+ * Wrapper for displaying project details within a modal.
+ * Primarily relies on ModalContext for state and rendering logic.
+ * This component might be simplified or removed if ModalContext handles everything.
  */
-const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClose }) => {
+const ProjectModal = ({ project, open, onClose, onNavigate }) => {
   const theme = useTheme();
-  const parsedContent = useMemo(() => processProjectContent(project), [project]);
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
+  // Modal style (can be potentially moved to ModalContext if this component is removed)
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' }, // Responsive width handled here or in context
+    maxWidth: '1200px',
+    height: { xs: '90vh', sm: '85vh' }, // Responsive height handled here or in context
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: theme.shape.borderRadius,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  };
 
   if (!project) return null;
 
-  // Find hero video if available
-  const heroVideo = project.images?.find(img => 
-    (typeof img === 'object' && img.type === 'video') || 
-    (typeof img === 'string' && isVideo(img))
-  );
-
-  // Determine project layout type
-  const layoutType = project.layoutType || 'default';
-  
-  // Determine if we should show individual sections or just the full content
-  const useFullContentLayout = layoutType === 'single-column' || 
-                              !parsedContent.sections || 
-                              parsedContent.sections.length === 0 || 
-                              (parsedContent.fullContent && parsedContent.sectionCount <= 1);
-
-  // Get project accent color for section numbering
-  const projectAccentColor = project.color || theme.palette.primary.main;
-
-  // Define animation for the modal
-  const modalAnimation = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 }
-  };
-
-  const handleSectionChange = (sectionIndex) => {
-    setActiveSectionIndex(sectionIndex);
-    const sectionEl = document.getElementById(`project-section-${sectionIndex}`);
-    if (sectionEl) {
-      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
-    <ErrorBoundary componentName="ProjectModal">
-      <motion.div
-        initial={modalAnimation.initial}
-        animate={modalAnimation.animate}
-        exit={modalAnimation.exit}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: theme.palette.background.default,
-          zIndex: theme.zIndex.modal,
-          overflow: 'auto',
-        }}
-      >
-        <ProjectNavigation 
-          onClose={onClose}
-          onPrev={() => {
-            const newIndex = (currentIndex - 1 + projects.length) % projects.length;
-            setCurrentIndex(newIndex);
-          }}
-          onNext={() => {
-            const newIndex = (currentIndex + 1) % projects.length;
-            setCurrentIndex(newIndex);
-          }}
-        />
-        <Box 
-          component="article"
-          sx={{ 
-            p: { xs: 2, sm: 4, md: 8 },
-            pt: { xs: 8, sm: 10 },
-            maxWidth: '1600px',
-            mx: 'auto',
-            width: '100%'
-          }}
-        >
-          {/* Project header */}
-          <ProjectHeader project={project} />
-          
-          {/* Hero video if available */}
-          {heroVideo && <HeroVideo videoSrc={heroVideo} />}
-          
-          {/* Prototype embed if available */}
-          {project.hasPrototypeEmbed && project.prototypeEmbedUrl && (
-            <ProjectPrototypeEmbed embedUrl={project.prototypeEmbedUrl} title={project.title} />
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="project-modal-title"
+      aria-describedby="project-modal-description"
+    >
+      <Box sx={modalStyle}>
+        {/* Header with Title and Close Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
+          {/* Project Navigation (passed via props if this component is kept) */}
+          {onNavigate && (
+             <ProjectNavigation
+               onNavigate={onNavigate}
+               // Need isFirst/isLast props if this component manages navigation state
+             />
           )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Project content */}
-          {!useFullContentLayout ? (
-            <ProjectSections 
-              project={project} 
-              sections={parsedContent.sections} 
-              accentColor={projectAccentColor} 
-              onSectionChange={handleSectionChange}
-            />
-          ) : (
-            <ProjectFullContent 
-              project={project} 
-              content={parsedContent.fullContent} 
-              description={project.description} 
-            />
-          )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Project outcomes */}
-          <ProjectOutcomes 
-            project={project} 
-            outcomes={parsedContent.outcomes} 
-            sectionNumber={parsedContent.sections.length > 0 
-              ? (parsedContent.sections.length + 1).toString().padStart(2, '0')
-              : "01"}
-            accentColor={projectAccentColor}
-          />
-          
-          {/* Project gallery */}
-          {project.images?.length > 1 && (
-            <Box component="section">
-              <ProjectGallerySection images={project.images} title={project.title} />
-            </Box>
-          )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Replace ProjectCTA with FooterContact */}
-          <FooterContact/>
+          <IconButton onClick={onClose} aria-label="close modal" sx={{ ml: 'auto' }}>
+            <CloseIcon />
+          </IconButton>
         </Box>
-      </motion.div>
-    </ErrorBoundary>
+
+        {/* Scrollable Content Area */}
+        <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
+          {/* Render the full content */}
+          <ProjectFullContent project={project} />
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 

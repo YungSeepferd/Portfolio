@@ -1,217 +1,144 @@
-import React, { useRef, useState, Suspense, useEffect, useCallback } from 'react';
-import { Box } from '@mui/material';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html } from '@react-three/drei';
-import * as THREE from 'three';
-
-import { SceneProvider } from './SceneContext';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import ActiveScene from './ActiveScene';
-import LoadingFallback from './components/LoadingFallback';
+import { SceneProvider } from './SceneContext';
 import PerformanceMonitor from './components/PerformanceMonitor';
-
-// Import Particle component explicitly
-import './ParticleComponent';
-
-// Auto-rotating camera component with improved rotation handling
-const AutoRotatingCamera = ({ isUserInteracting }) => {
-  const controls = useRef();
-  const lastInteractionTime = useRef(Date.now());
-  
-  // Update the last interaction time when user interacts
-  useEffect(() => {
-    if (isUserInteracting) {
-      lastInteractionTime.current = Date.now();
-    }
-  }, [isUserInteracting]);
-  
-  // Handle automatic camera rotation with smooth transition
-  useFrame(() => {
-    if (!controls.current) return;
-    
-    // Resume auto-rotation after 6 seconds of inactivity (increased from 4)
-    const timeSinceInteraction = Date.now() - lastInteractionTime.current;
-    
-    // Use a smoother transition between states
-    const targetAutoRotateSpeed = timeSinceInteraction > 6000 ? 0.2 : 0;
-    
-    // Smoothly interpolate rotation speed
-    controls.current.autoRotateSpeed = THREE.MathUtils.lerp(
-      controls.current.autoRotateSpeed,
-      targetAutoRotateSpeed,
-      0.01 // Smaller value = smoother transition
-    );
-    
-    // Only enable auto-rotate when speed is non-zero
-    controls.current.autoRotate = controls.current.autoRotateSpeed > 0.01;
-  });
-  
-  return (
-    <OrbitControls 
-      ref={controls}
-      enableZoom={false} 
-      enablePan={false} 
-      enableRotate={true}
-      rotateSpeed={0.5} // Increased for better manual control
-      autoRotate={true} // CHANGED: Start with auto-rotation enabled
-      autoRotateSpeed={0.2} // CHANGED: Initial speed for smoother experience
-      dampingFactor={0.12} // Increased for smoother camera movement
-      target={[0, 0, 0]}
-      makeDefault
-    />
-  );
-};
+import LoadingFallback from './components/LoadingFallback';
 
 /**
- * Background3D Component - CRITICAL FIXES to ensure visibility and interaction
+ * Background3D Component - Interactive 3D background for the hero section
+ * 
+ * Features:
+ * - Mouse position tracking for passive motion
+ * - Scene switching on click
+ * - Orbit controls for user rotation with mouse drag
+ * - Performance monitoring and fallback for low-end devices
  */
-const Background3D = () => {
-  const [canvasError, setCanvasError] = useState(false);
-  const [needsRender, setNeedsRender] = useState(true);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
-  const canvasRef = useRef();
-  const interactionTimeoutRef = useRef(null);
+const Background3D = ({ theme, onSceneClick }) => {
+  const containerRef = useRef();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showPerformance, setShowPerformance] = useState(false);
   
-  // Force re-render and cleanup on mount
+  // Performance monitoring flag for development
   useEffect(() => {
-    // Force a render cycle
-    setNeedsRender(true);
-    const interval = setInterval(() => {
-      setNeedsRender(prev => !prev);
-    }, 1000); // Force update every second to keep scene alive
+    if (process.env.NODE_ENV === 'development') {
+      setShowPerformance(true);
+    }
+  }, []);
+  
+  // Handle mouse movement to update scene perspective
+  const handleMouseMove = useCallback((event) => {
+    if (!containerRef.current || isDragging) return;
     
-    // Properly use setCanvasError to handle WebGL unavailability
-    try {
-      const canvas = document.createElement('canvas');
-      const hasWebGL = !!(window.WebGLRenderingContext && 
-        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    setMousePosition({ x, y });
+  }, [isDragging]);
+  
+  // Toggle dragging state for OrbitControls interaction
+  const handleMouseDown = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+  
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+  
+  // Handle loading state
+  const handleLoaded = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+  
+  // Add mouse event listeners
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove, { passive: true });
+      container.addEventListener('mousedown', handleMouseDown);
+      container.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('mouseleave', handleMouseUp);
       
-      if (!hasWebGL) {
-        console.error("WebGL not available - unable to render 3D background");
-        setCanvasError(true); // Actually using setCanvasError now
-      }
-    } catch (err) {
-      console.error("Error checking WebGL support:", err);
-      setCanvasError(true); // Actually using setCanvasError now
+      return () => {
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mousedown', handleMouseDown);
+        container.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('mouseleave', handleMouseUp);
+      };
     }
-    
-    return () => {
-      clearInterval(interval);
-      if (interactionTimeoutRef.current) {
-        clearTimeout(interactionTimeoutRef.current);
-      }
-    };
-  }, []);
-  
-  const handleUserInteraction = useCallback(() => {
-    setNeedsRender(true);
-    setIsUserInteracting(true);
-    
-    if (interactionTimeoutRef.current) {
-      clearTimeout(interactionTimeoutRef.current);
-    }
-    
-    interactionTimeoutRef.current = setTimeout(() => {
-      setIsUserInteracting(false);
-    }, 3000);
-  }, []);
-  
-  // IMPORTANT: This simple click handler is enough to detect interaction
-  const handleClick = useCallback(() => {
-    console.log("Canvas clicked!");
-    handleUserInteraction();
-  }, [handleUserInteraction]);
-  
-  if (canvasError) {
-    console.error("WebGL not available - unable to render 3D background");
-    return null;
-  }
+  }, [handleMouseMove, handleMouseDown, handleMouseUp]);
   
   return (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
+    <div 
+      ref={containerRef} 
+      style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
         height: '100%',
-        margin: 0,
-        padding: 0,
-        overflow: 'visible',
-        pointerEvents: 'auto', // CRITICAL: Enable pointer events
-        '& canvas': {
-          display: 'block !important',
-          width: '100% !important',
-          height: '100% !important',
-          pointerEvents: 'auto !important' // CRITICAL FIX
-        }
+        zIndex: 0,
+        cursor: isDragging ? 'grabbing' : 'grab',
+        overflow: 'hidden', 
       }}
-      onClick={handleClick}
-      onMouseMove={handleUserInteraction}
-      onTouchMove={handleUserInteraction}
     >
-      <Suspense fallback={<LoadingFallback />}>
-        <Canvas
-          ref={canvasRef}
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'block',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            background: 'transparent',
-            pointerEvents: 'auto' // CRITICAL: Canvas must have pointer events
+      {isLoading && <LoadingFallback />}
+      
+      <SceneProvider>
+        <Canvas 
+          camera={{ 
+            position: [0, 0, 5], 
+            fov: 75, 
+            near: 0.1, 
+            far: 1000 
           }}
-          camera={{ position: [0, 0, 10], fov: 50, near: 0.1, far: 100 }}
-          dpr={[1, 2]} // Simpler DPR setting
-          frameloop="always" // CRITICAL FIX: Always render frames
-          onCreated={({ gl, scene }) => {
-            try {
-              // Make background transparent
-              gl.setClearColor(0x000000, 0);
-              gl.setClearAlpha(0);
-              
-              // Set color space
-              gl.outputColorSpace = THREE.SRGBColorSpace;
-              
-              // Force a render
-              gl.render(scene, gl.xr.enabled ? gl.xr.getCamera() : gl.xr.getBaseLayer());
-              
-              console.log("Three.js canvas created successfully");
-            } catch (err) {
-              console.error("Canvas creation error:", err);
-            }
+          style={{ 
+            background: theme.palette.background.default,
+            visibility: isLoading ? 'hidden' : 'visible' 
           }}
+          onCreated={handleLoaded}
+          dpr={[1, 2]} // Responsive pixel ratio for better performance
         >
-          <SceneProvider>
-            <ambientLight intensity={0.8} />
-            <pointLight position={[10, 10, 10]} intensity={0.5} />
-            <Suspense fallback={<Html><LoadingFallback /></Html>}>
-              <ActiveScene />
-            </Suspense>
-            <AutoRotatingCamera isUserInteracting={isUserInteracting} />
-            {/* Ensure continuous rendering */}
-            <AnimationLoop needsRender={needsRender} setNeedsRender={setNeedsRender} />
-            
-            {/* Add Performance Monitor (only visible in development) */}
-            {process.env.NODE_ENV === 'development' && <PerformanceMonitor position="top-right" />}
-          </SceneProvider>
+          {/* Lights */}
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} intensity={1} />
+          <spotLight 
+            position={[0, 10, 0]} 
+            angle={0.3} 
+            penumbra={1} 
+            intensity={1.5} 
+            castShadow 
+          />
+          
+          {/* Add OrbitControls to enable dragging/rotation */}
+          <OrbitControls 
+            enableZoom={false}
+            enablePan={false}
+            rotateSpeed={0.5}
+            minPolarAngle={Math.PI / 6}     // Limit vertical rotation
+            maxPolarAngle={Math.PI / 1.5}   // Limit vertical rotation
+            dampingFactor={0.05}            // Smooth damping effect
+            enabled={true}                  // Always enabled
+          />
+          
+          {/* Active scene with mouse position and click handler */}
+          <ActiveScene 
+            mousePosition={mousePosition} 
+            onClick={onSceneClick} 
+            isDragging={isDragging}
+            theme={theme}
+          />
+          
+          {/* Performance monitoring (development only) */}
+          {showPerformance && <PerformanceMonitor />}
         </Canvas>
-      </Suspense>
-    </Box>
+      </SceneProvider>
+    </div>
   );
-};
-
-// Utility component to keep animation loop active
-const AnimationLoop = () => {
-  const { invalidate } = useThree();
-  
-  useFrame(() => {
-    // Force re-render every frame
-    invalidate();
-  });
-  
-  return null;
 };
 
 export default Background3D;

@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
-import { useFrame, useThree, extend } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { SHAPE_LIMITS, SHAPE_TYPES } from '../constants';
 import { useSceneState } from '../SceneContext';
-import ObjectPool from '../utils/ObjectPool';
-// Import the particle component
-import Particle from '../ParticleComponent';
-
-// No need to redefine Particle class here - it's already imported above
-// and registered with extend() in ParticleComponent.js
+// Remove unused imports
+// import ObjectPool from '../utils/ObjectPool'; 
+// import Particle from '../ParticleComponent';
 
 /**
  * SphereScene Component - Enhanced with InstancedMesh for performance
@@ -33,8 +30,11 @@ const SphereScene = () => {
   // Reusable dummy object for matrix calculations
   const dummy = useMemo(() => new THREE.Object3D(), []);
   
-  // Shapes data
-  const [shapesData, setShapesData] = useState(() => {
+  // Shapes data - FIXING THE PARSING ERROR BY CHANGING THE IMPLEMENTATION
+  const shapesDataRef = useRef([]);
+  
+  // Initialize shapes data on mount
+  useEffect(() => {
     const data = [];
     for (let i = 0; i < count; i++) {
       data.push({
@@ -75,8 +75,8 @@ const SphereScene = () => {
         }
       });
     }
-    return data;
-  });
+    shapesDataRef.current = data;
+  }, [count, currentShapeType]);
   
   // User's cursor position in 3D space - reuse this vector
   const cursorPosition = useRef(new THREE.Vector3());
@@ -118,57 +118,6 @@ const SphereScene = () => {
     ];
   }, [theme.palette]);
 
-  // Color properties for theme integration
-  const shapeColors = useMemo(() => {
-    // Helper to convert hex to HSL
-    const hexToHSL = (hex) => {
-      // Remove the # if present
-      hex = hex.replace('#', '');
-      
-      // Convert hex to RGB
-      const r = parseInt(hex.substr(0, 2), 16) / 255;
-      const g = parseInt(hex.substr(2, 2), 16) / 255;
-      const b = parseInt(hex.substr(4, 2), 16) / 255;
-      
-      // Find max and min values to calculate lightness
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      const l = (max + min) / 2;
-      
-      let h, s;
-      
-      if (max === min) {
-        h = s = 0; // achromatic
-      } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        
-        switch (max) {
-          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-          case g: h = (b - r) / d + 2; break;
-          case b: h = (r - g) / d + 4; break;
-          default: h = 0;
-        }
-        
-        h /= 6;
-      }
-      
-      return { h, s, l };
-    };
-    
-    // Extract colors from theme
-    const primary = hexToHSL(theme.palette.primary.main);
-    const secondary = hexToHSL(theme.palette.secondary.main);
-    const info = hexToHSL(theme.palette.info?.main || '#29b6f6');
-    
-    return {
-      [SHAPE_TYPES.SPHERE]: primary,
-      [SHAPE_TYPES.BOX]: secondary,
-      [SHAPE_TYPES.TORUS]: info,
-      hover: hexToHSL(theme.palette.secondary.light),
-    };
-  }, [theme.palette]);
-  
   // Update cursor position from mouse
   useFrame(() => {
     cursorPosition.current.set(
@@ -188,7 +137,7 @@ const SphereScene = () => {
       : 0;
     
     // Update each shape's data
-    shapesData.forEach((shape, index) => {
+    shapesDataRef.current.forEach((shape, index) => {
       // Auto movement
       const autoMove = shape.autoMovement;
       const timeInfluence = (Math.sin(currentTime * 0.5 + autoMove.timeOffset) * 0.5 + 0.5) * 0.7;
@@ -281,16 +230,7 @@ const SphereScene = () => {
         // Update material color based on excitement
         const material = materials[shape.type];
         if (material && shape.excitementLevel > 0) {
-          const baseColor = shapeColors[shape.type];
-          const hue = shape.hovered 
-            ? shapeColors.hover.h
-            : THREE.MathUtils.lerp(baseColor.h, shapeColors.hover.h, shape.excitementLevel);
-            
-          const saturation = THREE.MathUtils.lerp(baseColor.s, 1.0, shape.excitementLevel);
-          const lightness = THREE.MathUtils.lerp(baseColor.l, 0.7, shape.excitementLevel);
-          
-          // We can't set individual colors for instances, so we apply a global effect
-          // This is the tradeoff for performance - more uniform color behavior
+          // Use excitementLevel directly to adjust material properties
           if (shape.excitementLevel > 0.5) {
             material.emissiveIntensity = Math.max(material.emissiveIntensity, shape.excitementLevel * 0.6);
           }

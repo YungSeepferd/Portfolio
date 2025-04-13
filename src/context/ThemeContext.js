@@ -1,97 +1,120 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import createAppTheme from '../theme';
 
-// Create the context
-const ThemeContext = createContext();
+// Create context with default values
+export const ThemeContext = createContext({
+  mode: 'light',
+  toggleTheme: () => {},
+  isDarkMode: false,
+  theme: null
+});
+
+// Hook to use theme context
+export const useThemeContext = () => useContext(ThemeContext);
+
+// Backward compatibility hook (for components using the old name)
+export const useThemeMode = () => useContext(ThemeContext);
 
 /**
- * ThemeProvider Component
+ * Theme Provider Component
  * 
- * Manages theme state (light/dark) and provides it to the entire application
- * through context. Syncs with local storage for persistence.
+ * Manages theme state and provides theme context to the application
  */
 export const ThemeProvider = ({ children }) => {
-  // Check localStorage or system preference for initial theme
-  const getInitialMode = () => {
-    // Check if theme setting exists in localStorage
-    const savedMode = localStorage.getItem('themeMode');
-    if (savedMode) {
-      return savedMode;
+  // Initialize with system preference or saved preference
+  const [mode, setMode] = useState(() => {
+    try {
+      // Try to get saved preference from localStorage
+      const savedMode = localStorage.getItem('themeMode');
+      if (savedMode && (savedMode === 'light' || savedMode === 'dark')) {
+        return savedMode;
+      }
+      
+      // Default to system preference if available
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    } catch (error) {
+      console.warn('Error accessing theme preferences:', error);
+      // Fall through to default
     }
     
-    // If not, check user's system preference
-    const prefersDark = window.matchMedia && 
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    return prefersDark ? 'dark' : 'light';
-  };
+    // Default to light mode
+    return 'light';
+  });
   
-  // State for theme mode
-  const [mode, setMode] = useState(getInitialMode);
+  // Memoize theme to prevent unnecessary re-renders
+  const theme = useMemo(() => {
+    console.log('Creating theme with mode:', mode);
+    return createAppTheme(mode);
+  }, [mode]);
   
   // Toggle theme function
   const toggleTheme = () => {
-    setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+    setMode(prevMode => {
+      const newMode = prevMode === 'light' ? 'dark' : 'light';
+      try {
+        localStorage.setItem('themeMode', newMode);
+      } catch (error) {
+        console.warn('Error saving theme preference:', error);
+      }
+      return newMode;
+    });
   };
   
-  // Update localStorage when theme changes
+  // Watch for system theme changes
   useEffect(() => {
-    localStorage.setItem('themeMode', mode);
-  }, [mode]);
-  
-  // Listen for system theme changes
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    const handleChange = (e) => {
-      // Only change if user hasn't explicitly set a preference
-      if (!localStorage.getItem('themeMode')) {
-        setMode(e.matches ? 'dark' : 'light');
-      }
-    };
-    
-    // Add event listener
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-    } else {
-      // For older browsers
-      mediaQuery.addListener(handleChange);
-    }
-    
-    // Clean up
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e) => {
+        try {
+          // Only update if no user preference is saved
+          if (!localStorage.getItem('themeMode')) {
+            setMode(e.matches ? 'dark' : 'light');
+          }
+        } catch (error) {
+          console.warn('Error accessing theme preferences:', error);
+        }
+      };
+      
+      // Add event listener
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleChange);
       } else {
-        // For older browsers
-        mediaQuery.removeListener(handleChange);
+        // Fallback for older browsers
+        mediaQuery.addListener(handleChange);
       }
-    };
+      
+      // Cleanup
+      return () => {
+        if (mediaQuery.removeEventListener) {
+          mediaQuery.removeEventListener('change', handleChange);
+        } else {
+          // Fallback for older browsers
+          mediaQuery.removeListener(handleChange);
+        }
+      };
+    }
   }, []);
   
-  // Create the context value
+  // Context value
   const contextValue = {
     mode,
     toggleTheme,
-    // Use the createAppTheme function directly instead of importing themes
-    theme: createAppTheme(mode)
+    isDarkMode: mode === 'dark',
+    theme // Include the theme object in the context
   };
   
   return (
     <ThemeContext.Provider value={contextValue}>
-      {children}
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 };
 
-// Custom hook for using the theme mode
-export const useThemeMode = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useThemeMode must be used within a ThemeProvider');
-  }
-  return context;
-};
-
-// Export ThemeContext as default
-export default ThemeContext;
+export default ThemeProvider;

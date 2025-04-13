@@ -60,6 +60,11 @@ const Header = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  // Use theme-based colors for transparent header
+  const transparentBgColor = mode === 'dark' 
+    ? 'rgba(10, 22, 40, 0.7)'  // Dark mode transparent background
+    : 'rgba(248, 250, 252, 0.7)'; // Light mode transparent background
+
   return (
     <motion.div
       initial={headerAnimation.initial}
@@ -69,16 +74,16 @@ const Header = () => {
     >
       <AppBar 
         position="fixed" 
-        elevation={isScrolled ? 4 : 0} // Increased elevation
+        elevation={isScrolled ? 4 : 0}
         sx={{
           backgroundColor: isScrolled 
             ? theme.palette.background.paper
-            : 'rgba(14, 26, 39, 0.4)', // Added slight background even when not scrolled
+            : transparentBgColor, // Use theme-based transparent background
           transition: theme.transitions.create(
             ['background-color', 'box-shadow'],
             { duration: 0.3 }
           ),
-          backdropFilter: 'blur(10px)', // Always apply blur for better readability
+          backdropFilter: 'blur(10px)',
           borderBottom: isScrolled 
             ? `1px solid ${theme.palette.divider}`
             : 'none',

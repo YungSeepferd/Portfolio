@@ -1,6 +1,5 @@
 import React from 'react';
-import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
-import { ThemeProvider, useThemeMode } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
@@ -8,14 +7,15 @@ import AboutSection from './components/about/AboutSection';
 import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
 
-// Main app with theme applied
-const AppContent = () => {
-  // Only destructure theme from useThemeMode since we're not using mode directly
-  const { theme } = useThemeMode();
-
+/**
+ * App Component
+ * 
+ * Root component that wraps the application with necessary providers
+ * and renders the main layout components
+ */
+const App = () => {
   return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider>
       <ModalProvider>
         <Header />
         <main>
@@ -25,15 +25,6 @@ const AppContent = () => {
         </main>
         <FooterContact />
       </ModalProvider>
-    </MuiThemeProvider>
-  );
-};
-
-// Root component that wraps the app with context providers
-const App = () => {
-  return (
-    <ThemeProvider>
-      <AppContent />
     </ThemeProvider>
   );
 };

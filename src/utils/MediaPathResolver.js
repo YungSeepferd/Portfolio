@@ -5,7 +5,7 @@
  * Centralizes path logic and handles different media types consistently.
  */
 
-import { isVideo } from './mediaHelper';
+import { isVideo, normalizeAssetPath } from './mediaUtils';
 
 // Base paths for different media types
 const BASE_PATHS = {
@@ -74,11 +74,29 @@ export const findMediaPath = (projectKey, fileName) => {
   return possiblePaths[0];
 };
 
-// Create a named export instead of anonymous default export
-const mediaResolver = {
-  resolveProjectMediaPath,
-  processMediaItem,
-  findMediaPath
-};
+/**
+ * Resolves media paths correctly throughout the application
+ * 
+ * @param {string|object} path - The path to the media asset
+ * @param {string|null} fallback - Fallback image to use if path is invalid
+ * @returns {string} The resolved path
+ */
+export function resolveMediaPath(path, fallback = null) {
+  if (!path) return fallback;
+  
+  // Handle already imported assets (which are URLs)
+  if (typeof path === 'object' || 
+      (typeof path === 'string' && (
+        path.startsWith('data:') || 
+        path.startsWith('blob:') || 
+        path.startsWith('http')
+      ))
+  ) {
+    return path;
+  }
+  
+  // Normalize the path (remove src/ prefixes, ensure proper public path)
+  return normalizeAssetPath(path);
+}
 
-export default mediaResolver;
+export default resolveMediaPath;

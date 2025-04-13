@@ -1,22 +1,38 @@
 /**
- * Work Data Index
- * 
- * This file exports all work/project data from various sources.
- * It consolidates all project data for easy access across the application.
+ * Work Data - Main module for project data exports
  */
 
-// Import project data from various files
 import { projects } from './projects';
-import { skillTags } from './skillTags';
-import { sectionConfig, workCategories } from './uiConfig';
+import skillTags from './skillTags';
+import uiConfig from './uiConfig';
 
-// Re-export everything for easy access
-export { projects as workData };
-export { projects };
-export { skillTags };
+// Add workData export that Work.js is trying to import
+export const workData = projects;
 
-// Export UI configuration correctly using the actual exports from uiConfig
-export { sectionConfig, workCategories };
+// Export projects directly, don't try to re-export projectsData
+export { 
+  projects,
+  skillTags,
+  uiConfig
+};
 
-// For legacy support - if any components are still using these
-export const allProjects = projects;
+// Export a formatted array with all projects for consistency 
+export const formatProjects = (projects) => {
+  // Ensure all required fields are present
+  return projects.map(project => ({
+    ...project,
+    // Ensure sections are properly structured
+    sections: project.sections || [],
+    // Convert any string sections to proper section objects
+    ...(typeof project.sections === 'string' ? { 
+      sections: [{ 
+        title: 'Overview', 
+        content: project.sections,
+        layout: 'textLeft' 
+      }] 
+    } : {})
+  }));
+};
+
+// Default export is the projects array
+export default projects;

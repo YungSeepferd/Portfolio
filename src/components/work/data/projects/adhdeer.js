@@ -10,7 +10,6 @@ import DesignIcon from '@mui/icons-material/DesignServices';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 
 // Import project images and videos
-import ADHDeer from '../../../../assets/images/ADHDeer/ADHDeer.png';
 import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer - Video Prototype.mp4';
 
 // Define card variant without direct theme dependency
@@ -18,11 +17,16 @@ const cardVariant = 'warning';
 
 // Project data object
 const adhdeer = {
-  id: 5,
+  id: 'adhdeer',
   title: "ADHDeer – ADHD Support App",
   description: "A mobile app supporting youth with ADHD through empathic UX design and structured daily routines.",
   categories: ["UI Design", "UX Research", "Mental Health UX", "Prototyping", "Design Thinking"],
   layoutType: "accessibility-focused",
+  heroMedia: {
+    type: 'image',
+    src: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
+    alt: 'ADHDeer VR Experience Preview',
+  },
   details: (
     <>
       <Typography variant="h3">Project Overview</Typography>
@@ -103,25 +107,24 @@ const adhdeer = {
     </>
   ),
   images: [
-    ADHDeer,
     { type: 'video', src: ADHDeerPrototypeVideo }
   ],
   tools: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: ADHDeer },
+  media: { type: 'image', src: '/assets/images/projects/adhdeer/adhdeer_hero.jpg' },
   featuredImages: {
-    overview: ADHDeer,
-    problem: ADHDeer,
-    solution: ADHDeer,
+    overview: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
+    problem: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
+    solution: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
     prototypeShowcase: [
-      ADHDeer,
+      '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
       { type: 'video', src: ADHDeerPrototypeVideo }
     ]
   },
   links: [
     {
       label: "View Presentation",
-      url: "src/assets/information/ADHDeer/ADHDeerPresentation.pdf",
+      url: "/assets/information/ADHDeer/ADHDeerPresentation.pdf",
       icon: <SlideshowIcon fontSize="small" />,
       contentType: 'pdf'
     },

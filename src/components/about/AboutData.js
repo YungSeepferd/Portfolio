@@ -13,12 +13,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
-// Import images for each about section
-import ProfileImage from '../../assets/images/About Me/Salzburg.jpg';
-import SkillsImage from '../../assets/images/About Me/MusicMoritz.jpg';
-import ExperienceImage from '../../assets/images/About Me/VRBrille.JPG';
-import EducationImage from '../../assets/images/About Me/vincentMain.JPG';
-
 /**
  * Contains data for the About section tabs including content and images
  */
@@ -30,7 +24,7 @@ export const aboutData = [
     // Update object with specific position to focus on bottom of image
     pictures: [
       { 
-        src: ProfileImage,
+        src: '/assets/images/About Me/Salzburg.jpg',
         position: 'center bottom 30%' // Modified to show more of the bottom part
       }
     ],
@@ -58,7 +52,7 @@ export const aboutData = [
   {
     title: "Skills & Technologies",
     subtitle: "My UX Toolkit",
-    pictures: [SkillsImage],
+    pictures: ['/assets/images/About Me/MusicMoritz.jpg'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Core Competencies</Typography>
@@ -121,7 +115,7 @@ export const aboutData = [
   {
     title: "Experience",
     subtitle: "Professional Journey",
-    pictures: [ExperienceImage],
+    pictures: ['/assets/images/About Me/VRBrille.JPG'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Professional Experience</Typography>
@@ -220,7 +214,7 @@ export const aboutData = [
   {
     title: "Education",
     subtitle: "Academic Background",
-    pictures: [EducationImage],
+    pictures: ['/assets/images/About Me/vincentMain.JPG'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Academic Qualifications</Typography>

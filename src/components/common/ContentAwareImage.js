@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Skeleton, Typography, useTheme } from '@mui/material';
-import { analyzeImage, getOptimalObjectFit } from '../../utils/imageAnalyzer';
+import { analyzeImage, getOptimalObjectFit } from '../../utils/mediaUtils';
 
 /**
  * ContentAwareImage
@@ -9,47 +9,43 @@ import { analyzeImage, getOptimalObjectFit } from '../../utils/imageAnalyzer';
  * - Analyzes image dimensions and sets appropriate object-fit properties
  * - Handles loading states with skeleton placeholders
  * - Manages error states with fallback images
- * 
- * @param {string} src - Image URL
- * @param {string} alt - Alt text for accessibility
- * @param {object} imageData - Optional pre-processed image data
- * @param {string} containerHeight - Height of the container
- * @param {string} containerWidth - Width of the container
- * @param {boolean} expandOnHover - Whether the image expands on hover
- * @param {string} objectFit - Explicit object-fit property
- * @param {string} containerOrientation - Orientation of the container
- * @param {function} onLoad - Callback function for image load event
- * @param {function} onError - Callback function for image error event
- * @param {string} fallbackSrc - Fallback image source if primary fails
- * @param {object} props - Additional props
+ * - Implements smart retry logic with backoff to prevent excessive retries
  */
 const ContentAwareImage = ({ 
   src, 
   alt = '',
-  imageData = null, // Allow passing pre-processed image data
+  imageData = null,
   containerHeight = '100%',
   containerWidth = '100%',
   expandOnHover = false,
-  objectFit = null, // Allow explicit override
+  objectFit = null,
   containerOrientation = 'landscape',
   onLoad = () => {},
   onError = () => {},
   fallbackSrc = null,
+  maxRetries = 3, // Default max retries (can be increased to 10 from props)
+  retryDelay = 3000, // 3 seconds between retries
   ...props
 }) => {
   const theme = useTheme();
   const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
   const [imageDetails, setImageDetails] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 2;
+  const [permanentError, setPermanentError] = useState(false);
+  const retryTimeoutRef = useRef(null);
   
   // Process image data on component mount or when src changes
   useEffect(() => {
+    // Clear any existing retry timeout when src changes
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
+    
     // Reset states when src changes
     setLoaded(false);
-    setError(false);
     setRetryCount(0);
+    setPermanentError(false);
     
     // Use provided imageData if available, otherwise analyze from src
     try {
@@ -57,8 +53,15 @@ const ContentAwareImage = ({
       setImageDetails(processedImage);
     } catch (err) {
       console.error("Error analyzing image:", err);
-      setError(true);
+      setPermanentError(true); // Use permanentError instead
     }
+    
+    // Cleanup function
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
   }, [src, imageData]);
   
   // Handle image loading and additional orientation detection
@@ -77,35 +80,52 @@ const ContentAwareImage = ({
       }
       
       setLoaded(true);
-      setError(false);
+      setRetryCount(0); // Reset retry count on successful load
       onLoad(e);
     } catch (err) {
       console.error("Error in image load handler:", err);
-      setError(true);
+      setPermanentError(true); // Use permanentError instead
     }
   };
   
-  // Handle image loading errors with retry mechanism
+  // Handle image loading errors with improved retry mechanism
   const handleError = (e) => {
+    setLoaded(false);
+    
+    // If we're not at maximum retries yet, schedule another attempt
     if (retryCount < maxRetries) {
-      // Retry loading the image after a short delay
-      setTimeout(() => {
+      console.log(`Retry ${retryCount + 1}/${maxRetries} for image: ${src}`);
+      
+      // Clear any existing retry timeout
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+      
+      // Schedule next retry with progressive backoff
+      const progressiveDelay = retryDelay * (1 + (retryCount * 0.5)); // Increase delay progressively
+      
+      retryTimeoutRef.current = setTimeout(() => {
         setRetryCount(prev => prev + 1);
         // Force reload by adding a cache-busting parameter
-        e.target.src = `${imageSrc}?retry=${retryCount + 1}`;
-      }, 1000);
+        if (e.target) {
+          e.target.src = `${imageSrc}?retry=${retryCount + 1}&time=${Date.now()}`;
+        }
+      }, progressiveDelay);
     } else {
-      console.error("Failed to load image after retries:", src);
-      setError(true);
+      console.error(`Failed to load image after ${maxRetries} retries:`, src);
+      setPermanentError(true);
       
-      // Use fallback image if provided, otherwise use theme default
-      if (fallbackSrc) {
+      // Try fallback image if provided
+      if (fallbackSrc && e.target) {
         e.target.src = fallbackSrc;
-      } else if (theme.customDefaults?.placeholderImage) {
+        e.target.onload = () => {
+          setLoaded(true);
+        };
+      } else if (theme.customDefaults?.placeholderImage && e.target) {
         e.target.src = theme.customDefaults.placeholderImage;
-      } else {
-        // If no fallback is available, show the error state
-        e.target.style.display = 'none';
+        e.target.onload = () => {
+          setLoaded(true);
+        };
       }
       
       onError(e);
@@ -137,23 +157,23 @@ const ContentAwareImage = ({
         width: containerWidth,
         height: containerHeight,
         overflow: 'hidden',
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: theme.shape.borderRadius, // This will use the updated value
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: theme.palette.background.default,
       }}
     >
-      {!loaded && !error && (
+      {!loaded && !permanentError && (
         <Skeleton 
           variant="rectangular" 
           width="100%" 
           height="100%" 
-          animation="wave"
+          animation={permanentError ? false : "wave"}
         />
       )}
       
-      {error && !loaded && (
+      {permanentError && (
         <Box 
           sx={{
             display: 'flex',
@@ -163,36 +183,39 @@ const ContentAwareImage = ({
             height: '100%',
             padding: theme.spacing(2),
             backgroundColor: 'rgba(0,0,0,0.05)',
+            textAlign: 'center',
           }}
         >
-          <Typography variant="body2" color="text.secondary" align="center">
-            Image could not be loaded
+          <Typography variant="body2" color="text.secondary">
+            Image unavailable
           </Typography>
         </Box>
       )}
       
-      <Box
-        component="img"
-        src={imageSrc}
-        alt={imageAlt}
-        onLoad={handleLoad}
-        onError={handleError}
-        sx={{
-          width: '100%',
-          height: '100%',
-          objectFit: finalObjectFit,
-          objectPosition: 'center',
-          transition: theme.transitions.create(['transform', 'opacity']),
-          opacity: loaded ? 1 : 0,
-          display: error && !loaded ? 'none' : 'block',
-          ...(expandOnHover && {
-            '&:hover': {
-              transform: 'scale(1.05)',
-            }
-          }),
-          ...props.sx
-        }}
-      />
+      {!permanentError && (
+        <Box
+          component="img"
+          src={imageSrc}
+          alt={imageAlt}
+          onLoad={handleLoad}
+          onError={handleError}
+          sx={{
+            width: '100%',
+            height: '100%',
+            objectFit: finalObjectFit,
+            objectPosition: 'center',
+            transition: theme.transitions.create(['transform', 'opacity']),
+            opacity: loaded ? 1 : 0,
+            display: permanentError ? 'none' : 'block',
+            ...(expandOnHover && {
+              '&:hover': {
+                transform: 'scale(1.05)',
+              }
+            }),
+            ...props.sx
+          }}
+        />
+      )}
     </Box>
   );
 };

@@ -1,93 +1,46 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme } from '@mui/material';
-import { motion } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
-import { renderContentSection } from '../../utils/contentParser';
+import { Box, Typography, Paper, useTheme } from '@mui/material';
+import ProjectPrototypeEmbed from './ProjectPrototypeEmbed'; // Import the embed component
 
-const PrototypeShowcase = ({
-  sectionNumber,
-  title = 'Prototyping Showcase',
-  content = null,
-  prototypeImages = [],
-  captions = [],
-  footerText = 'The prototyping process evolved through multiple iterations, each refining the user experience based on feedback and testing.',
-  headingColor = null // Added headingColor prop
-}) => {
+/**
+ * PrototypeShowcase Component
+ *
+ * Displays an interactive prototype (e.g., Figma embed) within a styled container.
+ */
+const PrototypeShowcase = ({ title = "Interactive Prototype", type = 'figma', url, sx = {} }) => {
   const theme = useTheme();
-  
-  if (prototypeImages.length === 0) return null;
-  
-  // If headingColor is not provided, use the default from theme
-  const titleColor = headingColor || theme.palette.text.primary;
-  
+
+  if (!url) {
+    return null; // Don't render if no URL is provided
+  }
+
   return (
-    <Box component="section" sx={{ py: 6 }}>
-      <Typography variant="h5" color="text.accent" sx={{ color: theme.palette.accent.main, fontWeight: 600 }}>
-        {sectionNumber}
-      </Typography>
-      
-      <Typography 
-        variant="h3" 
-        sx={{ 
-          mt: 1, 
-          mb: 4,
-          color: titleColor // Apply the heading color 
+    <Box sx={{ ...sx }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: 3,
+          textAlign: 'center',
+          color: theme.palette.text.secondary,
+          fontWeight: 500
         }}
       >
         {title}
       </Typography>
-      
-      {/* Render content if available */}
-      {renderContentSection(content)}
-      
-      {/* Prototype Showcase */}
-      <Grid container spacing={3} sx={{ mt: 3 }}>
-        {prototypeImages.map((img, idx) => (
-          <Grid item xs={12} sm={4} key={idx}>
-            <Box
-              component={motion.div}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 * idx }}
-              viewport={{ once: true }}
-              sx={{
-                height: { xs: '250px', md: '300px' },
-                width: '100%',
-                borderRadius: theme.shape.borderRadius,
-                overflow: 'hidden',
-                boxShadow: `0 4px 12px ${theme.palette.shadow.light}`,
-              }}
-            >
-              <ContentAwareImage
-                imageData={img}
-                src={typeof img === 'string' ? img : img?.src || '/fallback-image.jpg'}
-                alt={`Prototype ${idx + 1}`}
-                containerHeight="100%"
-                containerWidth="100%"
-                objectFit="cover"
-              />
-            </Box>
-            
-            {captions[idx] && (
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  display: 'block', 
-                  textAlign: 'center', 
-                  mt: 1,
-                  color: theme.palette.text.secondary
-                }}
-              >
-                {captions[idx]}
-              </Typography>
-            )}
-          </Grid>
-        ))}
-      </Grid>
-      
-      <Typography variant="body2" sx={{ mt: 4, color: theme.palette.text.secondary, textAlign: 'center' }}>
-        {footerText}
-      </Typography>
+      <Paper
+        elevation={3}
+        sx={{
+          overflow: 'hidden', // Ensure iframe stays within bounds
+          borderRadius: theme.shape.borderRadius,
+          // Responsive height for the embed
+          height: { xs: '400px', sm: '500px', md: '600px', lg: '700px' },
+          width: '100%',
+          backgroundColor: theme.palette.background.default, // Background for loading state
+        }}
+      >
+        {/* Use ProjectPrototypeEmbed to handle the actual embedding */}
+        <ProjectPrototypeEmbed type={type} url={url} title={title} />
+      </Paper>
     </Box>
   );
 };

@@ -38,4 +38,6 @@ const ParticleComponent = (props) => {
   return <particle ref={particleRef} {...props} />;
 };
 
+// Export both the component (default) and the particle class
+export { Particle };
 export default ParticleComponent;

@@ -1,4 +1,3 @@
-// Renamed to sceneThemeUtils.js to avoid conflicts with global themeUtils.js
 import * as THREE from 'three';
 import { SHAPE_TYPES } from '../constants';
 
@@ -98,6 +97,28 @@ export const extractThemeColors = (theme) => {
   };
   
   return { shapeColors, sceneColors };
+};
+
+/**
+ * Extract the primary, secondary, and background colors from the theme
+ * This function is adapted to support the BoxScene component
+ * @param {Object} theme - MUI theme object
+ * @returns {Object} - Object containing primary, secondary, and background colors
+ */
+export const getSceneColors = (theme) => {
+  if (!theme) {
+    return {
+      primary: '#1976d2',
+      secondary: '#9c27b0',
+      background: '#f5f5f5'
+    };
+  }
+  
+  return {
+    primary: theme.palette.primary.main,
+    secondary: theme.palette.secondary.main,
+    background: theme.palette.background.default
+  };
 };
 
 /**

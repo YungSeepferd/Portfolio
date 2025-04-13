@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useThree, useFrame } from '@react-three/fiber'; // Fixed import
-import { SHAPE_TYPES } from './constants';
-import { extractThemeColors } from './utils/sceneThemeUtils'; // Updated to use the renamed file
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useTheme } from '@mui/material';
+import { SHAPE_TYPES } from './constants';
+import { extractThemeColors } from './utils/sceneThemeUtils';
 
 // Create context
 const SceneContext = createContext(null);
@@ -10,7 +9,11 @@ const SceneContext = createContext(null);
 /**
  * SceneProvider Component
  * 
- * Provides scene state management for the 3D background.
+ * Provides scene state management for the 3D background with:
+ * - Shape type selection
+ * - Scene transitions
+ * - Scroll activity tracking
+ * - Theme-based color extraction
  */
 export const SceneProvider = ({ children }) => {
   const theme = useTheme();
@@ -18,7 +21,6 @@ export const SceneProvider = ({ children }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scrollActive, setScrollActive] = useState(false);
   const [themeColors, setThemeColors] = useState(null);
-  const { invalidate } = useThree();
   
   // Extract theme colors on initial load and when theme changes
   useEffect(() => {
@@ -30,9 +32,9 @@ export const SceneProvider = ({ children }) => {
       // Set fallback colors
       setThemeColors({
         shapeColors: {
-          0: { h: 0.6, s: 0.6, l: 0.6 }, // Blue-ish
-          1: { h: 0.3, s: 0.6, l: 0.6 }, // Green-ish
-          2: { h: 0.1, s: 0.6, l: 0.6 }, // Orange-ish
+          [SHAPE_TYPES.SPHERE]: { h: 0.6, s: 0.6, l: 0.6 }, // Blue-ish
+          [SHAPE_TYPES.BOX]: { h: 0.3, s: 0.6, l: 0.6 },    // Green-ish
+          [SHAPE_TYPES.TORUS]: { h: 0.1, s: 0.6, l: 0.6 },  // Orange-ish
           hover: { h: 0.5, s: 0.8, l: 0.7 }
         }
       });
@@ -45,15 +47,14 @@ export const SceneProvider = ({ children }) => {
     
     const handleScroll = () => {
       setScrollActive(true);
-      invalidate(); // Force render on scroll
       
       // Clear any existing timeout
       if (scrollTimeout) clearTimeout(scrollTimeout);
       
-      // Reset scrollActive after scrolling stops - REDUCED timeout for quicker reset
+      // Reset scrollActive after scrolling stops
       scrollTimeout = setTimeout(() => {
         setScrollActive(false);
-      }, 200); // Reduced from 300ms for faster response
+      }, 200); // Reduced for faster response
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -62,9 +63,9 @@ export const SceneProvider = ({ children }) => {
       window.removeEventListener('scroll', handleScroll);
       if (scrollTimeout) clearTimeout(scrollTimeout);
     };
-  }, [invalidate]);
+  }, []);
   
-  // Function to only switch shape type without scene transition
+  // Function to directly switch shape type without transition
   const switchShapeType = useCallback((nextTypeOrFunction) => {
     let nextType;
     
@@ -73,19 +74,18 @@ export const SceneProvider = ({ children }) => {
     } else if (nextTypeOrFunction !== undefined) {
       nextType = nextTypeOrFunction;
     } else {
-      nextType = (currentShapeType + 1) % 3; // Default: cycle through 3 shapes
+      // Cycle through shape types: SPHERE -> BOX -> TORUS -> SPHERE
+      nextType = (currentShapeType + 1) % Object.keys(SHAPE_TYPES).length;
     }
     
     setCurrentShapeType(nextType);
-    invalidate(); // Force render
-  }, [currentShapeType, invalidate]);
+  }, [currentShapeType]);
   
-  // Original scene switching function
+  // Scene switching function with transition
   const switchScene = useCallback((newShapeType) => {
     if (isTransitioning) return;
     
     setIsTransitioning(true);
-    invalidate(); // Force render
     
     setTimeout(() => {
       // If specific shape requested, use it, otherwise cycle
@@ -94,22 +94,22 @@ export const SceneProvider = ({ children }) => {
       } else if (typeof newShapeType === 'number') {
         setCurrentShapeType(newShapeType);
       } else {
-        setCurrentShapeType(prev => (prev + 1) % 3); // Cycle through 3 shapes
+        setCurrentShapeType(prev => (prev + 1) % Object.keys(SHAPE_TYPES).length);
       }
       
       setTimeout(() => {
         setIsTransitioning(false);
-        invalidate(); // Force render after transition complete
       }, 300);
     }, 300);
-  }, [isTransitioning, invalidate]);
+  }, [isTransitioning]);
   
-  // Make both functions available globally
+  // Make functions available globally for external triggers
   useEffect(() => {
     try {
       window.sceneContext = { 
         switchScene,
-        switchShapeType // Add direct shape type switching
+        switchShapeType,
+        currentShapeType
       };
     } catch (error) {
       console.error("Error setting global sceneContext:", error);
@@ -118,19 +118,27 @@ export const SceneProvider = ({ children }) => {
     return () => {
       window.sceneContext = null;
     };
-  }, [switchScene, switchShapeType]);
+  }, [switchScene, switchShapeType, currentShapeType]);
   
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
     currentShapeType,
-    switchShapeType, // Use the direct shape switching function
+    switchShapeType,
     isTransitioning,
     scrollActive,
     themeColors,
-    switchScene // Keep original for compatibility
-  };
+    switchScene
+  }), [
+    currentShapeType,
+    switchShapeType,
+    isTransitioning,
+    scrollActive,
+    themeColors,
+    switchScene
+  ]);
   
   return (
-    <SceneContext.Provider value={value}>
+    <SceneContext.Provider value={contextValue}>
       {children}
     </SceneContext.Provider>
   );
@@ -141,6 +149,14 @@ export const useSceneState = () => {
   const context = useContext(SceneContext);
   if (context === null) {
     throw new Error('useSceneState must be used within a SceneProvider');
+  }
+  return context;
+};
+
+export const useSceneContext = () => {
+  const context = useContext(SceneContext);
+  if (!context) {
+    throw new Error('useSceneContext must be used within a SceneProvider');
   }
   return context;
 };
@@ -174,19 +190,9 @@ export const CameraAccess = ({ onCameraReady }) => {
 
 // CRITICAL FIX: Add a debug hook to expose scene state
 export const useSceneDebug = () => {
-  const { invalidate } = useThree();
-  
-  // Force render every frame
-  useFrame(() => {
-    invalidate();
-  });
-  
-  // Output debug info to console
-  useEffect(() => {
-    console.log("3D Scene active - rendering");
-    return () => console.log("3D Scene cleanup");
-  }, []);
-  
+  // This is incorrect as useThree and useFrame must be used inside a Canvas
+  // Fixed implementation:
+  console.warn("useSceneDebug must be used inside a Canvas component");
   return null;
 };
 

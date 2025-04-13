@@ -71,6 +71,11 @@ import typography from './typography';
 import spacing from './spacing';
 import breakpoints from './breakpoints';
 
+// Update any shape configuration here
+const shape = {
+  borderRadius: 4, // Reduced rounded corners
+};
+
 // Create component overrides based on theme
 const createComponents = (theme) => ({
   MuiButton: {
@@ -129,9 +134,7 @@ const createAppTheme = (mode = 'dark') => {
     typography,
     spacing,
     breakpoints: { values: breakpoints },
-    shape: {
-      borderRadius: 8,
-    },
+    shape,
     shadows: [
       'none',
       '0px 2px 4px rgba(0, 0, 0, 0.05)',
@@ -157,11 +160,44 @@ const createAppTheme = (mode = 'dark') => {
 };
 
 // Export themes
-export const lightTheme = createAppTheme('light');
-export const darkTheme = createAppTheme('dark');
+export const lightTheme = createTheme({
+  palette: createPalette('light'),
+  typography,
+  spacing,
+  breakpoints: { values: breakpoints },
+  shape,
+  shadows: [
+    'none',
+    '0px 2px 4px rgba(0, 0, 0, 0.05)',
+    '0px 4px 8px rgba(0, 0, 0, 0.1)',
+    '0px 8px 16px rgba(0, 0, 0, 0.15)',
+    '0px 12px 24px rgba(0, 0, 0, 0.2)',
+    '0px 16px 32px rgba(0, 0, 0, 0.25)',
+    ...Array(19).fill('none'), // Fill the rest with none
+  ],
+  tokens,
+});
+
+export const darkTheme = createTheme({
+  palette: createPalette('dark'),
+  typography,
+  spacing,
+  breakpoints: { values: breakpoints },
+  shape,
+  shadows: [
+    'none',
+    '0px 2px 4px rgba(0, 0, 0, 0.05)',
+    '0px 4px 8px rgba(0, 0, 0, 0.1)',
+    '0px 8px 16px rgba(0, 0, 0, 0.15)',
+    '0px 12px 24px rgba(0, 0, 0, 0.2)',
+    '0px 16px 32px rgba(0, 0, 0, 0.25)',
+    ...Array(19).fill('none'), // Fill the rest with none
+  ],
+  tokens,
+});
 
 // Export default theme (dark)
 export default darkTheme;
 
 // Export token system for design tool integration
-export { tokens } from '../design/tokens';
+export { tokens } from '../design/tokens };

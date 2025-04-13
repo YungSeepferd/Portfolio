@@ -1,42 +1,110 @@
-import React, { useEffect } from 'react';
-import { useSceneState } from './SceneContext';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useSceneContext } from './SceneContext';
+import BoxScene from './scenes/BoxScene';
 import SphereScene from './scenes/SphereScene';
 import TorusScene from './scenes/TorusScene';
 import CubeScene from './scenes/CubeScene';
 
+// Define available scenes with their components and properties
+const scenes = [
+  { id: 'box', component: BoxScene },
+  { id: 'sphere', component: SphereScene },
+  { id: 'torus', component: TorusScene },
+  { id: 'cube', component: CubeScene }
+];
+
 /**
- * ActiveScene - Renders the currently active scene
+ * ActiveScene Component
+ * Manages the currently displayed 3D scene and handles transitions
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.mousePosition - Current mouse position {x, y}
+ * @param {Function} props.onClick - Function to call when scene is clicked
+ * @param {boolean} props.isDragging - Whether the user is currently dragging
+ * @param {Object} props.theme - Current theme object
  */
-const ActiveScene = () => {
-  const { currentShapeType, isTransitioning } = useSceneState();
+const ActiveScene = ({ mousePosition, onClick, isDragging, theme }) => {
+  const { activeSceneId, setActiveSceneId } = useSceneContext();
+  const [clickable, setClickable] = useState(true);
+  const [transitioning, setTransitioning] = useState(false);
   
-  // Log scene status to help debug visibility issues
-  useEffect(() => {
-    console.log("ActiveScene mounted, shape type:", currentShapeType);
+  // Find the current scene component
+  const CurrentScene = scenes.find(scene => scene.id === activeSceneId)?.component || scenes[0].component;
+
+  // Handle click to switch scenes
+  const handleObjectClick = useCallback((e) => {
+    if (!clickable || isDragging) return;
     
-    // Make scene visible for debugging
-    window.threeScene = {
-      currentShapeType,
-      isTransitioning,
-    };
+    // Prevent event propagation to avoid multiple clicks
+    e.stopPropagation();
     
-    return () => {
-      console.log("ActiveScene unmounted");
-    };
-  }, [currentShapeType, isTransitioning]);
-  
-  // Always render at least one scene to ensure something is visible
-  return (
-    <group>
-      {/* Show appropriate scene based on shape type, fallback to SphereScene */}
-      {currentShapeType === 0 && <SphereScene />}
-      {currentShapeType === 1 && <CubeScene />}
-      {currentShapeType === 2 && <TorusScene />}
+    // Begin transition
+    setTransitioning(true);
+    
+    // Call external click handler if provided
+    if (onClick) {
+      onClick(activeSceneId);
+    }
+    
+    // Prevent rapid clicks
+    setClickable(false);
+    
+    // Switch to next scene after transition delay
+    setTimeout(() => {
+      // Find current index
+      const currentIndex = scenes.findIndex(scene => scene.id === activeSceneId);
+      const nextIndex = (currentIndex + 1) % scenes.length;
+      setActiveSceneId(scenes[nextIndex].id);
       
-      {/* Fallback for debugging - ensure something is always visible */}
-      {(currentShapeType === undefined || currentShapeType === null) && <SphereScene />}
+      // Allow clicking again after transition
+      setTimeout(() => {
+        setClickable(true);
+        setTransitioning(false);
+      }, 800);
+    }, 300);
+  }, [activeSceneId, clickable, isDragging, onClick, setActiveSceneId]);
+  
+  // Auto-rotate all scenes if not being dragged
+  useFrame((state) => {
+    if (!isDragging) {
+      // Subtle auto-rotation
+      state.scene.rotation.y += 0.001;
+      
+      // Camera movement based on mouse position (if not dragging)
+      state.camera.position.x += (mousePosition.x * 0.5 - state.camera.position.x) * 0.05;
+      state.camera.position.y += (mousePosition.y * 0.5 - state.camera.position.y) * 0.05;
+      state.camera.lookAt(0, 0, 0);
+    }
+  });
+  
+  // Listen for key presses to change scenes (accessibility)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        // Find current index
+        const currentIndex = scenes.findIndex(scene => scene.id === activeSceneId);
+        const nextIndex = (currentIndex + 1) % scenes.length;
+        setActiveSceneId(scenes[nextIndex].id);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [activeSceneId, setActiveSceneId]);
+  
+  return (
+    <group onClick={handleObjectClick}>
+      <CurrentScene 
+        mousePosition={mousePosition}
+        isDragging={isDragging}
+        theme={theme}
+        transitioning={transitioning}
+      />
     </group>
   );
 };
 
-export default React.memo(ActiveScene);
+export default ActiveScene;

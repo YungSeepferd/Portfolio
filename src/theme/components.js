@@ -15,20 +15,34 @@ export const createComponentStyles = (theme) => {
   return {
     MuiCard: {
       styleOverrides: {
-        root: {
-          borderRadius: 4, // Explicitly setting card border radius to be less rounded
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
           backgroundColor: theme.palette.card.background,
           minHeight: '300px',
           border: `1px solid ${theme.palette.structure.borders}`,
           height: '100%',
-          // Fix: Use animationSettings instead of palette.transitions
           transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
           boxShadow: `0 4px 12px ${theme.palette.shadow.light}`,
           '&:hover': {
             boxShadow: `0 12px 24px ${theme.palette.shadow.medium}`,
             borderColor: theme.palette.accent.main,
           },
-        },
+        }),
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
+        }),
+      },
+    },
+    MuiImageListItem: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
+          overflow: 'hidden',
+        }),
       },
     },
     // Add other component overrides here as needed

@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Typography, useTheme, Button } from '@mui/material';
+import { Box, Typography, useTheme, IconButton, Dialog, DialogContent, Grid, useMediaQuery } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import ContentAwareImage from './ContentAwareImage'; // Updated import path from same directory
+import CloseIcon from '@mui/icons-material/Close';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import ContentAwareImage from './ContentAwareImage';
 import VideoPlayer from './VideoPlayer';
-import { analyzeImage } from '../../utils/imageAnalyzer';
-import { isVideo, createVideoThumbnail } from '../../utils/mediaHelper';
+import { analyzeImage, isVideo, createVideoThumbnail } from '../../utils/mediaUtils';
 
 const ProjectGallery = ({ images = [], title = '' }) => {
   const theme = useTheme();
-  const [selected, setSelected] = useState(0);
-  const [fullscreen, setFullscreen] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [mediaInfo, setMediaInfo] = useState([]);
+  const [openOverlay, setOpenOverlay] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   
   // Process media types on mount
   const processMedia = useCallback(async () => {
     if (!images || images.length === 0) return;
     
-    const mediaData = await Promise.all(images.map(async (media) => {
+    const mediaData = await Promise.all(images.map(async (media, index) => {
       // Basic media info
       const isVideoFile = isVideo(media);
       const src = typeof media === 'string' ? media : media?.src || '';
@@ -48,6 +49,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
         src.toLowerCase().includes('app');
       
       return {
+        id: index,
         original: media,
         src,
         thumbnailSrc,
@@ -66,19 +68,37 @@ const ProjectGallery = ({ images = [], title = '' }) => {
   }, [processMedia]);
   
   if (!images || images.length === 0 || mediaInfo.length === 0) return null;
-  
-  const currentMedia = mediaInfo[selected] || {};
-  const isPhoneMedia = currentMedia.isPhone;
+
+  // Open overlay with specific image
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setOpenOverlay(true);
+  };
+
+  // Close overlay
+  const handleCloseOverlay = () => {
+    setOpenOverlay(false);
+  };
+
+  // Navigate to previous image in overlay
+  const handlePrevious = () => {
+    const currentIndex = mediaInfo.findIndex(img => img.id === selectedImage.id);
+    const prevIndex = (currentIndex - 1 + mediaInfo.length) % mediaInfo.length;
+    setSelectedImage(mediaInfo[prevIndex]);
+  };
+
+  // Navigate to next image in overlay
+  const handleNext = () => {
+    const currentIndex = mediaInfo.findIndex(img => img.id === selectedImage.id);
+    const nextIndex = (currentIndex + 1) % mediaInfo.length;
+    setSelectedImage(mediaInfo[nextIndex]);
+  };
+
+  // Use the isMobile variable to determine grid size
+  const gridItemSize = isMobile ? 6 : 3;
 
   return (
-    <Box 
-      sx={{
-        mt: 8,
-        mb: 4,
-        borderTop: `1px solid ${theme.palette.divider}`,
-        pt: 4
-      }}
-    >
+    <Box sx={{ mt: 4, mb: 4 }}>
       <Typography 
         variant="h5" 
         sx={{ 
@@ -90,202 +110,249 @@ const ProjectGallery = ({ images = [], title = '' }) => {
       >
         Project Gallery
       </Typography>
-      
-      <Box 
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: 2,
-          alignItems: 'flex-start'
-        }}
-      >
-        {/* Thumbnail previews */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'row', md: 'column' },
-            gap: 1,
-            overflowX: { xs: 'auto', md: 'visible' },
-            overflowY: { xs: 'visible', md: 'auto' },
-            maxHeight: { xs: 'auto', md: '500px' },
-            maxWidth: { xs: '100%', md: '120px' },
-            p: 1,
-            flexShrink: 0,
-          }}
-        >
-          {mediaInfo.map((item, idx) => {
-            const isPhone = item.isPhone;
-            
-            return (
-              <Box
-                key={idx}
-                onClick={() => setSelected(idx)}
-                sx={{
-                  position: 'relative',
-                  width: { xs: isPhone ? '60px' : '100px', md: '100%' },
-                  height: { xs: '60px', md: isPhone ? '80px' : '60px' },
-                  overflow: 'hidden',
-                  borderRadius: theme.shape.borderRadius,
-                  border: idx === selected 
-                    ? `2px solid ${theme.palette.primary.main}` 
-                    : '2px solid transparent',
-                  opacity: idx === selected ? 1 : 0.7,
-                  transition: theme.transitions.create(['opacity', 'border-color']),
-                  cursor: 'pointer',
-                  '&:hover': { opacity: 1 }
-                }}
-              >
-                {item.isVideo && (
+
+      {/* Grid of thumbnails */}
+      <Grid container spacing={2}>
+        {mediaInfo.map((item) => (
+          <Grid item xs={6} sm={4} md={gridItemSize} key={item.id}>
+            <Box
+              onClick={() => handleImageClick(item)}
+              sx={{
+                position: 'relative',
+                width: '100%',
+                // Calculate fixed aspect ratio for consistent thumbnails
+                paddingTop: item.isPhone ? '177.78%' : '75%', // 16:9 or 9:16 ratio
+                overflow: 'hidden',
+                borderRadius: theme.shape.borderRadius,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                  boxShadow: theme.shadows[4]
+                }
+              }}
+            >
+              {item.isVideo ? (
+                <Box 
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <VideoPlayer
+                    src={item.src}
+                    containerHeight="100%"
+                    containerWidth="100%"
+                    autoplay={false}
+                    muted={true}
+                    controls={false}
+                  />
+                  {/* Play button indicator */}
                   <Box
                     sx={{
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: 'rgba(0,0,0,0.5)',
+                      width: '50px',
+                      height: '50px',
                       borderRadius: '50%',
+                      backgroundColor: 'rgba(0,0,0,0.5)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      color: 'white',
                       zIndex: 2,
                       '&::before': {
                         content: '""',
                         display: 'block',
                         width: 0,
                         height: 0,
-                        borderTop: '4px solid transparent',
-                        borderBottom: '4px solid transparent',
-                        borderLeft: '6px solid white',
-                        marginLeft: '1px'
+                        borderTop: '10px solid transparent',
+                        borderBottom: '10px solid transparent',
+                        borderLeft: '16px solid white',
+                        marginLeft: '4px'
                       }
                     }}
                   />
-                )}
-                
+                </Box>
+              ) : (
                 <ContentAwareImage
-                  src={item.thumbnailSrc}
-                  alt={`${title} thumbnail ${idx + 1}`}
+                  src={item.src}
+                  alt={`${title} image ${item.id + 1}`}
                   containerHeight="100%"
                   containerWidth="100%"
-                  containerOrientation={isPhone ? 'portrait' : 'landscape'}
+                  containerOrientation={item.isPhone ? 'portrait' : 'landscape'}
+                  objectFit="cover"
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%'
+                  }}
+                />
+              )}
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Full screen overlay for viewing images */}
+      <Dialog
+        fullScreen
+        open={openOverlay}
+        onClose={handleCloseOverlay}
+        sx={{
+          '& .MuiDialog-paper': {
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            color: 'white'
+          }
+        }}
+      >
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            p: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            zIndex: 10,
+            backgroundColor: 'rgba(0,0,0,0.7)'
+          }}
+        >
+          <Typography variant="h6">{title} Gallery</Typography>
+          <IconButton color="inherit" onClick={handleCloseOverlay}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <DialogContent sx={{ p: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Image viewer with navigation */}
+          <Box sx={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Previous button */}
+            <IconButton
+              onClick={handlePrevious}
+              sx={{
+                position: 'absolute',
+                left: 16,
+                zIndex: 5,
+                color: 'white',
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' }
+              }}
+            >
+              <NavigateBeforeIcon fontSize="large" />
+            </IconButton>
+            
+            {/* Current image/video */}
+            <AnimatePresence mode="wait">
+              {selectedImage && (
+                <motion.div
+                  key={selectedImage.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '64px 16px'
+                  }}
+                >
+                  <Box sx={{ maxHeight: '80vh', maxWidth: '90%', position: 'relative' }}>
+                    {selectedImage.isVideo ? (
+                      <VideoPlayer
+                        src={selectedImage.src}
+                        containerHeight="auto"
+                        containerWidth="100%"
+                        autoplay={false}
+                        muted={false}
+                        controls={true}
+                      />
+                    ) : (
+                      <img
+                        src={selectedImage.src}
+                        alt={`${title} full view`}
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '80vh',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    )}
+                  </Box>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Next button */}
+            <IconButton
+              onClick={handleNext}
+              sx={{
+                position: 'absolute',
+                right: 16,
+                zIndex: 5,
+                color: 'white',
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' }
+              }}
+            >
+              <NavigateNextIcon fontSize="large" />
+            </IconButton>
+          </Box>
+
+          {/* Thumbnail strip for all images */}
+          <Box
+            sx={{
+              width: '100%',
+              p: 2,
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              display: 'flex',
+              overflowX: 'auto',
+              gap: 1
+            }}
+          >
+            {mediaInfo.map((item) => (
+              <Box
+                key={item.id}
+                onClick={() => setSelectedImage(item)}
+                sx={{
+                  width: item.isPhone ? 60 : 100,
+                  height: 60,
+                  flexShrink: 0,
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  border: selectedImage && selectedImage.id === item.id ? `2px solid ${theme.palette.primary.main}` : '2px solid transparent',
+                  cursor: 'pointer',
+                  opacity: selectedImage && selectedImage.id === item.id ? 1 : 0.7,
+                  '&:hover': { opacity: 1 }
+                }}
+              >
+                <ContentAwareImage
+                  src={item.thumbnailSrc}
+                  alt={`Thumbnail ${item.id + 1}`}
+                  containerHeight="100%"
+                  containerWidth="100%"
                   objectFit="cover"
                 />
               </Box>
-            );
-          })}
-        </Box>
-        
-        {/* Main display */}
-        <Box
-          sx={{
-            flexGrow: 1,
-            position: 'relative',
-            width: '100%',
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: theme.shape.borderRadius,
-            overflow: 'hidden',
-            // Adjust height based on image type and fullscreen mode
-            height: fullscreen 
-              ? { xs: '70vh', sm: '75vh', md: '80vh' }
-              : isPhoneMedia
-                ? { xs: '400px', sm: '450px', md: '500px' } // Taller for phone screenshots
-                : { xs: '250px', sm: '350px', md: '450px' }, // Shorter for desktop/landscape images
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transition: theme.transitions.create(['height'], { duration: 0.3 }),
-          }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${selected}-${currentMedia.isVideo}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: isPhoneMedia ? '10px' : '0px',
-              }}
-            >
-              <Box sx={{ 
-                height: '100%', 
-                width: isPhoneMedia && !fullscreen ? '70%' : '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                {currentMedia.isVideo ? (
-                  <VideoPlayer
-                    src={currentMedia.src}
-                    containerHeight="100%"
-                    containerWidth="100%"
-                    muted={true}
-                    autoplay={false}
-                    controls={true}
-                  />
-                ) : (
-                  <ContentAwareImage
-                    src={currentMedia.src}
-                    alt={`${title} - Image ${selected + 1}`}
-                    containerHeight="100%"
-                    containerWidth="100%"
-                    containerOrientation={isPhoneMedia ? 'portrait' : 'landscape'}
-                    objectFit={isPhoneMedia ? 'contain' : 'contain'}
-                  />
-                )}
-              </Box>
-            </motion.div>
-          </AnimatePresence>
-          
-          {/* Fullscreen toggle button */}
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => setFullscreen(!fullscreen)}
-            sx={{
-              position: 'absolute',
-              bottom: 10,
-              right: 10,
-              minWidth: '40px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              p: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              }
-            }}
-          >
-            {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </Button>
-          
-          {/* Image counter indicator */}
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 10,
-              left: 10,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              color: 'white',
-              borderRadius: '12px',
-              px: 1.5,
-              py: 0.5,
-              fontSize: '0.85rem',
-            }}
-          >
-            {selected + 1} / {images.length}
+            ))}
           </Box>
-        </Box>
-      </Box>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
