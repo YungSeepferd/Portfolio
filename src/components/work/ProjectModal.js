@@ -1,28 +1,25 @@
 import React from 'react';
-import { Modal, Box, IconButton, useTheme } from '@mui/material'; // Removed useMediaQuery
-import CloseIcon from '@mui/icons-material/Close';
+import { Modal, Box, useTheme } from '@mui/material';
 import ProjectFullContent from './ProjectFullContent';
 import ProjectNavigation from './ProjectNavigation';
 
 /**
  * ProjectModal Component
  *
- * Wrapper for displaying project details within a modal.
- * Primarily relies on ModalContext for state and rendering logic.
- * This component might be simplified or removed if ModalContext handles everything.
+ * Displays a project in a modal dialog with navigation controls.
  */
-const ProjectModal = ({ project, open, onClose, onNavigate }) => {
+const ProjectModal = ({ project, open, onClose, onNextProject, onPreviousProject }) => {
   const theme = useTheme();
 
-  // Modal style (can be potentially moved to ModalContext if this component is removed)
+  // Modal style for consistent appearance
   const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' }, // Responsive width handled here or in context
+    width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
     maxWidth: '1200px',
-    height: { xs: '90vh', sm: '85vh' }, // Responsive height handled here or in context
+    height: { xs: '90vh', sm: '85vh' },
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: theme.shape.borderRadius,
@@ -41,20 +38,13 @@ const ProjectModal = ({ project, open, onClose, onNavigate }) => {
       aria-describedby="project-modal-description"
     >
       <Box sx={modalStyle}>
-        {/* Header with Title and Close Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
-          {/* Project Navigation (passed via props if this component is kept) */}
-          {onNavigate && (
-             <ProjectNavigation
-               onNavigate={onNavigate}
-               // Need isFirst/isLast props if this component manages navigation state
-             />
-          )}
-          <IconButton onClick={onClose} aria-label="close modal" sx={{ ml: 'auto' }}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-
+        {/* Navigation Controls */}
+        <ProjectNavigation 
+          onClose={onClose}
+          onPrev={onPreviousProject}
+          onNext={onNextProject}
+        />
+        
         {/* Scrollable Content Area */}
         <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
           {/* Render the full content */}

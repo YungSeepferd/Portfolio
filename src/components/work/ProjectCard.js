@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
-import ProjectCardPreview from './ProjectCardPreview'; // Import the preview component
-import TagList from '../common/TagList'; // Import TagList
+import ProjectCardPreview from './ProjectCardPreview';
+import TagList from '../common/TagList';
 
 /**
  * ProjectCard Component
@@ -17,11 +17,57 @@ const ProjectCard = ({ project, onClick }) => {
 
   if (!project) return null;
 
-  const { title, description, heroMedia, tags = [], technologies = [], tools = [], links = {} } = project;
+  const { 
+    title, 
+    description, 
+    categories = [], 
+    technologies = [], 
+    links = [],
+    cardVariant = 'default'
+  } = project;
 
-  // Determine image source from heroMedia
-  const imageSrc = heroMedia?.src || 'https://via.placeholder.com/400x250?text=Project+Image+Not+Found'; // Fallback image
+  // Handle links as either array or object for backward compatibility
+  const linksArray = Array.isArray(links) ? links : 
+                    (links && typeof links === 'object' ? Object.values(links) : []);
 
+  // Determine image source with proper fallbacks and path resolution
+  const getProjectImage = () => {
+    // Try direct media object first
+    if (project.media) {
+      if (typeof project.media === 'string') {
+        return project.media;
+      }
+      if (project.media.src) {
+        return project.media.src;
+      }
+    }
+    
+    // Then try featuredImages.overview
+    if (project.featuredImages?.overview) {
+      if (typeof project.featuredImages.overview === 'string') {
+        return project.featuredImages.overview;
+      }
+      if (typeof project.featuredImages.overview === 'object' && project.featuredImages.overview.src) {
+        return project.featuredImages.overview.src;
+      }
+    }
+    
+    // Fall back to gallery image or placeholder
+    if (project.galleryImages && project.galleryImages.length > 0) {
+      const firstImage = project.galleryImages[0];
+      if (typeof firstImage === 'string') {
+        return firstImage;
+      }
+      if (firstImage && firstImage.src) {
+        return firstImage.src;
+      }
+    }
+    
+    return 'https://via.placeholder.com/400x250?text=Project+Image+Not+Found';
+  };
+
+  const imageSrc = getProjectImage();
+  
   // Animation for the card itself
   const cardVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -51,6 +97,10 @@ const ProjectCard = ({ project, onClick }) => {
             transform: 'translateY(-5px)',
             boxShadow: theme.shadows[6],
           },
+          // Apply variant styling if specified
+          ...(cardVariant && cardVariant !== 'default' && {
+            borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
+          })
         }}
       >
         {/* Image */}
@@ -67,7 +117,10 @@ const ProjectCard = ({ project, onClick }) => {
             containerHeight="100%"
             containerWidth="100%"
             objectFit="cover" // Ensure image covers the area
-            onError={(e) => console.error(`Failed to load image for ${title}: ${imageSrc}`, e)}
+            onError={(e) => {
+              console.error(`Failed to load image for ${title}: ${imageSrc}`, e);
+              e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
+            }}
           />
         </Box>
 
@@ -95,16 +148,17 @@ const ProjectCard = ({ project, onClick }) => {
           >
             {description}
           </Typography>
-          {/* Display Tags */}
-          <TagList tags={tags} />
+          {/* Display Categories as Tags */}
+          {categories && categories.length > 0 && (
+            <TagList tags={categories} />
+          )}
         </CardContent>
 
         {/* Hover Overlay using ProjectCardPreview */}
         <ProjectCardPreview
           isVisible={isHovered}
           technologies={technologies}
-          tools={tools}
-          links={links}
+          links={linksArray}
         />
       </Card>
     </motion.div>

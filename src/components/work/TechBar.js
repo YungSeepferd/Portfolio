@@ -7,12 +7,12 @@ import { useTheme } from '@mui/material/styles';
  * 
  * Displays a horizontal list of technologies/tools used in a project
  */
-const TechBar = ({ tools = [], onClick, variant = 'outlined', size = 'small', sx = {} }) => {
+const TechBar = ({ technologies = [], onClick, variant = 'outlined', size = 'small', sx = {} }) => {
   // Use theme correctly
   const theme = useTheme();
   
-  // If no tools, don't render anything
-  if (!tools || tools.length === 0) return null;
+  // If no technologies, don't render anything
+  if (!technologies || technologies.length === 0) return null;
   
   return (
     <Box sx={{ width: '100%', ...sx }}>
@@ -26,14 +26,14 @@ const TechBar = ({ tools = [], onClick, variant = 'outlined', size = 'small', sx
           gap: theme.spacing(0.5),
         }}
       >
-        {tools.map((tool) => (
+        {technologies.map((tech) => (
           <Chip
-            key={tool}
-            label={tool}
+            key={tech}
+            label={tech}
             size={size}
             variant={variant}
             clickable={!!onClick}
-            onClick={onClick ? () => onClick(tool) : undefined}
+            onClick={onClick ? () => onClick(tech) : undefined}
             sx={{
               // Use theme in styles
               my: theme.spacing(0.5),

@@ -3,28 +3,38 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import { projects as workData } from './data';
+import { projects as workData } from './data/projects/index'; // Import directly from projects index
 import ErrorBoundary from '../common/ErrorBoundary';
 
+/**
+ * Work Component
+ * 
+ * Displays a grid of project cards and handles the project modal.
+ */
 const Work = () => {
   const theme = useTheme();
-  const [projects] = useState(workData || []);
+  const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
 
+  // Load projects on component mount
   useEffect(() => {
-    if (!projects || projects.length === 0) {
-      console.error("Projects data not loaded or empty:", projects);
+    if (!workData || workData.length === 0) {
+      console.error("Projects data not loaded or empty:", workData);
+      setProjects([]);
     } else {
-      console.log("Projects data loaded successfully:", projects.length, "projects");
+      console.log("Projects data loaded successfully:", workData.length, "projects");
+      setProjects(workData);
     }
-  }, [projects]);
+  }, []);
 
+  // Update filtered projects when projects change
   useEffect(() => {
     setFilteredProjects(projects);
   }, [projects]);
 
+  // Handle project card click
   const handleCardClick = (project) => {
     const index = projects.findIndex(p => p.id === project.id);
     if (index !== -1) {
@@ -33,10 +43,30 @@ const Work = () => {
     }
   };
 
+  // Handle modal close
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
+  // Handle navigation to next project
+  const handleNextProject = () => {
+    if (selectedProjectIndex < projects.length - 1) {
+      setSelectedProjectIndex(selectedProjectIndex + 1);
+    } else {
+      setSelectedProjectIndex(0); // Loop back to first project
+    }
+  };
+
+  // Handle navigation to previous project
+  const handlePrevProject = () => {
+    if (selectedProjectIndex > 0) {
+      setSelectedProjectIndex(selectedProjectIndex - 1);
+    } else {
+      setSelectedProjectIndex(projects.length - 1); // Loop to last project
+    }
+  };
+
+  // Animation variants
   const sectionAnimation = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -103,7 +133,10 @@ const Work = () => {
             </Box>
 
             <ErrorBoundary componentName="ProjectGrid">
-              <ProjectGrid projects={filteredProjects} onCardClick={handleCardClick} />
+              <ProjectGrid 
+                projects={filteredProjects} 
+                onCardClick={handleCardClick} 
+              />
             </ErrorBoundary>
           </motion.div>
         </Box>
@@ -114,20 +147,8 @@ const Work = () => {
           open={isModalOpen}
           onClose={handleCloseModal}
           project={selectedProjectIndex !== null ? projects[selectedProjectIndex] : null}
-          onNextProject={() => {
-            if (selectedProjectIndex < projects.length - 1) {
-              setSelectedProjectIndex(selectedProjectIndex + 1);
-            } else {
-              setSelectedProjectIndex(0);
-            }
-          }}
-          onPreviousProject={() => {
-            if (selectedProjectIndex > 0) {
-              setSelectedProjectIndex(selectedProjectIndex - 1);
-            } else {
-              setSelectedProjectIndex(projects.length - 1);
-            }
-          }}
+          onNextProject={handleNextProject}
+          onPreviousProject={handlePrevProject}
         />
       </ErrorBoundary>
     </ErrorBoundary>

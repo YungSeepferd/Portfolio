@@ -88,48 +88,47 @@ const ContentAwareImage = ({
     }
   };
   
-  // Handle image loading errors with improved retry mechanism
+  // Improved error handling in handleError function
   const handleError = (e) => {
+    console.error(`Image failed to load: ${imageSrc}`, e);
+    setPermanentError(true);
     setLoaded(false);
     
-    // If we're not at maximum retries yet, schedule another attempt
+    // If error handler is provided, call it
+    if (props.onError) {
+      props.onError(e);
+    }
+    
+    // Retry loading with placeholder if should retry
     if (retryCount < maxRetries) {
-      console.log(`Retry ${retryCount + 1}/${maxRetries} for image: ${src}`);
+      const retryAttempt = retryCount + 1;
+      const progressiveDelay = retryDelay * (1 + (retryAttempt * 0.5));
       
-      // Clear any existing retry timeout
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
+      console.log(`Retrying image load (attempt ${retryAttempt}): ${imageSrc} in ${progressiveDelay}ms`);
       
-      // Schedule next retry with progressive backoff
-      const progressiveDelay = retryDelay * (1 + (retryCount * 0.5)); // Increase delay progressively
-      
-      retryTimeoutRef.current = setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        // Force reload by adding a cache-busting parameter
+      setTimeout(() => {
+        const retryUrl = `${imageSrc}?retry=${retryAttempt}&time=${Date.now()}`;
+        setRetryCount(retryAttempt);
         if (e.target) {
-          e.target.src = `${imageSrc}?retry=${retryCount + 1}&time=${Date.now()}`;
+          e.target.src = retryUrl;
         }
       }, progressiveDelay);
-    } else {
-      console.error(`Failed to load image after ${maxRetries} retries:`, src);
-      setPermanentError(true);
-      
-      // Try fallback image if provided
-      if (fallbackSrc && e.target) {
+    } else if (fallbackSrc && fallbackSrc !== imageSrc) {
+      console.log(`Using fallback image: ${fallbackSrc}`);
+      if (e.target) {
         e.target.src = fallbackSrc;
         e.target.onload = () => {
           setLoaded(true);
         };
-      } else if (theme.customDefaults?.placeholderImage && e.target) {
-        e.target.src = theme.customDefaults.placeholderImage;
-        e.target.onload = () => {
-          setLoaded(true);
-        };
       }
-      
-      onError(e);
+    } else if (theme.customDefaults?.placeholderImage && e.target) {
+      e.target.src = theme.customDefaults.placeholderImage;
+      e.target.onload = () => {
+        setLoaded(true);
+      };
     }
+    
+    onError(e);
   };
   
   // Determine the best object-fit property

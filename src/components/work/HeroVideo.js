@@ -9,36 +9,17 @@ import VideoPlayer from '../common/VideoPlayer';
  * Displays a hero video at the top of a project page with robust error handling
  * and support for different video source formats.
  */
-const HeroVideo = ({ videoSrc }) => {
+const HeroVideo = ({ videoSrc, posterImage }) => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [normalizedSrc, setNormalizedSrc] = useState('');
   
-  // Normalize the video source on component mount and when it changes
   useEffect(() => {
-    try {
-      if (!videoSrc) {
-        setHasError(true);
-        console.error('No video source provided');
-        return;
-      }
-      
-      // Handle different videoSrc formats
-      if (typeof videoSrc === 'string') {
-        setNormalizedSrc(videoSrc);
-      } else if (videoSrc.src) {
-        setNormalizedSrc(videoSrc.src);
-      } else if (videoSrc.type === 'video' && videoSrc.src) {
-        setNormalizedSrc(videoSrc.src);
-      } else {
-        throw new Error('Invalid video source format');
-      }
-      
-      setHasError(false);
-    } catch (error) {
-      console.error('Error processing video source:', error);
+    if (!videoSrc) {
       setHasError(true);
+      console.error('No video source provided to HeroVideo component');
+    } else {
+      setHasError(false);
     }
   }, [videoSrc]);
   
@@ -50,7 +31,7 @@ const HeroVideo = ({ videoSrc }) => {
   
   // Handle video loading error
   const handleVideoError = (error) => {
-    console.error('Video failed to load:', normalizedSrc, error);
+    console.error('Video failed to load:', videoSrc, error);
     setIsLoading(false);
     setHasError(true);
   };
@@ -60,11 +41,9 @@ const HeroVideo = ({ videoSrc }) => {
       <Box 
         component="section"
         sx={{ 
-          my: 6,
           width: '100%',
-          height: { xs: '200px', sm: '300px', md: '400px' },
+          height: '100%',
           backgroundColor: theme.palette.background.paper,
-          borderRadius: theme.shape.borderRadius,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -78,7 +57,7 @@ const HeroVideo = ({ videoSrc }) => {
         <Typography variant="body2" color="text.secondary" align="center">
           The video may be missing or in an unsupported format.
           <br/>
-          Please check the source: {normalizedSrc || 'No source provided'}
+          Please check the source: {typeof videoSrc === 'object' ? videoSrc.src : videoSrc || 'No source provided'}
         </Typography>
       </Box>
     );
@@ -88,13 +67,10 @@ const HeroVideo = ({ videoSrc }) => {
     <Box 
       component="section"
       sx={{ 
-        my: 6,
         width: '100%',
-        height: 'auto',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
-        overflow: 'hidden',
+        height: '100%',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
       {isLoading && (
@@ -117,7 +93,8 @@ const HeroVideo = ({ videoSrc }) => {
       )}
       
       <VideoPlayer 
-        src={normalizedSrc}
+        src={typeof videoSrc === 'object' ? videoSrc.src : videoSrc}
+        poster={posterImage}
         containerHeight="100%"
         containerWidth="100%"
         autoplay={true}
@@ -137,6 +114,12 @@ HeroVideo.propTypes = {
     PropTypes.shape({
       src: PropTypes.string,
       type: PropTypes.string
+    })
+  ]),
+  posterImage: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      src: PropTypes.string
     })
   ])
 };

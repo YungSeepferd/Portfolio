@@ -72,7 +72,7 @@ const CubeScene = () => {
     const rippleCenter = scrollActive ? { x: 0, z: 0 } : null;
     const rippleStrength = Math.sin(currentTime * 3) * 0.5;
     
-    // Update each cube
+    // Apply size calculations to all cube elements
     cubeGrid.forEach((cube) => {
       const cubeRef = cubeRefs.current[cube.index];
       const state = cubeStates.current[cube.index];
@@ -154,9 +154,23 @@ const CubeScene = () => {
           state.energy * 0.3 // Only glow when energized
         );
       }
+      
+      // Apply size calculations
+      const calculatedSize = calculateSize(0.5);
+      cubeRef.current.scale.set(calculatedSize, calculatedSize, calculatedSize);
     });
   });
   
+  const calculateSize = (size) => {
+    // If transitioning, make it smaller
+    if (isTransitioning) {
+      return size * 0.8;
+    }
+    
+    // Otherwise maintain normal size
+    return size;
+  };
+
   return (
     <group position={[0, -1, 0]}>
       {cubeGrid.map((cube, i) => (

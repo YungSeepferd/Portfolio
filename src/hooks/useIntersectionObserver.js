@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 /**
  * Custom hook for tracking when an element enters or exits the viewport
@@ -20,6 +20,9 @@ function useIntersectionObserver({
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [node, setNode] = useState(null);
   
+  // Use useRef to keep track of the observer instance for proper cleanup
+  const observerRef = useRef(null);
+  
   const frozen = isIntersecting && freezeOnceVisible;
   
   // Memoize the updateEntry function to ensure consistent reference
@@ -31,19 +34,33 @@ function useIntersectionObserver({
   // Setup the intersection observer
   useEffect(() => {
     // Don't observe if frozen or no node to observe
-    if (frozen || !node) return;
+    if (frozen || !node) {
+      // Clean up existing observer if any
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      return;
+    }
     
+    // Create new observer and store in ref
     const observer = new IntersectionObserver(updateEntry, {
       threshold,
       root,
       rootMargin,
     });
     
+    observerRef.current = observer;
     observer.observe(node);
     
     // Cleanup on unmount
-    return () => observer.disconnect();
-  }, [node, threshold, root, rootMargin, frozen, updateEntry]); // Added updateEntry dependency
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+    };
+  }, [node, threshold, root, rootMargin, frozen, updateEntry]);
   
   // Function to obtain the ref
   const ref = useCallback(node => {

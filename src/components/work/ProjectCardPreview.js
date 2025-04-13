@@ -1,18 +1,22 @@
 import React from 'react';
 import { Box, Fade, useTheme } from '@mui/material';
 import TechBar from './TechBar';
-import ProjectLinks from './ProjectLinks';
+import ActionButton from '../common/ActionButton';
 
 /**
  * ProjectCardPreview Component
  *
- * Displays TechBar and ProjectLinks as an overlay on ProjectCard hover.
+ * Displays TechBar and Links as an overlay on ProjectCard hover.
  */
-const ProjectCardPreview = ({ isVisible, technologies = [], tools = [], links = {} }) => {
+const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
   const theme = useTheme();
 
+  // Handle links as either array or object for backward compatibility
+  const linksArray = Array.isArray(links) ? links : 
+                    (links && typeof links === 'object' ? Object.values(links) : []);
+
   // Only render if there's something to show
-  const hasContent = (technologies.length > 0 || tools.length > 0 || Object.keys(links).length > 0);
+  const hasContent = (technologies.length > 0 || linksArray.length > 0);
   if (!hasContent) return null;
 
   return (
@@ -36,10 +40,11 @@ const ProjectCardPreview = ({ isVisible, technologies = [], tools = [], links = 
         }}
       >
         {/* Tech Bar */}
-        {(technologies.length > 0 || tools.length > 0) && (
+        {technologies && technologies.length > 0 && (
           <TechBar
             technologies={technologies}
-            tools={tools}
+            variant="outlined"
+            size="small"
             sx={{
               mb: 2,
               // Override TechBar styles for overlay
@@ -55,13 +60,24 @@ const ProjectCardPreview = ({ isVisible, technologies = [], tools = [], links = 
           />
         )}
 
-        {/* Project Links */}
-        {Object.keys(links).length > 0 && (
-          <ProjectLinks
-            links={links}
-            sx={{
-              // Override ProjectLinks styles for overlay
-              '& .MuiButton-root': {
+        {/* Quick link buttons - will be clickable but pointer-events is set to none on parent */}
+        {linksArray.length > 0 && linksArray.slice(0, 2).map((link, index) => (
+          <Box 
+            key={`preview-link-${index}`} 
+            sx={{ 
+              pointerEvents: 'auto', // Override parent's pointer-events: none
+              mt: 1
+            }}
+          >
+            <ActionButton
+              label={link.label || 'View'}
+              href={link.url}
+              icon={link.icon}
+              contentType={link.contentType || 'external'}
+              variant="outlined"
+              size="small"
+              color="inherit"
+              sx={{
                 color: theme.palette.common.white,
                 borderColor: 'rgba(255, 255, 255, 0.5)',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -69,10 +85,10 @@ const ProjectCardPreview = ({ isVisible, technologies = [], tools = [], links = 
                   backgroundColor: 'rgba(255, 255, 255, 0.2)',
                   borderColor: theme.palette.common.white,
                 },
-              },
-            }}
-          />
-        )}
+              }}
+            />
+          </Box>
+        ))}
       </Box>
     </Fade>
   );

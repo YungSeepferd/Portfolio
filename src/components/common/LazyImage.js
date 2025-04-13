@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Skeleton } from '@mui/material';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 
@@ -11,13 +11,13 @@ const LazyImage = ({
   alt = '', 
   style = {}, 
   onLoad = () => {}, 
+  onError = () => {}, 
   placeholderColor = 'rgba(0, 0, 0, 0.11)',
   maxRetries = 3, // Default to 3 retries
   retryDelay = 3000, // 3 seconds between retries
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [error, setError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [permanentError, setPermanentError] = useState(false);
   const retryTimeoutRef = useRef(null);
@@ -27,6 +27,15 @@ const LazyImage = ({
     threshold: 0.1,
     freezeOnceVisible: true
   });
+
+  // Fix: Wrap handleError in useCallback to prevent recreating it on every render
+  const handleError = useCallback((e) => {
+    console.error(`Image failed to load: ${src}`);
+    setPermanentError(true);
+    if (onError) {
+      onError(e);
+    }
+  }, [src, onError]);
 
   // Start loading the image when it becomes visible
   useEffect(() => {
@@ -42,14 +51,11 @@ const LazyImage = ({
     
     img.onload = () => {
       setIsLoaded(true);
-      setError(false);
       setRetryCount(0);
       onLoad();
     };
     
-    img.onerror = () => {
-      setError(true);
-      
+    img.onerror = (e) => {
       // Implement retry logic with progressive backoff
       if (retryCount < maxRetries) {
         console.log(`Retry ${retryCount + 1}/${maxRetries} for image: ${src}`);
@@ -64,8 +70,8 @@ const LazyImage = ({
         }, progressiveDelay);
       } else {
         // Max retries reached
-        console.error(`Failed to load image after ${maxRetries} retries:`, src);
-        setPermanentError(true);
+        console.error(`Error loading image: ${src}`);
+        handleError(e);
       }
     };
     
@@ -83,7 +89,7 @@ const LazyImage = ({
         clearTimeout(retryTimeoutRef.current);
       }
     };
-  }, [src, isVisible, onLoad, isLoaded, retryCount, maxRetries, retryDelay, permanentError]);
+  }, [src, isVisible, onLoad, isLoaded, retryCount, maxRetries, retryDelay, permanentError, handleError]);
   
   return (
     <Box 

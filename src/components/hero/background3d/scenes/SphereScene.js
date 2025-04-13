@@ -4,9 +4,6 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { SHAPE_LIMITS, SHAPE_TYPES } from '../constants';
 import { useSceneState } from '../SceneContext';
-// Remove unused imports
-// import ObjectPool from '../utils/ObjectPool'; 
-// import Particle from '../ParticleComponent';
 
 /**
  * SphereScene Component - Enhanced with InstancedMesh for performance

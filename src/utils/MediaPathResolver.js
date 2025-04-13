@@ -1,102 +1,68 @@
 /**
- * MediaPathResolver
+ * Media Path Resolver
  * 
- * Utility for resolving media paths across the application.
- * Centralizes path logic and handles different media types consistently.
+ * Central utility for resolving media file paths consistently across the application.
+ * Works with the new mediaConfig approach.
  */
-
-import { isVideo, normalizeAssetPath } from './mediaUtils';
-
-// Base paths for different media types
-const BASE_PATHS = {
-  // All media is actually stored in the images directory by project
-  images: '/assets/images/',
-  videos: '/assets/images/' // We use the images directory for videos too
-};
+import { designConstants } from '../theme';
 
 /**
- * Resolves a media path for a specific project
+ * Resolves media paths to their appropriate public URL
+ * Handles both regular paths and paths with src/ prefix
  * 
- * @param {string} projectKey - The project key/name (folder name)
- * @param {string} fileName - The file name including extension
- * @param {string} mediaType - Type of media ('images', 'videos')
- * @returns {string} - The resolved file path
+ * @param {string} path - The path to resolve
+ * @returns {string} - The resolved path for public access
  */
-export const resolveProjectMediaPath = (projectKey, fileName, mediaType = 'images') => {
-  const basePath = BASE_PATHS[mediaType] || BASE_PATHS.images;
-  return `${basePath}${projectKey}/${fileName}`;
-};
-
-/**
- * Process a raw media path or object to ensure consistent format
- * 
- * @param {string|Object} media - Raw media path or object
- * @returns {Object} - Processed media object with type and src
- */
-export const processMediaItem = (media) => {
-  // If it's already a processed object, return it
-  if (media && typeof media === 'object' && media.src) {
-    return media;
+export const resolveMediaPath = (path) => {
+  if (!path) {
+    return designConstants.placeholderImages?.project || '/assets/images/placeholders/project.jpg';
   }
-  
-  // Handle string paths
-  if (typeof media === 'string') {
-    return {
-      type: isVideo(media) ? 'video' : 'image',
-      src: media
-    };
-  }
-  
-  // Return null for invalid inputs
-  return null;
-};
 
-/**
- * Try multiple possible paths for a media file
- * Useful for finding files when exact path is uncertain
- * 
- * @param {string} projectKey - The project folder name
- * @param {string} fileName - The file name to find
- * @returns {string|null} - The first working path or null
- */
-export const findMediaPath = (projectKey, fileName) => {
-  // Different possible locations to check
-  const possiblePaths = [
-    `assets/images/${projectKey}/${fileName}`,
-    `assets/videos/${projectKey}/${fileName}`,
-    `src/assets/images/${projectKey}/${fileName}`,
-    `src/assets/videos/${projectKey}/${fileName}`
-  ];
-  
-  // In a real implementation, we would try to access each path
-  // but for now we'll just return the first path as we can't
-  // actually check file existence at build time
-  return possiblePaths[0];
-};
-
-/**
- * Resolves media paths correctly throughout the application
- * 
- * @param {string|object} path - The path to the media asset
- * @param {string|null} fallback - Fallback image to use if path is invalid
- * @returns {string} The resolved path
- */
-export function resolveMediaPath(path, fallback = null) {
-  if (!path) return fallback;
-  
-  // Handle already imported assets (which are URLs)
-  if (typeof path === 'object' || 
-      (typeof path === 'string' && (
-        path.startsWith('data:') || 
-        path.startsWith('blob:') || 
-        path.startsWith('http')
-      ))
-  ) {
+  // If already an absolute URL, just return it
+  if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
-  
-  // Normalize the path (remove src/ prefixes, ensure proper public path)
-  return normalizeAssetPath(path);
-}
 
-export default resolveMediaPath;
+  // If it's already a root-relative path, just return it
+  if (path.startsWith('/')) {
+    // For production with potential subdirectory deployment
+    const publicUrl = process.env.PUBLIC_URL || '';
+    return `${publicUrl}${path}`;
+  }
+
+  // If the path includes src/ at the beginning, replace it to make it relative to public
+  if (path.startsWith('src/')) {
+    return path.replace('src/', '/');
+  }
+
+  // For other paths, assume they're relative to public folder
+  return `/${path}`;
+};
+
+/**
+ * Gets the default placeholder image for a given media type
+ * @param {string} type - Type of media (image, video, etc.)
+ * @returns {string} - Path to the placeholder
+ */
+export const getDefaultPlaceholder = (type = 'image') => {
+  const placeholders = designConstants.placeholderImages || {
+    project: '/assets/images/placeholders/project.jpg',
+    profile: '/assets/images/placeholders/profile.jpg',
+    hero: '/assets/images/placeholders/hero.jpg'
+  };
+
+  switch (type) {
+    case 'profile':
+      return placeholders.profile;
+    case 'hero':
+      return placeholders.hero;
+    case 'video':
+      return placeholders.video || placeholders.project;
+    default:
+      return placeholders.project;
+  }
+};
+
+// Fix the default export
+const mediaPathResolverUtils = { resolveMediaPath, getDefaultPlaceholder };
+export default mediaPathResolverUtils;

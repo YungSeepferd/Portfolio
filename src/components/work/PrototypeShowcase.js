@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
-import ProjectPrototypeEmbed from './ProjectPrototypeEmbed'; // Import the embed component
+import ProjectPrototypeEmbed from './ProjectPrototypeEmbed'; 
+import { designConstants } from '../../theme'; // Import designConstants from theme
 
 /**
  * PrototypeShowcase Component
@@ -10,8 +11,9 @@ import ProjectPrototypeEmbed from './ProjectPrototypeEmbed'; // Import the embed
 const PrototypeShowcase = ({ title = "Interactive Prototype", type = 'figma', url, sx = {} }) => {
   const theme = useTheme();
 
+  // Don't render if no URL is provided
   if (!url) {
-    return null; // Don't render if no URL is provided
+    return null;
   }
 
   return (
@@ -36,6 +38,7 @@ const PrototypeShowcase = ({ title = "Interactive Prototype", type = 'figma', ur
           height: { xs: '400px', sm: '500px', md: '600px', lg: '700px' },
           width: '100%',
           backgroundColor: theme.palette.background.default, // Background for loading state
+          transition: designConstants.transitions.standard, // Use new design constants
         }}
       >
         {/* Use ProjectPrototypeEmbed to handle the actual embedding */}

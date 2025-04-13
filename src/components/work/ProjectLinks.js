@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material'; // Added Stack for better spacing and alignment
 import ActionButton from '../common/ActionButton';
 import { resolveMediaPath } from '../../utils/MediaPathResolver';
 
@@ -18,7 +18,11 @@ import CodeIcon from '@mui/icons-material/Code';
  * presentations, prototypes, code repositories, etc.
  */
 const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
-  if (!prototype && !presentation && (!links || links.length === 0)) {
+  // Handle links as either array or object for backward compatibility
+  const linksArray = Array.isArray(links) ? links : 
+                    (links && typeof links === 'object' ? Object.values(links) : []);
+  
+  if (!prototype && !presentation && linksArray.length === 0) {
     return null;
   }
   
@@ -31,12 +35,14 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
         Learn more about {title}
       </Typography>
       
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: 2
-      }}>
+      {/* Use Stack for better button layout with consistent spacing */}
+      <Stack 
+        direction="row" 
+        flexWrap="wrap" 
+        spacing={2} 
+        justifyContent="center"
+        sx={{ mt: 2 }}
+      >
         {/* Presentation PDF button */}
         {presentationPath && (
           <ActionButton
@@ -64,23 +70,27 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
         )}
         
         {/* Additional links */}
-        {links && links.length > 0 && links.map((link, index) => {
+        {linksArray.length > 0 && linksArray.map((link, index) => {
           // Determine icon based on link type/label
-          let icon = <OpenInNewIcon />;
-          if (link.type === 'github' || link.label?.toLowerCase().includes('github')) {
-            icon = <GitHubIcon />;
-          } else if (link.type === 'paper' || link.label?.toLowerCase().includes('paper')) {
-            icon = <ArticleIcon />;
-          } else if (link.type === 'code' || link.label?.toLowerCase().includes('code')) {
-            icon = <CodeIcon />;
+          let icon = link.icon || <OpenInNewIcon />;
+          if (!link.icon) {
+            if (link.type === 'github' || (link.label && link.label.toLowerCase().includes('github'))) {
+              icon = <GitHubIcon />;
+            } else if (link.type === 'paper' || (link.label && link.label.toLowerCase().includes('paper'))) {
+              icon = <ArticleIcon />;
+            } else if (link.type === 'code' || (link.label && link.label.toLowerCase().includes('code'))) {
+              icon = <CodeIcon />;
+            }
           }
           
           // Determine content type for modal handling
-          let contentType = 'external';
-          if (link.url?.endsWith('.pdf')) {
-            contentType = 'pdf';
-          } else if (link.url?.includes('figma.com') || link.url?.includes('prototype')) {
-            contentType = 'iframe';
+          let contentType = link.contentType || 'external';
+          if (!link.contentType) {
+            if (link.url && link.url.endsWith('.pdf')) {
+              contentType = 'pdf';
+            } else if (link.url && (link.url.includes('figma.com') || link.url.includes('prototype'))) {
+              contentType = 'iframe';
+            }
           }
           
           // Resolve URL if it's a local path
@@ -99,7 +109,7 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
             />
           );
         })}
-      </Box>
+      </Stack>
     </Box>
   );
 };

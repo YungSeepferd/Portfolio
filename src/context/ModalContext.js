@@ -28,8 +28,7 @@ const modalStyle = {
 export const ModalProvider = ({ children }) => {
   // State for different modal types
   const [pdfOpen, setPdfOpen] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [pdfTitle, setPdfTitle] = useState('');
+  const [pdfUrl, setPdfUrl] = useState(null);
   
   const [iframeOpen, setIframeOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState('');
@@ -43,9 +42,8 @@ export const ModalProvider = ({ children }) => {
   const [projectContent, setProjectContent] = useState(null);
   
   // Open PDF modal
-  const openPdf = useCallback((url, title = 'PDF Document') => {
+  const openPdf = useCallback((url, title = '') => {
     setPdfUrl(url);
-    setPdfTitle(title);
     setPdfOpen(true);
     // Close other modals
     setIframeOpen(false);
@@ -115,7 +113,7 @@ export const ModalProvider = ({ children }) => {
         aria-describedby="pdf-modal-description"
       >
         <Box sx={modalStyle}>
-          <PDFViewer url={pdfUrl} title={pdfTitle} />
+          <PDFViewer url={pdfUrl} title="PDF Document" />
         </Box>
       </Modal>
       
