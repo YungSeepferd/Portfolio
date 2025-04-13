@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Grid, Box, Stack, Chip } from '@mui/material';
-import SkillTag from '../common/SkillTag';
+// Updated import for SkillTag
+import { SkillTag } from '../common/Tags';
 // Import Material UI icons for visual enhancement
 import CodeIcon from '@mui/icons-material/Code';
 import BrushIcon from '@mui/icons-material/Brush';
@@ -26,8 +27,7 @@ export const aboutData = [
   // WhoAmI tab (previously About Me)
   {
     title: "WhoAmI",
-    subtitle: "UX Designer & Researcher",
-    // Update object with specific position to focus on bottom of image
+    subtitle: "UX Designer & Researcher | Affective Haptics Specialist", // Updated subtitle
     pictures: [
       { 
         src: ProfileImage,
@@ -36,20 +36,23 @@ export const aboutData = [
     ],
     content: (
       <>
-        <Typography variant="h4" component="div" gutterBottom>
-          WhoAmI
+        <Typography variant="h4" component="div" gutterBottom sx={{ color: 'primary.main', fontWeight: 600 }}>
+          Bridging Technology and Emotion
         </Typography>
-        <Typography variant="body1" paragraph>
-          Hi! I'm Vincent Göke, a Human-Computer Interaction Master's graduate, sound designer, and interaction technologist. My work is centered around designing <strong>emotion-driven experiences </strong> through <strong>affective haptics, UX research, and multi-sensory interaction design</strong>.
+        <Typography variant="body1" paragraph sx={{ color: 'text.primary' }}>
+          Hello! I'm Vincent Göke, a passionate Human-Computer Interaction specialist with a Master's degree and a unique blend of skills in sound design and interaction technology. My core focus lies in crafting <strong>emotionally resonant user experiences</strong>. I achieve this by exploring the frontiers of <strong>affective haptics</strong>, conducting thorough <strong>UX research</strong>, and designing intuitive <strong>multi-sensory interactions</strong>.
         </Typography>
-        <Typography variant="body1" paragraph>
-          With a background in media informatics and audio design, I transitioned into <strong>haptic interaction design</strong>—an underexplored but promising field that bridges touch, sound, and technology to create intuitive and immersive user experiences.
+        <Typography variant="body1" paragraph sx={{ color: 'text.secondary' }}>
+          My journey began with media informatics and audio design, which naturally led me to the fascinating field of <strong>haptic interaction design</strong>. While still emerging, haptics holds immense potential to revolutionize how we interact with technology by seamlessly integrating touch, sound, and visual feedback. I thrive on exploring this potential to create experiences that are not just functional, but truly engaging and intuitive.
         </Typography>
-        <Typography variant="body1" paragraph>
-          <strong>Beyond Work</strong>: Producing and mixing music under the aliases <em>Din-Z</em> and <em>Superior Motive</em> since 2015. I occasionally contribute to <strong>HipHop production</strong> and <strong>audio post-production</strong>.
+        <Typography variant="h6" component="div" gutterBottom sx={{ color: 'secondary.main', mt: 3 }}>
+          Beyond the Pixels
         </Typography>
-        <Typography variant="body1" paragraph>
-          <strong>Sports</strong>: Passionate about football, former player, and lifelong <strong>FC Schalke 04</strong> supporter.
+        <Typography variant="body1" paragraph sx={{ color: 'text.secondary' }}>
+          When I'm not designing interfaces, you can often find me producing and mixing music under the aliases <em>Din-Z</em> and <em>Superior Motive</em>, a passion I've pursued since 2015. My audio skills occasionally extend to <strong>HipHop production</strong> and professional <strong>audio post-production</strong> for various media.
+        </Typography>
+        <Typography variant="body1" paragraph sx={{ color: 'text.secondary' }}>
+          Off-screen, I'm an avid football enthusiast—a former player and a dedicated lifelong supporter of <strong>FC Schalke 04</strong>.
         </Typography>
       </>
     )
@@ -310,7 +313,3 @@ export const renderSkillChip = (skill) => (
     sx={{ m: 0.5 }}
   />
 );
-
-export const wallsData = aboutData; // For compatibility with existing components
-
-export default aboutData;

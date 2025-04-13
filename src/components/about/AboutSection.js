@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { aboutData } from './AboutData';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
+import ContentContainer from '../common/ContentContainer'; // Added ContentContainer
 
 /**
  * AboutSection Component
@@ -50,19 +51,8 @@ const AboutSection = () => {
           py: 8,
         }}
       >
-        {/* MODIFIED: Use Box with direct styling instead of container wrappers */}
-        <Box 
-          sx={{ 
-            width: '100%',
-            px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
-            },
-            boxSizing: 'border-box',
-          }}
-        >
+        {/* Use ContentContainer for horizontal padding */}
+        <ContentContainer>
           <motion.div
             variants={sectionAnimation}
             initial="hidden"
@@ -99,7 +89,7 @@ const AboutSection = () => {
               </Typography>
             </Box>
           </motion.div>
-        </Box>
+        </ContentContainer>
         
         {/* Tab Navigation & Content */}
         <AboutTabNavigator 

@@ -4,13 +4,14 @@
  * Contains static configuration values for UI components.
  */
 
-// Category filters for work section
+// Define categories for filtering projects
 export const workCategories = [
-  { value: 'all', label: 'All Projects' },
-  { value: 'uxResearch', label: 'UX Research' },
-  { value: 'interaction', label: 'Interaction Design' },
-  { value: 'haptics', label: 'Haptic Design' },
-  { value: 'prototyping', label: 'Prototyping' },
+  { label: 'All Projects', value: 'all' },
+  { label: 'UX Design', value: 'UX Design' },
+  { label: 'UX Research', value: 'UX Research' },
+  { label: 'Haptic Design', value: 'Haptic Design' },
+  { label: 'AI Integration', value: 'AI Integration' },
+  // Add other relevant categories based on your projects
 ];
 
 // Section configuration for scroll navigation

@@ -1,55 +1,75 @@
 import React from 'react';
-import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { GlobalStyles, Box } from '@mui/material';
+import { BrowserRouter as Router } from 'react-router-dom';
+import createPortfolioTheme from './theme';
+import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
-import Work from './components/work/Work';
 import AboutSection from './components/about/AboutSection';
+import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
 import ErrorBoundary from './components/common/ErrorBoundary';
-import { ModalProvider } from './context/ModalContext';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
-import ThemeDebugger from './components/dev/ThemeDebugger';
-import ContentContainer from './components/common/ContentContainer';
+import { SceneProvider } from './components/hero/background3d/SceneContext';
+
+// Define global styles
+const globalStyles = {
+  '*': {
+    boxSizing: 'border-box',
+    margin: 0,
+    padding: 0,
+  },
+  html: {
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
+    height: '100%',
+    width: '100%',
+  },
+  body: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: (theme) => theme.palette.background.default,
+    color: (theme) => theme.palette.text.primary,
+  },
+  a: {
+    textDecoration: 'none',
+    color: (theme) => theme.palette.primary.main,
+  },
+  '#root': {
+    height: '100%',
+    width: '100%',
+  },
+};
 
 function App() {
+  // Create theme with user's preference
+  const theme = createPortfolioTheme('dark'); // or based on user preference
+
   return (
     <ThemeProvider theme={theme}>
+      {/* Reset CSS */}
+      <CssBaseline />
+      
+      {/* Apply global styles */}
+      <GlobalStyles styles={globalStyles} />
       
       <ModalProvider>
-        <ErrorBoundary>
-          <div className="App">
-            <Header />
-            <CssBaseline />
-            <main>
-              <ErrorBoundary fallback={<div>Something went wrong with the hero section. Please refresh the page.</div>}>
-                
+        <SceneProvider>
+          <Router>
+            <ErrorBoundary componentName="App">
+              <Box className="App">
+                <Header />
+                <Box component="main">
                   <Hero />
-                
-              </ErrorBoundary>
-
-              <ErrorBoundary fallback={<div>Something went wrong with the work section. Please refresh the page.</div>}>
-                <ContentContainer>
-                  <Work />
-                </ContentContainer>
-              </ErrorBoundary>
-              
-              <ErrorBoundary fallback={<div>Something went wrong with the about section. Please refresh the page.</div>}>
-                <ContentContainer>
                   <AboutSection />
-                </ContentContainer>
-              </ErrorBoundary>
-              
-              <ErrorBoundary fallback={<div>Something went wrong with the contact section. Please refresh the page.</div>}>
-                <ContentContainer>
-                  <FooterContact />
-                </ContentContainer>
-              </ErrorBoundary>
-            </main>
-          </div>
-        </ErrorBoundary>
-        
-        {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
+                  <Work />
+                </Box>
+                <FooterContact />
+              </Box>
+            </ErrorBoundary>
+          </Router>
+        </SceneProvider>
       </ModalProvider>
     </ThemeProvider>
   );

@@ -4,9 +4,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { motion, AnimatePresence } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
-import { isVideo } from '../../utils/mediaHelper';
-import VideoPlayer from '../common/VideoPlayer';
+import { SmartImage, VideoPlayer } from '../common/Media';
+import mediaUtils from '../../utils/mediaUtils';
 
 /**
  * ProjectImageGallery Component
@@ -57,8 +56,7 @@ const ProjectImageGallery = ({ images = [], title = '' }) => {
   
   const isCurrentVideo = () => {
     const img = filteredImages[currentIndex];
-    return (typeof img === 'object' && img.type === 'video') || 
-           (typeof img === 'string' && isVideo(img));
+    return mediaUtils.isVideo(img);
   };
 
   return (
@@ -75,8 +73,7 @@ const ProjectImageGallery = ({ images = [], title = '' }) => {
         }}
       >
         {filteredImages.map((img, index) => {
-          const isVideoItem = (typeof img === 'object' && img.type === 'video') || 
-                             (typeof img === 'string' && isVideo(img));
+          const isVideoItem = mediaUtils.isVideo(img);
           const itemSrc = typeof img === 'string' ? img : img.src || '';
           
           return (
@@ -110,8 +107,7 @@ const ProjectImageGallery = ({ images = [], title = '' }) => {
                   />
                 </Box>
               ) : (
-                <ContentAwareImage
-                  imageData={img}
+                <SmartImage
                   src={itemSrc}
                   alt={`${title} image ${index + 1}`}
                   containerHeight="100%"
@@ -228,7 +224,7 @@ const ProjectImageGallery = ({ images = [], title = '' }) => {
                   }}
                 />
               ) : (
-                <ContentAwareImage
+                <SmartImage
                   src={getCurrentImage()}
                   alt={`${title} image ${currentIndex + 1}`}
                   containerHeight="100%"

@@ -1,207 +1,151 @@
 # Portfolio Design System
 
-## Overview
-
-This design system provides a comprehensive set of guidelines and components for maintaining a consistent visual language throughout the UX portfolio. It extends Material UI's theming capabilities with portfolio-specific components and patterns.
+This document outlines the design system used for Vincent Göke's portfolio website. It aims to ensure consistency, maintainability, and a cohesive user experience across the site.
 
 ## Table of Contents
 
-1. [Core System Structure](#core-system-structure)
-2. [Color System](#color-system)
-3. [Typography](#typography)
-4. [Spacing](#spacing)
-5. [Component Patterns](#component-patterns)
-6. [Animation Guidelines](#animation-guidelines)
-7. [Custom Theme Extensions](#custom-theme-extensions)
-8. [Usage Guidelines](#usage-guidelines)
+1. [Color Palette](#color-palette)
+2. [Typography](#typography)
+3. [Spacing & Layout](#spacing--layout)
+4. [Components](#components)
+5. [Animation](#animation)
 
-## Core System Structure
+---
 
-The design system is modularized into specialized files:
+## 1. Color Palette
 
-- **colors.js** - Color palette, semantic color usage, and project-specific color variants
-- **typography.js** - Text styles, font families, and typographic scale
-- **spacing.js** - Spacing units and layout measurements
-- **breakpoints.js** - Responsive design breakpoints
-- **animations.js** - Motion design principles, durations, and easings
-- **components.js** - Shared component styling
-- **index.js** - Theme composition from individual modules
+The color system defines the visual tone of the portfolio and ensures accessibility. Colors are defined in `src/theme/colors.js` and are available via the MUI theme object (`theme.palette`).
 
-## Color System
+**Modes:** The theme supports both `light` and `dark` modes.
 
-### Base Palette
+**Core Palette (Dark Mode Example):**
 
-```jsx
-const palette = {
-  mode: 'dark',
-  primary: {
-    main: '#5363EE', // Core brand blue
-    light: '#8A94F2',
-    dark: '#3545D6',
-    contrastText: '#FFFFFF',
-  },
-  secondary: {
-    main: '#E56B9E', // Accent pink
-    light: '#F1A0C2',
-    dark: '#C2477C',
-    contrastText: '#FFFFFF',
-  },
-  // ...additional colors
-}
-```
+* **Primary:**
+  * `main`: `#6366F1` (Indigo) - Used for primary actions, links, and highlights.
+  * `light`: `#818CF8`
+  * `dark`: `#4F46E5`
+  * `contrastText`: `#FFFFFF`
+* **Secondary:**
+  * `main`: `#EC4899` (Pink) - Used for secondary actions and accents.
+  * `light`: `#F472B6`
+  * `dark`: `#DB2777`
+  * `contrastText`: `#FFFFFF`
+* **Background:**
+  * `default`: `#0F172A` (Slate 900) - Main background color.
+  * `paper`: `#1E293B` (Slate 800) - Background for elevated surfaces like cards, modals.
+* **Text:**
+  * `primary`: `#E2E8F0` (Slate 200) - Default text color.
+  * `secondary`: `#94A3B8` (Slate 400) - Secondary text, subtitles, captions.
+  * `disabled`: `#475569` (Slate 600) - Disabled text and icons.
+* **Error:**
+  * `main`: `#F43F5E` (Rose 500)
+* **Warning:**
+  * `main`: `#F59E0B` (Amber 500)
+* **Info:**
+  * `main`: `#3B82F6` (Blue 500)
+* **Success:**
+  * `main`: `#10B981` (Emerald 500)
+* **Common:**
+  * `black`: `#000000`
+  * `white`: `#FFFFFF`
+* **Divider:** `rgba(255, 255, 255, 0.12)` (Standard MUI divider for dark mode)
 
-### Semantic Color Usage
+**Accent Colors (Project Specific):**
 
-- **Primary** - Main actions, key highlights, primary brand elements
-- **Secondary** - Supporting actions, accents, secondary emphasis
-- **Error/Warning/Info/Success** - System feedback and states
-- **Project Colors** - Each project has a dedicated color theme:
-  - Master Thesis: Primary Blue
-  - Resonant Relaxation: Secondary Pink
-  - AMIAI: Error Red
-  - Green Wallet: Success Green
-  - ADHDeer: Warning Orange
-  - Bachelor Thesis: Info Teal
+Projects can define their own `accentColor` within their data structure (`project.theme.accentColor`). If not provided, the theme's `primary.main` color is used as the default accent.
 
-## Typography
+*(Usage guidelines and light mode examples can be added here)*
 
-### Font Families
+---
 
-- **Headings**: 'Montserrat', sans-serif
-- **Body**: 'Roboto', 'Helvetica', 'Arial', sans-serif
+## 2. Typography
 
-### Type Scale
+The typography system provides a consistent hierarchy and readability across the application.
 
-```jsx
-const typography = {
-  h1: {
-    fontFamily: 'Montserrat, sans-serif',
-    fontWeight: 700,
-    fontSize: '3rem',
-    lineHeight: 1.2,
-    letterSpacing: '-0.02em',
-  },
-  h2: { /* ... */ },
-  h3: { /* ... */ },
-  // ...additional type styles
-};
-```
+**Font Family:**
 
-## Spacing
+* **Primary:** 'Inter', sans-serif (Imported via Google Fonts in `public/index.html`)
 
-Based on an 8px grid system, with multipliers for consistency:
+**Type Scale:**
 
-```jsx
-const spacing = (factor) => `${8 * factor}px`;
-```
+The following variants are defined in `src/theme/typography.js` and configured in the MUI theme:
 
-## Component Patterns
+* **h1:**
+  * Font Weight: 700
+  * Font Size: 3.5rem (Responsive adjustments may apply)
+  * Line Height: 1.2
+  * Letter Spacing: -0.5px
+* **h2:**
+  * Font Weight: 700
+  * Font Size: 2.5rem
+  * Line Height: 1.25
+* **h3:**
+  * Font Weight: 600
+  * Font Size: 2rem
+  * Line Height: 1.3
+* **h4:**
+  * Font Weight: 600
+  * Font Size: 1.5rem
+  * Line Height: 1.35
+* **h5:**
+  * Font Weight: 600
+  * Font Size: 1.25rem
+  * Line Height: 1.4
+* **h6:**
+  * Font Weight: 600
+  * Font Size: 1.1rem
+  * Line Height: 1.4
+* **subtitle1:**
+  * Font Weight: 400
+  * Font Size: 1rem
+  * Line Height: 1.5
+  * Color: `theme.palette.text.secondary`
+* **subtitle2:**
+  * Font Weight: 500
+  * Font Size: 0.875rem
+  * Line Height: 1.5
+  * Color: `theme.palette.text.secondary`
+* **body1:** (Default body text)
+  * Font Weight: 400
+  * Font Size: 1rem (16px)
+  * Line Height: 1.6
+* **body2:**
+  * Font Weight: 400
+  * Font Size: 0.875rem (14px)
+  * Line Height: 1.5
+* **button:**
+  * Font Weight: 600
+  * Font Size: 0.875rem
+  * Line Height: 1.75
+  * Text Transform: none (Overridden from MUI default)
+* **caption:**
+  * Font Weight: 400
+  * Font Size: 0.75rem
+  * Line Height: 1.6
+  * Color: `theme.palette.text.secondary`
+* **overline:**
+  * Font Weight: 600
+  * Font Size: 0.75rem
+  * Line Height: 1.8
+  * Text Transform: uppercase
+  * Letter Spacing: 1px
 
-### Cards
+*(Usage guidelines and examples can be added here)*
 
-Three primary card variants:
-- **Standard** - Default card with border and shadow
-- **Project** - Enhanced card for project displays with image section
-- **Feature** - Highlighted card with accent border
+---
 
-### Sections
+## 3. Spacing & Layout
 
-Standardized section layouts:
-- **Hero** - Full-width introduction with media
-- **Content** - Standard text and media layouts
-- **Gallery** - Image/video collection with lightbox
-- **Outcomes** - Results presentation with metrics
+*(Details about spacing units, breakpoints, and container usage will be added here based on `src/theme/spacing.js`, `breakpoints.js`, and `ContentContainer.js`)*
 
-### Interactive Elements
+---
 
-- **Buttons** - Primary, secondary, and text variants with consistent sizing
-- **Links** - Standard, emphasize, and subtle variations
-- **Navigation** - Header and section navigation components
+## 4. Components
 
-## Animation Guidelines
+*(Documentation for common components like Buttons, Cards, Modals, etc., will be added here)*
 
-Animation principles based on Material Motion:
+---
 
-```jsx
-const animations = {
-  durations: {
-    short: 200,
-    medium: 300, 
-    long: 500
-  },
-  easings: {
-    standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
-    decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',
-    accelerate: 'cubic-bezier(0.4, 0.0, 1, 1)'
-  }
-};
-```
+## 5. Animation
 
-## Custom Theme Extensions
-
-Beyond standard Material UI theme properties:
-
-```jsx
-const customExtensions = {
-  customSections: {
-    about: { /* ... */ },
-    work: { /* ... */ },
-    contact: { /* ... */ }
-  },
-  customComponents: {
-    projectCard: { /* ... */ },
-    heroVideo: { /* ... */ },
-    parallax: { /* ... */ }
-  },
-  customEffects: {
-    cardHover: { /* ... */ },
-    buttonFocus: { /* ... */ }
-  }
-};
-```
-
-## Usage Guidelines
-
-### Theme Hook
-
-```jsx
-import { useTheme } from '@mui/material';
-
-function MyComponent() {
-  const theme = useTheme();
-  
-  return (
-    <Box sx={{ 
-      padding: theme.spacing(3),
-      color: theme.palette.text.primary
-    }}>
-      Content
-    </Box>
-  );
-}
-```
-
-### Styled Components
-
-```jsx
-import { styled } from '@mui/material/styles';
-
-const StyledElement = styled('div')(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.background.paper,
-}));
-```
-
-### Responsive Design
-
-```jsx
-<Box
-  sx={{
-    padding: { xs: 2, sm: 3, md: 4 },
-    fontSize: { xs: '1rem', md: '1.2rem' }
-  }}
->
-  Responsive content
-</Box>
-```
+*(Details about standard animation timings, easing functions, and common variants will be added here based on `src/theme/animations.js` and `src/utils/animationVariants.js`)*

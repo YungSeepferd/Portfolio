@@ -1,22 +1,18 @@
 /**
- * Background3D - 3D Background System
+ * Background3D Module
  * 
- * This module exports the three.js background system components.
- * It provides a modular, optimized replacement for ThreeJSBackground.js
+ * This module exports the Background3D component and its related scenes.
+ * The component provides an interactive 3D background with multiple scenes
+ * that users can switch between.
  */
 
-// Main component
+// Export the main Background3D component as the default export
 export { default } from './Background3D';
 
-// Scene management
-export { SceneProvider, useSceneState } from './SceneContext';
-export { SCENE_MODES, SHAPE_TYPES } from './constants';
-
-// Individual scenes
+// Export individual scenes for direct use if needed
 export { default as SphereScene } from './scenes/SphereScene';
 export { default as CubeScene } from './scenes/CubeScene';
 export { default as TorusScene } from './scenes/TorusScene';
 
-// Utility components
-export { default as ActiveScene } from './ActiveScene';
-export { default as LoadingFallback } from './components/LoadingFallback';
+// Export any utilities related to 3D backgrounds
+export { default as useThreeInteraction } from './hooks/useThreeInteraction';

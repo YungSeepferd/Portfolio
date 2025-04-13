@@ -1,91 +1,154 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Box, Typography, Grid, useTheme } from '@mui/material';
-import ContentAwareImage from '../common/ContentAwareImage';
-import TechBar from './TechBar';
-import SkillTag from '../common/SkillTag';
+import { Box, Typography, useTheme, Stack, Divider } from '@mui/material';
+import { motion } from 'framer-motion';
+// Updated import for SkillTag
+import { SkillTag } from '../common/Tags';
+import ActionButton from '../common/ActionButton';
 
 /**
  * ProjectHeader Component
  * 
- * Displays the main project information at the top of a project modal,
- * including title, description, cover image, categories, and tech bar.
+ * Displays the main header information for a project, including title,
+ * description, categories, tech stack, and relevant links.
  */
-const ProjectHeader = ({ project }) => {
+const ProjectHeader = ({ 
+  title, 
+  description, 
+  categories = [], 
+  techStack = [], 
+  links = [], 
+  theme: projectTheme = {} 
+}) => {
   const theme = useTheme();
-  
-  if (!project) return null;
-  
-  const coverImage = project.images?.[0] || project.media;
-  
+  const headerColor = projectTheme.textColor || theme.palette.text.primary;
+  const accentColor = projectTheme.accentColor || theme.palette.primary.main;
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: "easeOut" } 
+    }
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, delay: 0.2, ease: "easeOut" } 
+    }
+  };
+
   return (
-    <>
-      <Box variant="heroSection" sx={{ mb: 6 }}>
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Box 
-              sx={{
-                overflow: 'hidden',
-                borderRadius: theme.shape.borderRadius,
-                position: 'relative',
-                height: { xs: 300, md: 400 },
-              }}
-            >
-              <ContentAwareImage
-                imageData={coverImage}
-                src={typeof coverImage === 'string' ? coverImage : coverImage?.src}
-                alt={project.title}
-                expandOnHover={true}
-                containerHeight="100%"
-                containerOrientation="landscape"
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography 
-              variant="h2" // Change from "projectTitle" to standard variant
-              sx={{ 
-                color: theme.palette.text.primary,
-                mb: 2
-              }}
-            >
-              {project.title}
-            </Typography>
-            <Typography variant="subtitle1" sx={{ mb: 3 }}>
-              {project.description}
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-              {project.categories?.map(tag => (
-                <SkillTag key={tag} label={tag} />
-              ))}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      
-      {project.tools?.length > 0 && (
-        <Box sx={{ mb: 6 }}>
-          <TechBar 
-            technologies={project.tools} 
-            projectTitle={project.title}
-            links={project.links}
-          />
+    <Box 
+      component={motion.div}
+      initial="hidden"
+      animate="visible"
+      variants={headerVariants}
+      sx={{ 
+        textAlign: 'center', 
+        mb: { xs: 6, md: 8 },
+        pt: { xs: 4, md: 6 }, 
+        color: headerColor,
+      }}
+    >
+      {/* Categories */}
+      {categories && categories.length > 0 && (
+        <Typography 
+          variant="overline" 
+          display="block" 
+          gutterBottom
+          sx={{ 
+            color: accentColor,
+            fontWeight: 600,
+            letterSpacing: '1px',
+            mb: 1,
+          }}
+        >
+          {categories.join(' / ')}
+        </Typography>
+      )}
+
+      {/* Title */}
+      <Typography 
+        variant="h1" 
+        component="h1" 
+        gutterBottom
+        sx={{ 
+          fontWeight: 700,
+          fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
+          color: headerColor, 
+        }}
+      >
+        {title}
+      </Typography>
+
+      {/* Description */}
+      <Typography 
+        variant="h5" 
+        component="p" 
+        sx={{ 
+          maxWidth: '800px', 
+          mx: 'auto', 
+          mb: 4,
+          color: theme.palette.text.secondary, 
+          fontWeight: 400,
+        }}
+      >
+        {description}
+      </Typography>
+
+      {/* Tech Stack */}
+      {techStack && techStack.length > 0 && (
+        <Box 
+          component={motion.div} 
+          variants={contentVariants}
+          sx={{ mb: 4 }}
+        >
+          <Typography variant="overline" display="block" sx={{ mb: 1, color: theme.palette.text.disabled }}>
+            Technologies Used
+          </Typography>
+          <Stack direction="row" spacing={1} justifyContent="center" flexWrap="wrap">
+            {techStack.map((tech) => (
+              <SkillTag key={tech} label={tech} size="medium" />
+            ))}
+          </Stack>
         </Box>
       )}
-    </>
-  );
-};
+      
+      {/* Links */}
+      {links && links.length > 0 && (
+        <Box 
+          component={motion.div} 
+          variants={contentVariants}
+          sx={{ mb: 4 }}
+        >
+          <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
+            {links.map((link, index) => (
+              <ActionButton
+                key={index}
+                label={link.label}
+                href={link.url}
+                icon={link.icon}
+                variant={link.variant || 'outlined'}
+                color={link.color}
+                size="medium"
+                openInPopup={link.openInPopup !== false} 
+                contentType={link.contentType || 'external'} 
+                target={link.openInPopup === false ? "_blank" : undefined}
+                rel={link.openInPopup === false ? "noopener noreferrer" : undefined}
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
+      
+      <Divider sx={{ mt: 6, mb: 0, maxWidth: '200px', mx: 'auto' }} />
 
-ProjectHeader.propTypes = {
-  project: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    categories: PropTypes.arrayOf(PropTypes.string),
-    tools: PropTypes.arrayOf(PropTypes.string),
-    images: PropTypes.array,
-    media: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    links: PropTypes.array
-  }).isRequired
+    </Box>
+  );
 };
 
 export default ProjectHeader;

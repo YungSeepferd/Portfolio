@@ -1,106 +1,132 @@
-import React, { useRef, useState, Suspense, useEffect, useCallback } from 'react';
-import { Box } from '@mui/material';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html } from '@react-three/drei';
-import * as THREE from 'three';
+import React, { useState, useEffect, useRef } from 'react';
+import { Box, CircularProgress, IconButton, Fade, useTheme } from '@mui/material';
 
-import { SceneProvider } from './SceneContext';
-import ActiveScene from './ActiveScene';
-import LoadingFallback from './components/LoadingFallback';
+// Scene components - now using vanilla three.js
+import SphereScene from './scenes/SphereScene';
+import CubeScene from './scenes/CubeScene';
+import TorusScene from './scenes/TorusScene';
 
-// Auto-rotating camera component
-const AutoRotatingCamera = ({ isUserInteracting }) => {
-  const controls = useRef();
-  const lastInteractionTime = useRef(Date.now());
-  
-  // Update the last interaction time when user interacts
-  useEffect(() => {
-    if (isUserInteracting) {
-      lastInteractionTime.current = Date.now();
-    }
-  }, [isUserInteracting]);
-  
-  // Handle automatic camera rotation
-  useFrame(() => {
-    if (!controls.current) return;
-    
-    // Resume auto-rotation after 3 seconds of inactivity
-    const timeSinceInteraction = Date.now() - lastInteractionTime.current;
-    if (timeSinceInteraction > 3000) {
-      controls.current.autoRotate = true;
-    } else {
-      controls.current.autoRotate = false;
-    }
-  });
-  
-  return (
-    <OrbitControls 
-      ref={controls}
-      enableZoom={false} 
-      enablePan={false} 
-      enableRotate={true}
-      rotateSpeed={0.5}
-      autoRotate={true}
-      autoRotateSpeed={0.5}
-      target={[0, 0, 0]}
-      makeDefault
-    />
-  );
-};
+// Scene selector icons - replace with icons that actually exist in Material UI
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'; // Instead of SphereOutlined
+import ViewInArIcon from '@mui/icons-material/ViewInAr'; // Instead of CubeOutlined 
+import DonutLargeOutlinedIcon from '@mui/icons-material/DonutLargeOutlined';
 
 /**
- * Background3D Component - COMPLETELY SIMPLIFIED VERSION
+ * Background3D Component
+ * 
+ * Provides a dynamic 3D background with multiple scene options
+ * that users can interact with and switch between.
  */
 const Background3D = () => {
-  const [canvasError, setCanvasError] = useState(false);
-  const [needsRender, setNeedsRender] = useState(true);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
-  const canvasRef = useRef();
-  const interactionTimeoutRef = useRef(null);
-  
-  // Check for WebGL support
-  useEffect(() => {
-    const canvas = document.createElement('canvas');
-    const hasWebGL = !!(
-      window.WebGLRenderingContext && 
-      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-    );
+  const theme = useTheme();
+  const [activeScene, setActiveScene] = useState('sphere'); // Default scene
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+  const containerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
 
-    if (!hasWebGL) {
-      console.warn("WebGL not supported - using fallback");
-      setCanvasError(true);
-    }
-  }, []);
-  
-  // Track user interaction state
-  const handleUserInteraction = useCallback(() => {
-    setNeedsRender(true);
-    setIsUserInteracting(true);
-    
-    // Clear any existing timeout
-    if (interactionTimeoutRef.current) {
-      clearTimeout(interactionTimeoutRef.current);
-    }
-    
-    // Reset user interaction state after 3 seconds
-    interactionTimeoutRef.current = setTimeout(() => {
-      setIsUserInteracting(false);
-    }, 3000);
-  }, []);
-  
-  // Cleanup on unmount
   useEffect(() => {
+    // Set mounted state after component mounts
+    setIsMounted(true);
+    
+    // Check if user has a scene preference stored
+    const savedScene = localStorage.getItem('preferredScene');
+    if (savedScene && ['sphere', 'cube', 'torus'].includes(savedScene)) {
+      setActiveScene(savedScene);
+    }
+    
+    // Start with loading state
+    setIsLoading(true);
+    
     return () => {
-      if (interactionTimeoutRef.current) {
-        clearTimeout(interactionTimeoutRef.current);
+      // Clean up three.js resources when component unmounts
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
       }
+      if (sceneRef.current && sceneRef.current.dispose) {
+        sceneRef.current.dispose();
+      }
+      setIsMounted(false);
     };
   }, []);
-  
-  if (canvasError) {
-    return null;
-  }
-  
+
+  useEffect(() => {
+    if (!containerRef.current || !isMounted) return;
+    
+    // Clean up previous scene
+    if (sceneRef.current && sceneRef.current.dispose) {
+      sceneRef.current.dispose();
+      sceneRef.current = null;
+    }
+    if (rendererRef.current) {
+      rendererRef.current.dispose();
+      rendererRef.current = null;
+    }
+    
+    // Get container dimensions
+    const container = containerRef.current;
+    const { clientWidth: width, clientHeight: height } = container;
+    
+    // Create appropriate scene
+    let scene;
+    
+    // Initialize new scene
+    switch (activeScene) {
+      case 'sphere':
+        scene = new SphereScene(container, width, height);
+        break;
+      case 'cube':
+        scene = new CubeScene(container, width, height);
+        break;
+      case 'torus':
+        scene = new TorusScene(container, width, height);
+        break;
+      default:
+        scene = new SphereScene(container, width, height);
+    }
+    
+    // Store references
+    sceneRef.current = scene;
+    rendererRef.current = scene.renderer;
+    
+    // Set up loading state handler
+    scene.onLoaded = () => {
+      setIsLoading(false);
+    };
+    
+    // Initialize scene
+    scene.init();
+    
+    // Handle window resize
+    const handleResize = () => {
+      if (scene && scene.resize) {
+        scene.resize(container.clientWidth, container.clientHeight);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (scene && scene.dispose) {
+        scene.dispose();
+      }
+    };
+  }, [activeScene, isMounted]);
+
+  // Handle scene change
+  const handleSceneChange = (scene) => {
+    if (scene === activeScene) return;
+    
+    // Store user preference
+    localStorage.setItem('preferredScene', scene);
+    
+    // Reset loading state when changing scenes
+    setIsLoading(true);
+    setActiveScene(scene);
+  };
+
   return (
     <Box
       sx={{
@@ -109,83 +135,120 @@ const Background3D = () => {
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 1, // Set to a lower value than content
-        pointerEvents: 'none', // Let clicks pass through to content
-        margin: 0,
-        padding: 0,
-        overflow: 'visible',
+        overflow: 'hidden',
+        zIndex: 1,
+        pointerEvents: 'none', // Let events pass through to hero content by default
       }}
-      onClick={(e) => {
-        handleUserInteraction();
-        // Don't consume clicks on elements with pointerEvents: 'none'
-        if (e.target === e.currentTarget) {
-          window.sceneContext?.switchScene();
-        }
-      }}
-      onMouseMove={handleUserInteraction}
-      onTouchMove={handleUserInteraction}
     >
-      <Suspense fallback={<LoadingFallback />}>
-        <Canvas
-          ref={canvasRef}
-          frameloop="always"
-          style={{
-            width: '100%',
-            height: '100%',
+      {/* Scene Selector Controls */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: theme.spacing(4),
+          right: theme.spacing(4),
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          pointerEvents: 'auto', // Enable interaction with controls
+        }}
+      >
+        <IconButton
+          aria-label="Switch to sphere scene"
+          onClick={() => handleSceneChange('sphere')}
+          sx={{
+            backgroundColor: activeScene === 'sphere' 
+              ? theme.palette.primary.main 
+              : 'rgba(0, 0, 0, 0.3)',
+            color: activeScene === 'sphere' 
+              ? theme.palette.primary.contrastText 
+              : theme.palette.common.white,
+            '&:hover': {
+              backgroundColor: activeScene === 'sphere' 
+                ? theme.palette.primary.dark 
+                : 'rgba(0, 0, 0, 0.5)',
+            },
+          }}
+        >
+          <RadioButtonUncheckedIcon />
+        </IconButton>
+        
+        <IconButton
+          aria-label="Switch to cube scene"
+          onClick={() => handleSceneChange('cube')}
+          sx={{
+            backgroundColor: activeScene === 'cube' 
+              ? theme.palette.primary.main 
+              : 'rgba(0, 0, 0, 0.3)',
+            color: activeScene === 'cube' 
+              ? theme.palette.primary.contrastText 
+              : theme.palette.common.white,
+            '&:hover': {
+              backgroundColor: activeScene === 'cube' 
+                ? theme.palette.primary.dark 
+                : 'rgba(0, 0, 0, 0.5)',
+            },
+          }}
+        >
+          <ViewInArIcon />
+        </IconButton>
+        
+        <IconButton
+          aria-label="Switch to torus scene"
+          onClick={() => handleSceneChange('torus')}
+          sx={{
+            backgroundColor: activeScene === 'torus' 
+              ? theme.palette.primary.main 
+              : 'rgba(0, 0, 0, 0.3)',
+            color: activeScene === 'torus' 
+              ? theme.palette.primary.contrastText 
+              : theme.palette.common.white,
+            '&:hover': {
+              backgroundColor: activeScene === 'torus' 
+                ? theme.palette.primary.dark 
+                : 'rgba(0, 0, 0, 0.5)',
+            },
+          }}
+        >
+          <DonutLargeOutlinedIcon />
+        </IconButton>
+      </Box>
+      
+      {/* Loading Indicator */}
+      {isLoading && (
+        <Box
+          sx={{
             position: 'absolute',
             top: 0,
             left: 0,
-            zIndex: 1,
-            background: 'transparent'
-          }}
-          camera={{ position: [0, 0, 10], fov: 50, near: 0.1, far: 100 }}
-          dpr={[1, window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio]}
-          gl={{
-            antialias: true,
-            powerPreference: "high-performance",
-            preserveDrawingBuffer: false,
-            logarithmicDepthBuffer: false,
-            alpha: true,
-            stencil: false,
-            depth: true,
-          }}
-          onCreated={({ gl }) => {
-            // Make background transparent
-            gl.setClearColor(0x000000, 0);
-            gl.setClearAlpha(0);
-            
-            // Set correct color output using updated THREE.js API
-            gl.outputColorSpace = THREE.SRGBColorSpace;
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backdropFilter: 'blur(5px)',
+            zIndex: 5,
           }}
         >
-          <SceneProvider>
-            <pointLight position={[-10, -10, -5]} intensity={0.3} />
-            <ambientLight intensity={0.7} />
-            <pointLight position={[10, 10, 10]} intensity={0.5} />
-            <Suspense fallback={<Html><LoadingFallback /></Html>}>
-              <ActiveScene />
-            </Suspense>
-            <AutoRotatingCamera isUserInteracting={isUserInteracting} />
-            <SceneRenderer needsRender={needsRender} setNeedsRender={setNeedsRender} />
-          </SceneProvider>
-        </Canvas>
-      </Suspense>
+          <CircularProgress color="secondary" />
+        </Box>
+      )}
+      
+      {/* 3D Scene Container */}
+      <Box
+        ref={containerRef}
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'auto', // Enable interaction with 3D scene
+        }}
+      />
     </Box>
   );
-};
-
-// Utility component to handle rendering updates
-const SceneRenderer = ({ needsRender, setNeedsRender }) => {
-  const { invalidate } = useThree();
-  
-  useEffect(() => {
-    if (needsRender) {
-      invalidate();
-      setNeedsRender(false);
-    }
-  }, [needsRender, invalidate, setNeedsRender]);
-  
-  return null;
 };
 
 export default Background3D;

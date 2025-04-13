@@ -1,98 +1,33 @@
 # Design System Roadmap
 
-This document outlines the planned improvements and extensions to our portfolio design system.
+This document outlines the planned development and refinement stages for the portfolio's design system.
 
-## Short-term Goals (1-2 Months)
+## Phase 1: Foundation & Documentation (Current)
 
-### Theme Standardization
+*   [x] **Setup Basic Theme Structure:** Define core theme files (colors, typography, spacing, components).
+*   [x] **Document Color Palette:** Detail primary, secondary, background, text, and utility colors. Explain usage guidelines. *(Started)*
+*   [x] **Document Typography Scale:** Detail font families, weights, sizes, and line heights for all variants. *(Started)*
+*   [ ] **Document Spacing System:** Explain spacing units and common layout patterns.
+*   [ ] **Document Breakpoints:** Define responsive breakpoints and their usage.
+*   [ ] **Establish Basic Component Styles:** Define base styles for common MUI components (Button, Card, Modal, etc.) in `theme/components.js`.
 
-- [ ] **Audit theme usage across components**
-  - Identify and refactor hardcoded values in components like ProjectFrame.js, Overlay.js
-  - Create consistent pattern for animation durations (currently mixed in SmoothTabNavigator)
-  
-- [ ] **Complete custom theme extensions**
-  - Document all custom theme properties currently in use
-  - Create a consistent schema for custom properties
-  - Implement typings for custom theme extensions
-  
-- [ ] **Media handling improvements**
-  - Standardize ContentAwareImage.js implementation
-  - Create consistent theme-based styling for video components
-  - Implement standardized image sizing based on theme breakpoints
+## Phase 2: Component Library & Consistency
 
-### Component Refinement
+*   [ ] **Refine Common Components:** Enhance `ActionButton`, `ThemedCard`, `ContentContainer`, `Tags`, etc., ensuring they fully utilize theme tokens.
+*   [ ] **Create New Reusable Components:** Identify and build other common UI patterns (e.g., Form Inputs, Alerts, Loaders).
+*   [ ] **Develop Component Usage Guidelines:** Add examples and best practices to `DesignSystem.md` for each component.
+*   [ ] **Ensure Accessibility:** Review components for WCAG compliance (color contrast, keyboard navigation, ARIA attributes).
 
-- [ ] **Create missing pattern components**
-  - Build ProjectSectionNav.js to handle project navigation
-  - Implement standardized ProjectImageGallery.js with lightbox
-  - Design system-compliant PrototypeShowcase.js component
-  
-- [ ] **Refactor inconsistent components**
-  - Update all timeout durations to use theme animation settings
-  - Standardize card layouts to maintain consistent heights
-  - Normalize typography usage across all components
+## Phase 3: Animation & Interaction
 
-## Medium-term Goals (3-6 Months)
+*   [ ] **Standardize Animations:** Define common animation patterns (fade-in, slide-up, etc.) and durations/easing in the theme or utils.
+*   [ ] **Document Animation Usage:** Provide guidelines on when and how to use animations effectively.
+*   [ ] **Refine Hover/Focus States:** Ensure consistent and accessible interactive states for all elements.
 
-### Interactive Documentation
+## Phase 4: Refinement & Maintenance
 
-- [ ] **Component storybook**
-  - Set up Storybook for visual documentation
-  - Create stories for all key components 
-  - Add interaction examples for complex components
-  
-- [ ] **Theme playground**
-  - Implement a theme explorer for visualizing theme properties
-  - Create visual representation of spacing and layout systems
-  - Document color system with accessibility considerations
-
-### Advanced Features
-
-- [ ] **Animation system expansion**
-  - Create reusable animation hooks
-  - Standardize page transitions
-  - Implement scrolling-based animations
-  
-- [ ] **Dark/light mode refinement**
-  - Test and perfect color conversions between modes
-  - Ensure consistent contrast ratios in both modes
-  - Create smooth mode transition animations
-
-## Long-term Goals (6+ Months)
-
-### Design System Evolution
-
-- [ ] **Component API standardization**
-  - Create consistent props patterns across all components
-  - Implement comprehensive prop validation
-  - Add proper TypeScript typing
-  
-- [ ] **System integration**
-  - Create CLI tools for component generation
-  - Implement automated theme compliance testing
-  - Add performance metrics and optimization
-
-### Accessibility Enhancements
-
-- [ ] **WCAG 2.1 AA compliance**
-  - Audit and fix all contrast issues
-  - Ensure keyboard navigability throughout
-  - Implement proper focus management
-  
-- [ ] **Assistive technology support**
-  - Add comprehensive ARIA attributes
-  - Test with screen readers
-  - Implement reduced motion preferences
-
-## Performance Goals
-
-- [ ] **Optimize component rendering**
-  - Audit component re-renders
-  - Implement proper memoization strategies
-  - Reduce bundle size through code splitting
-
-- [ ] **Asset optimization**
-  - Implement comprehensive image optimization pipeline
-  - Create responsive image loading strategies
-  - Add progressive loading for large media files
+*   [ ] **Conduct Design System Audit:** Review the entire application for consistency with the defined system.
+*   [ ] **Gather Feedback:** Collect feedback from potential users or peers on clarity and usability.
+*   [ ] **Optimize Performance:** Analyze the impact of theme and component styles on performance.
+*   [ ] **Ongoing Maintenance:** Update the design system as the portfolio evolves.
 

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, Typography, useTheme, Paper, IconButton } from '@mui/material';
 import { FullscreenOutlined } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
-import { analyzeImage } from '../../utils/imageAnalyzer';
+import { SmartImage } from '../common/Media';
+import { analyzeImage } from '../../utils/mediaUtils';
 
 /**
  * AboutCard Component
@@ -124,13 +124,14 @@ const AboutCard = ({
               borderRadius: theme.shape.borderRadius,
             }}
           >
-            <ContentAwareImage
+            <SmartImage
               imageData={imageData}
               src={typeof image === 'string' ? image : image?.src}
               alt={title || "About image"}
               expandOnHover={true}
               onError={handleImageError}
               containerOrientation={imagePosition === "right" ? "portrait" : "landscape"}
+              sx={{ width: '100%', height: '100%' }}
             />
             
             {imageOverlayColor && (

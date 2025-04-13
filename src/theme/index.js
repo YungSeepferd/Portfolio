@@ -132,9 +132,6 @@ baseTheme.components = createComponentStyles(baseTheme);
 // Apply responsive font sizes
 const theme = responsiveFontSizes(baseTheme);
 
-// Generate global CSS animation keyframes
-const globalStyles = createGlobalAnimations();
-
 // Export theme-related constants for use in other files
 export const themeConstants = {
   colors,
@@ -142,5 +139,4 @@ export const themeConstants = {
   animations
 };
 
-export { globalStyles };
 export default theme;

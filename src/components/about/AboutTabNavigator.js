@@ -1,16 +1,126 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef, useCallback } from 'react';
-import { Box, Fade, useTheme, useMediaQuery, Tabs, Tab } from '@mui/material'; // Removed unused Container
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef, useCallback, useMemo } from 'react';
+import { Box, Fade, useTheme, useMediaQuery, Tabs, Tab, Typography, CircularProgress, Grid, Stack, Chip } from '@mui/material';
 import { aboutData } from './AboutData';
 import AboutCard from './AboutCard';
-import AboutTabContent from './AboutTabContent';
 import useDebounce from '../../hooks/useDebounce';
+import { SkillTag } from '../common/Tags';
+import CodeIcon from '@mui/icons-material/Code';
+import BrushIcon from '@mui/icons-material/Brush';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
+import WorkIcon from '@mui/icons-material/Work';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import SchoolIcon from '@mui/icons-material/School';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
-// Constants for timeout durations
-const SCROLL_TIMEOUT = 350;  // Increased from 200 for smoother transitions
+const SCROLL_TIMEOUT = 350;
+const SLIDESHOW_INTERVAL = 5000;
 
-/**
- * AboutTabNavigator Component
- */
+const IntegratedSlideshow = React.memo(({ pictures }) => {
+  const theme = useTheme();
+  const defaultPics = useMemo(() => {
+    return pictures && pictures.length > 0 ? pictures : ['https://via.placeholder.com/300'];
+  }, [pictures]);
+
+  const [current, setCurrent] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [loadedImages, setLoadedImages] = useState({});
+
+  const handleImageLoad = useCallback(() => {
+    setLoaded(true);
+  }, []);
+
+  const getCurrentImageSrc = useCallback((image) => {
+    return typeof image === 'string' ? image : image?.src || image;
+  }, []);
+
+  const getCurrentImagePosition = useCallback((image) => {
+    if (typeof image === 'object' && image.position) {
+      return image.position;
+    }
+    const imageSrc = getCurrentImageSrc(image);
+    if (imageSrc && imageSrc.includes('Salzburg.jpg')) {
+      return 'center bottom 30%';
+    }
+    return 'center center';
+  }, [getCurrentImageSrc]);
+
+  useEffect(() => {
+    if (loadedImages[getCurrentImageSrc(defaultPics[current])]) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
+
+    const timer = setTimeout(() => {
+      setLoadedImages(prev => ({
+        ...prev,
+        [getCurrentImageSrc(defaultPics[current])]: true
+      }));
+      setCurrent(prev => (prev + 1) % defaultPics.length);
+    }, SLIDESHOW_INTERVAL);
+
+    return () => clearTimeout(timer);
+  }, [current, defaultPics, loadedImages, getCurrentImageSrc]);
+
+  return (
+    <Box
+      aria-label="About section slideshow"
+      role="img"
+      sx={{
+        position: 'relative',
+        width: '100%',
+        height: { xs: '300px', sm: '350px', md: '450px', lg: '500px' },
+        overflow: 'hidden',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: theme.palette.background.default,
+        boxShadow: theme.shadows[2],
+      }}
+    >
+      {!loaded && (
+        <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
+          <CircularProgress size={40} thickness={4} aria-label="Loading image" />
+        </Box>
+      )}
+      <Fade in={loaded} timeout={400} key={`fade-${current}`}>
+        <Box component="div">
+          <img
+            src={getCurrentImageSrc(defaultPics[current])}
+            alt={`About section content ${current + 1}`}
+            onLoad={handleImageLoad}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: getCurrentImagePosition(defaultPics[current]),
+              opacity: loaded ? 1 : 0,
+            }}
+          />
+        </Box>
+      </Fade>
+      {defaultPics.length > 1 && (
+        <Box sx={{ position: 'absolute', bottom: '8px', width: '100%', display: 'flex', justifyContent: 'center', gap: '4px', zIndex: 2 }} role="tablist" aria-label="Slideshow indicators">
+          {defaultPics.map((_, i) => (
+            <Box
+              key={i}
+              role="tab"
+              tabIndex={i === current ? 0 : -1}
+              aria-selected={i === current}
+              aria-label={`Slide ${i + 1} of ${defaultPics.length}`}
+              onClick={() => setCurrent(i)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrent(i); } }}
+              sx={{ width: '8px', height: '8px', backgroundColor: i === current ? theme.palette.primary.main : 'rgba(255,255,255,0.3)', borderRadius: '50%', transition: 'background-color 0.3s ease', cursor: 'pointer' }}
+            />
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+});
+IntegratedSlideshow.displayName = 'IntegratedSlideshow';
+
 const AboutTabNavigator = forwardRef((props, ref) => {
   const { onSectionChange, currentSection = 0 } = props;
   const [tabIndex, setTabIndex] = useState(currentSection);
@@ -19,31 +129,24 @@ const AboutTabNavigator = forwardRef((props, ref) => {
   const theme = useTheme();
   const [isScrolling, setIsScrolling] = useState(false);
   const [isTabSwitching, setIsTabSwitching] = useState(false);
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
-  // Use debouncing to prevent rapid state changes
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const debouncedTabIndex = useDebounce(tabIndex, 200);
 
-  // Update local state when parent changes currentSection
   useEffect(() => {
     if (currentSection !== tabIndex && !isScrolling && !isTabSwitching) {
       setTabIndex(currentSection);
     }
   }, [currentSection, tabIndex, isScrolling, isTabSwitching]);
 
-  // Handle scrolling events within the container
   const handleScroll = useCallback(() => {
-    if (isTabSwitching) return; // Don't handle scroll events during tab switching
-    
+    if (isTabSwitching) return;
     setIsScrolling(true);
-    
-    // Use a timeout to prevent bouncing
     setTimeout(() => {
       setIsScrolling(false);
     }, SCROLL_TIMEOUT);
   }, [isTabSwitching]);
 
-  // Set up scroll event listener
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (scrollContainer) {
@@ -54,7 +157,6 @@ const AboutTabNavigator = forwardRef((props, ref) => {
     }
   }, [handleScroll]);
 
-  // Expose scrollToSection method to parent components via ref
   useImperativeHandle(ref, () => ({
     scrollToSection: (sectionIndex) => {
       if (sectionIndex >= 0 && sectionIndex < aboutData.length) {
@@ -63,46 +165,33 @@ const AboutTabNavigator = forwardRef((props, ref) => {
     }
   }), []);
 
-  // Notify parent when tab changes (after debounce)
   useEffect(() => {
     if (!isScrolling && !isTabSwitching && onSectionChange) {
       onSectionChange(debouncedTabIndex);
     }
   }, [debouncedTabIndex, isScrolling, isTabSwitching, onSectionChange]);
 
-  // Handle tab change from user clicking tab
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event, newValue, programmatic = false) => {
     if (tabIndex === newValue || isTabSwitching) return;
-    
+
     setIsTabSwitching(true);
     setTabIndex(newValue);
 
-    // If an external callback is provided, call it
     if (onSectionChange) {
       onSectionChange(newValue);
     }
 
-    // Fade out current content
     setFadeIn(false);
 
-    // Wait for fade out before scrolling
     setTimeout(() => {
-      scrollRef.current?.scrollTo({
-        top: newValue * scrollRef.current.offsetHeight,
-        behavior: 'smooth',
-      });
-
-      // Fade in new content after a short delay
+      setFadeIn(true);
       setTimeout(() => {
-        setFadeIn(true);
-        
-        // Reset tab switching state after animation completes
-        setTimeout(() => {
-          setIsTabSwitching(false);
-        }, 100);
-      }, 300);
-    }, 200);
+        setIsTabSwitching(false);
+      }, 100);
+    }, 300);
   };
+
+  const currentTabData = aboutData[tabIndex];
 
   return (
     <Box
@@ -110,109 +199,118 @@ const AboutTabNavigator = forwardRef((props, ref) => {
       ref={scrollRef}
       sx={{
         width: '100%',
-        overflowY: 'hidden',
-        transition: 'transform 0.25s ease-out',
-        scrollBehavior: 'smooth',
       }}
     >
       <Box
-        className="about-tabs-section"
         sx={{
           width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          backgroundColor: theme.palette.background.paper,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          position: 'relative',
+          zIndex: 2,
+          px: { xs: '20px', sm: '30px', md: '40px', lg: '50px' },
           boxSizing: 'border-box',
-          overflowY: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
         }}
       >
-        {/* MODIFIED: Tabs navigation - Use Box with direct control */}
-        <Box 
-          sx={{ 
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          variant={isMobile ? "scrollable" : "fullWidth"}
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          aria-label="About section tabs"
+          sx={{
             width: '100%',
-            px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
+            maxWidth: 'lg',
+            '& .MuiTabs-flexContainer': {
+              justifyContent: { xs: 'flex-start', md: 'space-between' },
             },
-            mb: 4,
-            boxSizing: 'border-box',
+            '& .MuiTab-root': {
+              px: { xs: 2, md: 3 },
+              py: 1.5,
+              fontSize: { xs: '0.95rem', md: '1.1rem' },
+              fontWeight: 500,
+              color: theme.palette.text.secondary,
+              minWidth: { xs: 'auto', md: 0 },
+              '&.Mui-selected': { color: theme.palette.primary.main },
+              '&:hover': { color: theme.palette.secondary.main },
+              transition: 'color 0.3s ease',
+              flex: { xs: 'none', md: 1 },
+              whiteSpace: 'nowrap',
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: theme.palette.primary.main,
+              height: 3,
+              transition: 'all 0.3s ease',
+            },
           }}
         >
-          <Tabs 
-            value={tabIndex} 
-            onChange={handleTabChange} 
-            variant={isMobile ? "scrollable" : "fullWidth"}
-            scrollButtons={isMobile ? "auto" : false}
-            allowScrollButtonsMobile
-            sx={{ 
+          {aboutData.map((tab, index) => (
+            <Tab
+              key={index}
+              label={tab.title}
+              disabled={isTabSwitching}
+              aria-controls={`about-tabpanel-${index}`}
+              id={`about-tab-${index}`}
+            />
+          ))}
+        </Tabs>
+      </Box>
+
+      <Box
+        sx={{
+          width: '100%',
+          px: { xs: '20px', sm: '30px', md: '40px', lg: '50px' },
+          py: { xs: 4, md: 6 },
+          boxSizing: 'border-box',
+        }}
+      >
+        <Fade in={fadeIn} timeout={{ enter: 500, exit: 300 }} key={`tab-content-${tabIndex}`}>
+          <Box
+            role="tabpanel"
+            id={`about-tabpanel-${tabIndex}`}
+            aria-labelledby={`about-tab-${tabIndex}`}
+            sx={{
               width: '100%',
-              '& .MuiTabs-flexContainer': {
-                justifyContent: 'space-between',
-              }
+              maxWidth: 'lg',
+              mx: 'auto',
+              backgroundColor: theme.palette.background.paper,
+              borderRadius: theme.shape.borderRadius,
+              minHeight: '600px',
+              height: 'auto',
+              overflow: 'hidden',
             }}
           >
-            {aboutData.map((tab, index) => (
-              <Tab 
-                key={index} 
-                label={tab.title} 
-                sx={{ 
-                  fontSize: { xs: '0.9rem', sm: '1rem' },
-                  minWidth: 0,
-                  px: { xs: 1, sm: 2, md: 3 },
-                }} 
-              />
-            ))}
-          </Tabs>
-        </Box>
-
-        {/* MODIFIED: Content area - Use Box with direct styling */}
-        <Box 
-          sx={{ 
-            width: '100%',
-            px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
-            },
-            py: { xs: 4, md: 6 },
-            boxSizing: 'border-box',
-          }}
-        >
-          <Box sx={{ pt: 2, pb: 4 }}>
-            <Fade in={fadeIn} timeout={{ enter: 500, exit: 200 }} key={`tab-content-${tabIndex}`}>
+            <AboutCard
+              variant="noBorder"
+              sx={{
+                width: '100%',
+                height: '100%',
+                boxShadow: 'none',
+                backgroundColor: 'transparent',
+              }}
+            >
               <Box
-                className="about-tab-content"
                 sx={{
-                  width: '100%',
-                  mx: { xs: 0, sm: 'auto' },
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: theme.shape.borderRadius,
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                  minHeight: '600px',
-                  height: 'auto',
+                  display: 'flex',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  gap: { xs: 4, md: 6 },
+                  padding: { xs: 3, sm: 4, md: 5 },
                 }}
               >
-                <AboutCard 
-                  variant="noBorder" 
-                  sx={{ 
-                    width: '100%',
-                    height: '100%',
-                  }}
-                >
-                  <AboutTabContent 
-                    tabData={aboutData[tabIndex]} 
-                    tabIndex={tabIndex} 
-                  />
-                </AboutCard>
+                <Box sx={{ flex: { xs: '1', md: '0 0 40%' }, mb: { xs: 3, md: 0 }, minHeight: { xs: '300px', md: '500px' } }}>
+                  {currentTabData?.pictures && <IntegratedSlideshow pictures={currentTabData.pictures} />}
+                </Box>
+
+                <Box sx={{ flex: 1, color: theme.palette.text.primary, '& .MuiTypography-root': { mb: 3 }, pl: { md: 2 } }}>
+                  {currentTabData?.content || <Typography>No content available</Typography>}
+                </Box>
               </Box>
-            </Fade>
+            </AboutCard>
           </Box>
-        </Box>
+        </Fade>
       </Box>
     </Box>
   );

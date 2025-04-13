@@ -4,15 +4,16 @@
  * This file centralizes data exports for work section components.
  */
 
-// Import all projects from the projects directory
-import { allProjects, processedProjects } from './projects';
+// Consolidate and export all project data and related configurations
 
-// Import skill tags from a standardized location
-import { skillTags } from './skillTags';
+// Import the processed array of all projects
+import { processedProjects } from './projects'; // Ensure this is exported from ./projects/index.js
 
-// Export data for use in components
+// Import UI configurations like categories
+import { workCategories } from './uiConfig';
+
+// Export the processed data and categories
+export { processedProjects, workCategories };
+
+// Keep workData export if needed elsewhere, but prefer processedProjects
 export const workData = processedProjects;
-export { skillTags, allProjects };
-
-// Export UI configuration
-export * from './uiConfig';

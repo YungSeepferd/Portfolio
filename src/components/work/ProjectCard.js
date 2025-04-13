@@ -1,355 +1,106 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React from 'react';
+import { Card, CardMedia, CardContent, Typography, Box, Chip, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Box, Typography, Card, CardContent, useTheme, Button, Stack, CircularProgress } from '@mui/material';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
-import ContentAwareImage from '../common/ContentAwareImage';
-import SkillTag from '../common/SkillTag';
-import { useModalContext } from '../../context/ModalContext';
 
 /**
- * Enhanced project card with lazy loading and proper animations
- * Updated to display links with popups and flexible content sizing
+ * ProjectCard Component
+ * Displays a summary card for a project. Simplified hover effects.
  */
-const ProjectCard = ({ project, skillTags, onClick, showAllTags = true, gridPosition }) => {
+const ProjectCard = ({ project, onClick }) => {
   const theme = useTheme();
-  const cardRef = useRef(null);
-  const isVisible = useIntersectionObserver(cardRef, { threshold: 0.1 });
-  const [isLoaded, setIsLoaded] = useState(false);
-  const { openPdf, openIframe, openExternalContent } = useModalContext();
 
-  const handleImageLoad = useCallback(() => {
-    setIsLoaded(true);
-  }, []);
-  
-  if (!project) return null;
-  
-  // Always show all tags by setting showAllTags to true for consistency
-  const { tags, remaining } = { tags: project.categories, remaining: 0 };
-  
-  const coverImage = project.images?.[0] || project.media;
-  
-  // Animation variants for smooth appearance
+  // Simplified card variants for hover effect
   const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.5,
-        ease: 'easeOut' 
-      }
+    rest: { scale: 1, boxShadow: theme.shadows[2] },
+    hover: {
+      scale: 1.03, // Slight scale on hover
+      boxShadow: theme.shadows[6], // Increase shadow on hover
+      transition: { duration: 0.2 }
     }
   };
 
-  // Check if project has links to display
-  const hasLinks = project.links && project.links.length > 0;
-
-  // Apply consistent styling based on either cardVariant or legacy cardStyle
-  const getCardStyle = () => {
-    if (project.cardVariant) {
-      // Use theme-based card variant
-      const variantColor = 
-        project.cardVariant === 'primary' ? theme.palette.primary.main :
-        project.cardVariant === 'secondary' ? theme.palette.secondary.main :
-        project.cardVariant === 'warning' ? theme.palette.warning.main :
-        project.cardVariant === 'info' ? theme.palette.info.main :
-        project.cardVariant === 'success' ? theme.palette.success.main :
-        theme.palette.primary.main;
-        
-      return {
-        borderLeft: `4px solid ${variantColor}`,
-        boxShadow: `0 3px 10px ${variantColor}22`,
-      };
-    } else if (project.cardStyle) {
-      // Fall back to legacy cardStyle if defined
-      return project.cardStyle;
-    }
-    
-    // Default style if neither is provided
-    return {
-      borderLeft: `4px solid ${theme.palette.primary.main}`,
-      boxShadow: `0 3px 10px ${theme.palette.primary.dark}22`,
-    };
+  const imageVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.1 } // Scale image slightly more on hover
   };
 
-  // Handle link click
-  const handleLinkClick = (link, e) => {
-    e.stopPropagation(); // Prevent card click
-    
-    // Determine content type if not specified
-    const contentType = link.contentType || determineContentType(link.url, link.label);
-    
-    if (contentType === 'pdf') {
-      openPdf(link.url, link.label);
-    } else if (contentType === 'iframe') {
-      openIframe(link.url, link.label);
-    } else {
-      // Use external content modal instead of window.open
-      openExternalContent(link.url, link.label);
-    }
-  };
-
-  /**
-   * Determine content type from URL and label
-   */
-  const determineContentType = (url, label) => {
-    if (!url) return 'external';
-    
-    const normalizedUrl = url.toLowerCase();
-    const normalizedLabel = label.toLowerCase();
-    
-    if (normalizedUrl.includes('.pdf') || 
-        normalizedLabel.includes('pdf') || 
-        normalizedLabel.includes('thesis')) {
-      return 'pdf';
-    }
-    
-    if (normalizedUrl.includes('figma.com') || 
-        normalizedUrl.includes('miro.com') || 
-        normalizedLabel.includes('prototype')) {
-      return 'iframe';
-    }
-    
-    return 'external';
-  };
-  
-  // FIX: Create a proper click handler that checks if onClick is a function
-  const handleCardClick = () => {
-    if (onClick && typeof onClick === 'function') {
-      onClick(project);
-    } else {
-      console.warn('ProjectCard: onClick prop is not a function or not provided');
-    }
-  };
-  
   return (
-    <Box 
-      ref={cardRef} 
-      sx={{ 
-        height: '100%', // Take full height of container
-        display: 'flex',
-        position: 'relative',
-        width: '100%', // Add to ensure consistent width
-      }}
+    // Use motion.div for hover state detection
+    <motion.div
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      style={{ height: '100%', cursor: 'pointer' }}
+      onClick={onClick} // Attach onClick handler to the motion div
     >
-      {isVisible && (
-        <motion.div
-          initial="hidden"
-          animate={isLoaded ? "visible" : "hidden"}
-          variants={cardVariants}
-          whileHover={{ scale: 1.02, transition: { duration: 0.3 } }} 
-          onClick={handleCardClick} // FIX: Use our safe handler function
-          style={{ 
-            cursor: 'pointer',
-            height: '100%', // Take full height of parent
-            width: '100%', // Take full width of parent
-            opacity: isLoaded ? 1 : 0,
-            display: 'flex',
-          }}
-        >
-          <Card 
-            className="project-card"
-            sx={{ 
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%', // Take full height
-              width: '100%', // Take full width
-              overflow: 'hidden',
-              borderRadius: theme.shape.borderRadius,
-              boxShadow: `0 8px 16px ${theme.palette.shadow?.light || 'rgba(0,0,0,0.1)'}`,
-              transition: `transform ${theme.animationSettings?.durations?.short || 300}ms ease, box-shadow ${theme.animationSettings?.durations?.short || 300}ms ease`,
-              ...getCardStyle(), // Apply consistent card styling
+      <Card
+        component={motion.div} // Apply variants to the Card itself
+        variants={cardVariants}
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: theme.shape.borderRadius,
+          overflow: 'hidden', // Important for containing scaled image
+          transition: 'box-shadow 0.3s ease-in-out', // Smooth shadow transition
+        }}
+      >
+        <Box sx={{ position: 'relative', overflow: 'hidden', pt: '56.25%' /* 16:9 Aspect Ratio */ }}>
+          <CardMedia
+            component={motion.img} // Use motion.img for image variants
+            variants={imageVariants}
+            image={project.thumbnail || 'https://via.placeholder.com/400x225?text=Project+Image'} // Fallback image
+            alt={`${project.title} thumbnail`}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.3s ease-in-out', // Smooth transform transition
             }}
-          >
-            <Box 
-              className="project-card-media"
-              sx={{
-                position: 'relative',
-                width: '100%',
-                // CHANGED: More flexible height with min/max constraints
-                height: { xs: '180px', sm: '200px', md: '220px' },
-                minHeight: '180px',
-                maxHeight: '250px',
-                flexShrink: 0, // Prevent shrinking
-                overflow: 'hidden',
-              }}
-            >
-              <ContentAwareImage
-                imageData={coverImage}
-                src={typeof coverImage === 'string' ? coverImage : coverImage?.src}
-                alt={project.title}
-                onLoad={handleImageLoad}
-                containerHeight="100%"
-                containerOrientation="landscape"
-                objectFit="cover"
-                loading="lazy" // Add lazy loading
-                placeholder={
-                  <Box sx={{ 
-                    width: '100%', 
-                    height: '100%', 
-                    bgcolor: theme.palette.background.paper,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <CircularProgress size={40} />
-                  </Box>
-                }
-              />
-              
-              {/* Add links overlay on hover */}
-              {hasLinks && (
-                <Box
-                  className="project-links-overlay"
-                  sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%)',
-                    padding: theme.spacing(2),
-                    transform: 'translateY(100%)',
-                    transition: 'transform 0.3s ease',
-                    '.project-card:hover &': {
-                      transform: 'translateY(0)',
-                    },
-                    zIndex: 2,
-                  }}
-                >
-                  <Stack 
-                    direction="row" 
-                    spacing={1.5} 
-                    justifyContent="center"
-                    flexWrap="wrap"
-                    gap={1}
-                  >
-                    {project.links.map((link, index) => (
-                      <Button
-                        key={index}
-                        variant="outlined"
-                        size="small"
-                        color={
-                          link.label.includes("GitHub") ? "info" :
-                          link.label.includes("Paper") || link.label.includes("PDF") ? "secondary" :
-                          "primary"
-                        }
-                        onClick={(e) => handleLinkClick(link, e)}
-                        startIcon={link.icon}
-                        sx={{
-                          minWidth: 'auto',
-                          fontWeight: 'medium',
-                          fontSize: '0.75rem',
-                          textTransform: 'none',
-                          borderRadius: theme.shape.borderRadius,
-                          backgroundColor: 'rgba(19, 31, 45, 0.6)',
-                          '&:hover': {
-                            boxShadow: theme.shadows[1],
-                            backgroundColor: 'rgba(19, 31, 45, 0.8)',
-                          }
-                        }}
-                      >
-                        {link.label}
-                      </Button>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
+          />
+          {/* Optional: Simple overlay on hover */}
+          <Box
+             component={motion.div}
+             variants={{ rest: { opacity: 0 }, hover: { opacity: 0.3 } }} // Fade in overlay
+             sx={{
+               position: 'absolute',
+               top: 0,
+               left: 0,
+               width: '100%',
+               height: '100%',
+               backgroundColor: 'rgba(0, 0, 0, 0.5)', // Darker overlay
+               transition: 'opacity 0.3s ease-in-out',
+             }}
+           />
+        </Box>
+
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
+          {/* Categories */}
+          {project.categories && project.categories.length > 0 && (
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              {project.categories.join(' • ')}
+            </Typography>
+          )}
+          {/* Title */}
+          <Typography variant="h6" component="h3" sx={{ mb: 1, flexGrow: 1, fontWeight: 600, lineHeight: 1.3 }}>
+            {project.title}
+          </Typography>
+          {/* Tags */}
+          {project.tags && project.tags.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 'auto', pt: 1 }}>
+              {project.tags.slice(0, 3).map((tag) => ( // Limit tags shown
+                <Chip key={tag} label={tag} size="small" variant="outlined" />
+              ))}
             </Box>
-            
-            <CardContent 
-              className="project-card-content"
-              sx={{ 
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                p: { xs: 2.5, sm: 3, md: 3.5 }, 
-                // CHANGED: Use flex-grow instead of fixed height
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box>
-                <Typography 
-                  variant="h5" 
-                  className="project-card-title"
-                  sx={{
-                    mb: 2,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    lineHeight: 1.3,
-                    fontWeight: theme.typography.fontWeightBold || 600,
-                    color: theme.palette.primary.main,
-                    fontSize: { xs: '1.3rem', sm: '1.4rem', md: '1.5rem' }, 
-                  }}
-                >
-                  {project.title}
-                </Typography>
-                
-                <Typography 
-                  variant="body1"
-                  className="project-card-description"
-                  sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    // CHANGED: Increased line clamp for more text
-                    WebkitLineClamp: 5,
-                    WebkitBoxOrient: 'vertical',
-                    color: theme.palette.text.primary,
-                    lineHeight: 1.6,
-                    fontSize: { xs: '0.95rem', md: '1rem' },
-                    mb: 3,
-                    fontWeight: 400,
-                  }}
-                >
-                  {project.description}
-                </Typography>
-              </Box>
-              
-              <Box 
-                className="project-card-tags"
-                sx={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap',
-                  gap: 1,
-                  overflowX: { xs: 'auto', md: 'visible' },
-                  padding: theme.spacing(2, 0, 0.5),
-                  marginTop: 'auto',
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  flexShrink: 0,
-                }}
-              >
-                {tags.map((tag, idx) => (
-                  <SkillTag
-                    key={idx}
-                    label={tag}
-                    size="small"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                ))}
-                
-                {remaining > 0 && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontSize: '0.8rem',
-                      py: 0.6,
-                      px: 1.2,
-                      color: theme.palette.text.secondary,
-                    }}
-                  >
-                    +{remaining} more
-                  </Typography>
-                )}
-              </Box>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-    </Box>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 
-export default React.memo(ProjectCard);
+export default ProjectCard;

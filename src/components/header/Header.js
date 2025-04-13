@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem, Container } from '@mui/material';
+import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import ContentContainer from '../common/ContentContainer';
 
 // Define navigation items
 const navItems = [
@@ -83,19 +84,12 @@ const Header = () => {
           width: '100%',
         }}
       >
-        {/* EXPLICITLY SET PADDING: Using standard Container with direct padding */}
-        <Container
-          maxWidth={false} // Allow full width
-          disableGutters={true}
+        {/* Use ContentContainer for consistent padding */}
+        <ContentContainer
           sx={{
-            px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
-            },
             width: '100%',
             mx: 0,
+            py: 0,
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between', px: 0 }}>
@@ -115,8 +109,6 @@ const Header = () => {
                   fontSize: '1.5rem',
                   letterSpacing: '-0.5px',
                   color: theme.palette.primary.main,
-                  // Removed the fixed paddingLeft for better responsiveness
-                  paddingLeft: { xs: '0px', sm: '20px', md: '40px', lg: '60px' },
                   transition: 'color 0.3s ease',
                   '&:hover': {
                     color: theme.palette.primary.light,
@@ -130,7 +122,6 @@ const Header = () => {
             {/* Desktop Navigation */}
             <Box sx={{ 
               display: { xs: 'none', md: 'block' },
-              paddingRight: { md: '40px', lg: '60px' }
             }}>
               {navItems.map((item) => (
                 <ScrollLink
@@ -175,7 +166,7 @@ const Header = () => {
               <MenuIcon />
             </IconButton>
           </Toolbar>
-        </Container>
+        </ContentContainer>
       </AppBar>
 
       {/* Mobile Drawer */}

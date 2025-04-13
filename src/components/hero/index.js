@@ -6,12 +6,7 @@
  */
 
 // Main Hero component
-export { default } from './Hero';
 export { default as Hero } from './Hero';
-
-// Sub-components
-export { default as HeroContent } from './HeroContent';
-export { default as ScrollIndicator } from './ScrollIndicator';
 
 // Skills data
 export * from './skillsData';

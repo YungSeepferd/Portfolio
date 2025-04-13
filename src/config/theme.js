@@ -4,7 +4,7 @@
  * This file simply re-exports the theme from the theme folder
  * to maintain backward compatibility with existing imports.
  */
-import theme, { globalStyles, themeConstants } from './theme/index';
+import theme, { themeConstants } from '../theme/index';
 import { alpha } from '@mui/material/styles';
 
 // Modify the existing theme to add layout configuration
@@ -122,7 +122,7 @@ if (theme.components) {
   };
 }
 
-export { globalStyles, themeConstants };
+export { themeConstants };
 export default theme;
 
 // Export spacing or remove/comment it if not used

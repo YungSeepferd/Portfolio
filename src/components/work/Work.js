@@ -1,147 +1,129 @@
-import React, { useState, useCallback } from 'react';
-import { Box, Typography, Grid } from '@mui/material'; // Removed useTheme
+import React, { useCallback } from 'react';
+import { Box, Typography, Grid, Chip, Stack, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
-import { allProjects } from './data'; // Using allProjects from data
+import { processedProjects, workCategories } from './data';
+import { useModalContext } from '../../context/ModalContext';
+import { useProjectFilter } from '../../hooks/useProjectFilter';
 import ErrorBoundary from '../common/ErrorBoundary';
+import ContentContainer from '../common/ContentContainer';
 
-/**
- * Work Section Component
- * 
- * Displays a collection of project cards in a responsive grid layout
- * with filtering capabilities and interactive modal previews.
- */
 const Work = () => {
-  // Add missing state variables
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // Ensure handleProjectClick is properly defined
+  const theme = useTheme();
+  const { openProjectModal } = useModalContext();
+  const { filteredProjects, currentCategory, handleCategoryChange } = useProjectFilter(processedProjects, 'all');
+
   const handleProjectClick = useCallback((project) => {
-    if (!project) {
-      console.warn('No project data provided to click handler');
-      return;
+    // Pass only the specific project object
+    openProjectModal(project);
+  }, [openProjectModal]);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
     }
-    
-    console.log('Project clicked:', project.title);
-    
-    // Set the selected project and open the modal
-    setSelectedProject(project);
-    setIsModalOpen(true);
-  }, []);
-  
-  // Add handler to close the modal
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
 
   return (
-    <ErrorBoundary componentName="Work">
+    <ErrorBoundary componentName="WorkSection">
       <Box
-        component="section"
         id="work"
+        component="section"
         sx={{
-          width: '100%',
-          py: 8,
-          backgroundColor: 'background.paper',
+          py: { xs: 6, md: 10 },
+          backgroundColor: theme.palette.background.default,
         }}
       >
-        {/* Section header */}
-        <Box
-          sx={{
-            width: '100%',
-            px: { 
-              xs: '10px', // REDUCED from typical 20px
-              sm: '20px', // REDUCED from typical 30px
-              md: '30px', // REDUCED from typical 40px
-              lg: '40px', // REDUCED from typical 50px
-            },
-            mb: 6,
-            boxSizing: 'border-box',
-          }}
-        >
+        <ContentContainer>
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.5 }}
           >
-            <Box 
-              sx={{ 
-                width: '100%', 
-                textAlign: 'center',
-                mb: { xs: 4, md: 6 },
+            <Typography
+              variant="h2"
+              component="h2"
+              align="center"
+              sx={{
+                mb: 2,
+                color: theme.palette.text.primary,
               }}
             >
-              <Typography 
-                variant="h2" 
-                component="h2" 
-                sx={{ 
-                  mb: 2,
-                  color: 'text.primary',
-                }}
-              >
-                Work
-              </Typography>
-              
-              <Typography 
-                variant="subtitle1"
-                sx={{
-                  maxWidth: '800px',
-                  mx: 'auto',
-                  color: 'text.secondary'
-                }}
-              >
-                Selected projects showcasing my design approach and problem-solving skills
-              </Typography>
-            </Box>
+              My Work
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              align="center"
+              sx={{
+                mb: { xs: 4, md: 6 },
+                maxWidth: '700px',
+                mx: 'auto',
+                color: theme.palette.text.secondary,
+              }}
+            >
+              A selection of projects showcasing my skills in UX design, research, and interaction development.
+            </Typography>
           </motion.div>
-        </Box>
 
-        {/* Projects grid with 2x3 layout (6 cards total) */}
-        <Box sx={{ pt: 2, pb: 4 }}>
-          <Grid 
-            container 
-            spacing={{ xs: 2, sm: 3, md: 4 }} // REDUCED spacing between items
-            sx={{ width: '100%' }}
+          {/* Category Filters */}
+          <Stack
+            direction="row"
+            spacing={1}
+            justifyContent="center"
+            flexWrap="wrap"
+            component={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            sx={{ mb: { xs: 4, md: 6 } }}
           >
-            {/* Limit to 6 projects in a 2x3 grid */}
-            {allProjects.slice(0, 6).map((project, index) => (
-              <Grid 
-                item 
-                xs={12} 
-                sm={6} 
-                md={4} 
-                key={project.id}
-                sx={{
-                  height: { 
-                    xs: 550, // Taller cards on mobile
-                    sm: 580, // Medium height on tablet
-                    md: 600  // Full height on desktop
-                  }
-                }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  style={{ height: '100%' }}
-                >
-                  <ProjectCard 
-                    project={project} 
-                    onClick={handleProjectClick} // Ensure this is correctly passed
-                    sx={{ 
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }} 
-                  />
-                </motion.div>
-              </Grid>
+            {workCategories.map((category) => (
+              <Chip
+                key={category.value}
+                label={category.label}
+                clickable
+                onClick={() => handleCategoryChange(category.value)}
+                color={currentCategory === category.value ? 'primary' : 'default'}
+                variant={currentCategory === category.value ? 'filled' : 'outlined'}
+                sx={{ m: 0.5, transition: 'all 0.2s ease' }}
+              />
             ))}
-          </Grid>
-        </Box>
+          </Stack>
+
+          {/* Project Grid (2x2x2 for 6 projects) */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <Grid container spacing={{ xs: 3, sm: 4, md: 5 }}>
+              {filteredProjects.map((project) => (
+                <Grid item xs={12} sm={6} md={6} key={project.id}>
+                  <motion.div variants={itemVariants} style={{ height: '100%' }}>
+                    <ProjectCard
+                      project={project}
+                      onClick={() => handleProjectClick(project)}
+                    />
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+          </motion.div>
+        </ContentContainer>
       </Box>
     </ErrorBoundary>
   );

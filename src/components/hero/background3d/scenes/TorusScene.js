@@ -1,219 +1,340 @@
-import React, { useState, useRef } from 'react';
-import { useTheme, useMediaQuery } from '@mui/material';
-import { useFrame, useThree } from '@react-three/fiber';
-import { Trail, Detailed } from '@react-three/drei';
 import * as THREE from 'three';
-import { useSceneState } from '../SceneContext';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 /**
- * TorusScene Component - With automatic motion
+ * TorusScene
+ * 
+ * A scene featuring multiple interactive torus rings.
  */
-const TorusScene = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { mouse, clock } = useThree();
-  const { isTransitioning, scrollActive, themeColors } = useSceneState();
-  
-  // Trail of cursor positions
-  const [cursorTrail, setCursorTrail] = useState([]);
-  const trailMaxLength = isMobile ? 12 : 20;
-  const frameCounter = useRef(0);
-  const prevMousePos = useRef(new THREE.Vector2());
-  
-  // Auto-animation path points
-  const [autoTrailPoints, setAutoTrailPoints] = useState([]);
-  const autoTrailMaxPoints = isMobile ? 6 : 12;
-  const autoTrailTime = useRef(0);
-  
-  // Add auto-animation points
-  useFrame(() => {
-    if (isTransitioning) return;
+class TorusScene {
+  constructor(container, width, height) {
+    // DOM container
+    this.container = container;
     
-    // Update auto-trail timer
-    autoTrailTime.current += 0.01;
+    // Dimensions
+    this.width = width;
+    this.height = height;
     
-    // Generate smooth circular/figure-8 path
-    const t = autoTrailTime.current;
+    // Three.js objects
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.composer = null;
     
-    // Only update every few frames
-    if (frameCounter.current % 15 === 0) {
-      // Create a figure-8 or circular motion when no user input
-      const autoX = Math.sin(t) * 3;
-      const autoY = Math.sin(t * 1.5) * 1.5;
-      
-      const newPosition = new THREE.Vector3(autoX, autoY, 0);
-      
-      // Only add new point if it's far enough from the last one
-      const lastPoint = autoTrailPoints[autoTrailPoints.length - 1];
-      const shouldAddPoint = !lastPoint || 
-                             newPosition.distanceTo(new THREE.Vector3(
-                                lastPoint.position.x, 
-                                lastPoint.position.y, 
-                                0
-                             )) > 0.2;
-      
-      if (shouldAddPoint) {
-        // Add trail point
-        setAutoTrailPoints(prev => {
-          const newTrail = [
-            ...prev, 
-            { 
-              position: newPosition,
-              time: clock.getElapsedTime(),
-              size: 0.15 + (Math.sin(t * 2) * 0.05), // Size varies slightly
-              rotation: new THREE.Euler(t * 0.3, t * 0.2, t * 0.1)
-            }
-          ];
-          
-          // Keep trail at max length
-          while (newTrail.length > autoTrailMaxPoints) {
-            newTrail.shift();
-          }
-          
-          return newTrail;
-        });
-      }
+    // Scene objects
+    this.torusGroup = null;
+    this.tori = [];
+    
+    // Interaction tracking
+    this.isActive = true;
+    this.isDragging = false;
+    this.lastMousePosition = { x: 0, y: 0 };
+    this.targetTorus = null;
+    
+    // Mouse position tracking for hover effects
+    this.mouse = new THREE.Vector2(0, 0);
+    this.raycaster = new THREE.Raycaster();
+    
+    // Callback function
+    this.onLoaded = null;
+  }
+  
+  init() {
+    this.initScene();
+    this.initRenderer();
+    this.initCamera();
+    this.initLights();
+    this.createObjects();
+    this.initEffects();
+    this.addEventListeners();
+    this.animate();
+    
+    // Notify when loaded
+    if (this.onLoaded) {
+      this.onLoaded();
     }
-  });
+  }
   
-  // Update cursor trail - IMPROVED: more responsive
-  useFrame(() => {
-    if (isTransitioning) return;
+  initScene() {
+    this.scene = new THREE.Scene();
+  }
+  
+  initRenderer() {
+    this.renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      alpha: true
+    });
+    this.renderer.setSize(this.width, this.height);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setClearColor(0x0F172A, 1);
+    this.container.appendChild(this.renderer.domElement);
+  }
+  
+  initCamera() {
+    this.camera = new THREE.PerspectiveCamera(60, this.width / this.height, 0.1, 1000);
+    this.camera.position.set(0, 0, 15);
+    this.camera.lookAt(0, 0, 0);
+  }
+  
+  initLights() {
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    this.scene.add(ambientLight);
     
-    // Update more frequently for better responsiveness
-    frameCounter.current += 1;
+    // Main point light
+    const pointLight1 = new THREE.PointLight(0xffffff, 1);
+    pointLight1.position.set(10, 10, 10);
+    this.scene.add(pointLight1);
     
-    if (frameCounter.current % 2 === 0) { // Changed from 3 to 2 for more frequent updates
-      const currentTime = clock.getElapsedTime();
-      const cursorPos = new THREE.Vector3(
-        mouse.x * 4, 
-        mouse.y * 2,
-        0
+    // Secondary point light
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.5);
+    pointLight2.position.set(-10, -10, -10);
+    this.scene.add(pointLight2);
+  }
+  
+  createObjects() {
+    // Create a group to hold all tori
+    this.torusGroup = new THREE.Group();
+    this.scene.add(this.torusGroup);
+    
+    // Theme colors for tori
+    const torusColors = [
+      0x6366F1,  // Primary (Indigo)
+      0x818CF8,  // Primary light
+      0xEC4899,  // Secondary (Pink)
+      0xF472B6   // Secondary light
+    ];
+    
+    // Create multiple tori with different parameters
+    const torusConfigs = [
+      { radius: 3, tubeRadius: 0.5, color: torusColors[0], speed: 1 },
+      { radius: 5, tubeRadius: 0.3, color: torusColors[1], speed: 0.7 },
+      { radius: 7, tubeRadius: 0.2, color: torusColors[2], speed: 0.5 }
+    ];
+    
+    torusConfigs.forEach(config => {
+      const geometry = new THREE.TorusGeometry(
+        config.radius,
+        config.tubeRadius,
+        16,
+        100
       );
       
-      // Calculate mouse movement
-      const mouseSpeed = new THREE.Vector2(mouse.x, mouse.y)
-        .distanceTo(prevMousePos.current);
+      const material = new THREE.MeshStandardMaterial({
+        color: config.color,
+        emissive: config.color,
+        emissiveIntensity: 0.5,
+        metalness: 0.8,
+        roughness: 0.2
+      });
       
-      prevMousePos.current.set(mouse.x, mouse.y);
+      const torus = new THREE.Mesh(geometry, material);
       
-      // Make trail creation more sensitive
-      const shouldAddToTrail = 
-        cursorTrail.length === 0 || 
-        mouseSpeed > 0.005 || // Reduced threshold (was 0.01)
-        cursorPos.distanceTo(new THREE.Vector3(
-          cursorTrail[cursorTrail.length - 1]?.position.x || 0,
-          cursorTrail[cursorTrail.length - 1]?.position.y || 0,
-          0
-        )) > 0.15; // Reduced threshold (was 0.2)
+      // Store additional animation data
+      torus.userData = {
+        speed: config.speed,
+        rotationSpeed: config.speed,
+        originalRotationSpeed: config.speed,
+        // Each torus has its own rotation axis
+        rotationAxis: new THREE.Vector3(
+          Math.random() - 0.5,
+          Math.random() - 0.5,
+          Math.random() - 0.5
+        ).normalize()
+      };
       
-      if (shouldAddToTrail) {
-        setCursorTrail(prev => {
-          const newTrail = [
-            ...prev, 
-            { 
-              position: cursorPos.clone(),
-              time: currentTime,
-              size: 0.2 + (mouseSpeed * 3), // Increased size multiplier (was 2)
-              rotation: new THREE.Euler(
-                Math.random() * Math.PI * 2,
-                Math.random() * Math.PI * 2,
-                Math.random() * Math.PI * 2
-              )
-            }
-          ];
-          
-          // Keep trail at max length
-          while (newTrail.length > trailMaxLength) {
-            newTrail.shift();
-          }
-          
-          return newTrail;
-        });
+      this.tori.push(torus);
+      this.torusGroup.add(torus);
+    });
+  }
+  
+  initEffects() {
+    // Set up the render pass
+    const renderPass = new RenderPass(this.scene, this.camera);
+    
+    // Set up the bloom pass
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(this.width, this.height),
+      1.0,    // strength
+      0.4,    // radius
+      0.9     // threshold
+    );
+    
+    // Create composer with passes
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(renderPass);
+    this.composer.addPass(bloomPass);
+  }
+  
+  addEventListeners() {
+    const canvas = this.renderer.domElement;
+    
+    // Track mouse position for hover effects
+    canvas.addEventListener('mousemove', (e) => {
+      // Calculate mouse position in normalized device coordinates (-1 to +1)
+      this.mouse.x = (e.clientX / this.width) * 2 - 1;
+      this.mouse.y = -(e.clientY / this.height) * 2 + 1;
+      
+      // Use raycaster to detect hover over tori
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.tori);
+      
+      if (intersects.length > 0) {
+        canvas.style.cursor = 'pointer';
+      } else {
+        canvas.style.cursor = 'default';
       }
-    }
-  });
-  
-  // Get theme-specific colors
-  const primary = themeColors?.sceneColors?.torus?.primary || theme.palette.primary.main;
-  const secondary = themeColors?.sceneColors?.torus?.secondary || theme.palette.secondary.main;
-  const trailColor = themeColors?.sceneColors?.torus?.trail || theme.palette.secondary.main;
-  
-  // Get the trail to render - use user trail if it exists, otherwise use auto trail
-  const activeTrail = cursorTrail.length > 3 ? cursorTrail : autoTrailPoints;
-  
-  return (
-    <group>
-      {/* Animated torus rings - from either user movement or auto-animation */}
-      {activeTrail.map((point, i) => {
-        // Skip rendering some tori on mobile for performance
-        if (isMobile && i % 2 !== 0 && i > 2) return null;
-        
-        // Calculate size and appearance based on trail index
-        const progress = i / activeTrail.length;
-        const invertedProgress = 1 - progress;
-        
-        // Size influences - scroll creates larger rings
-        const scrollInfluence = scrollActive ? Math.sin(clock.getElapsedTime() * 5) * 0.3 : 0; // Increased from 0.2
-        const size = point.size * (0.5 + invertedProgress) + scrollInfluence;
-        const thickness = 0.03 * (0.5 + invertedProgress);
-        
-        // Add rotation for more dynamic movement
-        const rotX = point.rotation?.x || 0;
-        const rotY = point.rotation?.y || 0;
-        const rotZ = point.rotation?.z || 0;
-        
-        return (
-          <group 
-            key={i} 
-            position={point.position}
-            rotation={[
-              rotX + invertedProgress * clock.getElapsedTime() * 0.2,
-              rotY + invertedProgress * clock.getElapsedTime() * 0.3,
-              rotZ
-            ]}
-          >
-            <mesh>
-              <Detailed distances={[0, 10, 20]}>
-                <torusGeometry args={[size, thickness, 16, 32]} />
-                <torusGeometry args={[size, thickness, 12, 24]} />
-                <torusGeometry args={[size, thickness, 8, 16]} />
-              </Detailed>
-              <meshStandardMaterial 
-                color={primary}
-                opacity={invertedProgress * 0.9} // Increased from 0.8
-                transparent={true}
-                emissive={secondary}
-                emissiveIntensity={invertedProgress * 0.7} // Increased from 0.5
-                metalness={0.3} // Increased from 0.2
-                roughness={0.5} // Decreased from 0.6
-              />
-            </mesh>
-          </group>
-        );
-      })}
+    });
+    
+    // Mouse down event
+    canvas.addEventListener('mousedown', (e) => {
+      // Check if we're clicking on a specific torus
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.tori);
       
-      {/* Trail following current active position - either mouse or auto-position */}
-      {activeTrail.length > 0 && (
-        <Trail
-          width={3} // Increased from 2
-          length={activeTrail.length > 3 ? activeTrail.length * 0.7 : 0} // Increased from length/2
-          color={trailColor}
-          attenuation={(width) => width * 0.8} // Added attenuation for nicer trail
-        >
-          <mesh visible={false} position={
-            cursorTrail.length > 0 
-              ? [mouse.x * 4, mouse.y * 2, 0] 
-              : [
-                  autoTrailPoints[autoTrailPoints.length - 1]?.position.x || 0,
-                  autoTrailPoints[autoTrailPoints.length - 1]?.position.y || 0,
-                  0
-                ]
-          } />
-        </Trail>
-      )}
-    </group>
-  );
-};
+      if (intersects.length > 0) {
+        this.targetTorus = intersects[0].object;
+        // Increase rotation speed when clicked
+        this.targetTorus.userData.rotationSpeed = this.targetTorus.userData.originalRotationSpeed * 3;
+      } else {
+        this.targetTorus = null;
+      }
+      
+      this.isDragging = true;
+      this.lastMousePosition.x = e.clientX;
+      this.lastMousePosition.y = e.clientY;
+    });
+    
+    // Touch start event
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        this.isDragging = true;
+        this.lastMousePosition.x = e.touches[0].clientX;
+        this.lastMousePosition.y = e.touches[0].clientY;
+      }
+    });
+    
+    // Mouse move event for rotation
+    canvas.addEventListener('mousemove', (e) => {
+      if (!this.isDragging) return;
+      
+      const deltaX = e.clientX - this.lastMousePosition.x;
+      const deltaY = e.clientY - this.lastMousePosition.y;
+      
+      // If we're targeting a specific torus, rotate just that one
+      if (this.targetTorus) {
+        this.targetTorus.rotation.y += deltaX * 0.05;
+        this.targetTorus.rotation.x += deltaY * 0.05;
+      } else {
+        // Otherwise rotate the whole group
+        this.torusGroup.rotation.y += deltaX * 0.01;
+        this.torusGroup.rotation.x += deltaY * 0.01;
+      }
+      
+      this.lastMousePosition.x = e.clientX;
+      this.lastMousePosition.y = e.clientY;
+    });
+    
+    // Touch move event
+    canvas.addEventListener('touchmove', (e) => {
+      if (!this.isDragging || e.touches.length !== 1) return;
+      
+      const deltaX = e.touches[0].clientX - this.lastMousePosition.x;
+      const deltaY = e.touches[0].clientY - this.lastMousePosition.y;
+      
+      this.torusGroup.rotation.y += deltaX * 0.01;
+      this.torusGroup.rotation.x += deltaY * 0.01;
+      
+      this.lastMousePosition.x = e.touches[0].clientX;
+      this.lastMousePosition.y = e.touches[0].clientY;
+    });
+    
+    // Mouse up event
+    window.addEventListener('mouseup', () => {
+      this.isDragging = false;
+      this.targetTorus = null;
+    });
+    
+    // Touch end event
+    window.addEventListener('touchend', () => {
+      this.isDragging = false;
+      this.targetTorus = null;
+    });
+    
+    // Mouse leave event
+    canvas.addEventListener('mouseleave', () => {
+      this.isDragging = false;
+      this.targetTorus = null;
+    });
+  }
+  
+  animate() {
+    if (!this.isActive) return;
+    
+    requestAnimationFrame(this.animate.bind(this));
+    
+    // Follow mouse position for subtle movement when not dragging
+    if (!this.isDragging) {
+      // Smoothly move toward mouse position
+      this.torusGroup.position.x += (this.mouse.x * 5 - this.torusGroup.position.x) * 0.05;
+      this.torusGroup.position.y += (this.mouse.y * 5 - this.torusGroup.position.y) * 0.05;
+    }
+    
+    // Animate individual tori
+    this.tori.forEach(torus => {
+      const { rotationSpeed, rotationAxis, originalRotationSpeed } = torus.userData;
+      
+      // Rotate around its own axis
+      torus.rotation.x += rotationSpeed * 0.01 * rotationAxis.x;
+      torus.rotation.y += rotationSpeed * 0.01 * rotationAxis.y;
+      torus.rotation.z += rotationSpeed * 0.01 * rotationAxis.z;
+      
+      // Gradually return to normal speed if not the target
+      if (torus !== this.targetTorus) {
+        torus.userData.rotationSpeed += (originalRotationSpeed - torus.userData.rotationSpeed) * 0.05;
+      }
+      
+      // Float position based on time
+      if (!this.isDragging) {
+        const time = Date.now() * 0.001;
+        torus.position.x = Math.sin(time * 0.5) * 0.3;
+        torus.position.y = Math.cos(time * 0.3) * 0.2;
+      }
+    });
+    
+    // Render scene with composer for effects
+    this.composer.render();
+  }
+  
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
+    
+    // Update camera
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    
+    // Update renderer and composer
+    this.renderer.setSize(width, height);
+    this.composer.setSize(width, height);
+  }
+  
+  dispose() {
+    this.isActive = false;
+    
+    // Dispose geometries and materials for tori
+    this.tori.forEach(torus => {
+      torus.geometry.dispose();
+      torus.material.dispose();
+    });
+    
+    // Remove the canvas from the container
+    if (this.container.contains(this.renderer.domElement)) {
+      this.container.removeChild(this.renderer.domElement);
+    }
+  }
+}
 
 export default TorusScene;
