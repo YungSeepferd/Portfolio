@@ -1,30 +1,68 @@
 /**
- * Object Pool - Reuse objects instead of creating new ones
- * Significant performance improvement for mobile devices
+ * ObjectPool
+ * 
+ * A utility for reusing Three.js objects to improve performance
+ * and reduce garbage collection pauses
  */
-export class ObjectPool {
-  constructor(size, createFn) {
-    this.pool = Array(size).fill().map(() => ({ inUse: false, object: createFn() }));
-  }
 
+class ObjectPool {
+  constructor(factory, initialSize = 50) {
+    this.factory = factory;
+    this.pool = [];
+    this.activeObjects = new Set();
+    
+    // Pre-populate the pool
+    this.expand(initialSize);
+  }
+  
+  // Get an object from the pool or create a new one
   get() {
-    const available = this.pool.find(item => !item.inUse);
-    if (available) {
-      available.inUse = true;
-      return available.object;
+    let object;
+    
+    if (this.pool.length > 0) {
+      object = this.pool.pop();
+    } else {
+      object = this.factory();
     }
-    return null;
+    
+    this.activeObjects.add(object);
+    return object;
   }
-
+  
+  // Return an object to the pool
   release(object) {
-    const poolItem = this.pool.find(item => item.object === object);
-    if (poolItem) {
-      poolItem.inUse = false;
+    if (this.activeObjects.has(object)) {
+      this.activeObjects.delete(object);
+      this.pool.push(object);
     }
   }
-
-  reset() {
-    this.pool.forEach(item => { item.inUse = false; });
+  
+  // Add more objects to the pool
+  expand(count) {
+    for (let i = 0; i < count; i++) {
+      this.pool.push(this.factory());
+    }
+  }
+  
+  // Clear the pool
+  clear() {
+    this.pool = [];
+    this.activeObjects.clear();
+  }
+  
+  // Get the number of objects in the pool
+  get size() {
+    return this.pool.length;
+  }
+  
+  // Get the number of active objects
+  get activeCount() {
+    return this.activeObjects.size;
+  }
+  
+  // Get total objects (active + pooled)
+  get totalCount() {
+    return this.pool.length + this.activeObjects.size;
   }
 }
 

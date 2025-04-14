@@ -16,7 +16,6 @@ export { default as ScrollIndicator } from './ScrollIndicator';
 // Skills data
 export * from './skillsData';
 
-// 3D Background - using the modular system
-export { default as Background3D } from './background3d';
-
-// Note: ThreeJSBackground.js is deprecated and will be removed
+// Background Components
+export { default as CanvasBackground } from './CanvasBackground';  // Simple 2D canvas background
+export { default as ThreeJSBackground } from './background3d/Background3D';  // 3D Three.js background

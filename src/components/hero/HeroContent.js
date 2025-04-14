@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Chip, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { skillsRow1, skillsRow2 } from './skillsData';
 
 /**
@@ -11,11 +11,12 @@ import { skillsRow1, skillsRow2 } from './skillsData';
  * - Subtitle
  * - Status text
  * - Skill tags
+ * 
+ * This component is set with pointerEvents: 'none' to allow
+ * clicks to pass through to the 3D background
  */
 const HeroContent = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   
   // Animation variants for staggered appearance
   const containerVariants = {
@@ -38,6 +39,9 @@ const HeroContent = () => {
     }
   };
   
+  // Determine if mobile for responsive layout
+  const isMobileBreakpoint = theme.breakpoints.values.sm;
+  
   return (
     <Box
       sx={{
@@ -47,8 +51,8 @@ const HeroContent = () => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        zIndex: 10, // Make sure it's higher than background but allows interaction
-        pointerEvents: 'none',
+        zIndex: 10,
+        pointerEvents: 'none', // All content is non-interactive by default
         userSelect: 'none',
         pl: { xs: 2, sm: 4, md: 8, lg: 12 }, // Responsive padding
       }}
@@ -58,8 +62,8 @@ const HeroContent = () => {
         animate="visible"
         variants={containerVariants}
         style={{
-          maxWidth: isMobile ? '100%' : isTablet ? '80%' : '650px',
-          textAlign: isMobile ? 'center' : 'left',
+          maxWidth: `min(100%, 650px)`,
+          textAlign: window.innerWidth < isMobileBreakpoint ? 'center' : 'left',
           pointerEvents: 'none',
         }}
       >
@@ -91,7 +95,7 @@ const HeroContent = () => {
             component="h2"
             sx={{
               fontSize: {
-                xs: '0.7rem',
+                xs: '0.8rem',
                 sm: '1rem',
                 md: '1.35rem'
               },
@@ -131,27 +135,26 @@ const HeroContent = () => {
               flexWrap: 'wrap',
               gap: 1,
               mb: 1.5,
-              justifyContent: isMobile ? 'center' : 'flex-start',
+              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
             }}
           >
             {skillsRow1.map((skill, index) => (
-              <Chip
+              <Box
                 key={index}
-                label={skill}
                 sx={{
                   bgcolor: theme.palette.background.paper,
                   color: theme.palette.text.primary,
-                  borderColor: theme.palette.divider,
-                  px: 1,
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: '16px',
+                  px: 1.5,
+                  py: 0.5,
                   fontSize: theme.typography.chipText?.fontSize || '0.9rem',
+                  display: 'inline-block',
                   pointerEvents: 'none',
-                  '&:hover': {
-                    bgcolor: theme.palette.background.paper,
-                    color: theme.palette.accent?.main || theme.palette.primary.main,
-                    borderColor: theme.palette.accent?.main || theme.palette.primary.main,
-                  }
                 }}
-              />
+              >
+                {skill}
+              </Box>
             ))}
           </Box>
           
@@ -160,27 +163,26 @@ const HeroContent = () => {
               display: 'flex', 
               flexWrap: 'wrap',
               gap: 1,
-              justifyContent: isMobile ? 'center' : 'flex-start',
+              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
             }}
           >
             {skillsRow2.map((skill, index) => (
-              <Chip
+              <Box
                 key={index}
-                label={skill}
                 sx={{
                   bgcolor: theme.palette.background.paper,
                   color: theme.palette.text.primary,
-                  borderColor: theme.palette.divider,
-                  px: 1,
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: '16px',
+                  px: 1.5,
+                  py: 0.5,
                   fontSize: theme.typography.chipText?.fontSize || '0.9rem',
+                  display: 'inline-block',
                   pointerEvents: 'none',
-                  '&:hover': {
-                    bgcolor: theme.palette.background.paper,
-                    color: theme.palette.accent?.main || theme.palette.primary.main,
-                    borderColor: theme.palette.accent?.main || theme.palette.primary.main,
-                  }
                 }}
-              />
+              >
+                {skill}
+              </Box>
             ))}
           </Box>
         </Box>

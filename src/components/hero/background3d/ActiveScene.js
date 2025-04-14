@@ -1,108 +1,103 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { useSceneContext } from './SceneContext';
-import BoxScene from './scenes/BoxScene';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useSceneState } from './SceneContext';
+import { extractThemeColors } from './utils/sceneThemeUtils';
 import SphereScene from './scenes/SphereScene';
+import BoxScene from './scenes/BoxScene'; 
 import TorusScene from './scenes/TorusScene';
-import CubeScene from './scenes/CubeScene';
-
-// Define available scenes with their components and properties
-const scenes = [
-  { id: 'box', component: BoxScene },
-  { id: 'sphere', component: SphereScene },
-  { id: 'torus', component: TorusScene },
-  { id: 'cube', component: CubeScene }
-];
+import { SHAPE_TYPES } from './constants';
 
 /**
- * ActiveScene Component
- * Manages the currently displayed 3D scene and handles transitions
+ * ActiveScene - Manages which 3D scene is currently active
  * 
- * @param {Object} props - Component props
- * @param {Object} props.mousePosition - Current mouse position {x, y}
- * @param {Function} props.onClick - Function to call when scene is clicked
- * @param {boolean} props.isDragging - Whether the user is currently dragging
- * @param {Object} props.theme - Current theme object
+ * Handles transitions between scenes and passes necessary props
  */
-const ActiveScene = ({ mousePosition, onClick, isDragging, theme }) => {
-  const { activeSceneId, setActiveSceneId } = useSceneContext();
-  const [clickable, setClickable] = useState(true);
-  const [transitioning, setTransitioning] = useState(false);
+const ActiveScene = ({ 
+  mousePosition, 
+  mouseData, // New: Contains both screen and world coordinates
+  onClick, 
+  isDragging, 
+  theme 
+}) => {
+  // eslint-disable-next-line no-unused-vars
+  const { size } = useThree();
+  const { currentShapeType, switchShapeType, isTransitioning } = useSceneState();
+  // eslint-disable-next-line no-unused-vars
+  const [transitionProgress, setTransitionProgress] = useState(0);
   
-  // Find the current scene component
-  const CurrentScene = scenes.find(scene => scene.id === activeSceneId)?.component || scenes[0].component;
-
-  // Handle click to switch scenes
-  const handleObjectClick = useCallback((e) => {
-    if (!clickable || isDragging) return;
-    
-    // Prevent event propagation to avoid multiple clicks
-    e.stopPropagation();
-    
-    // Begin transition
-    setTransitioning(true);
-    
-    // Call external click handler if provided
-    if (onClick) {
-      onClick(activeSceneId);
-    }
-    
-    // Prevent rapid clicks
-    setClickable(false);
-    
-    // Switch to next scene after transition delay
-    setTimeout(() => {
-      // Find current index
-      const currentIndex = scenes.findIndex(scene => scene.id === activeSceneId);
-      const nextIndex = (currentIndex + 1) % scenes.length;
-      setActiveSceneId(scenes[nextIndex].id);
-      
-      // Allow clicking again after transition
-      setTimeout(() => {
-        setClickable(true);
-        setTransitioning(false);
-      }, 800);
-    }, 300);
-  }, [activeSceneId, clickable, isDragging, onClick, setActiveSceneId]);
+  // Extract theme colors
+  const { shapeColors } = useMemo(() => {
+    return extractThemeColors(theme);
+  }, [theme]);
   
-  // Auto-rotate all scenes if not being dragged
-  useFrame((state) => {
-    if (!isDragging) {
-      // Subtle auto-rotation
-      state.scene.rotation.y += 0.001;
-      
-      // Camera movement based on mouse position (if not dragging)
-      state.camera.position.x += (mousePosition.x * 0.5 - state.camera.position.x) * 0.05;
-      state.camera.position.y += (mousePosition.y * 0.5 - state.camera.position.y) * 0.05;
-      state.camera.lookAt(0, 0, 0);
-    }
-  });
-  
-  // Listen for key presses to change scenes (accessibility)
+  // Set transition state when scene changes
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        // Find current index
-        const currentIndex = scenes.findIndex(scene => scene.id === activeSceneId);
-        const nextIndex = (currentIndex + 1) % scenes.length;
-        setActiveSceneId(scenes[nextIndex].id);
-      }
-    };
+    if (isTransitioning) {
+      let startTime = Date.now();
+      const transitionDuration = 1000; // 1 second transition
+      
+      const updateTransition = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(1, elapsed / transitionDuration);
+        
+        setTransitionProgress(progress);
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateTransition);
+        }
+      };
+      
+      requestAnimationFrame(updateTransition);
+    }
+  }, [isTransitioning]);
+  
+  // Scene click handler
+  const handleSceneClick = () => {
+    if (onClick && !isDragging) {
+      onClick();
+    }
     
-    window.addEventListener('keydown', handleKeyPress);
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [activeSceneId, setActiveSceneId]);
+    if (!isTransitioning && switchShapeType) {
+      // Use the switchShapeType function from context to handle scene changes
+      switchShapeType();
+    }
+  };
+  
+  // Get appropriate color for current scene
+  const activeColor = useMemo(() => {
+    return new THREE.Color(shapeColors[currentShapeType]?.color || '#6366F1');
+  }, [currentShapeType, shapeColors]);
   
   return (
-    <group onClick={handleObjectClick}>
-      <CurrentScene 
-        mousePosition={mousePosition}
-        isDragging={isDragging}
-        theme={theme}
-        transitioning={transitioning}
-      />
+    <group onClick={handleSceneClick}>
+      {/* Render active scene based on type, now passing both screen coordinates and world position */}
+      {currentShapeType === SHAPE_TYPES.SPHERE && (
+        <SphereScene 
+          color={activeColor}
+          mousePosition={mousePosition}
+          mouseData={mouseData}
+          isTransitioning={isTransitioning}
+        />
+      )}
+      
+      {currentShapeType === SHAPE_TYPES.BOX && (
+        <BoxScene 
+          color={activeColor}
+          mousePosition={mousePosition}
+          mouseData={mouseData}
+          isTransitioning={isTransitioning}
+        />
+      )}
+      
+      {currentShapeType === SHAPE_TYPES.TORUS && (
+        <TorusScene 
+          color={activeColor}
+          mousePosition={mousePosition}
+          mouseData={mouseData}
+          isTransitioning={isTransitioning}
+        />
+      )}
     </group>
   );
 };

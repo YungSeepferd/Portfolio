@@ -1,158 +1,325 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
+import { Trail, Detailed } from '@react-three/drei';
 import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
-// Remove unused Particle import
-// import Particle from '../ParticleComponent';
 
 /**
- * TorusScene Component - Completely rebuilt to fix performance issues
- * Uses individual torus meshes instead of Trail component to avoid "offset is out of bounds" errors
+ * TorusScene Component - With automatic motion
  */
-const TorusScene = ({ isActive, ...props }) => {
+const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransitioning }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { mouse, clock } = useThree();
-  // Destructure only the isTransitioning property that we use
-  const { isTransitioning } = useSceneState();
+  const { clock } = useThree();
+  const { isInteractionEnabled } = useSceneState();
   
-  // Store trail points as individual meshes with position data
-  const [trailPoints, setTrailPoints] = useState([]);
-  const trailMaxPoints = isMobile ? 8 : 15; // Reduced from 15/30 to prevent memory issues
+  // Extract scene colors from theme
+  const themeColors = {
+    sceneColors: {
+      torus: {
+        primary: theme.palette.primary.main,
+        secondary: theme.palette.secondary.main,
+        trail: theme.palette.secondary.main
+      }
+    }
+  };
   
-  // Refs for optimization
-  const mouseRef = useRef(new THREE.Vector2());
-  const prevMouseRef = useRef(new THREE.Vector2());
-  const autoPathTimer = useRef(0);
+  // Trail of cursor positions
+  const [cursorTrail, setCursorTrail] = useState([]);
+  const trailMaxLength = isMobile ? 12 : 20;
   const frameCounter = useRef(0);
-  const isMountedRef = useRef(true);
+  const prevMousePos = useRef(new THREE.Vector2());
   
-  // Track last update time for consistent frame rate
-  const lastUpdateTime = useRef(Date.now());
+  // Auto-animation path points - initialize with at least one point to prevent empty array errors
+  const [autoTrailPoints, setAutoTrailPoints] = useState([{
+    position: new THREE.Vector3(0, 0, 0),
+    time: 0,
+    size: 0.15,
+    rotation: new THREE.Euler(0, 0, 0)
+  }]);
+  const autoTrailMaxPoints = isMobile ? 6 : 12;
+  const autoTrailTime = useRef(0);
   
-  // Get theme-specific colors
-  const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
+  // Track cursor position as a Vector3
+  const cursorPosition = useRef(new THREE.Vector3());
+
+  // Flag to track if component is mounted to prevent state updates after unmount
+  const isMounted = useRef(true);
+  
+  // Track if trail is ready for rendering to prevent errors
+  const [isTrailReady, setIsTrailReady] = useState(false);
   
   // Cleanup on unmount
   useEffect(() => {
-    isMountedRef.current = true;
     return () => {
-      isMountedRef.current = false;
+      isMounted.current = false;
     };
   }, []);
-
-  // Generate smooth path for automatic motion
-  const getAutoPosition = (time) => {
-    // Create a complex path using multiple sinusoids for more natural movement
-    const x = Math.sin(time * 0.4) * Math.cos(time * 0.3) * 3;
-    const y = Math.sin(time * 0.3) * Math.sin(time * 0.5) * 1.5;
-    return new THREE.Vector3(x, y, 0);
-  };
   
-  // Add points to trail with frame rate limiting for performance
-  useFrame(() => {
-    if (isTransitioning) return;
+  // Initialize auto trail with some points to prevent empty trail errors
+  useEffect(() => {
+    // Generate initial trail points along a circle
+    const initialPoints = [];
+    const count = 5;  // Start with at least 5 points
     
-    // Limit updates to maintain consistent frame rate
-    const now = Date.now();
-    const deltaTime = now - lastUpdateTime.current;
-    if (deltaTime < (isMobile ? 60 : 40)) return; // 25 fps on desktop, 16 fps on mobile
-    
-    // Proceed with update
-    lastUpdateTime.current = now;
-    frameCounter.current++;
-    
-    // Update automatic path timer
-    autoPathTimer.current += 0.01;
-    
-    // Update mouse reference (helps smooth motion)
-    mouseRef.current.set(mouse.x, mouse.y);
-    
-    // Detect if mouse has moved enough to add a new point
-    const mouseDelta = mouseRef.current.distanceTo(prevMouseRef.current);
-    const mouseActive = mouseDelta > (isMobile ? 0.02 : 0.01);
-    
-    // Add points less frequently
-    if (frameCounter.current % (isMobile ? 6 : 3) === 0) {
-      // Decide whether to use mouse or auto-generated position
-      let newPosition;
-      
-      if (mouseActive) {
-        // Use scaled mouse position
-        newPosition = new THREE.Vector3(
-          mouse.x * 4,
-          mouse.y * 2,
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      initialPoints.push({
+        position: new THREE.Vector3(
+          Math.sin(angle) * 3,
+          Math.cos(angle) * 1.5,
           0
-        );
-        
-        // Update the previous mouse position
-        prevMouseRef.current.copy(mouseRef.current);
-      } else {
-        // Use auto-generated position
-        newPosition = getAutoPosition(autoPathTimer.current);
+        ),
+        time: 0,
+        size: 0.15,
+        rotation: new THREE.Euler(0, 0, 0)
+      });
+    }
+    
+    setAutoTrailPoints(initialPoints);
+    
+    // Set trail as ready after a short delay to ensure points are populated
+    setTimeout(() => {
+      if (isMounted.current) {
+        setIsTrailReady(true);
       }
+    }, 100);
+  }, []);
+  
+  // Update cursor position from props
+  useEffect(() => {
+    if (mousePosition) {
+      cursorPosition.current.set(
+        mousePosition.x * 4,
+        mousePosition.y * 2,
+        0
+      );
+      prevMousePos.current.set(mousePosition.x, mousePosition.y);
+    }
+  }, [mousePosition]);
+
+  // Track scroll activity (default to false since we don't have this in context)
+  const scrollActive = false;
+  
+  // Add auto-animation points
+  useFrame(() => {
+    if (isTransitioning || !isMounted.current) return;
+    
+    // Update auto-trail timer
+    autoTrailTime.current += 0.01;
+    
+    // Generate smooth circular/figure-8 path
+    const t = autoTrailTime.current;
+    
+    // Only update every few frames
+    if (frameCounter.current % 15 === 0) {
+      // Create a figure-8 or circular motion when no user input
+      const autoX = Math.sin(t) * 3;
+      const autoY = Math.sin(t * 1.5) * 1.5;
       
-      // Only add if mounted and not in transition
-      if (isMountedRef.current && !isTransitioning) {
-        setTrailPoints(prev => {
-          // Create new point with unique ID and initial properties
-          const newPoint = {
-            id: `trail-${Date.now()}-${Math.random()}`,
+      const newPosition = new THREE.Vector3(autoX, autoY, 0);
+      
+      // Only add new point if it's far enough from the last one
+      const lastPoint = autoTrailPoints[autoTrailPoints.length - 1];
+      const shouldAddPoint = !lastPoint || 
+                             newPosition.distanceTo(new THREE.Vector3(
+                                lastPoint.position.x, 
+                                lastPoint.position.y, 
+                                0
+                             )) > 0.2;
+      
+      if (shouldAddPoint && isMounted.current) {
+        setAutoTrailPoints(prev => {
+          // Make sure we have a valid array to prevent errors
+          if (!prev || !Array.isArray(prev)) return [{ 
             position: newPosition,
             time: clock.getElapsedTime(),
-            size: mouseActive ? 0.2 + mouseDelta * 5 : 0.15,
-            rotation: new THREE.Euler(
-              Math.random() * Math.PI,
-              Math.random() * Math.PI,
-              Math.random() * Math.PI
-            )
-          };
+            size: 0.15 + (Math.sin(t * 2) * 0.05),
+            rotation: new THREE.Euler(t * 0.3, t * 0.2, t * 0.1)
+          }];
           
-          // Add to front and remove from end if needed
-          const newPoints = [newPoint, ...prev].slice(0, trailMaxPoints);
-          return newPoints;
+          const newTrail = [
+            ...prev, 
+            { 
+              position: newPosition,
+              time: clock.getElapsedTime(),
+              size: 0.15 + (Math.sin(t * 2) * 0.05), // Size varies slightly
+              rotation: new THREE.Euler(t * 0.3, t * 0.2, t * 0.1)
+            }
+          ];
+          
+          // Keep trail at max length
+          while (newTrail.length > autoTrailMaxPoints) {
+            newTrail.shift();
+          }
+          
+          return newTrail;
         });
       }
     }
   });
   
-  // MODIFIED: Ensure clicking torus only changes shape type, not scene
-  // Wrap in useCallback to prevent recreating on every render
-  const handleTorusClick = useCallback((e) => {
-    e.stopPropagation(); // Prevent event from reaching background
-    // Change shape type only, not scene
-    window.sceneContext?.switchShapeType && window.sceneContext.switchShapeType();
-  }, []);
+  // Update cursor trail - IMPROVED: more responsive
+  useFrame(() => {
+    if (isTransitioning || !mousePosition || !isInteractionEnabled || !isMounted.current) return;
+    
+    // Update more frequently for better responsiveness
+    frameCounter.current += 1;
+    
+    if (frameCounter.current % 2 === 0) { // Changed from 3 to 2 for more frequent updates
+      const currentTime = clock.getElapsedTime();
+      
+      // Calculate mouse movement - using the mousePosition prop
+      const mouseSpeed = mousePosition ? 
+        new THREE.Vector2(mousePosition.x, mousePosition.y)
+          .distanceTo(prevMousePos.current) : 0;
+      
+      if (mousePosition) {
+        prevMousePos.current.set(mousePosition.x, mousePosition.y);
+      }
+      
+      // Make trail creation more sensitive
+      const shouldAddToTrail = 
+        cursorTrail.length === 0 || 
+        mouseSpeed > 0.005 || // Reduced threshold (was 0.01)
+        cursorPosition.current.distanceTo(new THREE.Vector3(
+          (cursorTrail[cursorTrail.length - 1]?.position?.x || 0),
+          (cursorTrail[cursorTrail.length - 1]?.position?.y || 0),
+          0
+        )) > 0.15; // Reduced threshold (was 0.2)
+      
+      if (shouldAddToTrail && mousePosition && isMounted.current) {
+        setCursorTrail(prev => {
+          // Make sure we have a valid array to prevent errors
+          if (!prev || !Array.isArray(prev)) return [{ 
+            position: cursorPosition.current.clone(),
+            time: currentTime,
+            size: 0.2 + (mouseSpeed * 3),
+            rotation: new THREE.Euler(
+              Math.random() * Math.PI * 2,
+              Math.random() * Math.PI * 2,
+              Math.random() * Math.PI * 2
+            )
+          }];
+          
+          const newTrail = [
+            ...prev, 
+            { 
+              position: cursorPosition.current.clone(),
+              time: currentTime,
+              size: 0.2 + (mouseSpeed * 3), // Increased size multiplier (was 2)
+              rotation: new THREE.Euler(
+                Math.random() * Math.PI * 2,
+                Math.random() * Math.PI * 2,
+                Math.random() * Math.PI * 2
+              )
+            }
+          ];
+          
+          // Keep trail at max length
+          while (newTrail.length > trailMaxLength) {
+            newTrail.shift();
+          }
+          
+          return newTrail;
+        });
+      }
+    }
+  });
   
-  // Create actual torus meshes from trail points
-  const torusMeshes = useMemo(() => {
-    return trailPoints.map((point) => {
-      return (
-        <mesh
-          key={point.id}
-          position={point.position}
-          rotation={point.rotation}
-          scale={new THREE.Vector3(point.size, point.size, point.size)}
-          onClick={handleTorusClick}
-        >
-          <torusGeometry args={[0.5, 0.2, 16, 32]} />
-          <meshStandardMaterial
-            color={primary}
-            emissive={secondary}
-            emissiveIntensity={0.5}
-            metalness={0.8}
-            roughness={0.2}
-          />
-        </mesh>
-      );
-    });
-  }, [trailPoints, primary, secondary, handleTorusClick]);
+  // Get theme-specific colors
+  const primary = themeColors?.sceneColors?.torus?.primary || theme.palette.primary.main;
+  const secondary = themeColors?.sceneColors?.torus?.secondary || theme.palette.secondary.main;
+  const trailColor = themeColors?.sceneColors?.torus?.trail || theme.palette.secondary.main;
+  
+  // Get the trail to render - use user trail if it exists, otherwise use auto trail
+  // Ensure we have at least 3 points in the trail to prevent errors
+  const activeTrail = cursorTrail.length > 3 ? cursorTrail : autoTrailPoints;
+  
+  // Reference for trail position
+  const trailPositionRef = useRef([0, 0, 0]);
+
+  // Update trail position safely
+  useEffect(() => {
+    if (mousePosition && cursorTrail.length > 0) {
+      trailPositionRef.current = [mousePosition.x * 4, mousePosition.y * 2, 0];
+    } else if (autoTrailPoints.length > 0) {
+      const lastPoint = autoTrailPoints[autoTrailPoints.length - 1];
+      trailPositionRef.current = [
+        lastPoint?.position?.x || 0,
+        lastPoint?.position?.y || 0,
+        0
+      ];
+    }
+  }, [mousePosition, cursorTrail, autoTrailPoints]);
   
   return (
-    <group {...props}>
-      {torusMeshes}
+    <group>
+      {/* Animated torus rings - from either user movement or auto-animation */}
+      {activeTrail.map((point, i) => {
+        // Skip rendering some tori on mobile for performance
+        if (isMobile && i % 2 !== 0 && i > 2) return null;
+        
+        // Check if point has valid position to prevent errors
+        if (!point?.position) return null;
+        
+        // Calculate size and appearance based on trail index
+        const progress = i / activeTrail.length;
+        const invertedProgress = 1 - progress;
+        
+        // Size influences - scroll creates larger rings
+        const scrollInfluence = scrollActive ? Math.sin(clock.getElapsedTime() * 5) * 0.3 : 0; // Increased from 0.2
+        const size = point.size * (0.5 + invertedProgress) + scrollInfluence;
+        const thickness = 0.03 * (0.5 + invertedProgress);
+        
+        // Add rotation for more dynamic movement
+        const rotX = point.rotation?.x || 0;
+        const rotY = point.rotation?.y || 0;
+        const rotZ = point.rotation?.z || 0;
+        
+        return (
+          <group 
+            key={i} 
+            position={point.position}
+            rotation={[
+              rotX + invertedProgress * clock.getElapsedTime() * 0.2,
+              rotY + invertedProgress * clock.getElapsedTime() * 0.3,
+              rotZ
+            ]}
+          >
+            <mesh>
+              <Detailed distances={[0, 10, 20]}>
+                <torusGeometry args={[size, thickness, 16, 32]} />
+                <torusGeometry args={[size, thickness, 12, 24]} />
+                <torusGeometry args={[size, thickness, 8, 16]} />
+              </Detailed>
+              <meshStandardMaterial 
+                color={color || primary}
+                opacity={invertedProgress * 0.9} // Increased from 0.8
+                transparent={true}
+                emissive={color || secondary}
+                emissiveIntensity={invertedProgress * 0.7} // Increased from 0.5
+                metalness={0.3} // Increased from 0.2
+                roughness={0.5} // Decreased from 0.6
+              />
+            </mesh>
+          </group>
+        );
+      })}
+      
+      {/* Trail following current active position - only render when we have enough points */}
+      {isTrailReady && activeTrail.length >= 3 && (
+        <Trail
+          width={3} // Increased from 2
+          // Use a more conservative calculation for length to prevent array overruns
+          length={Math.min(15, Math.floor(activeTrail.length * 0.5))}
+          color={trailColor}
+          attenuation={(width) => width * 0.8} // Added attenuation for nicer trail
+        >
+          <mesh visible={false} position={trailPositionRef.current} />
+        </Trail>
+      )}
     </group>
   );
 };

@@ -7,6 +7,7 @@ import { Box, useTheme } from '@mui/material';
  * Creates an animated background effect for the home section.
  * Uses useTheme hook to safely access theme values with fallbacks.
  */
+// MARK FOR DELETION: Duplicate background implementation
 const Background3D = () => {
   const canvasRef = useRef(null);
   const theme = useTheme();

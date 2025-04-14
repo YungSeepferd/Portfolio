@@ -128,10 +128,7 @@ const Header = () => {
                   paddingLeft: { xs: '0', sm: '20px', md: '40px', lg: '60px' },
                 }}
               >
-                <Box component="span" sx={{ color: theme.palette.text.primary, mr: 0.5 }}>
-                  Vincent
-                </Box>
-                Göke
+                  Vincent Göke 
               </Box>
             </ScrollLink>
 

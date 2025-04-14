@@ -1,27 +1,25 @@
 /**
- * Background3D - 3D Background System
+ * Three.js 3D Background Components
  * 
- * This module exports the three.js background system components.
- * It provides a modular, optimized replacement for ThreeJSBackground.js
+ * This module exports the Three.js-based 3D background system.
+ * Note: This is different from the simple Canvas-based background (CanvasBackground.js)
  */
 
-// Main component
-export { default } from './Background3D';
+import Background3D from './Background3D';
 
-// Scene management
-export { SceneProvider, useSceneState } from './SceneContext';
-export { SCENE_MODES, SHAPE_TYPES } from './constants';
+export default Background3D;
 
-// Individual scenes
+// Export other components
 export { default as SphereScene } from './scenes/SphereScene';
-export { default as CubeScene } from './scenes/CubeScene';
-// Add BoxScene as an alias for CubeScene to maintain compatibility
-export { default as BoxScene } from './scenes/CubeScene';
+export { default as BoxScene } from './scenes/BoxScene';
 export { default as TorusScene } from './scenes/TorusScene';
-
-// Utility components
-export { default as ActiveScene } from './ActiveScene';
-export { default as LoadingFallback } from './components/LoadingFallback';
-
-// Import particle component explicitly
 export { default as ParticleComponent } from './ParticleComponent';
+export { default as ActiveScene } from './ActiveScene';
+export { default as SceneContext, SceneProvider, useSceneState } from './SceneContext';
+
+// Export utilities
+export * from './constants';
+export * from './particles';
+export * from './utils/webglDetector';
+export * from './utils/performanceUtils';
+export * from './utils/sceneThemeUtils';

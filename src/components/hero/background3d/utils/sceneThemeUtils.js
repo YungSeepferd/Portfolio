@@ -106,18 +106,31 @@ export const extractThemeColors = (theme) => {
  * @returns {Object} - Object containing primary, secondary, and background colors
  */
 export const getSceneColors = (theme) => {
-  if (!theme) {
-    return {
-      primary: '#1976d2',
-      secondary: '#9c27b0',
-      background: '#f5f5f5'
-    };
-  }
-  
+  // Extract colors from the theme
   return {
-    primary: theme.palette.primary.main,
-    secondary: theme.palette.secondary.main,
-    background: theme.palette.background.default
+    primary: themeColorToThreeColor(theme.palette.primary.main),
+    primaryLight: themeColorToThreeColor(theme.palette.primary.light),
+    primaryDark: themeColorToThreeColor(theme.palette.primary.dark),
+    secondary: themeColorToThreeColor(theme.palette.secondary.main),
+    secondaryLight: themeColorToThreeColor(theme.palette.secondary.light),
+    secondaryDark: themeColorToThreeColor(theme.palette.secondary.dark),
+    background: themeColorToThreeColor(theme.palette.background.default),
+    paper: themeColorToThreeColor(theme.palette.background.paper),
+    text: themeColorToThreeColor(theme.palette.text.primary),
+    textSecondary: themeColorToThreeColor(theme.palette.text.secondary),
+    
+    // Helper method for getting a random theme color
+    getRandomColor: () => {
+      const colors = [
+        theme.palette.primary.main,
+        theme.palette.primary.light,
+        theme.palette.secondary.main,
+        theme.palette.secondary.light,
+      ];
+      
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      return themeColorToThreeColor(colors[randomIndex]);
+    }
   };
 };
 
@@ -133,6 +146,30 @@ export const createThemedMaterial = (theme, options = {}) => {
     roughness: 0.7,
     ...options
   });
+};
+
+// Convert MUI theme color to THREE.js color
+export const themeColorToThreeColor = (colorString) => {
+  return new THREE.Color(colorString);
+};
+
+// Get environment settings based on theme
+export const getEnvironmentSettings = (theme) => {
+  const isDark = theme.palette.mode === 'dark';
+  
+  return {
+    fogColor: isDark ? 0x0a1022 : 0xf0f4f8,
+    fogDensity: isDark ? 0.02 : 0.01,
+    ambientLight: {
+      color: isDark ? 0x333344 : 0xffffff,
+      intensity: isDark ? 0.7 : 0.5
+    },
+    directionalLight: {
+      color: isDark ? 0xaabbff : 0xffffff,
+      intensity: isDark ? 0.8 : 1.0
+    },
+    backgroundColor: isDark ? 0x0a1022 : 0xf0f4f8
+  };
 };
 
 // Add direct alias for backward compatibility

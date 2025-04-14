@@ -1,17 +1,31 @@
-import React, { useState, useEffect, memo } from 'react';
-import { Box, useTheme, useMediaQuery } from '@mui/material';
+import React, { useState, useEffect, memo, useCallback } from 'react';
+import { Box, useTheme, useMediaQuery, IconButton, Tooltip, Fade } from '@mui/material';
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ScrollIndicator from './ScrollIndicator';
-import Background3D from './Background3D'; // Use the canvas version instead
+import Background3D from './background3d/Background3D';
+import { SHAPE_TYPES } from './background3d/constants';
+import { SceneProvider, useSceneState } from './background3d/SceneContext';
+import InteractionGuide from './background3d/components/InteractionGuide';
+import ParticlesIcon from '@mui/icons-material/Grain';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 /**
- * HeroBackground Component
- * 
- * Encapsulates the 3D background with error handling
- * This separation helps with better rendering control and error isolation
+ * HeroBackground Component - Handles the 3D background with proper context integration
  */
-const HeroBackground = memo(() => {
+const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles }) => {
+  const [showInteractionHint, setShowInteractionHint] = useState(true);
+  
+  // Hide interaction hint after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInteractionHint(false);
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   return (
     <ErrorBoundary 
       componentName="Background3D"
@@ -30,43 +44,233 @@ const HeroBackground = memo(() => {
         />
       }
     >
-      <Background3D />
+      {/* Provide SceneContext at this level to control the scene */}
+      <SceneProvider>
+        <BackgroundController
+          onSceneClick={onSceneClick}
+          onToggleParticles={onToggleParticles}
+          showParticles={showParticles}
+          showInteractionHint={showInteractionHint}
+        />
+      </SceneProvider>
     </ErrorBoundary>
   );
 });
 
+/**
+ * BackgroundController - Component with access to scene context
+ */
+const BackgroundController = memo(({ 
+  onSceneClick, 
+  onToggleParticles, 
+  showParticles, 
+  showInteractionHint 
+}) => {
+  const theme = useTheme();
+  const [showGuide, setShowGuide] = useState(false);
+  const { toggleParticles, switchShapeType } = useSceneState();
+  
+  // Handle background click with context integration
+  const handleBackgroundClick = useCallback(() => {
+    console.log("📢 BackgroundController: Background clicked");
+    // Update scene context
+    switchShapeType();
+    
+    // Notify parent component
+    if (onSceneClick) {
+      onSceneClick();
+    }
+  }, [switchShapeType, onSceneClick]);
+  
+  // Handle particle toggle with context integration
+  const handleToggleParticles = useCallback(() => {
+    console.log("📢 BackgroundController: Toggling particles");
+    // Update scene context
+    toggleParticles();
+    
+    // Notify parent component
+    if (onToggleParticles) {
+      onToggleParticles();
+    }
+  }, [toggleParticles, onToggleParticles]);
+  
+  // Toggle interaction guide
+  const handleToggleGuide = useCallback(() => {
+    setShowGuide(prev => !prev);
+  }, []);
+  
+  return (
+    <>
+      <Background3D 
+        theme={theme} 
+        onSceneClick={handleBackgroundClick} 
+        performanceMode="medium"
+      />
+      
+      {/* Interactive controls */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 1,
+          pointerEvents: 'auto', // Critical fix: Ensure pointer events work
+        }}
+      >
+        {/* Info/help button to show interaction guide */}
+        <Tooltip title="Show interaction guide">
+          <IconButton 
+            onClick={handleToggleGuide}
+            sx={{
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              color: showGuide ? theme.palette.primary.main : theme.palette.text.secondary,
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.2)',
+              }
+            }}
+            aria-label="Show interaction guide"
+          >
+            <InfoOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+        
+        {/* Particle toggle button */}
+        <Tooltip title={showParticles ? "Hide particles" : "Show particles"}>
+          <IconButton 
+            onClick={handleToggleParticles}
+            sx={{
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              color: showParticles ? theme.palette.primary.main : theme.palette.text.secondary,
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.2)',
+              }
+            }}
+            aria-label="Toggle particles"
+          >
+            <ParticlesIcon />
+          </IconButton>
+        </Tooltip>
+        
+        {/* Scene cycle button */}
+        <Tooltip title="Change 3D object">
+          <IconButton 
+            onClick={handleBackgroundClick}
+            sx={{
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              color: theme.palette.primary.main,
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.2)',
+              }
+            }}
+            aria-label="Change 3D scene"
+          >
+            <ViewInArIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      
+      {/* Interaction guide */}
+      <InteractionGuide show={showGuide || showInteractionHint} position="bottom" />
+    </>
+  );
+});
+
+// Add displayNames for memo components
 HeroBackground.displayName = 'HeroBackground';
+BackgroundController.displayName = 'BackgroundController';
 
 /**
  * Hero Component
  * 
- * The main hero section of the portfolio with:
- * - A 3D background using Three.js
- * - Content overlay with title, subtitle and skills
- * - Scroll indicator (desktop only)
+ * The main hero section with enhanced 3D background features:
+ * - Interactive scene switching (Sphere, Cube, Torus)
+ * - Particle system for ambient atmosphere
+ * - Mouse-responsive animations
  */
 const Hero = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [is3DVisible, setIs3DVisible] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [sceneIndex, setSceneIndex] = useState(0);
+  const [showParticles, setShowParticles] = useState(true);
+  const [sceneNameVisible, setSceneNameVisible] = useState(false);
+  const [currentSceneName, setCurrentSceneName] = useState('Sphere');
   
-  // Two-phase initialization for better stability:
-  // 1. First wait for the component to mount
-  // 2. Then show the 3D background with a slight delay
+  // Two-phase initialization for better stability
   useEffect(() => {
-    // Mark the component as mounted
     setHasInitialized(true);
     
-    // Small delay before showing 3D background to ensure DOM is ready
     const timer = setTimeout(() => {
       setIs3DVisible(true);
-    }, 200); // Increased from 100ms for more reliable initialization
+    }, 200);
     
     return () => clearTimeout(timer);
   }, []);
 
-  // Define z-index values from theme or use fallbacks
+  // Get scene name based on index
+  const getSceneName = useCallback((index) => {
+    switch (index) {
+      case SHAPE_TYPES.SPHERE: return 'Sphere';
+      case SHAPE_TYPES.CUBE: return 'Cube';
+      case SHAPE_TYPES.TORUS: return 'Torus';
+      default: return 'Shape';
+    }
+  }, []);
+
+  // Handle scene click to change scene type
+  const handleSceneClick = useCallback(() => {
+    console.log("📢 Hero.js: handleSceneClick called - About to change scene");
+    
+    // Cycle to next scene
+    const newSceneIndex = (sceneIndex + 1) % 3;
+    setSceneIndex(newSceneIndex);
+    
+    // Show scene name indicator
+    setCurrentSceneName(getSceneName(newSceneIndex));
+    setSceneNameVisible(true);
+    
+    console.log(`📢 Hero.js: Scene changed to ${getSceneName(newSceneIndex)} (index: ${newSceneIndex})`);
+    
+    // Hide scene name after 2 seconds
+    setTimeout(() => {
+      setSceneNameVisible(false);
+    }, 2000);
+    
+    // Analytics tracking
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        window.gtag && window.gtag('event', 'change_scene', { 
+          scene_index: newSceneIndex,
+          scene_type: getSceneName(newSceneIndex)
+        });
+      } catch (err) {
+        console.error('Analytics error:', err);
+      }
+    }
+  }, [sceneIndex, getSceneName]);
+
+  // Handle particle toggle
+  const handleToggleParticles = useCallback(() => {
+    setShowParticles(prev => !prev);
+    
+    // Analytics tracking
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        window.gtag && window.gtag('event', 'toggle_particles', { 
+          show_particles: !showParticles
+        });
+      } catch (err) {
+        console.error('Analytics error:', err);
+      }
+    }
+  }, [showParticles]);
+
+  // Define z-index values
   const zIndexes = {
     background: theme.zIndex?.heroBackground || 5,
     content: theme.zIndex?.heroContent || 10,
@@ -81,8 +285,8 @@ const Hero = () => {
       sx={{
         width: '100%',
         minHeight: { 
-          xs: 'calc(100vh - 56px)', // Mobile header height
-          sm: 'calc(100vh - 64px)'  // Desktop header height
+          xs: 'calc(100vh - 56px)',
+          sm: 'calc(100vh - 64px)'
         },
         display: 'flex',
         flexDirection: 'column',
@@ -90,12 +294,39 @@ const Hero = () => {
         overflow: 'visible',
         background: `linear-gradient(145deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
         py: { xs: theme.spacing(4), md: theme.spacing(0) },
-        // Ensure proper stacking context
         isolation: 'isolate',
       }}
     >
-      {/* 3D Background Layer */}
-      {hasInitialized && is3DVisible && <HeroBackground />}
+      {/* Background Layer with enhanced interaction */}
+      {hasInitialized && is3DVisible && (
+        <HeroBackground 
+          onSceneClick={handleSceneClick}
+          onToggleParticles={handleToggleParticles}
+          showParticles={showParticles}
+        />
+      )}
+      
+      {/* Scene name indicator - visible when changing scenes */}
+      <Fade in={sceneNameVisible} timeout={{ enter: 400, exit: 800 }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '30%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            zIndex: 30,
+            pointerEvents: 'none',
+            fontSize: '16px',
+            fontWeight: 500,
+          }}
+        >
+          {currentSceneName}
+        </Box>
+      </Fade>
       
       {/* Content Overlay Layer */}
       <Box
@@ -108,10 +339,8 @@ const Hero = () => {
           justifyContent: 'flex-start',
           position: 'relative',
           zIndex: zIndexes.content,
-          // Set pointer-events to auto on the container but none on content
-          // This allows interaction with background while keeping content visible
-          pointerEvents: 'auto',
-          pt: { xs: 8, md: 0 }, // Add padding to avoid header overlap
+          pointerEvents: 'none', // Allow clicks to pass through to background
+          pt: { xs: 8, md: 0 },
         }}
       >
         <HeroContent />
@@ -124,7 +353,7 @@ const Hero = () => {
             position: 'relative', 
             zIndex: zIndexes.scrollIndicator, 
             pointerEvents: 'auto',
-            mt: 'auto', // Push to bottom
+            mt: 'auto',
           }}
         >
           <ScrollIndicator />

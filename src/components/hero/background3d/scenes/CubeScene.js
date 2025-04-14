@@ -5,13 +5,18 @@ import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
 
 /**
- * CubeScene Component - With automatic motion
+ * CubeScene Component - Enhanced with automatic motion
+ * 
+ * Creates an interactive 3D grid of cubes that:
+ * - Responds to mouse movement with a ripple effect
+ * - Features automatic wave motion when not interacted with
+ * - Changes colors based on energy/activation levels
  */
-const CubeScene = () => {
+const CubeScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransitioning }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { mouse, clock } = useThree();
-  const { isTransitioning, scrollActive } = useSceneState();
+  const { clock } = useThree();
+  const { isInteractionEnabled } = useSceneState();
   
   // Number of cubes in the grid
   const gridSize = isMobile ? 5 : 8;
@@ -64,15 +69,18 @@ const CubeScene = () => {
     if (isTransitioning) return;
     
     // Get cursor position in world space
-    const cursorX = mouse.x * 4;
-    const cursorZ = -mouse.y * 4;
+    const cursorX = mousePosition ? mousePosition.x * 4 : 0;
+    const cursorZ = mousePosition ? -mousePosition.y * 4 : 0;
+    
+    // Check if scrolling (assuming this isn't implemented in current context)
+    const scrollActive = false;
     
     // Apply ripple effect if scrolling
     const currentTime = clock.getElapsedTime();
     const rippleCenter = scrollActive ? { x: 0, z: 0 } : null;
     const rippleStrength = Math.sin(currentTime * 3) * 0.5;
     
-    // Apply size calculations to all cube elements
+    // Update each cube
     cubeGrid.forEach((cube) => {
       const cubeRef = cubeRefs.current[cube.index];
       const state = cubeStates.current[cube.index];
@@ -91,7 +99,7 @@ const CubeScene = () => {
       );
       
       // Set target height based on cursor proximity and auto-motion
-      if (dist < 1.5) {
+      if (mousePosition && isInteractionEnabled && dist < 1.5) {
         // Closer = higher target + auto motion
         state.targetY = Math.max(state.targetY, 1.0 * (1 - dist / 1.5) + autoHeight * 0.5);
         state.energy = Math.min(1, state.energy + 0.1);
@@ -130,8 +138,9 @@ const CubeScene = () => {
       if (cubeRef.current.material) {
         const timeOffset = cube.index * 0.1;
         // Get theme colors and interpolate between them
-        const primaryHue = new THREE.Color(theme.palette.primary.main).getHSL({}).h;
-        const secondaryHue = new THREE.Color(theme.palette.secondary.main).getHSL({}).h;
+        const baseColor = color.clone();
+        const primaryHue = baseColor.getHSL({}).h;
+        const secondaryHue = (primaryHue + 0.5) % 1; // Complementary color
         
         // Calculate hue based on time and energy
         const timeHue = ((currentTime + timeOffset) * 0.1) % 1;
@@ -154,23 +163,9 @@ const CubeScene = () => {
           state.energy * 0.3 // Only glow when energized
         );
       }
-      
-      // Apply size calculations
-      const calculatedSize = calculateSize(0.5);
-      cubeRef.current.scale.set(calculatedSize, calculatedSize, calculatedSize);
     });
   });
   
-  const calculateSize = (size) => {
-    // If transitioning, make it smaller
-    if (isTransitioning) {
-      return size * 0.8;
-    }
-    
-    // Otherwise maintain normal size
-    return size;
-  };
-
   return (
     <group position={[0, -1, 0]}>
       {cubeGrid.map((cube, i) => (
@@ -181,8 +176,8 @@ const CubeScene = () => {
         >
           <boxGeometry args={[0.5, 0.5, 0.5]} />
           <meshStandardMaterial 
-            color={theme.palette.primary.main}
-            emissive={theme.palette.primary.dark}
+            color={color}
+            emissive={color.clone().multiplyScalar(0.5)}
             emissiveIntensity={0}
             metalness={0.3}
             roughness={0.7}

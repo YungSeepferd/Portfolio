@@ -1,144 +1,137 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { useTheme } from '@mui/material';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { SHAPE_TYPES } from './constants';
-import { extractThemeColors } from './utils/sceneThemeUtils';
 
-// Create context
-const SceneContext = createContext(null);
+// Create context with default values
+const SceneContext = createContext({
+  currentShapeType: SHAPE_TYPES.SPHERE,
+  switchShapeType: () => {},
+  isTransitioning: false,
+  showParticles: true,
+  toggleParticles: () => {},
+  mousePosition: { x: 0, y: 0 },
+  updateMousePosition: () => {},
+  isDragging: false,
+  updateDragging: () => {},
+  isInteractionEnabled: true,
+  setInteractionEnabled: () => {},
+  hasInteraction: false
+});
 
 /**
  * SceneProvider Component
- * 
- * Provides scene state management for the 3D background with:
- * - Shape type selection
- * - Scene transitions
- * - Scroll activity tracking
- * - Theme-based color extraction
  */
 export const SceneProvider = ({ children }) => {
-  const theme = useTheme();
+  // Scene state
   const [currentShapeType, setCurrentShapeType] = useState(SHAPE_TYPES.SPHERE);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [scrollActive, setScrollActive] = useState(false);
-  const [themeColors, setThemeColors] = useState(null);
+  const [showParticles, setShowParticles] = useState(true);
   
-  // Extract theme colors on initial load and when theme changes
-  useEffect(() => {
-    try {
-      const colors = extractThemeColors(theme);
-      setThemeColors(colors);
-    } catch (error) {
-      console.error("Error extracting theme colors:", error);
-      // Set fallback colors
-      setThemeColors({
-        shapeColors: {
-          [SHAPE_TYPES.SPHERE]: { h: 0.6, s: 0.6, l: 0.6 }, // Blue-ish
-          [SHAPE_TYPES.BOX]: { h: 0.3, s: 0.6, l: 0.6 },    // Green-ish
-          [SHAPE_TYPES.TORUS]: { h: 0.1, s: 0.6, l: 0.6 },  // Orange-ish
-          hover: { h: 0.5, s: 0.8, l: 0.7 }
-        }
-      });
-    }
-  }, [theme]);
+  // Interaction state
+  const [isDragging, setIsDragging] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isInteractionEnabled, setIsInteractionEnabled] = useState(true);
+  const [hasInteraction, setHasInteraction] = useState(false);
   
-  // Handle scroll events to activate scroll effects
-  useEffect(() => {
-    let scrollTimeout;
+  // Track last mouse activity time
+  const lastInteractionTime = useRef(Date.now());
+  const interactionTimeout = useRef(null);
+  
+  // Toggle particles
+  const toggleParticles = useCallback(() => {
+    setShowParticles(prev => !prev);
+  }, []);
+  
+  // Function to switch between scene types with smooth transition
+  const switchShapeType = useCallback(() => {
+    console.log("🔄 SceneContext: switchShapeType called, current state:", {
+      currentShapeType,
+      isTransitioning
+    });
     
-    const handleScroll = () => {
-      setScrollActive(true);
+    // Don't switch during transition or if interaction is disabled
+    if (isTransitioning || !isInteractionEnabled) {
+      console.log("🔄 SceneContext: Ignoring switchShapeType - already in transition or interaction disabled");
+      return;
+    }
+    
+    console.log("🔄 SceneContext: Starting transition");
+    setIsTransitioning(true);
+    
+    // Delay actual shape change to allow for transition animation
+    setTimeout(() => {
+      const newType = (currentShapeType + 1) % 3;
+      console.log(`🔄 SceneContext: Changing shape type from ${currentShapeType} to ${newType}`);
+      setCurrentShapeType(newType);
+      
+      // Reset transitioning state after animation completes
+      setTimeout(() => {
+        console.log("🔄 SceneContext: Transition complete");
+        setIsTransitioning(false);
+      }, 400); // Duration based on transition animation
+    }, 200);
+  }, [isTransitioning, currentShapeType, isInteractionEnabled]);
+
+  // Update mouse position for interactive elements
+  const updateMousePosition = useCallback((position) => {
+    if (position && typeof position.x === 'number' && typeof position.y === 'number') {
+      setMousePosition(position);
+      
+      // Update interaction state
+      setHasInteraction(true);
+      lastInteractionTime.current = Date.now();
       
       // Clear any existing timeout
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (interactionTimeout.current) {
+        clearTimeout(interactionTimeout.current);
+      }
       
-      // Reset scrollActive after scrolling stops
-      scrollTimeout = setTimeout(() => {
-        setScrollActive(false);
-      }, 200); // Reduced for faster response
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
+      // Set timeout to detect when interaction stops
+      interactionTimeout.current = setTimeout(() => {
+        setHasInteraction(false);
+      }, 2000);
+    }
+  }, []);
+  
+  // Clean up on unmount
+  React.useEffect(() => {
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (interactionTimeout.current) {
+        clearTimeout(interactionTimeout.current);
+      }
     };
   }, []);
   
-  // Function to directly switch shape type without transition
-  const switchShapeType = useCallback((nextTypeOrFunction) => {
-    let nextType;
+  // Update dragging state
+  const updateDragging = useCallback((dragging) => {
+    setIsDragging(dragging);
     
-    if (typeof nextTypeOrFunction === 'function') {
-      nextType = nextTypeOrFunction(currentShapeType);
-    } else if (nextTypeOrFunction !== undefined) {
-      nextType = nextTypeOrFunction;
-    } else {
-      // Cycle through shape types: SPHERE -> BOX -> TORUS -> SPHERE
-      nextType = (currentShapeType + 1) % Object.keys(SHAPE_TYPES).length;
+    // Also consider this as interaction
+    if (dragging) {
+      setHasInteraction(true);
+      lastInteractionTime.current = Date.now();
     }
-    
-    setCurrentShapeType(nextType);
-  }, [currentShapeType]);
+  }, []);
   
-  // Scene switching function with transition
-  const switchScene = useCallback((newShapeType) => {
-    if (isTransitioning) return;
-    
-    setIsTransitioning(true);
-    
-    setTimeout(() => {
-      // If specific shape requested, use it, otherwise cycle
-      if (typeof newShapeType === 'function') {
-        setCurrentShapeType(newShapeType);
-      } else if (typeof newShapeType === 'number') {
-        setCurrentShapeType(newShapeType);
-      } else {
-        setCurrentShapeType(prev => (prev + 1) % Object.keys(SHAPE_TYPES).length);
-      }
-      
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
-    }, 300);
-  }, [isTransitioning]);
-  
-  // Make functions available globally for external triggers
-  useEffect(() => {
-    try {
-      window.sceneContext = { 
-        switchScene,
-        switchShapeType,
-        currentShapeType
-      };
-    } catch (error) {
-      console.error("Error setting global sceneContext:", error);
-    }
-    
-    return () => {
-      window.sceneContext = null;
-    };
-  }, [switchScene, switchShapeType, currentShapeType]);
-  
-  // Memoize context value to prevent unnecessary re-renders
-  const contextValue = useMemo(() => ({
-    currentShapeType,
-    switchShapeType,
-    isTransitioning,
-    scrollActive,
-    themeColors,
-    switchScene
-  }), [
-    currentShapeType,
-    switchShapeType,
-    isTransitioning,
-    scrollActive,
-    themeColors,
-    switchScene
-  ]);
-  
+  // Toggle interaction enabled state
+  const setInteractionEnabled = useCallback((enabled) => {
+    setIsInteractionEnabled(enabled);
+  }, []);
+
   return (
-    <SceneContext.Provider value={contextValue}>
+    <SceneContext.Provider value={{ 
+      currentShapeType, 
+      switchShapeType, 
+      isTransitioning,
+      showParticles,
+      toggleParticles,
+      mousePosition,
+      updateMousePosition,
+      isDragging,
+      updateDragging,
+      isInteractionEnabled,
+      setInteractionEnabled,
+      hasInteraction
+    }}>
       {children}
     </SceneContext.Provider>
   );
@@ -147,56 +140,10 @@ export const SceneProvider = ({ children }) => {
 // Custom hook to use the scene context
 export const useSceneState = () => {
   const context = useContext(SceneContext);
-  if (context === null) {
+  if (!context) {
     throw new Error('useSceneState must be used within a SceneProvider');
   }
   return context;
 };
-
-export const useSceneContext = () => {
-  const context = useContext(SceneContext);
-  if (!context) {
-    throw new Error('useSceneContext must be used within a SceneProvider');
-  }
-  return context;
-};
-
-/**
- * Separate hook for accessing three.js camera
- * This creates a new approach that doesn't conditionally call hooks
- */
-export const useSceneCamera = () => {
-  return null; // Default return value
-};
-
-/**
- * Component that actually accesses the camera
- * This component will be used inside Three.js context where useThree is available
- */
-export const CameraAccess = ({ onCameraReady }) => {
-  // Safe to use useThree here as this component is only used within a Canvas
-  const { useThree } = require('@react-three/fiber');
-  const { camera } = useThree();
-  
-  // Provide camera to parent via callback
-  useEffect(() => {
-    if (camera && onCameraReady) {
-      onCameraReady(camera);
-    }
-  }, [camera, onCameraReady]);
-  
-  return null;
-};
-
-// CRITICAL FIX: Add a debug hook to expose scene state
-export const useSceneDebug = () => {
-  // This is incorrect as useThree and useFrame must be used inside a Canvas
-  // Fixed implementation:
-  console.warn("useSceneDebug must be used inside a Canvas component");
-  return null;
-};
-
-// For backward compatibility
-export const extractColorsFromTheme = extractThemeColors;
 
 export default SceneContext;
