@@ -10,17 +10,37 @@ import SlideshowIcon from '@mui/icons-material/Slideshow';
 import ArticleIcon from '@mui/icons-material/Article';
 import SchoolIcon from '@mui/icons-material/School';
 
-// Import project images and videos
-import FTLevel2GIF from '../../../../assets/images/Bachelorthesis/FT Level 2 GIF.gif';
-import PrototypeFlows from '../../../../assets/images/Bachelorthesis/3_prototype_flows_Figmabboard.png';
-import Level1STUI from '../../../../assets/images/Bachelorthesis/Level 1 ST UI.png';
-import Level2FTUI from '../../../../assets/images/Bachelorthesis/Level 2 FT UI.png';
-import Level3FTUI from '../../../../assets/images/Bachelorthesis/Level 3 FT UI.png';
-import Level2STUI from '../../../../assets/images/Bachelorthesis/Level 2 ST UI.png';
-import Level3STUI from '../../../../assets/images/Bachelorthesis/Level 3 ST UI.png';
-import Endscreen from '../../../../assets/images/Bachelorthesis/Endscreen.png';
-import Routenuebersicht from '../../../../assets/images/Bachelorthesis/Routenuebersicht.PNG';
-import ReroutingProcessVideo from '../../../../assets/images/Bachelorthesis/VideoPrototype_ST3.mp4';
+// Import project images and videos with standardized names
+import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';
+import EndScreenImage from '../../../../assets/images/Bachelorthesis/end_screen.png';
+import FastThinkingLevel2GIF from '../../../../assets/images/Bachelorthesis/fast_thinking_level2.gif';
+import SlowThinkingLevel1Image from '../../../../assets/images/Bachelorthesis/slow_thinking_level1.png';
+import FastThinkingLevel2Image from '../../../../assets/images/Bachelorthesis/fast_thinking_level2_ui.png';
+import SlowThinkingLevel2Image from '../../../../assets/images/Bachelorthesis/slow_thinking_level2.png';
+import FastThinkingLevel3Image from '../../../../assets/images/Bachelorthesis/fast_thinking_level3.png';
+import SlowThinkingLevel3Image from '../../../../assets/images/Bachelorthesis/slow_thinking_level3.png';
+import RouteOverviewImage from '../../../../assets/images/Bachelorthesis/route_overview.png';
+import SlowThinkingLevel3ScreenshotImage from '../../../../assets/images/Bachelorthesis/slow_thinking_level3_screenshot.png';
+import SlowThinkingVideoPrototype from '../../../../assets/images/Bachelorthesis/slow_thinking_video_prototype.mp4';
+
+// Create a media object to hold all our imported media
+const media = {
+  images: {
+    prototypeFlows: PrototypeFlowsImage,
+    endScreen: EndScreenImage,
+    fastThinkingLevel2GIF: FastThinkingLevel2GIF,
+    slowThinkingLevel1: SlowThinkingLevel1Image,
+    fastThinkingLevel2: FastThinkingLevel2Image,
+    slowThinkingLevel2: SlowThinkingLevel2Image,
+    fastThinkingLevel3: FastThinkingLevel3Image,
+    slowThinkingLevel3: SlowThinkingLevel3Image,
+    routeOverview: RouteOverviewImage,
+    slowThinkingLevel3Screenshot: SlowThinkingLevel3ScreenshotImage
+  },
+  videos: {
+    slowThinkingVideoPrototype: SlowThinkingVideoPrototype
+  }
+};
 
 // Define card variant without direct theme dependency
 const cardVariant = 'info';
@@ -42,7 +62,7 @@ const bachelorThesis = {
           This Bachelor thesis investigated passenger interaction with autonomous vehicle (AV) systems, specifically focusing on <strong>rear-seat passenger cooperation</strong> in non-critical spontaneous rerouting scenarios (NCSS). As autonomous driving technologies evolve to SAE levels 4 and 5, passengers engage increasingly in non-driving related activities (NDRAs), introducing unique challenges in maintaining trust and ensuring intuitive cooperation between passengers and AV systems.
         </Typography>
       ),
-      media: { type: 'image', src: PrototypeFlows },
+      media: { type: 'image', src: media.images.prototypeFlows },
       layout: 'textLeft'
     },
     {
@@ -60,7 +80,7 @@ const bachelorThesis = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: Level1STUI },
+      media: { type: 'image', src: media.images.slowThinkingLevel1 },
       layout: 'textRight'
     },
     {
@@ -118,7 +138,7 @@ const bachelorThesis = {
           </Typography>
         </>
       ),
-      media: { type: 'image', src: FTLevel2GIF },
+      media: { type: 'image', src: media.images.fastThinkingLevel2GIF },
       layout: 'textLeft'
     },
     {
@@ -129,7 +149,7 @@ const bachelorThesis = {
           Prototypes were designed in Figma and tested using the Figma Mirror app. Traffic camera simulations were created using Adobe After Effects, adding augmented reality-style overlays indicating vehicle trajectory and environmental awareness. Interaction scenarios involved shop selection for spontaneous stops categorized by complexity.
         </Typography>
       ),
-      media: { type: 'video', src: ReroutingProcessVideo },
+      media: { type: 'video', src: media.videos.slowThinkingVideoPrototype },
       layout: 'textRight'
     },
     {
@@ -169,7 +189,7 @@ const bachelorThesis = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: Level3FTUI },
+      media: { type: 'image', src: media.images.fastThinkingLevel3 },
       layout: 'textLeft'
     },
     {
@@ -214,37 +234,43 @@ const bachelorThesis = {
           This research contributes valuable insights to the growing field of human-AV interaction, offering practical design guidelines for the automotive industry's UI/UX strategies. The findings demonstrate that balanced information presentation significantly enhances trust and usability, directly influencing how future autonomous systems will interact with human users.
         </Typography>
       ),
-      media: { type: 'image', src: Routenuebersicht },
+      media: { type: 'image', src: media.images.routeOverview },
       layout: 'textRight'
     }
   ],
   
+  // Update gallery images to use the media object
   galleryImages: [
-    FTLevel2GIF,
-    PrototypeFlows,
-    Level1STUI,
-    Level2FTUI,
-    Level3FTUI,
-    Level2STUI,
-    Level3STUI,
-    Endscreen,
-    Routenuebersicht,
-    { type: 'video', src: ReroutingProcessVideo }
+    media.images.fastThinkingLevel2GIF,
+    media.images.prototypeFlows,
+    media.images.slowThinkingLevel1,
+    media.images.fastThinkingLevel2,
+    media.images.fastThinkingLevel3,
+    media.images.slowThinkingLevel2,
+    media.images.slowThinkingLevel3,
+    media.images.endScreen,
+    media.images.routeOverview,
+    media.images.slowThinkingLevel3Screenshot,
+    { type: 'video', src: media.videos.slowThinkingVideoPrototype }
   ],
+  
   technologies: ["Figma", "Adobe After Effects", "Adobe Illustrator", "User Testing"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: FTLevel2GIF },
+  media: { type: 'image', src: media.images.fastThinkingLevel2GIF },
+  
+  // Update featured images to use media object
   featuredImages: {
-    overview: PrototypeFlows,
-    problem: Level1STUI,
-    solution: Level2FTUI,
+    overview: media.images.prototypeFlows,
+    problem: media.images.slowThinkingLevel1,
+    solution: media.images.fastThinkingLevel2,
     prototypeShowcase: [
-      Level3FTUI, 
-      Level2STUI, 
-      Level3STUI,
-      { type: 'video', src: ReroutingProcessVideo }
+      media.images.fastThinkingLevel3, 
+      media.images.slowThinkingLevel2, 
+      media.images.slowThinkingLevel3,
+      { type: 'video', src: media.videos.slowThinkingVideoPrototype }
     ]
   },
+  
   links: [
     {
       label: "View Presentation",
@@ -265,6 +291,7 @@ const bachelorThesis = {
       contentType: 'external'
     }
   ],
+  
   takeaways: [
     "Information density significantly impacts user trust in autonomous systems",
     "Time pressure affects decision-making strategies in human-machine interactions",

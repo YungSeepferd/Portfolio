@@ -10,12 +10,57 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-// Import from centralized mediaConfig
-import { projectMedia, getProjectMediaPath } from '../../../../config/mediaConfig';
+// Import all project images and videos directly
+import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
+import CashlessPaymentImage from '../../../../assets/images/GreenWallet/cashless_payment_overview.png';
+import PrototypeUIImage from '../../../../assets/images/GreenWallet/prototype_ui.png';
+import HackathonTeamImage from '../../../../assets/images/GreenWallet/hackathon_team.jpeg';
+import ExhibitionImage from '../../../../assets/images/GreenWallet/exhibition_photo.jpg';
+import PhoneScreen1Image from '../../../../assets/images/GreenWallet/phone_screen_1.png';
+import PhoneScreen2Image from '../../../../assets/images/GreenWallet/phone_screen_2.png';
+import PhoneScreen3Image from '../../../../assets/images/GreenWallet/phone_screen_3.png';
+import PhoneScreen4Image from '../../../../assets/images/GreenWallet/phone_screen_4.png';
+import ShopOwnerInterface1Image from '../../../../assets/images/GreenWallet/shop_owner_interface_1.png';
+import ShopOwnerInterface2Image from '../../../../assets/images/GreenWallet/shop_owner_interface_2.png';
+import ShopOwnerScreen1Image from '../../../../assets/images/GreenWallet/shop_owner_screen_1.png';
+import ShopOwnerScreen2Image from '../../../../assets/images/GreenWallet/shop_owner_screen_2.png';
+import ConceptOverview1Image from '../../../../assets/images/GreenWallet/concept_overview_1.png';
+import ConceptOverview2Image from '../../../../assets/images/GreenWallet/concept_overview_2.png';
+import ConceptOverview3Image from '../../../../assets/images/GreenWallet/concept_overview_3.png';
+import ConceptOverview4Image from '../../../../assets/images/GreenWallet/concept_overview_4.png';
+import ConceptOverview5Image from '../../../../assets/images/GreenWallet/concept_overview_5.png';
+import ConceptOverview6Image from '../../../../assets/images/GreenWallet/concept_overview_6.png';
+import HighlightReelVideo from '../../../../assets/images/GreenWallet/highlight_reel.mp4';
+import PresentationVideo from '../../../../assets/images/GreenWallet/presentation_video.mp4';
 
-// Define video paths properly
-const GWHighlightreelVideo = getProjectMediaPath('greenWallet', 'videos', 'highlightreel');
-const GWPresentationVideo = getProjectMediaPath('greenWallet', 'videos', 'presentation');
+// Create a media object to hold all our imported media
+const media = {
+  images: {
+    overview: OverviewImage,
+    cashlessPayment: CashlessPaymentImage,
+    prototypeUI: PrototypeUIImage,
+    hackathonTeam: HackathonTeamImage,
+    exhibition: ExhibitionImage,
+    phoneScreen1: PhoneScreen1Image,
+    phoneScreen2: PhoneScreen2Image,
+    phoneScreen3: PhoneScreen3Image,
+    phoneScreen4: PhoneScreen4Image,
+    shopOwnerInterface1: ShopOwnerInterface1Image,
+    shopOwnerInterface2: ShopOwnerInterface2Image,
+    shopOwnerScreen1: ShopOwnerScreen1Image,
+    shopOwnerScreen2: ShopOwnerScreen2Image,
+    conceptOverview1: ConceptOverview1Image,
+    conceptOverview2: ConceptOverview2Image,
+    conceptOverview3: ConceptOverview3Image,
+    conceptOverview4: ConceptOverview4Image,
+    conceptOverview5: ConceptOverview5Image,
+    conceptOverview6: ConceptOverview6Image
+  },
+  videos: {
+    highlightReel: HighlightReelVideo,
+    presentation: PresentationVideo
+  }
+};
 
 // Define card variant without direct theme dependency
 const cardVariant = 'success';
@@ -36,7 +81,7 @@ const greenWallet = {
           The Green Wallet was developed during the Tourism Technology Festival 2023 Hackathon in Salzburg, as part of Mastercard's challenge to promote the adoption of cashless payments in tourism and gastronomy sectors. Our team, representing FH Salzburg, created an innovative gamified solution that simultaneously benefits tourists, local shop owners, Mastercard, and regional sustainability efforts.
         </Typography>
       ),
-      media: { type: 'image', src: projectMedia.greenWallet.images.overview },
+      media: { type: 'image', src: media.images.overview },
       layout: 'textLeft'
     },
     {
@@ -47,7 +92,8 @@ const greenWallet = {
           The Tourism Technology Festival 2023 brought together tech innovators, tourism experts, and students to address challenges in the rapidly evolving tourism industry. Our team participated in Mastercard's specific challenge track focused on increasing cashless payment adoption while enhancing the overall tourist experience.
         </Typography>
       ),
-      layout: 'textOnly'
+      media: { type: 'image', src: media.images.hackathonTeam },
+      layout: 'textRight'
     },
     {
       id: 'section-problem',
@@ -66,7 +112,8 @@ const greenWallet = {
           </Box>
         </>
       ),
-      layout: 'textRight'
+      media: { type: 'image', src: media.images.cashlessPayment },
+      layout: 'textLeft'
     },
     {
       id: 'section-concept',
@@ -97,8 +144,8 @@ const greenWallet = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: projectMedia.greenWallet.images.solution },
-      layout: 'textLeft'
+      media: { type: 'image', src: media.images.prototypeUI },
+      layout: 'textRight'
     },
     {
       id: 'section-process',
@@ -132,7 +179,30 @@ const greenWallet = {
           </Box>
         </>
       ),
-      media: { type: 'video', src: GWHighlightreelVideo },
+      media: { type: 'video', src: media.videos.highlightReel },
+      layout: 'textLeft'
+    },
+    {
+      id: 'section-user-interfaces',
+      title: 'User Interfaces',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            The Green Wallet features two distinct but interconnected interfaces:
+          </Typography>
+          
+          <Typography variant="h5" sx={{ mb: 1 }}>Tourist Interface</Typography>
+          <Typography variant="body1" paragraph>
+            Designed with a focus on simplicity and engagement, the tourist interface includes interactive maps showing nearby event locations, a progress dashboard tracking environmental impact, and a reward redemption system.
+          </Typography>
+          
+          <Typography variant="h5" sx={{ mb: 1 }}>Shop Owner Interface</Typography>
+          <Typography variant="body1" paragraph>
+            The business-oriented interface provides tools for creating and managing special events, viewing real-time analytics, and tracking customer engagement patterns to optimize business strategies.
+          </Typography>
+        </>
+      ),
+      media: { type: 'image', src: media.images.shopOwnerInterface1 },
       layout: 'textRight'
     },
     {
@@ -169,15 +239,6 @@ const greenWallet = {
               <li><Typography variant="body1">Valuable customer behavior data and insights</Typography></li>
             </Box>
           </Box>
-          
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Tourism Regions</Typography>
-            <Box component="ul" sx={{ pl: 3 }}>
-              <li><Typography variant="body1">Better visitor distribution across attractions</Typography></li>
-              <li><Typography variant="body1">Reduced overcrowding at popular locations</Typography></li>
-              <li><Typography variant="body1">Positive environmental impact from eco-initiatives</Typography></li>
-            </Box>
-          </Box>
         </>
       ),
       layout: 'textOnly'
@@ -190,7 +251,7 @@ const greenWallet = {
           The Green Wallet concept was awarded first place in the hackathon, recognized for its innovative approach to sustainable tourism and business viability. The judges particularly appreciated our multi-stakeholder benefit model, scalability potential, and measurable environmental impact metrics.
         </Typography>
       ),
-      media: { type: 'video', src: GWPresentationVideo },
+      media: { type: 'video', src: media.videos.presentation },
       layout: 'textLeft'
     },
     {
@@ -201,23 +262,41 @@ const greenWallet = {
           Future refinements could include geolocation-based event notifications, expanded eco-friendly activities, enhanced analytics tools, and scaling to broader geographic contexts to maximize environmental and commercial impacts.
         </Typography>
       ),
-      layout: 'textOnly'
+      media: { type: 'image', src: media.images.exhibition },
+      layout: 'textRight'
     }
   ],
 
   galleryImages: [
-    projectMedia.greenWallet.images.overview,
-    projectMedia.greenWallet.images.solution,
-    { type: 'video', src: GWHighlightreelVideo },
-    { type: 'video', src: GWPresentationVideo }
+    media.images.overview,
+    media.images.prototypeUI,
+    media.images.phoneScreen1,
+    media.images.phoneScreen2,
+    media.images.phoneScreen3,
+    media.images.phoneScreen4,
+    media.images.shopOwnerInterface1,
+    media.images.shopOwnerInterface2,
+    media.images.conceptOverview1,
+    media.images.conceptOverview2,
+    media.images.hackathonTeam,
+    media.images.exhibition,
+    { type: 'video', src: media.videos.highlightReel },
+    { type: 'video', src: media.videos.presentation }
   ],
+  
   technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: projectMedia.greenWallet.images.overview },
+  media: { type: 'image', src: media.images.overview },
   featuredImages: {
-    overview: projectMedia.greenWallet.images.overview,
-    problem: projectMedia.greenWallet.images.overview,
-    solution: projectMedia.greenWallet.images.solution
+    overview: media.images.overview,
+    problem: media.images.cashlessPayment,
+    solution: media.images.prototypeUI,
+    prototypeShowcase: [
+      media.images.phoneScreen1,
+      media.images.phoneScreen2,
+      media.images.shopOwnerInterface1,
+      { type: 'video', src: media.videos.highlightReel }
+    ]
   },
   links: [
     {

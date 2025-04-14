@@ -1,30 +1,47 @@
 /**
  * Master Thesis Project Data
  * 
- * This file contains the structured data for the Master Thesis project.
+ * This file contains the structured data for the Prototyping Emotions master thesis project.
  */
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box'; 
+import Box from '@mui/material/Box';
 import ArticleIcon from '@mui/icons-material/Article';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
-// Import from the centralized media config
-import { projectMedia } from '../../../../config/mediaConfig';
+// Import project images directly with standardized naming
+import OverviewImage from '../../../../assets/images/Masterthesis/workshop_preparation.jpg';
+import ProcessImage from '../../../../assets/images/Masterthesis/workshop_agenda.png';
+import CircumplexModelImage from '../../../../assets/images/Masterthesis/circumplex_model.png';
+import BodyMappingImage from '../../../../assets/images/Masterthesis/body_map_template.png';
+import PrototypeImage from '../../../../assets/images/Masterthesis/prototype_session_1.jpg';
+import HapticLabsImage from '../../../../assets/images/Masterthesis/haptic_labs.jpg';
+import WorkshopImage from '../../../../assets/images/Masterthesis/workshop.jpg';
+import MetaphorElicitationImage from '../../../../assets/images/Masterthesis/metaphor_elicitation_template.jpg';
+import AudioHapticsImage from '../../../../assets/images/Masterthesis/audio_haptics.png';
+import AffectivePrototype1Image from '../../../../assets/images/Masterthesis/affective_prototype_1.png';
+import AffectivePrototype2Image from '../../../../assets/images/Masterthesis/affective_prototype_2.png';
+import BodyMapQuestionsImage from '../../../../assets/images/Masterthesis/body_map_questions.jpg';
+import WorkshopBodyMapsImage from '../../../../assets/images/Masterthesis/workshop_body_maps.jpg';
 
-// Get project-specific media with proper null checking
-const media = projectMedia.masterThesis || {
+// Create a media object to hold all our imported media
+const media = {
   images: {
-    main: '/assets/images/placeholders/project.jpg',
-    overview: '/assets/images/placeholders/project.jpg'
-  },
-  featuredImages: {
-    overview: '/assets/images/placeholders/project.jpg',
-    problem: '/assets/images/placeholders/project.jpg',
-    solution: '/assets/images/placeholders/project.jpg'
-  },
-  allImages: ['/assets/images/placeholders/project.jpg']
+    overview: OverviewImage,
+    process: ProcessImage,
+    circumplex: CircumplexModelImage,
+    bodyMapping: BodyMappingImage,
+    prototype: PrototypeImage,
+    hapticLabs: HapticLabsImage,
+    workshop: WorkshopImage,
+    metaphorElicitation: MetaphorElicitationImage,
+    audioHaptics: AudioHapticsImage,
+    affectivePrototype1: AffectivePrototype1Image,
+    affectivePrototype2: AffectivePrototype2Image,
+    bodyMapQuestions: BodyMapQuestionsImage,
+    workshopBodyMaps: WorkshopBodyMapsImage
+  }
 };
 
 // Define card variant without direct theme dependency
@@ -68,7 +85,7 @@ const masterThesis = {
           </Typography>
         </>
       ),
-      media: { type: 'image', src: media.featuredImages.problem },
+      media: { type: 'image', src: media.images.circumplex },
       layout: 'textRight'
     },
     {
@@ -132,7 +149,7 @@ const masterThesis = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: media.featuredImages.solution },
+      media: { type: 'image', src: media.images.bodyMapping },
       layout: 'textLeft'
     },
     {
@@ -156,15 +173,41 @@ const masterThesis = {
           </Box>
         </>
       ),
+      media: { type: 'image', src: media.images.prototype },
       layout: 'textRight'
     }
   ],
   
-  galleryImages: media.allImages,
+  galleryImages: [
+    media.images.overview,
+    media.images.process,
+    media.images.circumplex,
+    media.images.bodyMapping,
+    media.images.prototype,
+    media.images.hapticLabs,
+    media.images.workshop,
+    media.images.metaphorElicitation,
+    media.images.audioHaptics,
+    media.images.affectivePrototype1,
+    media.images.affectivePrototype2,
+    media.images.bodyMapQuestions,
+    media.images.workshopBodyMaps
+  ],
+  
   technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.main }, 
-  featuredImages: media.featuredImages,
+  media: { type: 'image', src: media.images.overview }, 
+  featuredImages: {
+    overview: media.images.overview,
+    problem: media.images.circumplex,
+    solution: media.images.bodyMapping,
+    prototypeShowcase: [
+      media.images.prototype,
+      media.images.hapticLabs,
+      media.images.audioHaptics,
+      media.images.workshop
+    ]
+  },
   links: [
     {
       label: "View Presentation",
@@ -193,13 +236,13 @@ const masterThesis = {
     "Cross-disciplinary collaboration significantly enriches the design process"
   ],
   
-  // Add outcomes object
+  // Fix the outcomes object
   outcomes: {
     title: "Research Outcomes",
     points: [
-      "Developed a validated methodological toolkit for emotion-driven haptic design",
+      "Established design patterns for translating emotions into tactile experiences",
       "Created workshop materials and templates to facilitate emotional haptic prototyping",
-      "Established design patterns for translating emotions into tactile experiences"
+      "Developed a validated methodological toolkit for emotion-driven haptic design"
     ]
   }
 };

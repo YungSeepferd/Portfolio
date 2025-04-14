@@ -24,7 +24,8 @@ export const aboutData = [
     // Update object with specific position to focus on bottom of image
     pictures: [
       { 
-        src: '/assets/images/About Me/Salzburg.jpg',
+        src: '/assets/images/About Me/Whoami.JPG',
+        alt: "Vincent Göke",
         position: 'center bottom 30%' // Modified to show more of the bottom part
       }
     ],
@@ -52,7 +53,7 @@ export const aboutData = [
   {
     title: "Skills & Technologies",
     subtitle: "My UX Toolkit",
-    pictures: ['/assets/images/About Me/MusicMoritz.jpg'],
+    pictures: ['/assets/images/About Me/SkillsandTechnologies.JPG'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Core Competencies</Typography>
@@ -115,7 +116,7 @@ export const aboutData = [
   {
     title: "Experience",
     subtitle: "Professional Journey",
-    pictures: ['/assets/images/About Me/VRBrille.JPG'],
+    pictures: ['/assets/images/About Me/Experience.jpg'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Professional Experience</Typography>
@@ -214,7 +215,7 @@ export const aboutData = [
   {
     title: "Education",
     subtitle: "Academic Background",
-    pictures: ['/assets/images/About Me/vincentMain.JPG'],
+    pictures: ['/assets/images/About Me/Education.JPG'],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Academic Qualifications</Typography>
