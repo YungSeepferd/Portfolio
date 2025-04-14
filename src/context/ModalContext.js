@@ -6,20 +6,20 @@ import IframeModal from '../components/common/IframeModal';
 // Create context
 const ModalContext = createContext(null);
 
-// Modal style for consistent appearance
+// Modal style for consistent appearance - updated to be almost fullscreen
 const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-  maxWidth: '1400px', // Increased max width for larger screens
-  maxHeight: '90vh',
+  width: '95vw', // Increased to 95% of viewport width
+  height: '95vh', // Increased to 95% of viewport height
+  maxWidth: '95vw',
+  maxHeight: '95vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: { xs: 2, sm: 3, md: 4 },
-  overflow: 'hidden',
   borderRadius: 1,
+  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
 };
@@ -43,6 +43,7 @@ export const ModalProvider = ({ children }) => {
   
   // Open PDF modal
   const openPdf = useCallback((url, title = '') => {
+    // Check if url is a string path or an imported file
     setPdfUrl(url);
     setPdfOpen(true);
     // Close other modals
@@ -111,6 +112,15 @@ export const ModalProvider = ({ children }) => {
         onClose={closeModal}
         aria-labelledby="pdf-modal-title"
         aria-describedby="pdf-modal-description"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          // Backdrop styling
+          '& .MuiBackdrop-root': {
+            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+          }
+        }}
       >
         <Box sx={modalStyle}>
           <PDFViewer url={pdfUrl} title="PDF Document" />
@@ -123,6 +133,15 @@ export const ModalProvider = ({ children }) => {
         onClose={closeModal}
         aria-labelledby="iframe-modal-title"
         aria-describedby="iframe-modal-description"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          // Backdrop styling
+          '& .MuiBackdrop-root': {
+            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+          }
+        }}
       >
         <Box sx={modalStyle}>
           <IframeModal url={iframeUrl} title={iframeTitle} />
@@ -135,6 +154,15 @@ export const ModalProvider = ({ children }) => {
         onClose={closeModal}
         aria-labelledby="external-modal-title"
         aria-describedby="external-modal-description"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          // Backdrop styling
+          '& .MuiBackdrop-root': {
+            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+          }
+        }}
       >
         <Box sx={modalStyle}>
           <IframeModal url={externalUrl} title={externalTitle} />

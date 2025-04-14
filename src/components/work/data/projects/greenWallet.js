@@ -6,9 +6,10 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import LaunchIcon from '@mui/icons-material/Launch';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 // Import all project images and videos directly
 import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
@@ -32,6 +33,8 @@ import ConceptOverview5Image from '../../../../assets/images/GreenWallet/concept
 import ConceptOverview6Image from '../../../../assets/images/GreenWallet/concept_overview_6.png';
 import HighlightReelVideo from '../../../../assets/images/GreenWallet/highlight_reel.mp4';
 import PresentationVideo from '../../../../assets/images/GreenWallet/presentation_video.mp4';
+import presentationPDF from '../../../../assets/information/GreenWallet/GreenWallet_Presentation.pdf';
+import scriptPDF from '../../../../assets/information/GreenWallet/Script.pdf';
 
 // Create a media object to hold all our imported media
 const media = {
@@ -302,20 +305,30 @@ const greenWallet = {
     {
       label: "Try Prototype",
       url: "https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share",
-      icon: <LaunchIcon fontSize="small" />,
-      contentType: 'iframe'
+      icon: <SmartphoneIcon fontSize="small" />,
+      contentType: 'iframe',
+      openInPopup: true
     },
     {
       label: "View Presentation",
-      url: "src/assets/information/Green Wallet/Green_Wallet_Presentation.pdf",
+      url: presentationPDF,
       icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
+      contentType: 'pdf',
+      openInPopup: true
+    },
+    {
+      label: "View Script",
+      url: scriptPDF,
+      icon: <DescriptionIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
     },
     {
       label: "Hackathon Winner",
       url: "https://tourism-technology-festival.at/",
       icon: <EmojiEventsIcon fontSize="small" />,
-      contentType: 'external'
+      contentType: 'external',
+      openInPopup: true
     }
   ],
   takeaways: [

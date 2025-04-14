@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -6,46 +6,16 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 /**
  * PDFViewer Component
  * 
- * Displays a PDF document in an iframe for inline viewing
- * with improved path resolution and error handling
+ * Displays a PDF document in an iframe with improved handling of both
+ * imported PDF files and URL references
  */
 const PDFViewer = ({ url, title }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [processedUrl, setProcessedUrl] = useState('');
   const theme = useTheme();
   
-  // Process URL to ensure proper PDF loading
-  useEffect(() => {
-    try {
-      if (!url) {
-        setHasError(true);
-        console.error('No URL provided to PDFViewer');
-        return;
-      }
-      
-      // Normalize the URL by removing leading slashes and processing src/ references
-      let normalizedUrl = url.trim();
-      
-      // Handle src/ paths by transforming them to public assets
-      if (normalizedUrl.startsWith('src/')) {
-        // Remove 'src/' and prepend with public path
-        normalizedUrl = normalizedUrl.replace('src/', '/');
-      }
-      
-      // Ensure the URL starts with a slash if it's a relative path
-      if (!normalizedUrl.startsWith('/') && !normalizedUrl.startsWith('http')) {
-        normalizedUrl = `/${normalizedUrl}`;
-      }
-      
-      console.log('Processed PDF URL:', normalizedUrl);
-      setProcessedUrl(normalizedUrl);
-      setHasError(false);
-    } catch (error) {
-      console.error('Error processing PDF URL:', error);
-      setHasError(true);
-    }
-  }, [url]);
+  // Generate a proper URL for the PDF, whether it's an imported file or string path
+  const pdfUrl = typeof url === 'object' ? URL.createObjectURL(new Blob([url], { type: 'application/pdf' })) : url;
   
   // Handle iframe load completion
   const handleLoad = () => {
@@ -55,7 +25,7 @@ const PDFViewer = ({ url, title }) => {
   
   // Handle iframe load error
   const handleError = () => {
-    console.error('Failed to load PDF:', processedUrl);
+    console.error('Failed to load PDF:', pdfUrl);
     setIsLoading(false);
     setHasError(true);
   };
@@ -63,8 +33,12 @@ const PDFViewer = ({ url, title }) => {
   // Extract filename for download button
   const getFileName = () => {
     try {
-      const pathParts = processedUrl.split('/');
-      return pathParts[pathParts.length - 1];
+      if (typeof url === 'string') {
+        const pathParts = url.split('/');
+        return pathParts[pathParts.length - 1];
+      } else {
+        return title ? `${title.replace(/\s+/g, '_')}.pdf` : 'document.pdf';
+      }
     } catch (e) {
       return 'document.pdf';
     }
@@ -99,7 +73,7 @@ const PDFViewer = ({ url, title }) => {
         <Button
           variant="contained"
           startIcon={<FileDownloadIcon />}
-          href={processedUrl}
+          href={pdfUrl}
           download={getFileName()}
           target="_blank"
           rel="noopener noreferrer"
@@ -111,7 +85,7 @@ const PDFViewer = ({ url, title }) => {
   }
   
   return (
-    <Box sx={{ width: '100%', position: 'relative' }}>
+    <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {isLoading && (
         <Box 
           sx={{
@@ -125,22 +99,24 @@ const PDFViewer = ({ url, title }) => {
             justifyContent: 'center',
             bgcolor: theme.palette.background.paper,
             zIndex: 1,
-            minHeight: '70vh',
           }}
         >
           <CircularProgress size={60} />
         </Box>
       )}
       
+      {/* Close button would be added in the parent modal */}
+      
       <Box 
         component="iframe"
-        src={processedUrl}
+        src={pdfUrl}
         title={title || "PDF Document"}
         onLoad={handleLoad}
         onError={handleError}
         sx={{
           width: '100%',
-          height: '70vh',
+          height: '100%', // Use full height
+          flex: 1, // Take up remaining space
           border: 'none',
           display: 'block',
           borderRadius: theme.shape.borderRadius,
@@ -150,12 +126,14 @@ const PDFViewer = ({ url, title }) => {
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'flex-end',
-        mt: 2
+        p: 2,
+        borderTop: `1px solid ${theme.palette.divider}`,
+        bgcolor: theme.palette.background.paper,
       }}>
         <Button
           variant="outlined"
           startIcon={<FileDownloadIcon />}
-          href={processedUrl}
+          href={pdfUrl}
           download={getFileName()}
           target="_blank"
           rel="noopener noreferrer"

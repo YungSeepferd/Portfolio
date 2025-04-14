@@ -6,13 +6,13 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import DesignIcon from '@mui/icons-material/DesignServices';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 // Import project images and videos directly with standardized naming
 import ADHDeerHeroImage from '../../../../assets/images/ADHDeer/ADHDeer.png';
 import ADHDeerScreenshotImage from '../../../../assets/images/ADHDeer/Screenshot 2025-04-07 at 10.01.09.png';
 import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer - Video Prototype.mp4';
+import presentationPDF from '../../../../assets/information/ADHDeer/ADHDeerPresentation.pdf';
 
 // Import utility for asset paths (only for documents)
 import { getAssetPath } from '../../../../utils/mediaUtils';
@@ -195,15 +195,17 @@ const adhdeer = {
   links: [
     {
       label: "View Presentation",
-      url: media.documents.presentation,
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
+      url: presentationPDF,
+      icon: <DashboardIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
     },
     {
       label: "Try Prototype",
       url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
-      icon: <DesignIcon fontSize="small" />,
-      contentType: 'iframe'
+      icon: <DashboardIcon fontSize="small" />,
+      contentType: 'iframe',
+      openInPopup: true
     }
   ],
   takeaways: [

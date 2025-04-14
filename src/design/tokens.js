@@ -245,4 +245,223 @@ export const exportTokensToJson = () => {
 // Export individual token groups for direct use
 export const { colors, spacing: spacingTokens, typography: typographyTokens, borderRadius: borderRadiusTokens, shadows: shadowTokens, animations: animationTokens, breakpoints: breakpointTokens } = tokens;
 
-export default tokens;
+/**
+ * Color System
+ * 
+ * This file defines all color values used throughout the application.
+ * It serves as a single source of truth for the color palette.
+ */
+
+// Define reusable color variables for dark theme (default)
+const darkColors = {
+  primaryMain: '#5363EE',
+  primaryContrastText: '#FFFFFF',
+  primaryDark: '#4353D9',
+  primaryLight: '#6E7CFF',
+  secondaryMain: '#C2F750', // Preserved accent yellow-green
+  secondaryContrastText: '#0E1A27',
+  secondaryDark: '#ABDF3A',
+  secondaryLight: '#D4FF69',
+  backgroundDefault: '#0E1A27',
+  backgroundPaper: '#131F2D',
+  backgroundAlternatePanel: '#1A2736',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#CCCCCC',
+  textMuted: '#A0A0A0',
+  textAccent: '#C2F750', // Preserved accent yellow-green
+  accentMain: '#C2F750', // Preserved accent yellow-green
+  accentDark: '#ABDF3A',
+  accentLight: '#D4FF69',
+  accentContrast: '#0E1A27',
+  bubblesBackground: '#1A2736',
+  bubblesBorder: '#3545D6',
+  cardBackground: '#131F2D',
+  cardShadow: 'rgba(5, 10, 15, 0.4)',
+  cardActiveGlow: 'rgba(194, 247, 80, 0.25)',
+  cardBorder: '#3545D6',
+  filterActive: '#C2F750', // Preserved accent yellow-green
+  filterInactive: '#505050',
+  actionHover: 'rgba(194, 247, 80, 0.15)',
+  actionSelected: 'rgba(194, 247, 80, 0.25)',
+  actionDisabled: 'rgba(255, 255, 255, 0.3)',
+  actionDisabledBackground: 'rgba(255, 255, 255, 0.12)',
+  divider: '#3545D6',
+  shadowLight: 'rgba(5, 10, 15, 0.3)',
+  shadowMedium: 'rgba(5, 10, 15, 0.5)',
+  shadowDark: 'rgba(5, 10, 15, 0.7)',
+  overlayBackground: 'rgba(14, 26, 39, 0.85)',
+  overlayDark: 'rgba(10, 18, 28, 0.9)',
+  dotsInactive: '#3545D6',
+  placeholder: '#1A2736',
+  statusSuccess: '#C2F750', // Preserved accent yellow-green
+  statusWarning: '#FFA726',
+  statusError: '#F44336',
+  statusInfo: '#5363EE',
+  focusOutline: '#C2F750', // Preserved accent yellow-green
+  structureBorders: '#3545D6',
+  structureLines: '#3545D6',
+  structureOutlines: '#3545D6',
+  errorMain: '#f44336',
+  warningMain: '#ff9800',
+  infoMain: '#2196f3',
+  successMain: '#4caf50',
+};
+
+// Define light theme colors that complement the dark theme
+const lightColors = {
+  primaryMain: '#5363EE', // Keep primary color consistent
+  primaryContrastText: '#FFFFFF',
+  primaryDark: '#4353D9',
+  primaryLight: '#6E7CFF',
+  secondaryMain: '#C2F750', // Preserved accent yellow-green
+  secondaryContrastText: '#0E1A27',
+  secondaryDark: '#ABDF3A',
+  secondaryLight: '#D4FF69',
+  backgroundDefault: '#F5F8FC',
+  backgroundPaper: '#FFFFFF',
+  backgroundAlternatePanel: '#F0F3F9',
+  textPrimary: '#0E1A27',
+  textSecondary: '#495A6B',
+  textMuted: '#6E7A88',
+  textAccent: '#4353D9', // Better contrast for light theme
+  accentMain: '#C2F750', // Preserved accent yellow-green
+  accentDark: '#ABDF3A',
+  accentLight: '#D4FF69',
+  accentContrast: '#0E1A27',
+  bubblesBackground: '#F0F3F9',
+  bubblesBorder: '#D8E0F0',
+  cardBackground: '#FFFFFF',
+  cardShadow: 'rgba(60, 90, 120, 0.15)',
+  cardActiveGlow: 'rgba(83, 99, 238, 0.15)',
+  cardBorder: '#E3E9F4',
+  filterActive: '#C2F750', // Preserved accent yellow-green
+  filterInactive: '#CCCCCC',
+  actionHover: 'rgba(83, 99, 238, 0.08)',
+  actionSelected: 'rgba(83, 99, 238, 0.15)',
+  actionDisabled: 'rgba(0, 0, 0, 0.3)',
+  actionDisabledBackground: 'rgba(0, 0, 0, 0.08)',
+  divider: '#E3E9F4',
+  shadowLight: 'rgba(60, 90, 120, 0.1)',
+  shadowMedium: 'rgba(60, 90, 120, 0.2)',
+  shadowDark: 'rgba(60, 90, 120, 0.3)',
+  overlayBackground: 'rgba(245, 248, 252, 0.85)',
+  overlayDark: 'rgba(245, 248, 252, 0.95)',
+  dotsInactive: '#D8E0F0',
+  placeholder: '#F0F3F9',
+  statusSuccess: '#4CAF50',
+  statusWarning: '#FF9800',
+  statusError: '#F44336',
+  statusInfo: '#5363EE',
+  focusOutline: '#5363EE',
+  structureBorders: '#E3E9F4',
+  structureLines: '#D8E0F0',
+  structureOutlines: '#D8E0F0',
+  errorMain: '#f44336',
+  warningMain: '#ff9800',
+  infoMain: '#2196f3',
+  successMain: '#4caf50',
+};
+
+/**
+ * Creates a palette configuration for Material UI's createTheme for dark mode
+ */
+export const createDarkPalette = () => {
+  return createPaletteFromColors(darkColors);
+};
+
+/**
+ * Creates a palette configuration for Material UI's createTheme for light mode
+ */
+export const createLightPalette = () => {
+  return createPaletteFromColors(lightColors);
+};
+
+/**
+ * Creates a palette configuration from a set of colors
+ */
+const createPaletteFromColors = (colors) => {
+  return {
+    primary: {
+      main: colors.primaryMain,
+      dark: colors.primaryDark,
+      light: colors.primaryLight,
+      contrastText: colors.primaryContrastText,
+    },
+    secondary: {
+      main: colors.secondaryMain,
+      dark: colors.secondaryDark,
+      light: colors.secondaryLight,
+      contrastText: colors.secondaryContrastText,
+    },
+    error: {
+      main: colors.errorMain,
+    },
+    warning: {
+      main: colors.warningMain,
+    },
+    info: {
+      main: colors.infoMain,
+    },
+    success: {
+      main: colors.successMain,
+    },
+    background: {
+      default: colors.backgroundDefault,
+      paper: colors.backgroundPaper,
+      alternatePanel: colors.backgroundAlternatePanel,
+    },
+    text: {
+      primary: colors.textPrimary,
+      secondary: colors.textSecondary,
+      muted: colors.textMuted,
+      accent: colors.textAccent,
+    },
+    divider: colors.divider,
+    accent: {
+      main: colors.accentMain,
+      dark: colors.accentDark,
+      light: colors.accentLight,
+      contrastText: colors.accentContrast,
+    },
+    card: {
+      background: colors.cardBackground,
+      shadow: colors.cardShadow,
+      activeGlow: colors.cardActiveGlow,
+      border: colors.cardBorder,
+    },
+    structure: {
+      borders: colors.structureBorders,
+      lines: colors.structureLines,
+    },
+    shadow: {
+      light: colors.shadowLight,
+      medium: colors.shadowMedium,
+      dark: colors.shadowDark,
+    },
+    bubbles: {
+      background: colors.bubblesBackground,
+      border: colors.bubblesBorder,
+    },
+    overlay: {
+      background: colors.overlayBackground,
+      dark: colors.overlayDark,
+    },
+    dots: {
+      inactive: colors.dotsInactive,
+      active: colors.secondaryMain,
+    },
+    status: {
+      success: colors.statusSuccess,
+      warning: colors.statusWarning,
+      error: colors.statusError,
+      info: colors.statusInfo,
+    },
+  };
+};
+
+// Export both color sets for direct access if needed
+export const darkThemeColors = darkColors;
+export const lightThemeColors = lightColors;
+
+// Default export is the dark theme colors for backward compatibility
+export default darkColors;

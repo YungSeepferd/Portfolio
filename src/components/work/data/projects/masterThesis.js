@@ -25,6 +25,10 @@ import AffectivePrototype2Image from '../../../../assets/images/Masterthesis/aff
 import BodyMapQuestionsImage from '../../../../assets/images/Masterthesis/body_map_questions.jpg';
 import WorkshopBodyMapsImage from '../../../../assets/images/Masterthesis/workshop_body_maps.jpg';
 
+// Import project PDFs
+import presentationPDF from '../../../../assets/information/Master thesis/Prototyping_Emotions_Thesis_Defense_Presentation_0225.pdf';
+import thesisPDF from '../../../../assets/information/Master thesis/Vincent_Master_Thesis0225.pdf';
+
 // Create a media object to hold all our imported media
 const media = {
   images: {
@@ -46,6 +50,31 @@ const media = {
 
 // Define card variant without direct theme dependency
 const cardVariant = 'primary';
+
+// Define links array with consistent format
+const links = [
+  {
+    label: "View Presentation",
+    url: presentationPDF,
+    icon: <SlideshowIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "View Thesis",
+    url: thesisPDF,
+    icon: <ArticleIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "Miro Template",
+    url: "https://miro.com/app/live-embed/uXjVLZy8Sr4=/?moveToViewport=-23778,-21432,70849,35904&embedId=821121874827",
+    icon: <DashboardIcon fontSize="small" />,
+    contentType: 'iframe',
+    openInPopup: true
+  }
+];
 
 // Project data object
 const masterThesis = {
@@ -208,26 +237,7 @@ const masterThesis = {
       media.images.workshop
     ]
   },
-  links: [
-    {
-      label: "View Presentation",
-      url: "src/assets/information/Master thesis/Prototyping_Emotions_Thesis_Defense_Presentation_0225.pdf",
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
-    },
-    {
-      label: "View Thesis",
-      url: "src/assets/information/Master thesis/Vincent_Master_Thesis0225.pdf",
-      icon: <ArticleIcon fontSize="small" />,
-      contentType: 'pdf'
-    },
-    {
-      label: "Miro Template",
-      url: "https://miro.com/app/live-embed/uXjVLZy8Sr4=/?moveToViewport=-23778,-21432,70849,35904&embedId=821121874827",
-      icon: <DashboardIcon fontSize="small" />,
-      contentType: 'iframe'
-    }
-  ],
+  links: links,
   takeaways: [
     "Emotions can be systematically mapped to haptic parameters using the Circumplex Model of Affect",
     "Body mapping provides essential context for placing haptic actuators effectively",

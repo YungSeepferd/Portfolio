@@ -27,7 +27,7 @@ const Work = () => {
     error,
     reload 
   } = useDataLoader(
-    getProjects, // Use the new function from data/index.js
+    getProjects, // This will now return standardized project data
     {
       defaultData: [],
       validateData: (data) => {

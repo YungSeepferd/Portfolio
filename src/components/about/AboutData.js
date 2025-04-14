@@ -314,6 +314,8 @@ export const renderSkillChip = (skill) => (
 
 // Export function that returns the aboutData array for useDataLoader compatibility
 export const getAboutData = () => {
+  // Return the about data directly without promise wrapping
+  // This simplifies the data flow and prevents potential issues
   console.log('About data fetched:', aboutData.length, 'items');
   return aboutData;
 };

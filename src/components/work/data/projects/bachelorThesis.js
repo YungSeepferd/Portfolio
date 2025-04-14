@@ -23,6 +23,9 @@ import RouteOverviewImage from '../../../../assets/images/Bachelorthesis/route_o
 import SlowThinkingLevel3ScreenshotImage from '../../../../assets/images/Bachelorthesis/slow_thinking_level3_screenshot.png';
 import SlowThinkingVideoPrototype from '../../../../assets/images/Bachelorthesis/slow_thinking_video_prototype.mp4';
 
+import presentationPDF from '../../../../assets/information/Bachelor thesis/PassengerReroute_Presentation.pdf';
+import thesisPDF from '../../../../assets/information/Bachelor thesis/PassengerReroute_Thesis.pdf';
+
 // Create a media object to hold all our imported media
 const media = {
   images: {
@@ -258,37 +261,28 @@ const bachelorThesis = {
   cardVariant: cardVariant,
   media: { type: 'image', src: media.images.fastThinkingLevel2GIF },
   
-  // Update featured images to use media object
-  featuredImages: {
-    overview: media.images.prototypeFlows,
-    problem: media.images.slowThinkingLevel1,
-    solution: media.images.fastThinkingLevel2,
-    prototypeShowcase: [
-      media.images.fastThinkingLevel3, 
-      media.images.slowThinkingLevel2, 
-      media.images.slowThinkingLevel3,
-      { type: 'video', src: media.videos.slowThinkingVideoPrototype }
-    ]
-  },
-  
+  // Update links with presentationPDF and thesisPDF
   links: [
     {
       label: "View Presentation",
-      url: "src/assets/information/Bachelor thesis/PassengerReroute-BachelorThesis.pdf",
+      url: presentationPDF,
       icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
+      contentType: 'pdf',
+      openInPopup: true
     },
     {
       label: "View Thesis",
-      url: "src/assets/information/Bachelor thesis/Vincent_Göke - Phonebased intervention in self-driving cars.pdf",
+      url: thesisPDF,
       icon: <ArticleIcon fontSize="small" />,
-      contentType: 'pdf'
+      contentType: 'pdf',
+      openInPopup: true
     },
     {
       label: "Academic Publication",
       url: "https://dl.acm.org/doi/10.1145/3411763.3451713",
       icon: <SchoolIcon fontSize="small" />,
-      contentType: 'external'
+      contentType: 'external',
+      openInPopup: true
     }
   ],
   

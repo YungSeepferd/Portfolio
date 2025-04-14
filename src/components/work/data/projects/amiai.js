@@ -13,9 +13,7 @@ import AMIAILogo from '../../../../assets/images/AMIAI/AMIAI.svg';
 import AMIAIIntro from '../../../../assets/images/AMIAI/Final Presentation amiai/Introduction.png';
 import AMIAIScene from '../../../../assets/images/AMIAI/Scene.mp4';
 import SAMIAI from '../../../../assets/images/AMIAI/5samiai.mov';
-
-// Import utility for asset paths (only for documents)
-import { getAssetPath } from '../../../../utils/mediaUtils';
+import presentationPDF from '../../../../assets/information/AMIAI/AMIAI_Presentation.pdf';
 
 // Create a media object to hold all our imported media for cleaner code
 const media = {
@@ -26,14 +24,22 @@ const media = {
   videos: {
     scene: AMIAIScene,
     samiai: SAMIAI
-  },
-  documents: {
-    presentation: getAssetPath('AMIAI', 'Final Presentation.pdf')
   }
 };
 
 // Define card variant without direct theme dependency
 const cardVariant = 'error';
+
+// Define links array with consistent format
+const links = [
+  {
+    label: "View Presentation",
+    url: presentationPDF,
+    icon: <SlideshowIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  }
+];
 
 // Project data object
 const amiai = {
@@ -210,14 +216,7 @@ const amiai = {
     problem: media.images.intro,
     solution: media.images.logo
   },
-  links: [
-    {
-      label: "View Presentation",
-      url: media.documents.presentation,
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
-    }
-  ],
+  actions: links,
   takeaways: [
     "Visual design can effectively communicate complex ethical concepts",
     "Critical design approaches raise important questions about technological implementation",

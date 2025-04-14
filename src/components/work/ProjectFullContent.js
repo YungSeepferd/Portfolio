@@ -31,9 +31,8 @@ const ProjectFullContent = ({ project }) => {
     categories = [],
     technologies = [],
     links = [],
-    prototype,
-    presentation,
     galleryImages = []
+    // Removed unused prototype and presentation variables
   } = project;
   
   // Handle links as either array or object for backward compatibility
@@ -177,15 +176,15 @@ const ProjectFullContent = ({ project }) => {
       width: '100%', 
       height: '100%', 
       overflowY: 'auto',
-      backgroundColor: theme.palette.background.default, // Use theme here
-      color: theme.palette.text.primary // And here
+      backgroundColor: theme.palette.background.default, 
+      color: theme.palette.text.primary
     }}>
       {/* Hero Media Section with Title Overlay */}
       <Box sx={{ 
         width: '100%', 
         height: '50vh', 
         position: 'relative',
-        boxShadow: theme.shadows[4] // Use theme shadows
+        boxShadow: theme.shadows[4]
       }}>
         {/* Hero Media */}
         {heroMedia.type === 'video' ? (
@@ -217,25 +216,22 @@ const ProjectFullContent = ({ project }) => {
       <ActionsBar 
         technologies={technologies}
         links={linksArray}
-        prototype={prototype}
-        presentation={presentation}
-        title={title}
       />
       
-      <Divider sx={{ borderColor: theme.palette.divider }} /> {/* Theme-aware divider */}
+      <Divider sx={{ borderColor: theme.palette.divider }} />
       
       <Box sx={{ 
         p: { xs: 2, sm: 3, md: 4 },
-        backgroundColor: theme.palette.background.paper // Theme-aware background
+        backgroundColor: theme.palette.background.paper
       }}>
         {/* Project Content Sections */}
         <ProjectSections project={project} />
         
         {/* Prototype Showcase (if available) */}
-        {prototype && (
+        {project.prototype && (
           <PrototypeShowcase 
             title="Interactive Prototype"
-            url={prototype}
+            url={project.prototype}
           />
         )}
       </Box>

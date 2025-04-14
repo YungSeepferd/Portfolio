@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
  * A hook for loading data with proper loading and error states
@@ -7,75 +7,100 @@ import { useState, useEffect } from 'react';
  * @param {Object} options - Configuration options
  * @param {any} options.defaultData - Default data to use before loading completes
  * @param {Function} options.validateData - Function to validate data
+ * @param {Function} options.onSuccess - Callback for successful data load
+ * @param {Function} options.onError - Callback for data load errors
  * @param {number} options.timeout - Timeout in ms (default: 10000)
- * @returns {Object} - Object containing data, loading state, and error
+ * @returns {Object} - Object containing data, loading state, error, and reload function
  */
 const useDataLoader = (dataFetcher, options = {}) => {
   const {
     defaultData = null,
     validateData = () => true,
+    onSuccess = () => {},
+    onError = () => {},
     timeout = 10000,
   } = options;
 
   const [data, setData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
+  // Use refs to track component mounted state and avoid memory leaks
+  const isMountedRef = useRef(true);
+  const dataFetcherRef = useRef(dataFetcher);
+  const initialLoadCompleteRef = useRef(false);
+  // Add loading state ref to avoid dependency issues
+  const isLoadingRef = useRef(true);
+  
+  // Update ref whenever isLoading changes
   useEffect(() => {
-    let isMounted = true;
-    let timeoutId = null;
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+  
+  // Manual reload function
+  const reload = useCallback(() => {
+    if (!isMountedRef.current) return;
     
-    // Start loading
     setIsLoading(true);
     setError(null);
+    // Update the ref
+    dataFetcherRef.current = dataFetcher;
+    initialLoadCompleteRef.current = false;
+  }, [dataFetcher]);
+
+  // Main effect to load data - now we can remove isLoading from dependencies
+  // since we're tracking it via ref
+  useEffect(() => {
+    // Skip if we've already completed the initial load
+    if (initialLoadCompleteRef.current) return;
     
-    // Set timeout to prevent infinite loading
-    timeoutId = setTimeout(() => {
-      if (isMounted && isLoading) {
-        console.error('Data loading timeout');
-        setIsLoading(false);
-        setError(new Error('Loading timed out after ' + timeout + 'ms'));
-      }
-    }, timeout);
+    let timeoutId = null;
     
-    // Create a promise wrapper that handles both async and sync functions
+    // Update the ref to the latest dataFetcher
+    dataFetcherRef.current = dataFetcher;
+    
+    // Function to fetch data
     const fetchData = async () => {
       try {
-        // Handle if dataFetcher is not a function but direct data
-        if (typeof dataFetcher !== 'function') {
-          console.log('Direct data provided instead of a fetcher function');
-          const directData = dataFetcher;
+        // Special handling for non-function data (direct data)
+        if (typeof dataFetcherRef.current !== 'function') {
+          const directData = dataFetcherRef.current;
           
-          // Log to debug what's coming back
-          console.log('Data received directly:', directData ? '✓' : '✗', 
-            Array.isArray(directData) ? 
-              `(Array of ${directData.length} items)` : 
-              typeof directData);
-        
           // Validate the data
           if (!directData || !validateData(directData)) {
             throw new Error('Data validation failed for direct data');
           }
           
-          // Only update state if component is still mounted
-          if (isMounted) {
+          // Update state if still mounted
+          if (isMountedRef.current) {
             setData(directData);
             setIsLoading(false);
+            initialLoadCompleteRef.current = true;
+            if (onSuccess) onSuccess(directData);
           }
           return;
         }
         
-        console.log('Fetching data using:', dataFetcher.name || 'unnamed function');
+        // Handle both synchronous functions and promise-returning functions
+        const result = dataFetcherRef.current();
         
-        // Handle both synchronous and asynchronous data fetchers
-        const result = dataFetcher();
-        const resolvedData = result instanceof Promise ? await result : result;
+        // If result is already the data (not a promise), handle it directly
+        if (!(result instanceof Promise)) {
+          if (!validateData(result)) {
+            throw new Error('Data validation failed for synchronous result');
+          }
+          
+          if (isMountedRef.current) {
+            setData(result);
+            setIsLoading(false);
+            initialLoadCompleteRef.current = true;
+            if (onSuccess) onSuccess(result);
+          }
+          return;
+        }
         
-        // Log to debug what's coming back
-        console.log('Data received:', resolvedData ? '✓' : '✗', 
-          Array.isArray(resolvedData) ? 
-            `(Array of ${resolvedData.length} items)` : 
-            typeof resolvedData);
+        // Handle promise as before
+        const resolvedData = await result;
         
         // Validate the data
         if (!resolvedData || !validateData(resolvedData)) {
@@ -83,29 +108,49 @@ const useDataLoader = (dataFetcher, options = {}) => {
         }
         
         // Only update state if component is still mounted
-        if (isMounted) {
+        if (isMountedRef.current) {
           setData(resolvedData);
           setIsLoading(false);
+          initialLoadCompleteRef.current = true;
+          onSuccess(resolvedData);
         }
       } catch (err) {
-        console.error('Error loading data:', err);
-        if (isMounted) {
+        if (isMountedRef.current) {
           setError(err);
           setIsLoading(false);
+          onError(err);
         }
       }
     };
     
+    // Set timeout to prevent infinite loading
+    timeoutId = setTimeout(() => {
+      if (isMountedRef.current && isLoadingRef.current) {
+        setIsLoading(false);
+        setError(new Error('Loading timed out after ' + timeout + 'ms'));
+        onError(new Error('Loading timed out after ' + timeout + 'ms'));
+      }
+    }, timeout);
+    
+    // Start fetching data
     fetchData();
     
     // Cleanup
     return () => {
-      isMounted = false;
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [dataFetcher, validateData, timeout, isLoading]); // Added isLoading to dependency array
+    
+    // Include dataFetcher in the dependency array or add a comment explaining why it's excluded
+  }, [validateData, timeout, onSuccess, onError, dataFetcher]); // Added dataFetcher to dependencies
 
-  return { data, isLoading, error };
+  // Set isMounted to false on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  return { data, isLoading, error, reload };
 };
 
 export default useDataLoader;

@@ -4,53 +4,35 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { motion } from 'framer-motion';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
-import useDataLoader from '../../hooks/useDataLoader';
-import { getAboutData } from './AboutData';
+import { aboutData } from './AboutData'; // Import directly for immediate use
 
 /**
  * AboutSection Component
- * Uses the useDataLoader hook to handle data loading
+ * Uses direct data import instead of async loading
  */
 const AboutSection = () => {
   const [activeSection, setActiveSection] = useState(0);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
-  const [retryCount, setRetryCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Use the data loader hook to load about data with retry mechanism
-  const { 
-    data: aboutData, 
-    isLoading, 
-    error 
-  } = useDataLoader(
-    getAboutData, 
-    {
-      defaultData: [],
-      validateData: (data) => {
-        const isValid = Array.isArray(data) && data.length > 0;
-        console.log('About data validation:', isValid ? 'passed' : 'failed');
-        return isValid;
-      },
-      timeout: 5000 // Lower timeout for development
-    }
-  );
+  // Use direct data import instead of useDataLoader for about section
+  useEffect(() => {
+    // Simulate a short loading delay for UI consistency
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
-  // Debug logging
+  // Log the data state
   useEffect(() => {
     console.log('About section state:', { 
-      isLoading, 
-      hasError: !!error, 
+      isLoading,
       dataLength: aboutData?.length || 0,
-      retryCount
     });
-  }, [isLoading, error, aboutData, retryCount]);
-  
-  // Handle retry
-  const handleRetry = () => {
-    setRetryCount(prev => prev + 1);
-    // Force re-render and trigger data loading again
-    window.location.reload();
-  };
+  }, [isLoading]);
   
   const handleSectionChange = (newSection) => {
     try {
@@ -77,6 +59,9 @@ const AboutSection = () => {
     }
   };
   
+  // Check if we have valid data
+  const hasValidData = Array.isArray(aboutData) && aboutData.length > 0;
+  
   return (
     <ErrorBoundary componentName="AboutSection">
       <Box
@@ -89,7 +74,7 @@ const AboutSection = () => {
           py: 8,
         }}
       >
-        {/* Header section - no changes needed */}
+        {/* Header section */}
         <Box 
           sx={{ 
             width: '100%',
@@ -140,7 +125,7 @@ const AboutSection = () => {
           </motion.div>
         </Box>
         
-        {/* Render different content based on loading/error state */}
+        {/* Render loading state or content */}
         {isLoading ? (
           <Box 
             sx={{ 
@@ -154,42 +139,10 @@ const AboutSection = () => {
           >
             <CircularProgress color="primary" />
             <Typography variant="body2" color="text.secondary">
-              Loading content... ({retryCount > 0 ? `Retry ${retryCount}` : 'Initial load'})
+              Loading content...
             </Typography>
           </Box>
-        ) : error ? (
-          <Box 
-            sx={{ 
-              textAlign: 'center', 
-              p: 4, 
-              color: 'error.main', 
-              minHeight: '400px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant="h5" color="error" gutterBottom>
-              Error Loading About Data
-            </Typography>
-            <Typography variant="body1">
-              There was a problem loading the content. Please try refreshing the page.
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
-              Error details: {error.message || 'Unknown error'}
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<RefreshIcon />}
-              onClick={handleRetry}
-              sx={{ mt: 3 }}
-            >
-              Retry Loading
-            </Button>
-          </Box>
-        ) : (!aboutData || aboutData.length === 0) ? (
+        ) : !hasValidData ? (
           <Box 
             sx={{ 
               textAlign: 'center', 
@@ -211,14 +164,14 @@ const AboutSection = () => {
               variant="contained"
               color="primary"
               startIcon={<RefreshIcon />}
-              onClick={handleRetry}
+              onClick={() => window.location.reload()}
               sx={{ mt: 3 }}
             >
-              Retry Loading
+              Reload Page
             </Button>
           </Box>
         ) : (
-          /* Tab Navigation & Content - only show if we have valid data */
+          /* Tab Navigation & Content */
           <AboutTabNavigator 
             ref={tabNavigatorRef} 
             onSectionChange={handleSectionChange}

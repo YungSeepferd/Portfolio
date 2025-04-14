@@ -1,27 +1,89 @@
-import React, { useState } from 'react';
-import { Box, Typography, CircularProgress, useTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, CircularProgress, useTheme, Alert } from '@mui/material';
 
 /**
  * IframeModal Component
  * 
- * Displays external content in an iframe with proper loading state handling
+ * Displays external content in an iframe with improved handling of
+ * Figma embeds and other external content
  */
 const IframeModal = ({ url, title }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isFigmaEmbed, setIsFigmaEmbed] = useState(false);
+  const [isMiroEmbed, setIsMiroEmbed] = useState(false);
   const theme = useTheme();
+  
+  // Check if URL is valid and determine its type
+  useEffect(() => {
+    if (!url) {
+      setHasError(true);
+      return;
+    }
+    
+    // Detect Figma embeds
+    if (url.includes('figma.com') && url.includes('embed')) {
+      setIsFigmaEmbed(true);
+    }
+    
+    // Detect Miro embeds
+    if (url.includes('miro.com') && url.includes('embed')) {
+      setIsMiroEmbed(true);
+    }
+    
+    setIsLoading(true);
+  }, [url]);
   
   // Handle iframe load completion
   const handleLoad = () => {
+    console.log('Iframe content loaded successfully');
     setIsLoading(false);
-    setHasError(false);
   };
   
   // Handle iframe load error
   const handleError = () => {
+    console.error('Failed to load iframe content:', url);
     setIsLoading(false);
     setHasError(true);
-    console.error('Failed to load iframe content:', url);
+  };
+  
+  // Create custom iframe attributes for different embed types
+  const getIframeAttributes = () => {
+    const common = {
+      src: url,
+      title: title || 'External Content',
+      width: '100%',
+      height: '100%',
+      style: { border: 'none' },
+      onLoad: handleLoad,
+      onError: handleError,
+      frameBorder: "0"
+    };
+    
+    if (isFigmaEmbed) {
+      return {
+        ...common,
+        allowFullScreen: true,
+        style: { 
+          ...common.style, 
+          border: '1px solid rgba(0, 0, 0, 0.1)'
+        }
+      };
+    }
+    
+    if (isMiroEmbed) {
+      return {
+        ...common,
+        allowFullScreen: true,
+        allow: "fullscreen; clipboard-read; clipboard-write",
+        scrolling: "no"
+      };
+    }
+    
+    return {
+      ...common,
+      allowFullScreen: true
+    };
   };
   
   // Check if URL is valid
@@ -66,6 +128,13 @@ const IframeModal = ({ url, title }) => {
         {title || 'Interactive Content'}
       </Typography>
       
+      {/* Special notice for Figma/Miro embeds */}
+      {(isFigmaEmbed || isMiroEmbed) && (
+        <Alert severity="info" sx={{ mb: 0 }}>
+          This embed requires sign-in to {isFigmaEmbed ? 'Figma' : 'Miro'} for full interactivity
+        </Alert>
+      )}
+      
       {isLoading && (
         <Box sx={{ 
           position: 'absolute', 
@@ -109,17 +178,10 @@ const IframeModal = ({ url, title }) => {
           </Typography>
         </Box>
       ) : (
-        <Box sx={{ flex: 1, height: 'calc(100% - 56px)' }}>
+        <Box sx={{ flex: 1, height: 'calc(100% - 56px)', overflow: 'hidden' }}>
           <iframe
-            src={url}
-            title={title || 'External Content'}
-            width="100%"
-            height="100%"
-            style={{ border: 'none' }}
-            onLoad={handleLoad}
-            onError={handleError}
-            frameBorder="0"
-            allowFullScreen
+            {...getIframeAttributes()}
+            title={title || "External content frame"} // Added title explicitly to avoid warnings
           />
         </Box>
       )}

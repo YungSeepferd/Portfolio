@@ -6,10 +6,11 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import ImageIcon from '@mui/icons-material/Image';
 import LaunchIcon from '@mui/icons-material/Launch';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import ArticleIcon from '@mui/icons-material/Article';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
+import ArticleIcon from '@mui/icons-material/Article';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 // Import project images
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
@@ -19,9 +20,51 @@ import PrincipleVariants from '../../../../assets/images/ProdecualHaptics/Princi
 import UIPrototypeSketch from '../../../../assets/images/ProdecualHaptics/UI Prototype Sketch.png';
 import FrequencyTheory from '../../../../assets/images/ProdecualHaptics/FrequencyTheory.png';
 import AIAPIFewshotting from '../../../../assets/images/ProdecualHaptics/AIAPIFewshotting.png';
+import presentationPDF from '../../../../assets/information/Procedually generated haptics/ResonantRelaxation_Presentation.pdf';
+import paperPDF from '../../../../assets/information/Procedually generated haptics/EuroHaptics_2024_Final_WIP_1077.pdf';
+import posterPDF from '../../../../assets/information/Procedually generated haptics/POSTER_Resonant Relaxation - Eurohaptics 24.pdf';
 
 // Define card variant without direct theme dependency
 const cardVariant = 'secondary';
+
+// Define links array with consistent format
+const links = [
+  {
+    label: "Try Demo",
+    url: "https://react-midi.netlify.app/",
+    icon: <LaunchIcon fontSize="small" />,
+    contentType: 'iframe',
+    openInPopup: true
+  },
+  {
+    label: "View Presentation",
+    url: presentationPDF,
+    icon: <SlideshowIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "View Paper",
+    url: paperPDF,
+    icon: <ArticleIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "View Poster",
+    url: posterPDF,
+    icon: <ImageIcon fontSize="small" />,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "GitHub",
+    url: "https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main",
+    icon: <GitHubIcon fontSize="small" />,
+    contentType: 'external',
+    openInPopup: true
+  }
+];
 
 // Project data object
 const resonantRelaxation = {
@@ -180,32 +223,7 @@ const resonantRelaxation = {
     solution: UIPrototype,
     prototypeShowcase: [PrincipleVariants, UIPrototypeSketch, AIAPIFewshotting]
   },
-  links: [
-    {
-      label: "Try Demo",
-      url: "https://react-midi.netlify.app/",
-      icon: <LaunchIcon fontSize="small" />,
-      contentType: 'iframe'
-    },
-    {
-      label: "View Presentation",
-      url: "src/assets/information/Procedually generated haptics/Affective State Change Concept Presentation.pdf",
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf'
-    },
-    {
-      label: "View Paper",
-      url: "https://zenodo.org/records/12549152",
-      icon: <ArticleIcon fontSize="small" />,
-      contentType: 'external'
-    },
-    {
-      label: "GitHub",
-      url: "https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main",
-      icon: <GitHubIcon fontSize="small" />,
-      contentType: 'external'
-    }
-  ],
+  links: links,
   takeaways: [
     "AI can enable real-time adaptation of haptic feedback",
     "Procedural generation reduces development costs for haptic systems",
