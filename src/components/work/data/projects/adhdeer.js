@@ -9,12 +9,28 @@ import Box from '@mui/material/Box';
 import DesignIcon from '@mui/icons-material/DesignServices';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 
-// Removed unused import but keep the getProjectMediaPath
-import { getProjectMediaPath } from '../../../../config/mediaConfig';
+// Import project images and videos directly with standardized naming
+import ADHDeerHeroImage from '../../../../assets/images/ADHDeer/ADHDeer.png';
+import ADHDeerScreenshotImage from '../../../../assets/images/ADHDeer/Screenshot 2025-04-07 at 10.01.09.png';
+import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer - Video Prototype.mp4';
 
-// Define video paths properly
-const ADHDeerPrototypeVideo = getProjectMediaPath('adhdeer', 'videos', 'prototype') || 
-  '../../../../assets/images/ADHDeer/ADHDeer - Video Prototype.mp4';
+// Import utility for asset paths (only for documents)
+import { getAssetPath } from '../../../../utils/mediaUtils';
+
+// Create a media object to hold all our imported media
+const media = {
+  images: {
+    hero: ADHDeerHeroImage,
+    screenshot: ADHDeerScreenshotImage
+  },
+  videos: {
+    prototype: ADHDeerPrototypeVideo
+  },
+  documents: {
+    // Use getAssetPath only for documents in the public folder
+    presentation: getAssetPath('ADHDeer', 'ADHDeerPresentation.pdf')
+  }
+};
 
 // Define card variant without direct theme dependency
 const cardVariant = 'warning';
@@ -36,7 +52,7 @@ const adhdeer = {
           ADHDeer is an innovative mobile app designed during a Design Thinking project at FH Salzburg. The app specifically targets young adults and children with Attention Deficit Hyperactivity Disorder (ADHD), helping them and their families <strong>manage daily life challenges</strong> associated with the condition. The team leveraged personal experiences, user-centered research, and <strong>empathic design methodologies</strong> to create a practical, supportive digital companion that promotes self-awareness, emotional regulation, and structured daily routines.
         </Typography>
       ),
-      media: { type: 'image', src: '/assets/images/projects/adhdeer/adhdeer_hero.jpg' },
+      media: { type: 'image', src: media.images.hero },
       layout: 'textLeft'
     },
     {
@@ -126,7 +142,7 @@ const adhdeer = {
           </Box>
         </>
       ),
-      media: { type: 'video', src: ADHDeerPrototypeVideo },
+      media: { type: 'video', src: media.videos.prototype },
       layout: 'textRight'
     },
     {
@@ -159,24 +175,27 @@ const adhdeer = {
   ],
   
   galleryImages: [
-    { type: 'video', src: ADHDeerPrototypeVideo }
+    media.images.hero,
+    media.images.screenshot,
+    { type: 'video', src: media.videos.prototype }
   ],
   technologies: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: '/assets/images/projects/adhdeer/adhdeer_hero.jpg' },
+  media: { type: 'image', src: media.images.hero }, 
   featuredImages: {
-    overview: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
-    problem: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
-    solution: '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
+    overview: media.images.hero,
+    problem: media.images.screenshot,
+    solution: media.images.hero,
     prototypeShowcase: [
-      '/assets/images/projects/adhdeer/adhdeer_hero.jpg',
-      { type: 'video', src: ADHDeerPrototypeVideo }
+      media.images.hero,
+      media.images.screenshot,
+      { type: 'video', src: media.videos.prototype }
     ]
   },
   links: [
     {
       label: "View Presentation",
-      url: "/assets/information/ADHDeer/ADHDeerPresentation.pdf",
+      url: media.documents.presentation,
       icon: <SlideshowIcon fontSize="small" />,
       contentType: 'pdf'
     },
@@ -195,7 +214,6 @@ const adhdeer = {
     "Digital tools can significantly improve daily functioning for individuals with ADHD"
   ],
   
-  // Add outcomes object
   outcomes: {
     title: "Project Outcomes",
     points: [

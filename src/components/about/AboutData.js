@@ -13,6 +13,15 @@ import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
+// Import images directly
+import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
+import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
+import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
+import EducationImage from '../../assets/images/About Me/Education.JPG';
+
+// Import utility for creating image objects with positioning
+import { createAboutImage } from '../../utils/mediaUtils';
+
 /**
  * Contains data for the About section tabs including content and images
  */
@@ -21,13 +30,9 @@ export const aboutData = [
   {
     title: "WhoAmI",
     subtitle: "UX Designer & Researcher",
-    // Update object with specific position to focus on bottom of image
+    // Use createAboutImage with directly imported image source
     pictures: [
-      { 
-        src: '/assets/images/About Me/Whoami.JPG',
-        alt: "Vincent Göke",
-        position: 'center bottom 30%' // Modified to show more of the bottom part
-      }
+      createAboutImage(WhoamiImage, "Vincent Göke", 'center bottom 30%')
     ],
     content: (
       <>
@@ -53,7 +58,8 @@ export const aboutData = [
   {
     title: "Skills & Technologies",
     subtitle: "My UX Toolkit",
-    pictures: ['/assets/images/About Me/SkillsandTechnologies.JPG'],
+    // Use directly imported image
+    pictures: [SkillsImage],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Core Competencies</Typography>
@@ -112,11 +118,11 @@ export const aboutData = [
       </>
     )
   },
-  // Professional Experience tab - REFORMATTED to use Grid layout
+  // Professional Experience tab
   {
     title: "Experience",
     subtitle: "Professional Journey",
-    pictures: ['/assets/images/About Me/Experience.jpg'],
+    pictures: [ExperienceImage],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Professional Experience</Typography>
@@ -211,11 +217,11 @@ export const aboutData = [
       </>
     )
   },
-  // Education tab - REFORMATTED to use Grid layout
+  // Education tab
   {
     title: "Education",
     subtitle: "Academic Background",
-    pictures: ['/assets/images/About Me/Education.JPG'],
+    pictures: [EducationImage],
     content: (
       <>
         <Typography variant="h5" sx={{ mb: 3 }}>Academic Qualifications</Typography>

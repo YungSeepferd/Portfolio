@@ -8,11 +8,29 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 
-// Import project image
-import AMIAI from '../../../../assets/images/AMIAI/AMIAI.svg';
+// Import project image - use direct imports for consistent processing by the bundler
+import AMIAILogo from '../../../../assets/images/AMIAI/AMIAI.svg';
 import AMIAIIntro from '../../../../assets/images/AMIAI/Final Presentation amiai/Introduction.png';
 import AMIAIScene from '../../../../assets/images/AMIAI/Scene.mp4';
 import SAMIAI from '../../../../assets/images/AMIAI/5samiai.mov';
+
+// Import utility for asset paths (only for documents)
+import { getAssetPath } from '../../../../utils/mediaUtils';
+
+// Create a media object to hold all our imported media for cleaner code
+const media = {
+  images: {
+    logo: AMIAILogo,
+    intro: AMIAIIntro
+  },
+  videos: {
+    scene: AMIAIScene,
+    samiai: SAMIAI
+  },
+  documents: {
+    presentation: getAssetPath('AMIAI', 'Final Presentation.pdf')
+  }
+};
 
 // Define card variant without direct theme dependency
 const cardVariant = 'error';
@@ -34,7 +52,7 @@ const amiai = {
           The "AM I AI?" exhibit serves as a critical visual campaign designed to provoke public discourse about the reliability, authenticity, and ethical implications of AI-generated media. Through strategic design metaphors and visual storytelling, AMIAI prompts users to critically question, verify, and reflect on the digital information they consume in an era where the line between human-generated and artificially-created content becomes increasingly blurred.
         </Typography>
       ),
-      media: { type: 'image', src: AMIAIIntro },
+      media: { type: 'image', src: media.images.intro },
       layout: 'textLeft'
     },
     {
@@ -55,7 +73,7 @@ const amiai = {
           Central to the visual identity of AMIAI is the pixelation effect, symbolizing the transformation of reality into digital representation. This intentional visual distortion serves as a powerful metaphor for AI's potential to obscure truth, manipulate perception, and subtly alter human understanding. Pixelation effectively communicates the ambiguity and uncertainty inherent in AI-generated content, prompting viewers to pause, question, and engage critically with digital information.
         </Typography>
       ),
-      media: { type: 'image', src: AMIAI },
+      media: { type: 'image', src: media.images.logo },
       layout: 'textRight'
     },
     {
@@ -110,7 +128,7 @@ const amiai = {
           </Box>
         </>
       ),
-      media: { type: 'video', src: AMIAIScene },
+      media: { type: 'video', src: media.videos.scene },
       layout: 'textLeft'
     },
     {
@@ -145,7 +163,7 @@ const amiai = {
           </Box>
         </>
       ),
-      media: { type: 'video', src: SAMIAI },
+      media: { type: 'video', src: media.videos.samiai },
       layout: 'textRight'
     },
     {
@@ -179,23 +197,23 @@ const amiai = {
   ],
   
   galleryImages: [
-    AMIAI,
-    AMIAIIntro,
-    { type: 'video', src: AMIAIScene },
-    { type: 'video', src: SAMIAI }
+    media.images.logo,
+    media.images.intro,
+    { type: 'video', src: media.videos.scene },
+    { type: 'video', src: media.videos.samiai }
   ],
   technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
   cardVariant: cardVariant,
-  media: { type: 'image', src: AMIAI },
+  media: { type: 'image', src: media.images.logo },
   featuredImages: {
-    overview: AMIAIIntro,
-    problem: AMIAIIntro,
-    solution: AMIAI
+    overview: media.images.intro,
+    problem: media.images.intro,
+    solution: media.images.logo
   },
   links: [
     {
       label: "View Presentation",
-      url: "src/assets/information/AMIAI/Final Presentation.pdf",
+      url: media.documents.presentation,
       icon: <SlideshowIcon fontSize="small" />,
       contentType: 'pdf'
     }
