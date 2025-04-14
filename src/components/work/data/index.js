@@ -7,10 +7,19 @@ import { projects, allProjects, projectsData } from './projects/index';
 
 // Import optional data files if they exist
 import { skillTags } from './skillTags';
-import { uiConfig } from './uiConfig';
+import uiConfig from './uiConfig'; // Changed to default import
 
-// Add workData export that Work.js is trying to import
-export const workData = projects;
+/**
+ * Get projects data function for use with useDataLoader
+ * 
+ * This function returns the projects data for the Work component
+ * 
+ * @returns {Array} Array of project objects
+ */
+export const getProjects = () => {
+  console.log('Fetching projects data:', projectsData.length, 'items');
+  return projectsData;
+};
 
 // Export all data 
 export { 
@@ -18,7 +27,7 @@ export {
   allProjects,
   projectsData,
   skillTags,
-  uiConfig
+  uiConfig // Now re-exporting the default import
 };
 
 // Helper function for formatting projects with required fields

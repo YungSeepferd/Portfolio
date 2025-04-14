@@ -1,59 +1,43 @@
-import { createTheme, responsiveFontSizes } from '@mui/material/styles';
-import { palette as lightPalette } from './palette/light';
-import { palette as darkPalette } from './palette/dark';
-import typography from './typography';
-import breakpoints from './breakpoints';
-import shadows from './shadows';
-import shape from './shape';
-import { getComponentOverrides } from './components';
-import { createCustomParts } from './custom';
-
 /**
- * Core theme creation function
- * Creates a complete theme based on the provided mode
+ * Theme Index
  * 
- * @param {string} mode - 'light' or 'dark'
- * @returns {Object} Material UI theme object
+ * This file exports theme components from the theme folder structure
+ * and re-exports theme objects/functions from the root theme.js.
+ * 
+ * This creates a unified access point for theme-related imports.
  */
-export const createAppTheme = (mode = 'light') => {
-  // Select palette based on mode
-  const palette = mode === 'dark' ? darkPalette : lightPalette;
-  
-  // Create base theme
-  let theme = createTheme({
-    palette: {
-      mode,
-      ...palette
-    },
-    typography,
-    breakpoints: { values: breakpoints },
-    shape,
-    shadows
-  });
-  
-  // Add component overrides
-  theme = createTheme(theme, {
-    components: getComponentOverrides(theme)
-  });
-  
-  // Add custom parts for application-specific needs
-  theme = {
-    ...theme,
-    ...createCustomParts(theme)
-  };
-  
-  // Apply responsive typography
-  theme = responsiveFontSizes(theme, {
-    breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'],
-    factor: 1.2,
-  });
-  
-  return theme;
+
+// First, export individual theme components
+export { default as typography } from './typography';
+export { default as breakpoints } from './breakpoints';
+export { palette as lightPalette } from './palette/light';
+export { palette as darkPalette } from './palette/dark';
+export { default as shadows } from './shadows';
+export { default as shape } from './shape';
+
+// Import components if available
+let components = {};
+try {
+  components = require('./components').default;
+} catch (error) {
+  console.info('No components found in theme/components.js');
+}
+export { components };
+
+// Import from theme.js and re-export
+import createAppTheme, { 
+  lightTheme, 
+  darkTheme, 
+  designConstants 
+} from '../theme';
+
+// Re-export the theme objects and functions
+export {
+  createAppTheme,
+  lightTheme,
+  darkTheme,
+  designConstants
 };
 
-// Export pre-created theme instances
-export const lightTheme = createAppTheme('light');
-export const darkTheme = createAppTheme('dark');
-
-// Export the theme creation function as default
+// Default export is the theme creation function
 export default createAppTheme;

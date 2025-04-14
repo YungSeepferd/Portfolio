@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
 import ProjectPrototypeEmbed from './ProjectPrototypeEmbed'; 
-import { designConstants } from '../../theme'; // Import designConstants from theme
+// Use theme transitions directly instead of designConstants
 
 /**
  * PrototypeShowcase Component
@@ -38,7 +38,7 @@ const PrototypeShowcase = ({ title = "Interactive Prototype", type = 'figma', ur
           height: { xs: '400px', sm: '500px', md: '600px', lg: '700px' },
           width: '100%',
           backgroundColor: theme.palette.background.default, // Background for loading state
-          transition: designConstants.transitions.standard, // Use new design constants
+          transition: 'all 0.3s ease', // Use direct value instead of designConstants
         }}
       >
         {/* Use ProjectPrototypeEmbed to handle the actual embedding */}

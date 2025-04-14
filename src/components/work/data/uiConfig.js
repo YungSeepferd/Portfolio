@@ -1,52 +1,42 @@
 /**
  * UI Configuration for Work Section
  * 
- * Defines configuration settings for the UI components in the Work section
- * including section layout options and work category definitions.
+ * Contains settings for grid layout, animations, filtering options, etc.
  */
 
-// UI Config for the work section
 const uiConfig = {
-  // Define section configuration for project display
-  sectionConfig: {
-    // Layout settings for different project sections
-    layout: {
-      default: {
-        spacing: 4,
-        columns: {
-          xs: 12,
-          sm: 6,
-          md: 4
-        }
-      },
-      featured: {
-        spacing: 5,
-        columns: {
-          xs: 12,
-          sm: 12,
-          md: 6
-        }
-      }
-    },
-    
-    // Animation settings for project sections
-    animation: {
-      staggerDelay: 0.2,
-      duration: 0.6
+  // Grid configuration
+  grid: {
+    spacing: 3,
+    columnWidths: {
+      xs: 12,  // Full width on mobile
+      sm: 6,   // Two columns on tablets
+      md: 4,   // Three columns on desktops
+      lg: 4    // Three columns on larger screens
     }
   },
-
-  // Define work categories for filtering
-  workCategories: [
-    { id: 'All', label: 'All Projects' },
-    { id: 'UX Research', label: 'UX Research' },
-    { id: 'UI/UX Design', label: 'UI/UX Design' },
-    { id: 'Haptic Design', label: 'Haptic Design' },
-    { id: 'Sound Design', label: 'Sound Design' },
-    { id: 'Prototyping', label: 'Prototyping' },
-    { id: 'Mobile App', label: 'Mobile Apps' },
-    { id: 'Sustainability', label: 'Sustainability' }
-  ]
+  
+  // Card display options
+  cards: {
+    aspectRatio: '16/9',
+    elevation: 2,
+    hoverElevation: 8,
+    cornerRadius: 8,
+    imageHeight: 220
+  },
+  
+  // Animation settings
+  animations: {
+    staggerDelay: 0.1,
+    fadeInDuration: 0.5,
+    hoverTransition: 0.3
+  },
+  
+  // Filter options
+  filters: {
+    showAllByDefault: true,
+    categories: ['UX Design', 'Research', 'Development', 'Visual Design']
+  }
 };
 
 export default uiConfig;

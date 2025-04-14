@@ -312,6 +312,10 @@ export const renderSkillChip = (skill) => (
   />
 );
 
-export const wallsData = aboutData; // For compatibility with existing components
+// Export function that returns the aboutData array for useDataLoader compatibility
+export const getAboutData = () => {
+  console.log('About data fetched:', aboutData.length, 'items');
+  return aboutData;
+};
 
 export default aboutData;

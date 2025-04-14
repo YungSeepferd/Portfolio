@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/materi
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import { projects as getWorkData } from './data/projects/index'; // Import function from projects index
+import { getProjects } from './data/index'; // UPDATED: Import from the correct location
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -20,19 +20,23 @@ const Work = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
 
-  // Use the data loader hook to load projects
+  // Use the data loader with the proper function, not direct data
   const { 
     data: projects, 
     isLoading, 
     error,
     reload 
   } = useDataLoader(
-    getWorkData, 
+    getProjects, // Use the new function from data/index.js
     {
       defaultData: [],
+      validateData: (data) => {
+        const isValid = Array.isArray(data) && data.length > 0;
+        console.log('Work data validation:', isValid ? 'passed' : 'failed');
+        return isValid;
+      },
       onSuccess: (data) => console.log("Projects loaded successfully:", data.length, "projects"),
-      onError: (err) => console.error("Error loading projects:", err),
-      validateData: (data) => Array.isArray(data) && data.length > 0
+      onError: (err) => console.error("Error loading projects:", err)
     }
   );
 

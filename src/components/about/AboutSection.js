@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { Box, Typography, useTheme, CircularProgress } from '@mui/material';
+import React, { useState, useRef, useEffect } from 'react';
+import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { motion } from 'framer-motion';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
-import { aboutData as getAboutData } from './AboutData';
+import { getAboutData } from './AboutData';
 
 /**
  * AboutSection Component
@@ -14,8 +15,9 @@ const AboutSection = () => {
   const [activeSection, setActiveSection] = useState(0);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
+  const [retryCount, setRetryCount] = useState(0);
   
-  // Use the data loader hook to load about data
+  // Use the data loader hook to load about data with retry mechanism
   const { 
     data: aboutData, 
     isLoading, 
@@ -24,9 +26,31 @@ const AboutSection = () => {
     getAboutData, 
     {
       defaultData: [],
-      validateData: (data) => Array.isArray(data) && data.length > 0
+      validateData: (data) => {
+        const isValid = Array.isArray(data) && data.length > 0;
+        console.log('About data validation:', isValid ? 'passed' : 'failed');
+        return isValid;
+      },
+      timeout: 5000 // Lower timeout for development
     }
   );
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('About section state:', { 
+      isLoading, 
+      hasError: !!error, 
+      dataLength: aboutData?.length || 0,
+      retryCount
+    });
+  }, [isLoading, error, aboutData, retryCount]);
+  
+  // Handle retry
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    // Force re-render and trigger data loading again
+    window.location.reload();
+  };
   
   const handleSectionChange = (newSection) => {
     try {
@@ -65,7 +89,7 @@ const AboutSection = () => {
           py: 8,
         }}
       >
-        {/* MODIFIED: Use Box with direct styling instead of container wrappers */}
+        {/* Header section - no changes needed */}
         <Box 
           sx={{ 
             width: '100%',
@@ -84,7 +108,6 @@ const AboutSection = () => {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            {/* We're using motion here, so the import is needed */}
             <Box 
               sx={{ 
                 width: '100%', 
@@ -122,12 +145,17 @@ const AboutSection = () => {
           <Box 
             sx={{ 
               display: 'flex', 
+              flexDirection: 'column',
               justifyContent: 'center', 
               alignItems: 'center',
-              minHeight: '400px'
+              minHeight: '400px',
+              gap: 2
             }}
           >
             <CircularProgress color="primary" />
+            <Typography variant="body2" color="text.secondary">
+              Loading content... ({retryCount > 0 ? `Retry ${retryCount}` : 'Initial load'})
+            </Typography>
           </Box>
         ) : error ? (
           <Box 
@@ -151,9 +179,46 @@ const AboutSection = () => {
             <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
               Error details: {error.message || 'Unknown error'}
             </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={handleRetry}
+              sx={{ mt: 3 }}
+            >
+              Retry Loading
+            </Button>
+          </Box>
+        ) : (!aboutData || aboutData.length === 0) ? (
+          <Box 
+            sx={{ 
+              textAlign: 'center', 
+              p: 4, 
+              minHeight: '400px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              No Content Available
+            </Typography>
+            <Typography variant="body1">
+              We couldn't find any content to display in this section.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={handleRetry}
+              sx={{ mt: 3 }}
+            >
+              Retry Loading
+            </Button>
           </Box>
         ) : (
-          /* Tab Navigation & Content */
+          /* Tab Navigation & Content - only show if we have valid data */
           <AboutTabNavigator 
             ref={tabNavigatorRef} 
             onSectionChange={handleSectionChange}

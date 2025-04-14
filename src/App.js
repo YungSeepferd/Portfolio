@@ -1,34 +1,32 @@
 import React from 'react';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
 import Hero from './components/hero/Hero';
 import AboutSection from './components/about/AboutSection';
 import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
-import GlobalErrorHandler from './components/common/GlobalErrorHandler';
 
 /**
- * App Component
- * 
- * Root component that wraps the application with necessary providers
- * and renders the main layout components
+ * Main App Component
+ * This is the entry point for the application UI.
  */
-const App = () => {
+function App() {
   return (
-    <ThemeProvider>
+    <CustomThemeProvider>
       <ModalProvider>
-        <Header />
-        <main>
-          <Hero />
-          <AboutSection />
-          <Work />
-        </main>
-        <FooterContact />
-        <GlobalErrorHandler />
+        <div className="App">
+          <Header />
+          <main>
+            <Hero />
+            <AboutSection />
+            <Work />
+          </main>
+          <FooterContact />
+        </div>
       </ModalProvider>
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
-};
+}
 
 export default App;

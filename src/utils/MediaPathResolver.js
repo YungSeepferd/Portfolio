@@ -1,68 +1,99 @@
-/**
- * Media Path Resolver
- * 
- * Central utility for resolving media file paths consistently across the application.
- * Works with the new mediaConfig approach.
- */
 import { designConstants } from '../theme';
 
 /**
- * Resolves media paths to their appropriate public URL
- * Handles both regular paths and paths with src/ prefix
+ * MediaPathResolver
  * 
- * @param {string} path - The path to resolve
- * @returns {string} - The resolved path for public access
+ * Utility for resolving media paths in the application.
+ * Handles conversion between relative and absolute paths,
+ * and ensures consistent path structure.
  */
-export const resolveMediaPath = (path) => {
-  if (!path) {
-    return designConstants.placeholderImages?.project || '/assets/images/placeholders/project.jpg';
-  }
 
-  // If already an absolute URL, just return it
-  if (path.startsWith('http://') || path.startsWith('https://')) {
+// Default paths if designConstants is not available
+const DEFAULT_PATHS = {
+  documents: '/assets/documents',
+  images: '/assets/images',
+  videos: '/assets/videos',
+};
+
+// Default file formats if designConstants is not available
+const DEFAULT_FILE_FORMATS = {
+  documents: ['.pdf', '.doc', '.docx', '.ppt', '.pptx'],
+  images: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'],
+  videos: ['.mp4', '.webm', '.mov', '.avi']
+};
+
+// Get media paths from designConstants or use defaults
+const mediaPaths = designConstants?.media?.paths || DEFAULT_PATHS;
+const fileFormats = designConstants?.media?.fileFormats || DEFAULT_FILE_FORMATS;
+
+/**
+ * Resolves a media path based on the file type and project context
+ * 
+ * @param {string} path - The relative or absolute path to resolve
+ * @param {string} [projectId] - Optional project ID for project-specific paths
+ * @returns {string} The resolved absolute path
+ */
+export const resolveMediaPath = (path, projectId = null) => {
+  // If path is null, undefined, or empty, return empty string
+  if (!path) return '';
+  
+  // If it's already an absolute URL (starts with http, https, or data:), return as is
+  if (typeof path === 'string' && (path.startsWith('http') || path.startsWith('data:'))) {
     return path;
   }
-
-  // If it's already a root-relative path, just return it
-  if (path.startsWith('/')) {
-    // For production with potential subdirectory deployment
-    const publicUrl = process.env.PUBLIC_URL || '';
-    return `${publicUrl}${path}`;
+  
+  // Handle module imports (webpack processed)
+  if (typeof path === 'object' && path.hasOwnProperty('default')) {
+    return path.default;
   }
-
-  // If the path includes src/ at the beginning, replace it to make it relative to public
-  if (path.startsWith('src/')) {
-    return path.replace('src/', '/');
+  
+  try {
+    // String path processing
+    if (typeof path === 'string') {
+      // If it starts with a slash or assets/, treat as absolute within the app
+      if (path.startsWith('/') || path.startsWith('assets/')) {
+        return path;
+      }
+      
+      // Determine media type by extension
+      const ext = path.substring(path.lastIndexOf('.')).toLowerCase();
+      
+      // Check file type and use appropriate path
+      if (fileFormats.documents.includes(ext)) {
+        return `${mediaPaths.documents}/${projectId ? `${projectId}/` : ''}${path}`;
+      } else if (fileFormats.images.includes(ext)) {
+        return `${mediaPaths.images}/${projectId ? `${projectId}/` : ''}${path}`;
+      } else if (fileFormats.videos.includes(ext)) {
+        return `${mediaPaths.videos}/${projectId ? `${projectId}/` : ''}${path}`;
+      }
+      
+      // If no extension match, assume it's a document
+      return `${mediaPaths.documents}/${projectId ? `${projectId}/` : ''}${path}`;
+    }
+    
+    // If it's an object with src property, resolve that
+    if (typeof path === 'object' && path.src) {
+      return resolveMediaPath(path.src, projectId);
+    }
+  } catch (error) {
+    console.error('Error resolving media path:', error);
   }
-
-  // For other paths, assume they're relative to public folder
-  return `/${path}`;
+  
+  // Return the original path if all else fails
+  return path;
 };
 
 /**
- * Gets the default placeholder image for a given media type
- * @param {string} type - Type of media (image, video, etc.)
- * @returns {string} - Path to the placeholder
+ * Gets an asset path from the public folder
+ * Specialized version of resolveMediaPath for public assets
+ * 
+ * @param {string} projectId - The project ID folder
+ * @param {string} filename - The filename within the project folder
+ * @returns {string} The resolved path to the public asset
  */
-export const getDefaultPlaceholder = (type = 'image') => {
-  const placeholders = designConstants.placeholderImages || {
-    project: '/assets/images/placeholders/project.jpg',
-    profile: '/assets/images/placeholders/profile.jpg',
-    hero: '/assets/images/placeholders/hero.jpg'
-  };
-
-  switch (type) {
-    case 'profile':
-      return placeholders.profile;
-    case 'hero':
-      return placeholders.hero;
-    case 'video':
-      return placeholders.video || placeholders.project;
-    default:
-      return placeholders.project;
-  }
+export const getAssetPath = (projectId, filename) => {
+  if (!projectId || !filename) return '';
+  return `${process.env.PUBLIC_URL || ''}/assets/projects/${projectId}/${filename}`;
 };
 
-// Fix the default export
-const mediaPathResolverUtils = { resolveMediaPath, getDefaultPlaceholder };
-export default mediaPathResolverUtils;
+export default resolveMediaPath;

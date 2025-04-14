@@ -25,6 +25,9 @@ const Header = () => {
   // Use a ref to track if this is the first render
   const isFirstMount = React.useRef(true);
   
+  // Use fallback color if accent palette is not defined in the theme
+  const accentColor = theme.palette.accent?.main || theme.palette.primary.main;
+  
   // Get standardized animation from theme - use useMemo to prevent recreation
   const headerAnimation = useMemo(() => ({
     initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
@@ -165,7 +168,7 @@ const Header = () => {
                         left: 0,
                         width: 0,
                         height: 2,
-                        backgroundColor: theme.palette.accent.main,
+                        backgroundColor: accentColor, // Use fallback here
                         transition: 'width 0.3s ease',
                       } : {},
                       '&:hover': {
@@ -174,13 +177,13 @@ const Header = () => {
                           : 'transparent',
                         color: item.isCallToAction 
                           ? theme.palette.secondary.contrastText
-                          : theme.palette.accent.main,
+                          : accentColor, // Use fallback here
                         '&::after': !item.isCallToAction ? {
                           width: '100%',
                         } : {},
                       },
                       '&.active': {
-                        color: theme.palette.accent.main,
+                        color: accentColor, // Use fallback here
                         '&::after': !item.isCallToAction ? {
                           width: '100%',
                         } : {},
@@ -280,7 +283,7 @@ const Header = () => {
                           : 'rgba(194, 247, 80, 0.08)',
                         color: item.isCallToAction 
                           ? theme.palette.secondary.contrastText
-                          : theme.palette.accent.main,
+                          : accentColor, // Use fallback here
                       }
                     }}
                   >
