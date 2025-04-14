@@ -1,110 +1,94 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import createAppTheme from '../theme';
+import { createAppTheme } from '../theme';
 
-// Create context with default values
-export const ThemeContext = createContext({
+// Create theme context
+const ThemeContext = createContext({
   mode: 'light',
   toggleTheme: () => {},
   isDarkMode: false,
   theme: null
 });
 
-// Hook to use theme context
+// Hook to use theme context - original name
 export const useThemeContext = () => useContext(ThemeContext);
 
-// Backward compatibility hook (for components using the old name)
+// Add new hook name that matches what's being imported in Header.js
+// This is just an alias to useThemeContext for backward compatibility
 export const useThemeMode = () => useContext(ThemeContext);
 
 /**
  * Theme Provider Component
  * 
- * Manages theme state and provides theme context to the application
+ * Manages theme state and provides theming to the application.
+ * Handles theme mode switching and persistence.
  */
 export const ThemeProvider = ({ children }) => {
-  // Initialize with system preference or saved preference
+  // Initialize theme from localStorage or system preference
   const [mode, setMode] = useState(() => {
-    try {
-      // Try to get saved preference from localStorage
-      const savedMode = localStorage.getItem('themeMode');
-      if (savedMode && (savedMode === 'light' || savedMode === 'dark')) {
-        return savedMode;
-      }
-      
-      // Default to system preference if available
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-      }
-    } catch (error) {
-      console.warn('Error accessing theme preferences:', error);
-      // Fall through to default
+    // Try to get from localStorage
+    const savedMode = localStorage.getItem('themeMode');
+    if (savedMode && ['light', 'dark'].includes(savedMode)) {
+      return savedMode;
     }
     
-    // Default to light mode
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    
+    // Default to light
     return 'light';
   });
   
-  // Memoize theme to prevent unnecessary re-renders
-  const theme = useMemo(() => {
-    console.log('Creating theme with mode:', mode);
-    return createAppTheme(mode);
-  }, [mode]);
+  // Memoize theme to prevent unnecessary renders
+  const theme = useMemo(() => createAppTheme(mode), [mode]);
   
   // Toggle theme function
   const toggleTheme = () => {
     setMode(prevMode => {
       const newMode = prevMode === 'light' ? 'dark' : 'light';
-      try {
-        localStorage.setItem('themeMode', newMode);
-      } catch (error) {
-        console.warn('Error saving theme preference:', error);
-      }
+      localStorage.setItem('themeMode', newMode);
       return newMode;
     });
   };
   
-  // Watch for system theme changes
+  // Listen for system preference changes
   useEffect(() => {
-    if (window.matchMedia) {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e) => {
-        try {
-          // Only update if no user preference is saved
-          if (!localStorage.getItem('themeMode')) {
-            setMode(e.matches ? 'dark' : 'light');
-          }
-        } catch (error) {
-          console.warn('Error accessing theme preferences:', error);
-        }
-      };
-      
-      // Add event listener
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener('change', handleChange);
-      } else {
-        // Fallback for older browsers
-        mediaQuery.addListener(handleChange);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = (e) => {
+      // Only update if user hasn't set a preference
+      if (!localStorage.getItem('themeMode')) {
+        setMode(e.matches ? 'dark' : 'light');
       }
-      
-      // Cleanup
-      return () => {
-        if (mediaQuery.removeEventListener) {
-          mediaQuery.removeEventListener('change', handleChange);
-        } else {
-          // Fallback for older browsers
-          mediaQuery.removeListener(handleChange);
-        }
-      };
+    };
+    
+    // Add event listener (with browser compatibility)
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleChange);
+    } else {
+      // Fallback for older browsers
+      mediaQuery.addListener(handleChange);
     }
+    
+    // Clean up
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleChange);
+      } else {
+        mediaQuery.removeListener(handleChange);
+      }
+    };
   }, []);
   
-  // Context value
+  // Set up the context value
   const contextValue = {
     mode,
     toggleTheme,
     isDarkMode: mode === 'dark',
-    theme // Include the theme object in the context
+    theme
   };
   
   return (

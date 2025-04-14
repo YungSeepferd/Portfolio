@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Box, Fade, useTheme, useMediaQuery, Tabs, Tab } from '@mui/material'; // Removed unused Container
-import { aboutData } from './AboutData';
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
 import useDebounce from '../../hooks/useDebounce';
@@ -10,9 +9,10 @@ const SCROLL_TIMEOUT = 350;  // Increased from 200 for smoother transitions
 
 /**
  * AboutTabNavigator Component
+ * Updated to accept aboutData as a prop
  */
 const AboutTabNavigator = forwardRef((props, ref) => {
-  const { onSectionChange, currentSection = 0 } = props;
+  const { onSectionChange, currentSection = 0, aboutData = [] } = props;
   const [tabIndex, setTabIndex] = useState(currentSection);
   const [fadeIn, setFadeIn] = useState(true);
   const scrollRef = useRef(null);
@@ -61,7 +61,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
         setTabIndex(sectionIndex);
       }
     }
-  }), []);
+  }), [aboutData]);
 
   // Notify parent when tab changes (after debounce)
   useEffect(() => {
@@ -103,6 +103,11 @@ const AboutTabNavigator = forwardRef((props, ref) => {
       }, 300);
     }, 200);
   };
+
+  // Don't render if no data
+  if (!aboutData || aboutData.length === 0) {
+    return null;
+  }
 
   return (
     <Box

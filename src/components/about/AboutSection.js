@@ -1,18 +1,32 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
-// Fix: Either use motion or remove it
+import { Box, Typography, useTheme, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
-import { aboutData } from './AboutData';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
+import useDataLoader from '../../hooks/useDataLoader';
+import { aboutData as getAboutData } from './AboutData';
 
 /**
  * AboutSection Component
+ * Uses the useDataLoader hook to handle data loading
  */
 const AboutSection = () => {
   const [activeSection, setActiveSection] = useState(0);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
+  
+  // Use the data loader hook to load about data
+  const { 
+    data: aboutData, 
+    isLoading, 
+    error 
+  } = useDataLoader(
+    getAboutData, 
+    {
+      defaultData: [],
+      validateData: (data) => Array.isArray(data) && data.length > 0
+    }
+  );
   
   const handleSectionChange = (newSection) => {
     try {
@@ -103,12 +117,50 @@ const AboutSection = () => {
           </motion.div>
         </Box>
         
-        {/* Tab Navigation & Content */}
-        <AboutTabNavigator 
-          ref={tabNavigatorRef} 
-          onSectionChange={handleSectionChange}
-          currentSection={activeSection}
-        />
+        {/* Render different content based on loading/error state */}
+        {isLoading ? (
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center',
+              minHeight: '400px'
+            }}
+          >
+            <CircularProgress color="primary" />
+          </Box>
+        ) : error ? (
+          <Box 
+            sx={{ 
+              textAlign: 'center', 
+              p: 4, 
+              color: 'error.main', 
+              minHeight: '400px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Typography variant="h5" color="error" gutterBottom>
+              Error Loading About Data
+            </Typography>
+            <Typography variant="body1">
+              There was a problem loading the content. Please try refreshing the page.
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+              Error details: {error.message || 'Unknown error'}
+            </Typography>
+          </Box>
+        ) : (
+          /* Tab Navigation & Content */
+          <AboutTabNavigator 
+            ref={tabNavigatorRef} 
+            onSectionChange={handleSectionChange}
+            currentSection={activeSection}
+            aboutData={aboutData}
+          />
+        )}
       </Box>
     </ErrorBoundary>
   );

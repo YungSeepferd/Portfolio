@@ -1,189 +1,179 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Box, Typography, Button, useTheme, Collapse } from '@mui/material';
+import React, { Component } from 'react';
+import { Box, Typography, Button, Paper, Divider } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 /**
- * ErrorBoundary Component
+ * Enhanced ErrorBoundary Component
  * 
- * Catches JavaScript errors anywhere in child component tree,
- * logs errors, and displays fallback UI instead of component tree that crashed.
- * 
- * Features:
- * - Custom fallback UI
- * - Error details that can be expanded/collapsed
- * - Retry functionality for component-level errors
- * - Integration with theme system
+ * Catches and handles JavaScript errors anywhere in the child component tree.
+ * Provides detailed error reporting and recovery options.
  */
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = { 
       hasError: false,
       error: null,
       errorInfo: null,
-      showDetails: false
+      componentStack: '',
+      showDetails: false,
     };
   }
-  
+
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error, errorInfo) {
-    // Log the error to console
-    console.error("Error caught by ErrorBoundary:", error, errorInfo);
-    this.setState({ errorInfo });
-    
-    // Track errors with analytics if available
+    // Capture error details for logging and display
+    this.setState({
+      errorInfo,
+      componentStack: errorInfo?.componentStack || 'No stack trace available'
+    });
+
+    // Log error to monitoring service or console
+    console.error('Error caught by ErrorBoundary:', error);
+    console.error('Component stack:', errorInfo?.componentStack);
+
+    // Track error with analytics if available
     if (window.gtag) {
-      try {
-        window.gtag('event', 'error', {
-          'event_category': 'JavaScript',
-          'event_label': error.toString(),
-          'value': this.props.componentName || 'unknown'
-        });
-      } catch (e) {
-        console.error("Failed to log error to analytics", e);
-      }
+      window.gtag('event', 'error', {
+        error_message: error?.message || 'Unknown error',
+        error_component: this.props.componentName || 'Unknown component',
+        error_stack: errorInfo?.componentStack?.substring(0, 500) || 'No stack trace',
+        error_type: error?.name || 'Unknown type'
+      });
     }
   }
-  
-  handleRetry = () => {
+
+  handleRefresh = () => {
+    // Attempt to recover by refreshing the component
     this.setState({ 
       hasError: false,
       error: null,
-      errorInfo: null 
+      errorInfo: null,
+      componentStack: '',
+      showDetails: false
     });
   }
-  
+
+  handleReload = () => {
+    // Reload the entire page as a last resort
+    window.location.reload();
+  }
+
   toggleDetails = () => {
     this.setState(prevState => ({
       showDetails: !prevState.showDetails
     }));
   }
-  
+
   render() {
-    if (this.state.hasError) {
-      // Custom fallback provided by parent
-      if (this.props.fallback) {
-        return this.props.fallback;
+    const { hasError, error, componentStack, showDetails } = this.state;
+    const { 
+      componentName = 'Component', 
+      fallback,
+      errorStyles,
+      children
+    } = this.props;
+
+    if (hasError) {
+      // Render custom fallback if provided
+      if (fallback) {
+        return fallback;
       }
-      
-      // Default error UI
+
+      // Otherwise, render default error UI
       return (
-        <ErrorFallback 
-          error={this.state.error}
-          errorInfo={this.state.errorInfo}
-          componentName={this.props.componentName}
-          onRetry={this.handleRetry}
-          showDetails={this.state.showDetails}
-          toggleDetails={this.toggleDetails}
-        />
+        <Box 
+          sx={{
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '200px',
+            width: '100%',
+            textAlign: 'center',
+            ...errorStyles
+          }}
+        >
+          <ErrorOutlineIcon 
+            color="error" 
+            sx={{ fontSize: 48, mb: 2 }} 
+          />
+          
+          <Typography variant="h5" color="error" gutterBottom>
+            {componentName} encountered a problem
+          </Typography>
+          
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: '600px' }}>
+            {error?.message || 'An unexpected error occurred. We apologize for the inconvenience.'}
+          </Typography>
+          
+          <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={this.handleRefresh}
+            >
+              Try Again
+            </Button>
+            
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<BugReportIcon />}
+              onClick={this.toggleDetails}
+            >
+              {showDetails ? 'Hide Details' : 'Show Details'}
+            </Button>
+          </Box>
+          
+          {showDetails && (
+            <Paper elevation={2} sx={{ p: 2, width: '100%', maxWidth: '800px', overflow: 'auto', textAlign: 'left' }}>
+              <Typography variant="subtitle2" color="error" gutterBottom>
+                Error Details:
+              </Typography>
+              
+              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                  {error?.toString() || 'Unknown error'}
+                </Box>
+              </Typography>
+              
+              <Divider sx={{ my: 2 }} />
+              
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                Component Stack:
+              </Typography>
+              
+              <Typography variant="body2" component="div" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                <Box component="pre" sx={{ 
+                  whiteSpace: 'pre-wrap', 
+                  wordBreak: 'break-word',
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  p: 1,
+                  borderRadius: 1,
+                  maxHeight: '200px',
+                  overflow: 'auto'
+                }}>
+                  {componentStack}
+                </Box>
+              </Typography>
+            </Paper>
+          )}
+        </Box>
       );
     }
-    
-    // When there's no error, render children normally
-    return this.props.children;
+
+    // If no error, render children normally
+    return children;
   }
 }
-
-// Separate the fallback UI into its own component
-const ErrorFallback = ({ 
-  error, 
-  errorInfo, 
-  componentName, 
-  onRetry, 
-  showDetails, 
-  toggleDetails 
-}) => {
-  // Use the theme in this functional component
-  const theme = useTheme();
-  
-  const componentLabel = componentName 
-    ? `in ${componentName} component` 
-    : '';
-  
-  return (
-    <Box
-      sx={{
-        padding: 3,
-        margin: 2,
-        backgroundColor: theme.palette.error.light,
-        color: theme.palette.error.contrastText,
-        borderRadius: theme.shape.borderRadius,
-        boxShadow: theme.shadows[3],
-      }}
-    >
-      <Typography variant="h5" component="h2" gutterBottom>
-        Something went wrong {componentLabel}
-      </Typography>
-      
-      <Typography variant="body1" gutterBottom>
-        {error && error.toString()}
-      </Typography>
-      
-      <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-        <Button 
-          variant="contained" 
-          color="primary"
-          onClick={onRetry}
-        >
-          Try Again
-        </Button>
-        
-        <Button 
-          variant="outlined" 
-          color="inherit"
-          onClick={() => window.location.reload()}
-        >
-          Reload Page
-        </Button>
-        
-        {errorInfo && (
-          <Button 
-            variant="text" 
-            color="inherit"
-            onClick={toggleDetails}
-          >
-            {showDetails ? 'Hide' : 'Show'} Technical Details
-          </Button>
-        )}
-      </Box>
-      
-      {errorInfo && (
-        <Collapse in={showDetails}>
-          <Box 
-            sx={{ 
-              mt: 2, 
-              p: 2, 
-              backgroundColor: 'rgba(0,0,0,0.05)',
-              borderRadius: 1,
-              maxHeight: '200px',
-              overflow: 'auto'
-            }}
-          >
-            <Typography variant="subtitle2" gutterBottom>
-              Component Stack:
-            </Typography>
-            <pre style={{ 
-              whiteSpace: 'pre-wrap', 
-              fontSize: '0.8rem',
-              fontFamily: 'monospace'
-            }}>
-              {errorInfo.componentStack}
-            </pre>
-          </Box>
-        </Collapse>
-      )}
-    </Box>
-  );
-};
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.node,
-  fallback: PropTypes.node,
-  componentName: PropTypes.string,
-};
 
 export default ErrorBoundary;

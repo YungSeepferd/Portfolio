@@ -1,238 +1,267 @@
+import { alpha } from '@mui/material/styles';
+
 /**
- * Component Theme Settings
+ * Component Overrides
  * 
- * This file defines theme overrides for specific Material UI components
- * and custom component styling configurations.
- */
-
-/**
- * Creates component-specific styles for Material UI's createTheme
+ * This file contains all Material UI component customizations
+ * following the proper theme.components pattern.
  * 
- * @param {Object} theme - Partial theme object with palette, typography, etc.
- * @returns {Object} Component style overrides
+ * @param {Object} theme - The base theme object
+ * @returns {Object} Component override object for createTheme
  */
-export const createComponentStyles = (theme) => {
+export const getComponentOverrides = (theme) => {
   return {
-    MuiCard: {
+    // Global styles applied to all components
+    MuiCssBaseline: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
-          backgroundColor: theme.palette.card.background,
-          minHeight: '300px',
-          border: `1px solid ${theme.palette.structure.borders}`,
-          height: '100%',
-          transition: `transform ${theme.animationSettings.durations.short}ms ease, box-shadow ${theme.animationSettings.durations.short}ms ease`,
-          boxShadow: `0 4px 12px ${theme.palette.shadow.light}`,
-          '&:hover': {
-            boxShadow: `0 12px 24px ${theme.palette.shadow.medium}`,
-            borderColor: theme.palette.accent.main,
-          },
-        }),
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
-        }),
-      },
-    },
-    MuiImageListItem: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius, // Use the theme's border radius
-          overflow: 'hidden',
-        }),
-      },
-    },
-    // Add other component overrides here as needed
-  };
-};
-
-/**
- * Creates custom component configurations for the theme
- */
-export const createCustomComponents = () => {
-  return {
-    work: {
-      container: {
-        padding: '64px 0',
-      },
-    },
-    parallax: {
-      container: {
-        width: '800vw',
-        scrollSnapType: 'x mandatory',
-        scrollBehavior: 'smooth',
-      },
-      section: {
-        flex: '0 0 100vw',
-        scrollSnapAlign: 'start',
-      },
-      content: {
-        maxWidth: '840px',
-        transition: 'transform 0.5s ease-out, opacity 0.5s ease-out',
-      },
-      slideshow: {
-        height: '300px',
-      },
-      dot: {
-        size: '8px',
-      },
-    },
-    projectBubble: {
-      width: '250px',
-      height: '250px',
-      hoverScale: 1.05,
-    },
-    hero: {
-      contentPosition: {
-        bottom: '30%',
-        left: '5%',
-      },
-    },
-    filter: {
-      buttonRadius: '20px',
-      buttonPadding: '0.5rem 1rem',
-    },
-    overlay: {
-      zIndex: 2000,
-      backdropZIndex: 1999,
-      padding: '40px',
-      backdropOpacity: 0.6,
-    },
-  };
-};
-
-/**
- * Creates custom section configurations for the theme
- */
-export const createCustomSections = () => {
-  return {
-    about: {
-      container: {
-        maxWidth: '1200px',
-        py: { xs: 4, md: 6 },
-        px: { xs: 2, md: 3 },
-      },
-      tabContent: {
-        py: 3,
-        px: { xs: 2, sm: 3 },
-        borderRadius: 1,
-        backgroundColor: 'background.paper',
-      },
-      contentCard: {
-        p: { xs: 2, sm: 3, md: 4 },
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      },
-      imageContainer: {
-        height: { xs: 240, sm: 300, md: 360 },
-        borderRadius: 1,
-        overflow: 'hidden',
-        mb: { xs: 2, md: 0 },
-      },
-      textContent: {
-        maxHeight: { xs: 'auto', md: '460px' },
-        overflowY: 'auto',
-        pr: { md: 2 },
-        '& > *:last-child': {
-          mb: 0, // Remove margin from last child to avoid extra spacing
+        body: {
+          transition: 'all 0.3s ease-out',
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+        },
+        // Global animations
+        '@keyframes fadeIn': {
+          from: { opacity: 0 },
+          to: { opacity: 1 }
+        },
+        '@keyframes slideUp': {
+          from: { transform: 'translateY(20px)', opacity: 0 },
+          to: { transform: 'translateY(0)', opacity: 1 }
         },
       },
-      spacingBetweenSections: 4,
     },
-    work: {
-      container: {
-        padding: '64px 0',
+    
+    // Button component customization
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none', // No uppercase text
+          borderRadius: theme.shape.borderRadius * 1.5, // Slightly more rounded buttons
+          padding: '8px 16px',
+          fontWeight: 600,
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: theme.shadows[2],
+          },
+        },
+        // Contained button variant
+        contained: {
+          '&:hover': {
+            boxShadow: theme.shadows[4],
+          },
+        },
+        // Text button variant
+        text: {
+          padding: '6px 8px',
+        },
+        // Outlined button variant
+        outlined: {
+          borderWidth: '1.5px',
+          '&:hover': {
+            borderWidth: '1.5px',
+          },
+        },
+        // Size overrides
+        sizeSmall: {
+          padding: '4px 10px',
+          fontSize: '0.8125rem',
+        },
+        sizeLarge: {
+          padding: '12px 24px',
+          fontSize: '1rem',
+        }
       },
     },
-  };
-};
-
-/**
- * Creates responsive style presets for easy use throughout the application
- */
-export const createResponsiveStyles = () => {
-  return {
-    hideOnMobile: {
-      display: { xs: 'none', sm: 'block' },
-    },
-    centerOnMobile: {
-      textAlign: { xs: 'center', sm: 'left' },
-    },
-    columnOnMobile: {
-      flexDirection: { xs: 'column', sm: 'row' },
-    },
-  };
-};
-
-/**
- * Creates custom button styles configuration
- */
-export const createCustomButtons = () => {
-  return {
-    close: {
-      color: '#fff',
-      backgroundColor: 'rgba(19, 31, 45, 0.7)',
-      hoverBackgroundColor: 'rgba(19, 31, 45, 0.9)',
-    },
-    contact: {
-      padding: '8px 24px',
-      fontWeight: 600,
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    },
-  };
-};
-
-/**
- * Creates custom sizes configuration
- */
-export const createCustomSizes = () => {
-  return {
-    bigCardHeight: '400px',
-    bigCardImageWidth: '300px',
-    projectBubbleSize: '250px',
-    projectImageMaxWidth: '800px',
-    overlayWidth: '90%',
-    overlayMaxWidth: '800px',
-    overlayMaxHeight: '90%',
-  };
-};
-
-/**
- * Creates project card styles configuration
- */
-export const createProjectCardStyles = () => {
-  return {
-    base: {
-      backgroundColor: 'card.background',
-      padding: 2.5,
-      borderRadius: 'shape.borderRadius',
-      boxShadow: (theme) => `0 3px 10px ${theme.palette.shadow.light}`
-    },
-    variants: {
-      primary: {
-        borderLeft: (theme) => `4px solid ${theme.palette.primary.main}`,
-        boxShadow: (theme) => `0 3px 10px ${theme.palette.primary.dark}22`
+    
+    // Card component customization
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: theme.shape.borderRadius * 2, // Rounder cards
+          overflow: 'hidden',
+          boxShadow: theme.shadows[2],
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            boxShadow: theme.shadows[6],
+            transform: 'translateY(-4px)',
+          },
+          // Mode-specific styling
+          ...(theme.palette.mode === 'dark' && {
+            backgroundColor: theme.palette.background.paper,
+            backgroundImage: 'none',
+          }),
+        },
       },
-      secondary: {
-        borderLeft: (theme) => `4px solid ${theme.palette.secondary.main}`,
-        boxShadow: (theme) => `0 3px 10px ${theme.palette.secondary.dark}22`
+    },
+    
+    // CardContent padding
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: theme.spacing(3),
+          '&:last-child': {
+            paddingBottom: theme.spacing(3),
+          },
+        },
       },
-      warning: {
-        borderLeft: (theme) => `4px solid ${theme.palette.warning.main}`,
-        boxShadow: (theme) => `0 3px 10px ${theme.palette.warning.dark}22`
+    },
+    
+    // Paper component
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none', // Remove default gradient
+          transition: 'box-shadow 0.3s ease',
+        },
+        elevation1: {
+          boxShadow: `0 1px 3px 0 ${alpha(theme.palette.shadow.medium, 0.1)}, 0 1px 2px 0 ${alpha(theme.palette.shadow.medium, 0.06)}`,
+        }
       },
-      info: {
-        borderLeft: (theme) => `4px solid ${theme.palette.info.main}`,
-        boxShadow: (theme) => `0 3px 10px ${theme.palette.info.dark}22`
+    },
+    
+    // TabPanel styling
+    MuiTabPanel: {
+      styleOverrides: {
+        root: {
+          padding: theme.spacing(3),
+        },
       },
-      success: {
-        borderLeft: (theme) => `4px solid ${theme.palette.success.main}`,
-        boxShadow: (theme) => `0 3px 10px ${theme.palette.success.dark}22`
-      }
-    }
+    },
+    
+    // AppBar styling
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: theme.shadows[3],
+          ...(theme.palette.mode === 'dark' && {
+            backgroundImage: 'none',
+            backgroundColor: alpha(theme.palette.background.paper, 0.95),
+          }),
+        },
+      },
+    },
+    
+    // Chip styling
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          transition: 'all 0.2s ease',
+          fontWeight: 500,
+          '&:hover': {
+            boxShadow: theme.shadows[1],
+          },
+        },
+        sizeSmall: {
+          height: 24,
+          fontSize: '0.75rem',
+        },
+      },
+    },
+    
+    // List item styling
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          transition: 'background-color 0.2s ease',
+        },
+      },
+    },
+    
+    // Dialog styling
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: theme.shape.borderRadius * 2,
+          boxShadow: theme.shadows[10],
+        },
+      },
+    },
+    
+    // Tabs styling
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          height: 3,
+          borderTopLeftRadius: 3,
+          borderTopRightRadius: 3,
+        },
+      },
+    },
+    
+    // Tab styling
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 600,
+          transition: 'all 0.2s ease',
+          '&.Mui-selected': {
+            color: theme.palette.primary.main,
+          },
+        },
+      },
+    },
+    
+    // TextField styling
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: alpha(theme.palette.text.primary, 0.2),
+              transition: 'border-color 0.2s ease',
+            },
+            '&:hover fieldset': {
+              borderColor: alpha(theme.palette.text.primary, 0.4),
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: theme.palette.primary.main,
+            },
+          },
+        },
+      },
+    },
+    
+    // Links styling
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          textDecoration: 'none',
+          transition: 'color 0.2s ease, text-decoration 0.2s ease',
+          '&:hover': {
+            textDecoration: 'underline',
+          },
+        },
+      },
+    },
+    
+    // Modal styling
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(5px)',
+        },
+      },
+    },
+    
+    // Tooltip styling
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: alpha(theme.palette.background.default, 0.95),
+          color: theme.palette.text.primary,
+          boxShadow: theme.shadows[1],
+          fontSize: '0.75rem',
+          padding: '8px 12px',
+          borderRadius: theme.shape.borderRadius,
+          maxWidth: 300,
+          border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+        },
+        arrow: {
+          color: alpha(theme.palette.background.default, 0.95),
+        },
+      },
+    },
   };
 };

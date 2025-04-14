@@ -6,6 +6,7 @@ import Hero from './components/hero/Hero';
 import AboutSection from './components/about/AboutSection';
 import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
+import GlobalErrorHandler from './components/common/GlobalErrorHandler';
 
 /**
  * App Component
@@ -24,6 +25,7 @@ const App = () => {
           <Work />
         </main>
         <FooterContact />
+        <GlobalErrorHandler />
       </ModalProvider>
     </ThemeProvider>
   );

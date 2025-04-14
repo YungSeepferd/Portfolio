@@ -1,6 +1,8 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import React, { Suspense, useState, useEffect } from 'react';
+import { Box } from '@mui/material';
+// Comment out imports that are causing errors
+// import { Canvas } from '@react-three/fiber';
+// import { OrbitControls } from '@react-three/drei';
 import ActiveScene from './ActiveScene';
 import { SceneProvider } from './SceneContext';
 import PerformanceMonitor from './components/PerformanceMonitor';

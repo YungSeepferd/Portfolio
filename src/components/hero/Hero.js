@@ -3,7 +3,7 @@ import { Box, useTheme, useMediaQuery } from '@mui/material';
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ScrollIndicator from './ScrollIndicator';
-import Background3D from './background3d/Background3D';
+import Background3D from './Background3D'; // Use the canvas version instead
 
 /**
  * HeroBackground Component

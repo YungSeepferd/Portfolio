@@ -1,3 +1,5 @@
+import { tokens } from '../design/tokens';
+
 /**
  * Typography System
  * 
@@ -7,113 +9,84 @@
 
 // Define typography settings
 const typography = {
-  // Base font is now Kumbh Sans for body text
-  fontFamily: `'Kumbh Sans', 'Helvetica', 'Arial', sans-serif`,
+  // Base font settings
+  fontFamily: tokens.typography.fontFamilies.body,
   
-  // Headings use IBM Plex Mono
+  // Headings (h1-h6)
   h1: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '3rem',
-    fontWeight: 700,
-    lineHeight: 1.2,
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: tokens.typography.fontSizes.xxxl,
+    fontWeight: tokens.typography.fontWeights.bold,
+    lineHeight: tokens.typography.lineHeights.tight,
     letterSpacing: '-0.01em',
   },
   h2: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '2.5rem',
-    fontWeight: 700,
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: tokens.typography.fontSizes.xxl,
+    fontWeight: tokens.typography.fontWeights.bold,
+    lineHeight: tokens.typography.lineHeights.tight,
     letterSpacing: '-0.01em',
   },
   h3: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '2rem',
-    fontWeight: 700,
-    letterSpacing: '-0.01em',
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: '1.75rem',
+    fontWeight: tokens.typography.fontWeights.semiBold,
+    lineHeight: tokens.typography.lineHeights.tight,
   },
   h4: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '1.6rem',
-    fontWeight: 500,
-    letterSpacing: '-0.01em',
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: tokens.typography.fontSizes.xl,
+    fontWeight: tokens.typography.fontWeights.semiBold,
+    lineHeight: tokens.typography.lineHeights.tight,
   },
   h5: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '1.4rem',
-    fontWeight: 500,
-    letterSpacing: '-0.01em',
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: tokens.typography.fontSizes.lg,
+    fontWeight: tokens.typography.fontWeights.semiBold,
+    lineHeight: tokens.typography.lineHeights.normal,
   },
   h6: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`,
-    fontSize: '1.2rem',
-    fontWeight: 500,
-    letterSpacing: '-0.01em',
+    fontFamily: tokens.typography.fontFamilies.heading,
+    fontSize: tokens.typography.fontSizes.md,
+    fontWeight: tokens.typography.fontWeights.semiBold,
+    lineHeight: tokens.typography.lineHeights.normal,
   },
   
-  // All other text elements use Kumbh Sans (inherited from base fontFamily)
+  // Other typography variants
   subtitle1: {
-    fontSize: '1rem',
-    fontWeight: 400,
+    fontSize: tokens.typography.fontSizes.md,
+    fontWeight: tokens.typography.fontWeights.medium,
+    lineHeight: tokens.typography.lineHeights.normal,
   },
   subtitle2: {
-    fontSize: '0.875rem',
-    fontWeight: 400,
+    fontSize: tokens.typography.fontSizes.sm,
+    fontWeight: tokens.typography.fontWeights.medium,
+    lineHeight: tokens.typography.lineHeights.normal,
   },
   body1: {
-    fontSize: '1rem',
-    lineHeight: 1.5,
+    fontSize: tokens.typography.fontSizes.md,
+    lineHeight: tokens.typography.lineHeights.relaxed,
     letterSpacing: '0.01em',
   },
   body2: {
-    fontSize: '0.875rem',
-    lineHeight: 1.43,
+    fontSize: tokens.typography.fontSizes.sm,
+    lineHeight: tokens.typography.lineHeights.relaxed,
     letterSpacing: '0.01em',
   },
   caption: {
-    fontSize: '0.75rem',
-    lineHeight: 1.66,
+    fontSize: tokens.typography.fontSizes.xs,
+    lineHeight: tokens.typography.lineHeights.normal,
   },
   overline: {
-    fontSize: '0.75rem',
+    fontSize: tokens.typography.fontSizes.xs,
+    fontWeight: tokens.typography.fontWeights.medium,
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
   },
   button: {
-    textTransform: 'none',
-    fontWeight: 600,
+    textTransform: 'none', // MUI buttons use uppercase by default
+    fontWeight: tokens.typography.fontWeights.medium,
   },
-  projectTitle: {
-    fontFamily: `'IBM Plex Mono', 'Courier New', monospace`, // Updated to IBM Plex Mono
-    fontSize: '2.5rem',
-    fontWeight: 700,
-    lineHeight: 1.2,
-    letterSpacing: '-0.02em',
-  },
-  chipText: {
-    fontSize: '1rem',
-    fontWeight: 500,
-    lineHeight: 1.5,
-  },
-};
-
-/**
- * Creates typography configuration for use with Material UI's createTheme
- * 
- * @param {Object} colors - The colors object from the theme
- * @returns {Object} Material UI compatible typography configuration
- */
-export const createTypography = (colors) => {
-  // Apply color-dependent typography styles
-  return {
-    ...typography,
-    h3: {
-      ...typography.h3,
-      color: colors.primaryMain,
-    },
-    projectTitle: {
-      ...typography.projectTitle,
-      color: colors.primaryMain,
-    }
-  };
 };
 
 export default typography;

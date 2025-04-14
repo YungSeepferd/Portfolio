@@ -1,33 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import { projects as workData } from './data/projects/index'; // Import directly from projects index
+import { projects as getWorkData } from './data/projects/index'; // Import function from projects index
 import ErrorBoundary from '../common/ErrorBoundary';
+import useDataLoader from '../../hooks/useDataLoader';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 /**
  * Work Component
  * 
  * Displays a grid of project cards and handles the project modal.
+ * Uses useDataLoader hook for consistent data loading.
  */
 const Work = () => {
   const theme = useTheme();
-  const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
 
-  // Load projects on component mount
-  useEffect(() => {
-    if (!workData || workData.length === 0) {
-      console.error("Projects data not loaded or empty:", workData);
-      setProjects([]);
-    } else {
-      console.log("Projects data loaded successfully:", workData.length, "projects");
-      setProjects(workData);
+  // Use the data loader hook to load projects
+  const { 
+    data: projects, 
+    isLoading, 
+    error,
+    reload 
+  } = useDataLoader(
+    getWorkData, 
+    {
+      defaultData: [],
+      onSuccess: (data) => console.log("Projects loaded successfully:", data.length, "projects"),
+      onError: (err) => console.error("Error loading projects:", err),
+      validateData: (data) => Array.isArray(data) && data.length > 0
     }
-  }, []);
+  );
 
   // Update filtered projects when projects change
   useEffect(() => {
@@ -132,12 +139,57 @@ const Work = () => {
               </Typography>
             </Box>
 
-            <ErrorBoundary componentName="ProjectGrid">
-              <ProjectGrid 
-                projects={filteredProjects} 
-                onCardClick={handleCardClick} 
-              />
-            </ErrorBoundary>
+            {/* Render different content based on loading/error state */}
+            {isLoading ? (
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center',
+                  minHeight: '300px'
+                }}
+              >
+                <CircularProgress color="primary" />
+              </Box>
+            ) : error ? (
+              <Box 
+                sx={{ 
+                  textAlign: 'center', 
+                  p: 4, 
+                  color: 'error.main', 
+                  minHeight: '300px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Typography variant="h5" color="error" gutterBottom>
+                  Error Loading Projects
+                </Typography>
+                <Typography variant="body1">
+                  There was a problem loading the projects. Please try refreshing.
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary', mb: 3 }}>
+                  Error details: {error.message || 'Unknown error'}
+                </Typography>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  startIcon={<RefreshIcon />} 
+                  onClick={reload}
+                >
+                  Try Again
+                </Button>
+              </Box>
+            ) : (
+              <ErrorBoundary componentName="ProjectGrid">
+                <ProjectGrid 
+                  projects={filteredProjects} 
+                  onCardClick={handleCardClick} 
+                />
+              </ErrorBoundary>
+            )}
           </motion.div>
         </Box>
       </Box>
