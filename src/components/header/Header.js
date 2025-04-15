@@ -3,6 +3,7 @@ import { Link as ScrollLink } from 'react-scroll';
 import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { useThemeMode } from '../../context/ThemeContext';
@@ -125,19 +126,40 @@ const Header = () => {
                   fontSize: '1.5rem',
                   letterSpacing: '-0.5px',
                   color: theme.palette.primary.main,
-                  paddingLeft: { xs: '0', sm: '20px', md: '40px', lg: '60px' },
+                  paddingLeft: { xs: '8px', sm: '16px', md: '20px', lg: '32px' }, // Reduced padding
+                  transition: 'padding 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5
                 }}
               >
-                  Vincent Göke 
+                Vincent Göke
+                <IconButton
+                  href="https://www.linkedin.com/in/vincent-g-193124194/"
+                  target="_blank"
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    color: theme.palette.primary.main,
+                    backgroundColor: 'rgba(194,247,80,0.10)',
+                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
+                    p: 0.5
+                  }}
+                  aria-label="LinkedIn profile"
+                >
+                  <LinkedInIcon fontSize="small" />
+                </IconButton>
               </Box>
             </ScrollLink>
 
             {/* Desktop Navigation */}
             <Box sx={{ 
               display: { xs: 'none', md: 'flex' },
-              paddingRight: { md: '40px', lg: '60px' }
+              alignItems: 'center', // Ensure vertical alignment
+              gap: 2, // Consistent spacing between items
+              paddingRight: { md: '24px', lg: '40px' }
             }}>
-              {navItems.map((item) => (
+              {navItems.map((item, idx) => (
                 <ScrollLink
                   key={item.target}
                   to={item.target}
@@ -151,7 +173,7 @@ const Header = () => {
                     variant={item.isCallToAction ? "contained" : "text"}
                     color={item.isCallToAction ? "secondary" : "inherit"}
                     sx={{
-                      ml: 2,
+                      ml: idx === 0 ? 0 : 2, // No margin for first item
                       px: item.isCallToAction ? 3 : 2,
                       py: item.isCallToAction ? 0.5 : 'auto',
                       borderRadius: item.isCallToAction ? '50px' : 'default',
@@ -192,7 +214,9 @@ const Header = () => {
                 </ScrollLink>
               ))}
               {/* Theme Toggle */}
-              <ThemeToggle mode={mode} onToggle={toggleTheme} />
+              <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
+                <ThemeToggle mode={mode} onToggle={toggleTheme} />
+              </Box>
             </Box>
 
             {/* Mobile Navigation */}
