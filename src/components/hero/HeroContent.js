@@ -101,7 +101,7 @@ const HeroContent = () => {
               },
               fontWeight: 500,
               mb: 4,
-              color: theme.palette.accent?.main || theme.palette.primary.main,
+              color: theme.palette.secondary.main, // Changed to secondary (yellow) color
             }}
           >
             Creative Technologist & Interaction Designer

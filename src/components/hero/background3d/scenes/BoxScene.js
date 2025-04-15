@@ -3,6 +3,8 @@ import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
+import { getDynamicColor, themeColorToThreeColor } from '../utils/sceneThemeUtils';
+import { SHAPE_TYPES } from '../constants';
 
 /**
  * BoxScene Component - Enhanced with automatic motion and better mouse tracking
@@ -13,7 +15,7 @@ import { useSceneState } from '../SceneContext';
  * - Changes colors based on energy/activation levels
  */
 const BoxScene = ({ 
-  color = new THREE.Color(0x6366F1), 
+  color = new THREE.Color(0x6366F1), // Default fallback, but we'll use theme-derived colors
   mousePosition, 
   mouseData,
   isTransitioning,
@@ -297,34 +299,21 @@ const BoxScene = ({
         cubeRef.current.scale.set(1, 1, 1);
       }
       
-      // Update color based on energy and mode
+      // Update color based on energy and mode using the unified color system
       if (cubeRef.current.material) {
-        const timeOffset = cube.index * 0.1;
-        // Get theme colors and interpolate between them
-        const baseColor = color.clone();
-        const primaryHue = baseColor.getHSL({}).h;
-        const secondaryHue = (primaryHue + 0.5) % 1; // Complementary color
-        
-        // Calculate hue based on time and energy
-        const timeHue = ((currentTime + timeOffset) * 0.1) % 1;
-        
-        // Blend between primary and animated colors based on energy
-        const finalHue = state.energy > 0 
-          ? THREE.MathUtils.lerp(primaryHue, timeHue, state.energy)
-          : primaryHue;
-          
-        cubeRef.current.material.color.setHSL(
-          finalHue,
-          0.6 + state.energy * 0.4,
-          0.5 + state.energy * 0.2
+        // Use the getDynamicColor helper for consistent color derivation
+        const dynamicColors = getDynamicColor(
+          theme,
+          currentTime + (cube.index * 0.1), // Add cube index for variation
+          state.energy,
+          SHAPE_TYPES.BOX,
+          false // not hovered
         );
         
-        // Add emissive glow for excited state using secondary color
-        cubeRef.current.material.emissive.setHSL(
-          secondaryHue,
-          0.7,
-          state.energy * 0.3 // Only glow when energized
-        );
+        // Apply colors to material
+        cubeRef.current.material.color.copy(dynamicColors.main);
+        cubeRef.current.material.emissive.copy(dynamicColors.emissive);
+        cubeRef.current.material.emissiveIntensity = dynamicColors.emissiveIntensity;
         
         // Override with rainbow colors in Easter egg mode
         if (easterEggActive) {
@@ -342,35 +331,39 @@ const BoxScene = ({
   
   return (
     <group position={[0, -1, 0]}>
-      {/* Remove the floating cube that was added previously */}
-      
       {/* Add central light in Easter egg mode */}
       {easterEggActive && (
         <pointLight
           position={[0, 2, 0]}
           intensity={2}
           distance={10}
-          color={new THREE.Color(0.8, 0.3, 1.0)}
+          color={new THREE.Color().setHSL(0.8, 0.8, 0.6)} // Theme-derived color
         />
       )}
       
-      {/* Existing cube meshes */}
-      {cubeGrid.map((cube, i) => (
-        <mesh
-          key={i}
-          ref={cubeRefs.current[i]}
-          position={[cube.position.x, 0, cube.position.z]}
-        >
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial 
-            color={color}
-            emissive={color.clone().multiplyScalar(0.5)}
-            emissiveIntensity={0}
-            metalness={0.3}
-            roughness={0.7}
-          />
-        </mesh>
-      ))}
+      {/* Cube meshes with theme-derived base colors */}
+      {cubeGrid.map((cube, i) => {
+        // Get initial color from theme
+        const baseColor = themeColorToThreeColor(theme.palette.secondary.main);
+        const emissiveColor = themeColorToThreeColor(theme.palette.secondary.light);
+        
+        return (
+          <mesh
+            key={i}
+            ref={cubeRefs.current[i]}
+            position={[cube.position.x, 0, cube.position.z]}
+          >
+            <boxGeometry args={[0.5, 0.5, 0.5]} />
+            <meshStandardMaterial 
+              color={baseColor}
+              emissive={emissiveColor}
+              emissiveIntensity={0}
+              metalness={0.3}
+              roughness={0.7}
+            />
+          </mesh>
+        );
+      })}
     </group>
   );
 };

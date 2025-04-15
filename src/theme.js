@@ -1,204 +1,266 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-// Import theme components
-import typography from './theme/typography';
-import breakpoints from './theme/breakpoints';
-import shadows from './theme/shadows';
-import shape from './theme/shape';
-import { palette as lightPalette } from './theme/palette/light';
-import { palette as darkPalette } from './theme/palette/dark';
-
-// Import design tokens directly
-import { tokens } from './design/tokens';
-
-// Try to import components
-let components = {};
-try {
-  // Use dynamic import to prevent circular dependencies
-  const importedComponents = require('./theme/components');
-  components = importedComponents?.default || {};
-} catch (error) {
-  console.info('No component overrides found in theme/components');
-}
-
-// Design constants derived from tokens to ensure consistency
-export const designConstants = {
-  transitions: {
-    standard: 'all 0.3s ease',
-    fast: 'all 0.15s ease',
-    slow: 'all 0.5s ease',
-  },
-  media: {
-    paths: {
-      documents: '/assets/documents',
-      images: '/assets/images',
-      videos: '/assets/videos',
-    },
-    fileFormats: {
-      documents: ['.pdf', '.doc', '.docx', '.ppt', '.pptx'],
-      images: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'],
-      videos: ['.mp4', '.webm', '.mov', '.avi']
-    }
-  },
-  spacing: tokens.spacing, // Use spacing from tokens
-  sizes: {
-    header: {
-      height: '70px'
-    },
-    avatar: {
-      xs: tokens.spacing.xs || '40px',
-      sm: tokens.spacing.sm || '60px',
-      md: tokens.spacing.md || '80px',
-      lg: tokens.spacing.lg || '100px'
-    }
-  }
-};
-
 /**
- * Create a theme with the given mode
- * @param {string} mode - 'light' or 'dark'
- * @returns {Object} MUI theme object
+ * Primary theme configuration for the portfolio
+ * Provides consistent colors, typography, and spacing throughout the app
  */
-export const createAppTheme = (mode = 'light') => {
-  // Validate mode
-  const themeMode = typeof mode === 'string' ? mode : 'light';
+const createAppTheme = (mode = 'dark') => {
+  // Define color palette based on mode
+  const isDark = mode === 'dark';
   
-  // Select palette based on mode
-  const palette = themeMode === 'dark' ? darkPalette : lightPalette;
+  // Define primary colors - used in 3D scenes and UI elements
+  const primaryHue = 230; // Indigo/blue
+  const secondaryHue = 85; // Lime/light green
+  const accentHue = 190; // Cyan/light blue
   
-  // Add state colors directly from tokens for consistent error, warning, success states
-  const stateColors = {
-    error: {
-      light: tokens.colors.red[300],
-      main: tokens.colors.red[500],
-      dark: tokens.colors.red[700],
-      contrastText: tokens.colors.common.white
-    },
-    warning: {
-      light: tokens.colors.orange[300],
-      main: tokens.colors.orange[500],
-      dark: tokens.colors.orange[700],
-      contrastText: tokens.colors.common.black
-    },
-    info: {
-      light: tokens.colors.teal[300],
-      main: tokens.colors.teal[500],
-      dark: tokens.colors.teal[700],
-      contrastText: tokens.colors.common.white
-    },
-    success: {
-      light: tokens.colors.green[300],
-      main: tokens.colors.green[500],
-      dark: tokens.colors.green[700],
-      contrastText: tokens.colors.common.white
-    }
+  // Lightness values - adjust based on light/dark mode
+  const primaryLightness = isDark ? 65 : 45;
+  const secondaryLightness = isDark ? 65 : 50;
+  const accentLightness = isDark ? 60 : 45;
+  
+  // Convert HSL to RGB hex for Material UI
+  const hslToHex = (h, s, l) => {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
   };
   
-  // Create the base theme - using colorSchemes for better dark mode support (MUI v5.14+)
+  // Create primary and secondary colors with consistent HSL values
+  const primaryMain = hslToHex(primaryHue, 80, primaryLightness);
+  const primaryLight = hslToHex(primaryHue, 75, primaryLightness + 10);
+  const primaryDark = hslToHex(primaryHue, 85, primaryLightness - 10);
+  
+  const secondaryMain = hslToHex(secondaryHue, 80, secondaryLightness);
+  const secondaryLight = hslToHex(secondaryHue, 75, secondaryLightness + 10);
+  const secondaryDark = hslToHex(secondaryHue, 85, secondaryLightness - 10);
+  
+  const accentMain = hslToHex(accentHue, 75, accentLightness);
+  const accentLight = hslToHex(accentHue, 70, accentLightness + 10);
+  const accentDark = hslToHex(accentHue, 80, accentLightness - 10);
+  
+  // Define theme with consistent color relationships
   let theme = createTheme({
-    // Set up color schemes for dark mode support
-    colorSchemes: {
-      light: {
-        palette: {
-          mode: 'light',
-          ...lightPalette,
-          ...stateColors // Add state colors to light scheme
-        }
+    palette: {
+      mode,
+      primary: {
+        main: primaryMain,
+        light: primaryLight,
+        dark: primaryDark,
+        contrastText: '#ffffff',
       },
-      dark: {
-        palette: {
-          mode: 'dark', 
-          ...darkPalette,
-          ...stateColors // Add state colors to dark scheme
-        }
+      secondary: {
+        main: secondaryMain,
+        light: secondaryLight,
+        dark: secondaryDark,
+        contrastText: isDark ? '#000000' : '#ffffff',
+      },
+      accent: {
+        main: accentMain,
+        light: accentLight,
+        dark: accentDark,
+        contrastText: '#ffffff',
+      },
+      info: {
+        main: accentMain,
+      },
+      background: {
+        default: isDark ? '#121212' : '#f7f9fc',
+        paper: isDark ? '#1e1e1e' : '#ffffff',
+        subtle: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+      },
+      text: {
+        primary: isDark ? '#ffffff' : '#111111',
+        secondary: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+        disabled: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.38)',
+      },
+      divider: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
+      // Color values specifically for the 3D scenes
+      scene3d: {
+        sphere: primaryMain,
+        box: secondaryMain,
+        torus: accentMain,
+        particleColor: isDark ? '#ffffff' : primaryMain,
+        emissive: isDark ? secondaryLight : secondaryMain,
       }
     },
-    // Default palette with state colors
-    palette: {
-      mode: themeMode,
-      ...palette,
-      ...stateColors
+    typography: {
+      fontFamily: [
+        'Inter',
+        'Roboto',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        'Arial',
+        'sans-serif',
+      ].join(','),
+      h1: {
+        fontWeight: 700,
+        fontSize: '3.5rem',
+        lineHeight: 1.2,
+      },
+      h2: {
+        fontWeight: 700,
+        fontSize: '2.75rem',
+        lineHeight: 1.2,
+      },
+      h3: {
+        fontWeight: 600,
+        fontSize: '2.25rem',
+        lineHeight: 1.3,
+      },
+      h4: {
+        fontWeight: 600,
+        fontSize: '1.75rem',
+        lineHeight: 1.4,
+      },
+      h5: {
+        fontWeight: 600,
+        fontSize: '1.5rem',
+        lineHeight: 1.4,
+      },
+      h6: {
+        fontWeight: 600,
+        fontSize: '1.25rem',
+        lineHeight: 1.4,
+      },
+      subtitle1: {
+        fontWeight: 500,
+        fontSize: '1.1rem',
+        lineHeight: 1.5,
+        letterSpacing: '0.00938em',
+      },
+      body1: {
+        fontSize: '1rem',
+        lineHeight: 1.6,
+        letterSpacing: '0.00938em',
+      },
+      body2: {
+        fontSize: '0.875rem',
+        lineHeight: 1.6,
+        letterSpacing: '0.01071em',
+      },
+      button: {
+        fontWeight: 600,
+        fontSize: '0.875rem',
+        letterSpacing: '0.02857em',
+        textTransform: 'none',
+      },
+      caption: {
+        fontSize: '0.75rem',
+        lineHeight: 1.5,
+        letterSpacing: '0.03333em',
+      },
+      chipText: {
+        fontSize: '0.875rem',
+        fontWeight: 500,
+      },
     },
-    typography,
-    breakpoints: { values: breakpoints },
-    shape,
-    shadows,
-    // Enable CSS variables for better dark mode performance
-    cssVarsPrefix: 'app',
-    unstable_strictMode: true,
+    shape: {
+      borderRadius: 8,
+    },
+    spacing: 8,
+    shadows: [
+      'none',
+      '0px 2px 4px rgba(0, 0, 0, 0.05)',
+      '0px 4px 8px rgba(0, 0, 0, 0.08)',
+      '0px 6px 12px rgba(0, 0, 0, 0.12)',
+      '0px 8px 16px rgba(0, 0, 0, 0.15)',
+      '0px 10px 20px rgba(0, 0, 0, 0.18)',
+      ...Array(19).fill('none'), // Fill remaining slots with none
+    ],
+    zIndex: {
+      appBar: 1100,
+      drawer: 1200,
+      modal: 1300,
+      snackbar: 1400,
+      tooltip: 1500,
+      // Custom z-indexes for portfolio components
+      heroBackground: 5,
+      heroContent: 10,
+      scrollIndicator: 15,
+      sectionNavigation: 20,
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '8px',
+            boxShadow: 'none',
+            '&:hover': {
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            },
+          },
+          contained: {
+            padding: '8px 24px',
+          },
+          outlined: {
+            padding: '7px 23px',
+          },
+          text: {
+            padding: '8px 16px',
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: '12px',
+            boxShadow: isDark 
+              ? '0 4px 20px rgba(0, 0, 0, 0.4)'
+              : '0 4px 20px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            borderRadius: '16px',
+            fontWeight: 500,
+          }
+        }
+      }
+    }
   });
   
-  // Helper function for shadow access
-  const getShadow = (index) => {
-    if (!theme.shadows || !Array.isArray(theme.shadows) || !theme.shadows[index]) {
-      return 'none';
-    }
-    return theme.shadows[index];
-  };
-  
-  // Add component overrides
-  if (typeof components === 'function') {
-    theme = createTheme(theme, {
-      components: components(theme)
-    });
-  } else if (components && typeof components === 'object' && Object.keys(components).length > 0) {
-    theme = createTheme(theme, { components });
-  }
-  
-  // Add custom properties to theme
-  theme = {
-    ...theme,
-    
-    // Add tokens directly to the theme for easy access throughout the app
-    tokens,
-    
-    // Add design constants 
-    designConstants,
-    
-    transitions: {
-      ...theme.transitions,
-      custom: {
-        fade: 'opacity 0.3s ease-in-out',
-        transform: 'transform 0.3s ease-in-out'
-      }
-    },
-    
-    // Custom functions that can be used throughout the app
-    customFunctions: {
-      pxToRem: (px) => `${px / 16}rem`,
-      getCardElevation: (level = 'low') => {
-        const elevations = {
-          none: 0,
-          low: 1,
-          medium: 3,
-          high: 6,
-          raised: 12
-        };
-        return elevations[level] || elevations.low;
-      }
-    },
-    
-    // Custom properties for consistent styling
-    customComponents: {
-      section: {
-        marginY: designConstants.spacing.section
-      },
-      card: {
-        borderRadius: tokens.borderRadius?.md || '8px',
-        hoveredShadow: getShadow(8)
-      }
-    }
-  };
-  
-  // Make theme responsive
+  // Make typography responsive
   theme = responsiveFontSizes(theme);
   
   return theme;
 };
 
-// Export pre-created themes
+// Create the light and dark themes once
 export const lightTheme = createAppTheme('light');
 export const darkTheme = createAppTheme('dark');
 
-// Export default theme creation function
+// Export design constants that are used in MediaPathResolver.js
+export const designConstants = {
+  breakpoints: {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+  },
+  paths: {
+    images: {
+      base: '/images',
+      projects: '/images/projects',
+      about: '/images/about',
+    },
+    videos: {
+      base: '/videos',
+      projects: '/videos/projects',
+    }
+  },
+  aspectRatios: {
+    portrait: 3/4,
+    landscape: 16/9,
+    square: 1,
+  }
+};
+
 export default createAppTheme;

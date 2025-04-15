@@ -3,12 +3,15 @@ import { Box, Typography, Fade, useTheme } from '@mui/material';
 import MouseIcon from '@mui/icons-material/Mouse';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+import { useSceneState } from '../SceneContext';
+import { SHAPE_TYPES } from '../constants';
 
 /**
  * InteractionGuide Component
  * 
  * Displays visual cues to guide users on how to interact with the 3D background.
  * - Shows different instructions for mouse vs touch devices
+ * - Provides scene-specific instructions
  * - Fades out after a short period
  * - Can be toggled on/off with a prop
  */
@@ -20,6 +23,7 @@ const InteractionGuide = ({
   const theme = useTheme();
   const [visible, setVisible] = useState(true);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const { currentShapeType } = useSceneState();
   
   // Detect touch device
   useEffect(() => {
@@ -59,6 +63,50 @@ const InteractionGuide = ({
       transform: 'translateX(-50%)',
     }
   };
+
+  // Get scene-specific instructions
+  const getInstructions = () => {
+    switch(currentShapeType) {
+      case SHAPE_TYPES.SPHERE:
+        return {
+          action: isTouchDevice 
+            ? "Tap on a sphere to switch to Cube scene" 
+            : "Click on a sphere to switch to Cube scene",
+          secondary: isTouchDevice
+            ? "Touch and drag to move spheres and rotate view"
+            : "Move cursor to attract spheres. Drag to rotate view"
+        };
+      case SHAPE_TYPES.BOX:
+        return {
+          action: isTouchDevice 
+            ? "Tap on a cube to switch to Torus scene" 
+            : "Click on a cube to switch to Torus scene",
+          secondary: isTouchDevice
+            ? "Touch and drag to create ripples and rotate view"
+            : "Move cursor to create ripples. Drag to rotate view"
+        };
+      case SHAPE_TYPES.TORUS:
+        return {
+          action: isTouchDevice 
+            ? "Tap on a torus ring to switch to Sphere scene" 
+            : "Click on a torus ring to switch to Sphere scene",
+          secondary: isTouchDevice
+            ? "Touch and move to create torus rings"
+            : "Move cursor to create torus rings in different directions"
+        };
+      default:
+        return {
+          action: isTouchDevice 
+            ? "Tap to change scene" 
+            : "Click to change scene",
+          secondary: isTouchDevice
+            ? "Touch and drag to rotate view"
+            : "Drag to rotate view"
+        };
+    }
+  };
+
+  const instructions = getInstructions();
   
   return (
     <Fade in={visible && show} timeout={{ enter: 600, exit: 400 }}>
@@ -85,9 +133,14 @@ const InteractionGuide = ({
         {isTouchDevice ? (
           <>
             <TouchAppIcon fontSize="medium" />
-            <Typography variant="body2">
-              Tap to change shape. Touch and drag to rotate the view. Pinch to zoom.
-            </Typography>
+            <Box>
+              <Typography variant="body2" fontWeight="bold">
+                {instructions.action}
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>
+                {instructions.secondary}
+              </Typography>
+            </Box>
           </>
         ) : (
           <>
@@ -95,9 +148,14 @@ const InteractionGuide = ({
               <MouseIcon fontSize="small" />
               <ThreeDRotationIcon fontSize="small" />
             </Box>
-            <Typography variant="body2">
-              Click to change shape. Drag to rotate the view. Scroll to zoom in/out.
-            </Typography>
+            <Box>
+              <Typography variant="body2" fontWeight="bold">
+                {instructions.action}
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>
+                {instructions.secondary}
+              </Typography>
+            </Box>
           </>
         )}
       </Box>

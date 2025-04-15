@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
 import { useSceneState } from './SceneContext';
-import { extractThemeColors } from './utils/sceneThemeUtils';
+import { extractThemeColors, themeColorToThreeColor } from './utils/sceneThemeUtils';
 import SphereScene from './scenes/SphereScene';
 import BoxScene from './scenes/BoxScene'; 
 import TorusScene from './scenes/TorusScene';
@@ -10,12 +9,10 @@ import { SHAPE_TYPES } from './constants';
 
 /**
  * ActiveScene - Manages which 3D scene is currently active
- * 
- * Handles transitions between scenes and passes necessary props
  */
 const ActiveScene = ({ 
   mousePosition, 
-  mouseData, // Contains both screen and world coordinates
+  mouseData,
   onClick, 
   isDragging, 
   theme,
@@ -28,8 +25,8 @@ const ActiveScene = ({
   // eslint-disable-next-line no-unused-vars
   const [transitionProgress, setTransitionProgress] = useState(0);
   
-  // Extract theme colors
-  const { shapeColors } = useMemo(() => {
+  // Extract theme colors and use them to determine active color
+  useMemo(() => {
     return extractThemeColors(theme);
   }, [theme]);
   
@@ -66,10 +63,28 @@ const ActiveScene = ({
     }
   };
   
-  // Get appropriate color for current scene
+  // Get appropriate color for current scene - using theme derivation
   const activeColor = useMemo(() => {
-    return new THREE.Color(shapeColors[currentShapeType]?.color || '#6366F1');
-  }, [currentShapeType, shapeColors]);
+    // Get the appropriate theme color based on scene type
+    let themeColor;
+    
+    switch (currentShapeType) {
+      case SHAPE_TYPES.SPHERE:
+        themeColor = theme.palette.primary.main;
+        break;
+      case SHAPE_TYPES.BOX:
+        themeColor = theme.palette.secondary.main;
+        break;
+      case SHAPE_TYPES.TORUS:
+        themeColor = theme.palette.info?.main || theme.palette.primary.light;
+        break;
+      default:
+        themeColor = theme.palette.primary.main;
+    }
+    
+    // Convert to THREE.Color
+    return themeColorToThreeColor(themeColor);
+  }, [currentShapeType, theme.palette]);
   
   return (
     <group onClick={handleSceneClick}>
@@ -82,6 +97,7 @@ const ActiveScene = ({
           isTransitioning={isTransitioning}
           easterEggActive={easterEggActive}
           interactionCount={interactionCount}
+          theme={theme}
         />
       )}
       

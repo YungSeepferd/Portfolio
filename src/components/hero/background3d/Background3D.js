@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { SceneProvider, useSceneState } from './SceneContext';
-import SceneControls from './SceneControls';
 import ActiveScene from './ActiveScene';
 import LoadingFallback from './components/LoadingFallback';
 import { CANVAS_SETTINGS } from './constants';
@@ -116,16 +115,11 @@ const Background3D = ({ theme, onSceneClick, performanceMode = 'medium' }) => {
         pointerEvents: 'auto',
         userSelect: 'none' 
       }}
-      onWheel={(e) => {
-        // Prevent page scroll when interacting with the 3D scene
-        e.preventDefault();
-      }}
     >
       {isLoading && <LoadingFallback />}
       
       <SceneProvider>
-        {/* Add SceneControls in the top right corner */}
-        <SceneControls />
+        {/* REMOVED SceneControls completely to avoid duplication and conflicts */}
         
         <Canvas 
           camera={CANVAS_SETTINGS.camera}

@@ -7,8 +7,6 @@ import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
 import { SceneProvider, useSceneState } from './background3d/SceneContext';
 import InteractionGuide from './background3d/components/InteractionGuide';
-import ParticlesIcon from '@mui/icons-material/Grain';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 /**
@@ -72,31 +70,21 @@ const BackgroundController = memo(({
 }) => {
   const theme = useTheme();
   const [showGuide, setShowGuide] = useState(false);
-  const { toggleParticles, switchShapeType } = useSceneState();
+  const { switchShapeType } = useSceneState();
   
-  // Handle background click with context integration
+  // Handle background click with improved logging
   const handleBackgroundClick = useCallback(() => {
-    console.log("📢 BackgroundController: Background clicked");
+    console.log("📢 BackgroundController: Scene change button clicked");
+    
     // Update scene context
     switchShapeType();
     
     // Notify parent component
     if (onSceneClick) {
+      console.log("📢 BackgroundController: Calling parent onSceneClick handler");
       onSceneClick();
     }
   }, [switchShapeType, onSceneClick]);
-  
-  // Handle particle toggle with context integration
-  const handleToggleParticles = useCallback(() => {
-    console.log("📢 BackgroundController: Toggling particles");
-    // Update scene context
-    toggleParticles();
-    
-    // Notify parent component
-    if (onToggleParticles) {
-      onToggleParticles();
-    }
-  }, [toggleParticles, onToggleParticles]);
   
   // Toggle interaction guide
   const handleToggleGuide = useCallback(() => {
@@ -111,18 +99,15 @@ const BackgroundController = memo(({
         performanceMode="medium"
       />
       
-      {/* Interactive controls */}
+      {/* Information button only - positioned in bottom right */}
       <Box
         sx={{
           position: 'absolute',
-          bottom: 16,
-          right: 16,
+          bottom: 20,
+          right: 20,
           zIndex: 10,
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 1,
-          pointerEvents: 'auto', // Critical fix: Ensure pointer events work
+          pointerEvents: 'auto',
         }}
       >
         {/* Info/help button to show interaction guide */}
@@ -130,49 +115,15 @@ const BackgroundController = memo(({
           <IconButton 
             onClick={handleToggleGuide}
             sx={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              color: showGuide ? theme.palette.primary.main : theme.palette.text.secondary,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              color: showGuide ? theme.palette.primary.main : 'rgba(255,255,255,0.7)',
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.2)',
+                backgroundColor: 'rgba(0,0,0,0.3)',
               }
             }}
             aria-label="Show interaction guide"
           >
             <InfoOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        
-        {/* Particle toggle button */}
-        <Tooltip title={showParticles ? "Hide particles" : "Show particles"}>
-          <IconButton 
-            onClick={handleToggleParticles}
-            sx={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              color: showParticles ? theme.palette.primary.main : theme.palette.text.secondary,
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.2)',
-              }
-            }}
-            aria-label="Toggle particles"
-          >
-            <ParticlesIcon />
-          </IconButton>
-        </Tooltip>
-        
-        {/* Scene cycle button */}
-        <Tooltip title="Change 3D object">
-          <IconButton 
-            onClick={handleBackgroundClick}
-            sx={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              color: theme.palette.primary.main,
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.2)',
-              }
-            }}
-            aria-label="Change 3D scene"
-          >
-            <ViewInArIcon />
           </IconButton>
         </Tooltip>
       </Box>
@@ -408,50 +359,6 @@ const Hero = () => {
           {currentSceneName}
         </Box>
       </Fade>
-      
-      {/* Quick Scene Selector - Small dots at bottom for quick scene switching */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: isMobile ? '5%' : '10%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: 2,
-          zIndex: 30,
-          pointerEvents: 'auto',
-        }}
-      >
-        {[0, 1, 2].map((index) => (
-          <Box
-            key={index}
-            onClick={() => {
-              if (sceneIndex !== index) {
-                setSceneIndex(index);
-                setCurrentSceneName(getSceneName(index));
-                setSceneNameVisible(true);
-                setTimeout(() => setSceneNameVisible(false), 2000);
-              }
-            }}
-            sx={{
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              backgroundColor: sceneIndex === index 
-                ? theme.palette.primary.main 
-                : 'rgba(255,255,255,0.3)',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'scale(1.2)',
-                backgroundColor: sceneIndex === index 
-                  ? theme.palette.primary.light 
-                  : 'rgba(255,255,255,0.5)',
-              }
-            }}
-          />
-        ))}
-      </Box>
       
       {/* Content Overlay Layer */}
       <Box

@@ -1,21 +1,22 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { SHAPE_LIMITS, SHAPE_TYPES } from '../constants';
 import { useSceneState } from '../SceneContext';
 import ObjectPool from '../utils/ObjectPool';
+import { getDynamicColor, themeColorToThreeColor } from '../utils/sceneThemeUtils';
 
 /**
  * SphereScene Component - Enhanced with camera-aware mouse following
  */
 const SphereScene = ({ 
-  color = new THREE.Color(0x6366F1), 
+  color = new THREE.Color(), // Will be overridden by theme-derived colors
   mousePosition, 
   mouseData, 
   isTransitioning, 
-  easterEggActive = false, // New prop for Easter egg mode
-  interactionCount = 0 // New prop for tracking interactions
+  easterEggActive = false,
+  interactionCount = 0
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -121,6 +122,21 @@ const SphereScene = ({
       hover: hexToHSL(theme.palette.secondary.light), // Hover state color
     };
   }, [theme.palette]);
+
+  // Get theme colors for each shape - Use this directly in the dynamic color logic
+  const getShapeColor = useCallback((shapeType, isHovered = false) => {
+    // Extract the proper color for the shape type from theme
+    const hslColor = isHovered ? 
+      shapeColors.hover : 
+      shapeColors[shapeType] || shapeColors[SHAPE_TYPES.SPHERE];
+      
+    // Create a new THREE.Color and set HSL values
+    return new THREE.Color().setHSL(
+      hslColor.h,
+      hslColor.s,
+      hslColor.l
+    );
+  }, [shapeColors]);
   
   // Initialize the shapes
   useEffect(() => {
@@ -234,12 +250,53 @@ const SphereScene = ({
     }
   }, [mousePosition, mouseData, clock]);
   
+  // Add cursor direction tracking for color mapping
+  const cursorDirection = useRef({ angle: 0, hue: 0 });
+  const prevCursorWorldPos = useRef(new THREE.Vector3());
+  
+  // Update cursor direction for hue mapping
+  const updateCursorDirection = useCallback((currentPos) => {
+    if (!currentPos) return;
+    
+    // Calculate direction vector (dx, dy)
+    const dx = currentPos.x - prevCursorWorldPos.current.x;
+    const dy = currentPos.y - prevCursorWorldPos.current.y;
+    
+    // Only update if there's significant movement
+    if (dx*dx + dy*dy > 0.001) {
+      // Convert direction to angle using atan2
+      const angle = Math.atan2(dy, dx);
+      
+      // Map angle (-π to π) to hue (0 to 1)
+      // Add 0.5 to the normalized value to create more pleasing colors (shift to greens/blues)
+      const hue = ((angle / (Math.PI * 2)) + 0.5) % 1;
+      
+      // Store direction data
+      cursorDirection.current = { angle, hue, intensity: Math.min(1, Math.sqrt(dx*dx + dy*dy) * 3) };
+      
+      // Store position for next frame
+      prevCursorWorldPos.current.copy(currentPos);
+    } else {
+      // Gradually reduce intensity when not moving
+      cursorDirection.current.intensity = Math.max(0, cursorDirection.current.intensity - 0.02);
+    }
+  }, []);
+  
   // Animation and physics logic with optimizations
   useFrame(() => {
     if (isTransitioning) return;
     
     const currentTime = clock.getElapsedTime();
     const timeSinceLastMove = currentTime - lastMouseMoveTime.current;
+    
+    // Update cursor direction for hue mapping
+    if (mouseData?.world) {
+      updateCursorDirection(mouseData.world);
+    } else if (mousePosition) {
+      // Convert screen coordinates to world coordinates
+      const worldPos = new THREE.Vector3(mousePosition.x * 8, mousePosition.y * 8, 0);
+      updateCursorDirection(worldPos);
+    }
     
     // Reset mouse movement flag after 0.5 seconds of no movement
     if (hasMouseMoved.current && timeSinceLastMove > 0.5) {
@@ -249,6 +306,10 @@ const SphereScene = ({
     // Fun Mode Special Effects - activate when Easter egg is triggered
     const funModeActive = easterEggActive;
     const funModeInfluence = funModeActive ? Math.sin(currentTime * 4) * 0.5 + 0.5 : 0;
+    
+    // Get the directional hue for color syncing
+    const directionHue = cursorDirection.current.hue;
+    const directionIntensity = cursorDirection.current.intensity;
     
     // Keep track of spheres that are interacting with cursor for spread calculations
     const interactingSpheres = [];
@@ -392,17 +453,63 @@ const SphereScene = ({
         shape.excitementLevel = Math.max(0, shape.excitementLevel - 0.008);
       }
       
-      // Enhance visuals in fun mode with funModeInfluence
-      if (funModeActive && shape.ref.current && shape.ref.current.material) {
-        // Rainbow color cycling with funModeInfluence affecting speed and intensity
-        const rainbowSpeed = 0.5 * (1 + funModeInfluence);
-        const hue = ((currentTime * rainbowSpeed) + (index * 0.1)) % 1.0;
-        const saturation = 0.8 + funModeInfluence * 0.2; // More saturated with higher influence
-        const lightness = 0.6 + funModeInfluence * 0.2; // Brighter with higher influence
+      // Update color based on energy and mode
+      if (shape.ref.current && shape.ref.current.material) {
+        // Override with rainbow colors in Easter egg mode
+        if (easterEggActive) {
+          const hue = ((currentTime * 0.2) + (index * 0.01)) % 1.0;
+          shape.ref.current.material.color.setHSL(hue, 0.8, 0.5);
+          shape.ref.current.material.emissive.setHSL(hue, 0.9, 0.3);
+          shape.ref.current.material.emissiveIntensity = 0.5;
+        } else {
+          // Apply theme-derived colors - Now using getShapeColor for base materials when inactive
+          if (shape.excitementLevel < 0.1) {
+            // Use simpler color for inactive states to improve performance
+            shape.ref.current.material.color = getShapeColor(SHAPE_TYPES.SPHERE, shape.hovered);
+            shape.ref.current.material.emissive = getShapeColor(SHAPE_TYPES.SPHERE, false).multiplyScalar(0.2);
+            shape.ref.current.material.emissiveIntensity = 0.1;
+          } else {
+            // Use dynamic colors with directional hue influence for active/excited states
+            const dynamicColors = getDynamicColor(
+              theme,
+              currentTime + (index * 0.05), 
+              shape.excitementLevel,
+              SHAPE_TYPES.SPHERE,
+              shape.hovered
+            );
+            
+            // Apply base dynamic colors
+            shape.ref.current.material.color.copy(dynamicColors.main);
+            shape.ref.current.material.emissive.copy(dynamicColors.emissive);
+            shape.ref.current.material.emissiveIntensity = dynamicColors.emissiveIntensity;
+            
+            // Blend in direction-based hue for excited spheres
+            if (directionIntensity > 0.1 && hasMouseMoved.current) {
+              // Create direction-influenced color
+              const dirColor = new THREE.Color().setHSL(
+                directionHue,
+                0.8,
+                0.5 + shape.excitementLevel * 0.2
+              );
+              
+              // Blend between regular color and direction color based on intensity and excitement
+              const blendFactor = directionIntensity * shape.excitementLevel * 0.7;
+              shape.ref.current.material.color.lerp(dirColor, blendFactor);
+              
+              // Also influence emissive color
+              const emissiveDir = new THREE.Color().setHSL(
+                (directionHue + 0.1) % 1.0,
+                0.9,
+                0.4
+              );
+              shape.ref.current.material.emissive.lerp(emissiveDir, blendFactor);
+              
+              // Boost emissive intensity with direction intensity
+              shape.ref.current.material.emissiveIntensity += directionIntensity * 0.3 * shape.excitementLevel;
+            }
+          }
+        }
         
-        shape.ref.current.material.color.setHSL(hue, saturation, lightness);
-        shape.ref.current.material.emissive.setHSL(hue, 1.0, 0.5 + funModeInfluence * 0.3);
-        shape.ref.current.material.emissiveIntensity = 0.8 + funModeInfluence * 0.4;
         shape.ref.current.material.needsUpdate = true;
       }
     });
@@ -458,28 +565,6 @@ const SphereScene = ({
         
         // Manually update matrix for better performance 
         shape.ref.current.updateMatrix();
-        
-        // Update material color based on excitement
-        if (shape.ref.current.material) {
-          // Get the base color for this shape type
-          const baseColor = shapeColors[SHAPE_TYPES.SPHERE];
-          
-          // Excitement shifts toward hover/interactive color
-          const hue = shape.hovered 
-            ? shapeColors.hover.h 
-            : THREE.MathUtils.lerp(baseColor.h, shapeColors.hover.h, shape.excitementLevel);
-            
-          const saturation = THREE.MathUtils.lerp(baseColor.s, 1.0, shape.excitementLevel);
-          const lightness = THREE.MathUtils.lerp(baseColor.l, 0.7, shape.excitementLevel);
-          
-          // Only update material color when there's a significant change
-          if (Math.abs(shape.ref.current.material.emissiveIntensity - shape.excitementLevel * 0.6) > 0.05) {
-            shape.ref.current.material.color.setHSL(hue, saturation, lightness);
-            shape.ref.current.material.emissive.setHSL(hue, saturation, lightness + 0.2);
-            shape.ref.current.material.emissiveIntensity = shape.excitementLevel * 0.6; // Increased from 0.5
-            shape.ref.current.material.needsUpdate = true;
-          }
-        }
       }
     });
   });
@@ -492,31 +577,39 @@ const SphereScene = ({
           position={[0, 0, 0]}
           distance={10}
           intensity={3}
-          color={new THREE.Color(Math.sin(clock.getElapsedTime() * 5) * 0.5 + 0.5, 
-                               Math.sin(clock.getElapsedTime() * 3) * 0.5 + 0.5, 
-                               Math.sin(clock.getElapsedTime() * 4) * 0.5 + 0.5)}
+          color={new THREE.Color().setHSL(
+            (clock.getElapsedTime() * 0.1) % 1, 
+            0.8, 
+            0.6
+          )}
         />
       )}
       
-      {activeShapes.map((shape, i) => (
-        <mesh
-          key={i}
-          ref={shape.ref}
-          position={shape.position}
-          onPointerOver={() => { shape.hovered = true; }}
-          onPointerOut={() => { shape.hovered = false; }}
-          matrixAutoUpdate={false}
-        >
-          <sphereGeometry args={[0.2, 16, 16]} />
-          <meshStandardMaterial
-            color={color}
-            emissive={color}
-            emissiveIntensity={0.2}
-            metalness={0.2}
-            roughness={0.7}
-          />
-        </mesh>
-      ))}
+      {activeShapes.map((shape, i) => {
+        // Get initial colors from theme
+        const baseColor = themeColorToThreeColor(theme.palette.primary.main);
+        const emissiveColor = themeColorToThreeColor(theme.palette.primary.light);
+        
+        return (
+          <mesh
+            key={i}
+            ref={shape.ref}
+            position={shape.position}
+            onPointerOver={() => { shape.hovered = true; }}
+            onPointerOut={() => { shape.hovered = false; }}
+            matrixAutoUpdate={false}
+          >
+            <sphereGeometry args={[0.2, 16, 16]} />
+            <meshStandardMaterial
+              color={baseColor}
+              emissive={emissiveColor}
+              emissiveIntensity={0.2}
+              metalness={0.2}
+              roughness={0.7}
+            />
+          </mesh>
+        );
+      })}
     </>
   );
 };

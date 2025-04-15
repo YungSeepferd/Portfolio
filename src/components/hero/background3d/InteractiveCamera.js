@@ -115,10 +115,10 @@ const InteractiveCamera = ({ enableAutoRotate = true, rotateSpeed = 0.2 }) => {
       
       <OrbitControls
         ref={controlsRef}
-        enableZoom={true}
-        minDistance={12} // Increased minimum zoom distance from 6 to 12
-        maxDistance={20} // Increased maximum zoom distance from 16 to 20
-        zoomSpeed={0.6} // Slightly reduced from 0.8 for more controlled zooming
+        enableZoom={false} // Disabled zoom to prevent interference with page scrolling
+        minDistance={12}
+        maxDistance={20}
+        zoomSpeed={0.6}
         enablePan={false}
         rotateSpeed={rotateSpeed}
         minPolarAngle={Math.PI / 6}
