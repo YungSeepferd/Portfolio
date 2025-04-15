@@ -19,7 +19,8 @@ const useWorldMousePosition = ({
   distance = 10,
   trackingPlane = 'horizontal' // 'horizontal' or 'vertical'
 } = {}) => {
-  const { camera, raycaster, scene, viewport } = useThree();
+  // Only destructure what we actually use to avoid ESLint warnings
+  const { camera, raycaster } = useThree();
   const [screenPosition, setScreenPosition] = useState({ x: 0, y: 0 });
   const [normalizedPosition, setNormalizedPosition] = useState({ x: 0, y: 0 });
   const [worldPosition, setWorldPosition] = useState(new THREE.Vector3());

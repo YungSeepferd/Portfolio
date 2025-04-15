@@ -1,37 +1,50 @@
 import React, { useEffect } from 'react';
-import useWorldCoordinates from '../hooks/useWorldCoordinates';
+import { useThree } from '@react-three/fiber';
+import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
 
 /**
  * WorldMouseListener Component
  * 
- * This component must be used inside an R3F Canvas.
- * It converts screen coordinates to world coordinates and updates SceneContext.
+ * Converts screen/normalized mouse coordinates to world space coordinates
+ * and updates the SceneContext with this information.
  * 
- * @param {Object} props Component props
- * @param {Object} props.mouseData Mouse data from useMouseTracking hook
+ * This component must be placed inside the <Canvas> because it uses useThree().
  */
 const WorldMouseListener = ({ mouseData }) => {
+  const { camera, raycaster } = useThree();
   const { updateMousePosition } = useSceneState();
-  const worldCoords = useWorldCoordinates(mouseData);
   
-  // Update mouse position in context with world coordinates
+  // Virtual plane for raycasting
+  const virtualPlane = React.useMemo(() => {
+    return new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  }, []);
+  
+  // Convert normalized mouse coordinates to world coordinates
   useEffect(() => {
-    if (mouseData && worldCoords) {
-      // Create complete mouse data object with screen and world coordinates
-      const enhancedMouseData = {
-        screen: mouseData.forThree,
-        world: worldCoords.world,
-        velocity: worldCoords.velocity
-      };
-      
-      // Update context
-      updateMousePosition(enhancedMouseData);
-    }
-  }, [mouseData, worldCoords, updateMousePosition]);
+    if (!mouseData || !mouseData.normalized) return;
+    
+    // Update the raycaster with current mouse position
+    raycaster.setFromCamera(
+      { x: mouseData.normalized.x, y: mouseData.normalized.y },
+      camera
+    );
+    
+    // Calculate world position using raycasting against a virtual plane
+    const worldPosition = new THREE.Vector3();
+    raycaster.ray.intersectPlane(virtualPlane, worldPosition);
+    
+    // Create enhanced mouseData with world coordinates
+    const enhancedMouseData = {
+      ...mouseData,
+      world: worldPosition,
+    };
+    
+    // Update scene context with the enhanced data
+    updateMousePosition(enhancedMouseData);
+  }, [mouseData, camera, raycaster, virtualPlane, updateMousePosition]);
   
-  // This component doesn't render anything
-  return null;
+  return null; // This component doesn't render anything
 };
 
 export default WorldMouseListener;

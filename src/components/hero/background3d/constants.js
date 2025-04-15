@@ -12,7 +12,7 @@ export const SHAPE_TYPES = {
 // Canvas settings for @react-three/fiber
 export const CANVAS_SETTINGS = {
   camera: {
-    position: [0, 0, 8],
+    position: [0, 0, 16], // Increased from 12 to 16 for a more zoomed-out starting view
     fov: 45,
     near: 0.1,
     far: 1000

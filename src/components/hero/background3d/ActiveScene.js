@@ -15,10 +15,12 @@ import { SHAPE_TYPES } from './constants';
  */
 const ActiveScene = ({ 
   mousePosition, 
-  mouseData, // New: Contains both screen and world coordinates
+  mouseData, // Contains both screen and world coordinates
   onClick, 
   isDragging, 
-  theme 
+  theme,
+  easterEggActive = false,
+  interactionCount = 0
 }) => {
   // eslint-disable-next-line no-unused-vars
   const { size } = useThree();
@@ -71,13 +73,15 @@ const ActiveScene = ({
   
   return (
     <group onClick={handleSceneClick}>
-      {/* Render active scene based on type, now passing both screen coordinates and world position */}
+      {/* Pass both mousePosition and complete mouseData */}
       {currentShapeType === SHAPE_TYPES.SPHERE && (
         <SphereScene 
           color={activeColor}
           mousePosition={mousePosition}
           mouseData={mouseData}
           isTransitioning={isTransitioning}
+          easterEggActive={easterEggActive}
+          interactionCount={interactionCount}
         />
       )}
       
@@ -87,6 +91,8 @@ const ActiveScene = ({
           mousePosition={mousePosition}
           mouseData={mouseData}
           isTransitioning={isTransitioning}
+          easterEggActive={easterEggActive}
+          interactionCount={interactionCount}
         />
       )}
       
@@ -96,6 +102,8 @@ const ActiveScene = ({
           mousePosition={mousePosition}
           mouseData={mouseData}
           isTransitioning={isTransitioning}
+          easterEggActive={easterEggActive}
+          interactionCount={interactionCount}
         />
       )}
     </group>

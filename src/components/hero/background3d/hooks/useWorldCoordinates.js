@@ -12,6 +12,7 @@ import * as THREE from 'three';
  * @returns {Object} World coordinates and velocity
  */
 const useWorldCoordinates = (mouseData, { distance = 10 } = {}) => {
+  // Only destructure the values we actually use
   const { camera, raycaster } = useThree();
   const worldPosition = useRef(new THREE.Vector3());
   const velocity = useRef(new THREE.Vector3());

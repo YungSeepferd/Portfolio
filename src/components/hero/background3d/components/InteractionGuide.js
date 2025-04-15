@@ -86,7 +86,7 @@ const InteractionGuide = ({
           <>
             <TouchAppIcon fontSize="medium" />
             <Typography variant="body2">
-              Tap to change shape. Touch and drag to rotate the view.
+              Tap to change shape. Touch and drag to rotate the view. Pinch to zoom.
             </Typography>
           </>
         ) : (
@@ -96,7 +96,7 @@ const InteractionGuide = ({
               <ThreeDRotationIcon fontSize="small" />
             </Box>
             <Typography variant="body2">
-              Click to change shape. Drag to rotate the view.
+              Click to change shape. Drag to rotate the view. Scroll to zoom in/out.
             </Typography>
           </>
         )}

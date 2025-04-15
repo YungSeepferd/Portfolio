@@ -12,8 +12,10 @@ import ObjectPool from '../utils/ObjectPool';
 const SphereScene = ({ 
   color = new THREE.Color(0x6366F1), 
   mousePosition, 
-  mouseData, // New: Contains world coordinates and velocity
-  isTransitioning 
+  mouseData, 
+  isTransitioning, 
+  easterEggActive = false, // New prop for Easter egg mode
+  interactionCount = 0 // New prop for tracking interactions
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -230,7 +232,7 @@ const SphereScene = ({
         lastMouseMoveTime.current = clock.getElapsedTime();
       }
     }
-  }, [mousePosition, mouseData]);
+  }, [mousePosition, mouseData, clock]);
   
   // Animation and physics logic with optimizations
   useFrame(() => {
@@ -244,11 +246,15 @@ const SphereScene = ({
       hasMouseMoved.current = false;
     }
     
+    // Fun Mode Special Effects - activate when Easter egg is triggered
+    const funModeActive = easterEggActive;
+    const funModeInfluence = funModeActive ? Math.sin(currentTime * 4) * 0.5 + 0.5 : 0;
+    
     // Keep track of spheres that are interacting with cursor for spread calculations
     const interactingSpheres = [];
     
     // First pass: Update basic physics and collect interacting spheres
-    activeShapes.forEach(shape => {
+    activeShapes.forEach((shape, index) => {
       // Save last position for later reference
       shape.lastPosition.copy(shape.position);
       
@@ -256,19 +262,60 @@ const SphereScene = ({
       const autoMove = shape.autoMovement;
       const autoInfluence = hasMouseMoved.current ? 0.3 : 1.0; // Reduce auto-motion when cursor is active
       
-      // Time-based influence for more dynamic movement
-      const timeInfluence = Math.sin(currentTime + autoMove.timeOffset) * 0.5 + 0.5;
-      const autoVelocity = tempVector2.current.copy(autoMove.direction)
-        .multiplyScalar(autoMove.speed * timeInfluence * autoInfluence);
+      // Enhanced fun mode behaviors - now properly using funModeInfluence
+      if (funModeActive) {
+        // Apply funModeInfluence to create pulsating color and size effects
+        const pulseFrequency = 2.0 + funModeInfluence * 4.0; // Faster pulse with higher influence
+        const pulseAmplitude = 0.4 * (0.5 + funModeInfluence); // Stronger pulse with higher influence
+        const pulsePhase = (index / activeShapes.length) * Math.PI * 2;
+        const pulseFactor = Math.sin(currentTime * pulseFrequency + pulsePhase) * pulseAmplitude + 1.0;
+        
+        // Apply scale pulsing with funModeInfluence for added excitement
+        shape.scale.set(
+          pulseFactor * (1 + funModeInfluence * 0.2),
+          pulseFactor * (1 + funModeInfluence * 0.2),
+          pulseFactor * (1 + funModeInfluence * 0.2)
+        );
+        
+        // Make spheres orbit center with funModeInfluence affecting orbit speed
+        if (shape.excitementLevel > 0.5 || funModeInfluence > 0.7) {
+          const orbitRadius = 4 + funModeInfluence * 2; // Larger orbit with higher influence
+          const orbitSpeed = (0.5 + shape.excitementLevel) * (1 + funModeInfluence);
+          const uniqueOffset = index * 0.628; // Distribute evenly, approx 2π/10
+          
+          // Create swirling orbit motion with funModeInfluence affecting pattern
+          const orbitX = Math.cos(currentTime * orbitSpeed + uniqueOffset) * orbitRadius;
+          const orbitY = Math.sin(currentTime * orbitSpeed + uniqueOffset) * orbitRadius;
+          const orbitZ = Math.cos(currentTime * orbitSpeed * 0.5 + uniqueOffset * funModeInfluence) * orbitRadius;
+          
+          // Apply a force toward the orbit position - stronger with funModeInfluence
+          const orbitForce = new THREE.Vector3(orbitX, orbitY, orbitZ)
+            .sub(shape.position)
+            .multiplyScalar(0.01 * (1 + funModeInfluence));
+            
+          shape.velocity.add(orbitForce);
+          
+          // Add a funModeInfluence-based rotation boost
+          shape.rotation.x += autoMove.rotationSpeed.x * funModeInfluence * 2;
+          shape.rotation.y += autoMove.rotationSpeed.y * funModeInfluence * 2;
+        }
+      } else {
+        // Regular auto-movement when not in fun mode
+        // Time-based influence for more dynamic movement
+        const timeInfluence = Math.sin(currentTime + autoMove.timeOffset) * 0.5 + 0.5;
+        const autoVelocity = tempVector2.current.copy(autoMove.direction)
+          .multiplyScalar(autoMove.speed * timeInfluence * autoInfluence);
+        
+        // Add auto-movement to regular velocity - less when cursor is active
+        tempVector.current.copy(shape.velocity).add(autoVelocity);
+        shape.position.add(tempVector.current);
+      }
       
-      // Add auto-movement to regular velocity - less when cursor is active
-      tempVector.current.copy(shape.velocity).add(autoVelocity);
-      shape.position.add(tempVector.current);
-      
-      // Auto-rotation - slightly faster
-      shape.rotation.x += autoMove.rotationSpeed.x * 1.2;
-      shape.rotation.y += autoMove.rotationSpeed.y * 1.2;
-      shape.rotation.z += autoMove.rotationSpeed.z * 1.2;
+      // Auto-rotation with enhanced speed in fun mode
+      const rotationMultiplier = funModeActive ? 2.5 : 1.2;
+      shape.rotation.x += autoMove.rotationSpeed.x * rotationMultiplier;
+      shape.rotation.y += autoMove.rotationSpeed.y * rotationMultiplier;
+      shape.rotation.z += autoMove.rotationSpeed.z * rotationMultiplier;
       
       // Bounce off boundaries with a soft approach
       ['x', 'y', 'z'].forEach(axis => {
@@ -343,6 +390,20 @@ const SphereScene = ({
       } else {
         // Gradually reduce excitement when no mouse interaction
         shape.excitementLevel = Math.max(0, shape.excitementLevel - 0.008);
+      }
+      
+      // Enhance visuals in fun mode with funModeInfluence
+      if (funModeActive && shape.ref.current && shape.ref.current.material) {
+        // Rainbow color cycling with funModeInfluence affecting speed and intensity
+        const rainbowSpeed = 0.5 * (1 + funModeInfluence);
+        const hue = ((currentTime * rainbowSpeed) + (index * 0.1)) % 1.0;
+        const saturation = 0.8 + funModeInfluence * 0.2; // More saturated with higher influence
+        const lightness = 0.6 + funModeInfluence * 0.2; // Brighter with higher influence
+        
+        shape.ref.current.material.color.setHSL(hue, saturation, lightness);
+        shape.ref.current.material.emissive.setHSL(hue, 1.0, 0.5 + funModeInfluence * 0.3);
+        shape.ref.current.material.emissiveIntensity = 0.8 + funModeInfluence * 0.4;
+        shape.ref.current.material.needsUpdate = true;
       }
     });
     
@@ -425,6 +486,18 @@ const SphereScene = ({
 
   return (
     <>
+      {/* Add particle burst effect when in fun mode */}
+      {easterEggActive && (
+        <pointLight
+          position={[0, 0, 0]}
+          distance={10}
+          intensity={3}
+          color={new THREE.Color(Math.sin(clock.getElapsedTime() * 5) * 0.5 + 0.5, 
+                               Math.sin(clock.getElapsedTime() * 3) * 0.5 + 0.5, 
+                               Math.sin(clock.getElapsedTime() * 4) * 0.5 + 0.5)}
+        />
+      )}
+      
       {activeShapes.map((shape, i) => (
         <mesh
           key={i}

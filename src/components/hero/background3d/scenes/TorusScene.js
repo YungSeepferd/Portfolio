@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Trail, Detailed } from '@react-three/drei';
@@ -8,7 +8,14 @@ import { useSceneState } from '../SceneContext';
 /**
  * TorusScene Component - With automatic motion
  */
-const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransitioning }) => {
+const TorusScene = ({ 
+  color = new THREE.Color(0x1976d2), 
+  mousePosition, 
+  mouseData,
+  isTransitioning,
+  easterEggActive = false,
+  interactionCount = 0
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { clock } = useThree();
@@ -160,14 +167,95 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
     }
   });
   
+  // Add effect for Easter egg mode
+  useEffect(() => {
+    if (easterEggActive && isMounted.current) {
+      // Create burst of trail points when Easter egg activates
+      const burstPoints = [];
+      const burstCount = 12;
+      
+      for (let i = 0; i < burstCount; i++) {
+        const angle = (i / burstCount) * Math.PI * 2;
+        const radius = 3;
+        
+        burstPoints.push({
+          position: new THREE.Vector3(
+            Math.cos(angle) * radius,
+            Math.sin(angle) * radius,
+            0
+          ),
+          time: clock.getElapsedTime(),
+          size: 0.3,
+          rotation: new THREE.Euler(0, 0, angle)
+        });
+      }
+      
+      setCursorTrail(burstPoints);
+    }
+  }, [easterEggActive, clock]);
+  
+  // Add frames-per-second counter (useful for optimizing particle effects)
+  const frameCount = useRef(0);
+  const lastFpsUpdate = useRef(0);
+  const currentFps = useRef(0);
+  
   // Update cursor trail - IMPROVED: more responsive
   useFrame(() => {
-    if (isTransitioning || !mousePosition || !isInteractionEnabled || !isMounted.current) return;
+    // FPS counter
+    frameCount.current++;
+    const currentTime = clock.getElapsedTime();
+    if (currentTime - lastFpsUpdate.current > 1) {
+      currentFps.current = frameCount.current;
+      frameCount.current = 0;
+      lastFpsUpdate.current = currentTime;
+    }
+    
+    if (isTransitioning || !isMounted.current) return;
+    
+    // Only process interactions if interaction is enabled
+    const shouldProcessInteraction = isInteractionEnabled && !isTransitioning;
+    
+    // Special effects in Easter egg mode
+    if (easterEggActive && frameCounter.current % 10 === 0 && shouldProcessInteraction) {
+      // Add random trail points during Easter egg mode
+      if (isMounted.current) {
+        setCursorTrail(prev => {
+          if (!prev || !Array.isArray(prev)) return prev;
+          
+          // Create a new random point
+          const randomAngle = Math.random() * Math.PI * 2;
+          const randomRadius = 1 + Math.random() * 4;
+          const newPoint = {
+            position: new THREE.Vector3(
+              Math.cos(randomAngle) * randomRadius,
+              Math.sin(randomAngle) * randomRadius,
+              (Math.random() - 0.5) * 2
+            ),
+            time: currentTime,
+            size: 0.2 + Math.random() * 0.3,
+            rotation: new THREE.Euler(
+              Math.random() * Math.PI * 2,
+              Math.random() * Math.PI * 2,
+              Math.random() * Math.PI * 2
+            )
+          };
+          
+          const newTrail = [...prev, newPoint];
+          
+          // Keep trail at max length
+          while (newTrail.length > trailMaxLength * 1.5) {
+            newTrail.shift();
+          }
+          
+          return newTrail;
+        });
+      }
+    }
     
     // Update more frequently for better responsiveness
     frameCounter.current += 1;
     
-    if (frameCounter.current % 2 === 0) { // Changed from 3 to 2 for more frequent updates
+    if (frameCounter.current % 2 === 0 && shouldProcessInteraction) {
       const currentTime = clock.getElapsedTime();
       
       // Calculate mouse movement - using the mousePosition prop
@@ -182,16 +270,16 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
       // Make trail creation more sensitive
       const shouldAddToTrail = 
         cursorTrail.length === 0 || 
-        mouseSpeed > 0.005 || // Reduced threshold (was 0.01)
+        mouseSpeed > 0.005 || 
         cursorPosition.current.distanceTo(new THREE.Vector3(
           (cursorTrail[cursorTrail.length - 1]?.position?.x || 0),
           (cursorTrail[cursorTrail.length - 1]?.position?.y || 0),
           0
-        )) > 0.15; // Reduced threshold (was 0.2)
+        )) > 0.15;
       
-      if (shouldAddToTrail && mousePosition && isMounted.current) {
+      // Only add to trail if interaction is enabled
+      if (shouldAddToTrail && mousePosition && isMounted.current && shouldProcessInteraction) {
         setCursorTrail(prev => {
-          // Make sure we have a valid array to prevent errors
           if (!prev || !Array.isArray(prev)) return [{ 
             position: cursorPosition.current.clone(),
             time: currentTime,
@@ -208,7 +296,7 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
             { 
               position: cursorPosition.current.clone(),
               time: currentTime,
-              size: 0.2 + (mouseSpeed * 3), // Increased size multiplier (was 2)
+              size: 0.2 + (mouseSpeed * 3),
               rotation: new THREE.Euler(
                 Math.random() * Math.PI * 2,
                 Math.random() * Math.PI * 2,
@@ -217,7 +305,6 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
             }
           ];
           
-          // Keep trail at max length
           while (newTrail.length > trailMaxLength) {
             newTrail.shift();
           }
@@ -233,9 +320,14 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
   const secondary = themeColors?.sceneColors?.torus?.secondary || theme.palette.secondary.main;
   const trailColor = themeColors?.sceneColors?.torus?.trail || theme.palette.secondary.main;
   
-  // Get the trail to render - use user trail if it exists, otherwise use auto trail
-  // Ensure we have at least 3 points in the trail to prevent errors
-  const activeTrail = cursorTrail.length > 3 ? cursorTrail : autoTrailPoints;
+  // Get the trail to render - enhanced for Easter egg mode
+  const activeTrail = useMemo(() => {
+    if (easterEggActive) {
+      return cursorTrail.length > 3 ? cursorTrail : autoTrailPoints;
+    } else {
+      return cursorTrail.length > 3 ? cursorTrail : autoTrailPoints;
+    }
+  }, [cursorTrail, autoTrailPoints, easterEggActive]);
   
   // Reference for trail position
   const trailPositionRef = useRef([0, 0, 0]);
@@ -256,27 +348,114 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
   
   return (
     <group>
-      {/* Animated torus rings - from either user movement or auto-animation */}
+      {/* Add interaction hint when interaction is enabled but no activity is happening */}
+      {isInteractionEnabled && !cursorTrail.length && !easterEggActive && (
+        <mesh position={[0, 0, 0]} scale={[0.5, 0.5, 0.5]}>
+          <sphereGeometry args={[0.2, 8, 8]} />
+          <meshBasicMaterial
+            color={new THREE.Color(primary)}
+            transparent
+            opacity={0.5 + Math.sin(clock.getElapsedTime() * 2) * 0.3}
+          />
+        </mesh>
+      )}
+      
+      {/* Add dramatic lighting for Easter egg mode */}
+      {easterEggActive && (
+        <>
+          <pointLight 
+            position={[0, 0, 3]} 
+            intensity={2} 
+            distance={8}
+            color={new THREE.Color(1, 0.3, 0.6)}
+          />
+          <pointLight 
+            position={[0, 0, -3]} 
+            intensity={2} 
+            distance={8}
+            color={new THREE.Color(0.3, 0.6, 1)}
+          />
+        </>
+      )}
+    
+      {/* Animated torus rings with enhanced effects */}
       {activeTrail.map((point, i) => {
+        // Special rendering for Easter egg mode
+        if (easterEggActive) {
+          const specialEffect = i % 3 === 0;
+          
+          if (specialEffect) {
+            return (
+              <group 
+                key={`special-${i}`} 
+                position={point.position}
+                rotation={point.rotation}
+              >
+                <mesh>
+                  <torusGeometry args={[point.size * 1.5, 0.05, 16, 32]} />
+                  <meshStandardMaterial 
+                    color={new THREE.Color(1, 0.3, 0.8)}
+                    emissive={new THREE.Color(1, 0.3, 0.8)}
+                    emissiveIntensity={0.8}
+                    metalness={0.8}
+                    roughness={0.2}
+                  />
+                </mesh>
+                <pointLight 
+                  intensity={0.5} 
+                  distance={3}
+                  color={new THREE.Color(1, 0.3, 0.8)}
+                />
+              </group>
+            );
+          }
+        }
+        
         // Skip rendering some tori on mobile for performance
         if (isMobile && i % 2 !== 0 && i > 2) return null;
         
-        // Check if point has valid position to prevent errors
         if (!point?.position) return null;
         
-        // Calculate size and appearance based on trail index
         const progress = i / activeTrail.length;
         const invertedProgress = 1 - progress;
         
-        // Size influences - scroll creates larger rings
-        const scrollInfluence = scrollActive ? Math.sin(clock.getElapsedTime() * 5) * 0.3 : 0; // Increased from 0.2
+        const scrollInfluence = scrollActive ? Math.sin(clock.getElapsedTime() * 5) * 0.3 : 0;
         const size = point.size * (0.5 + invertedProgress) + scrollInfluence;
         const thickness = 0.03 * (0.5 + invertedProgress);
         
-        // Add rotation for more dynamic movement
         const rotX = point.rotation?.x || 0;
         const rotY = point.rotation?.y || 0;
         const rotZ = point.rotation?.z || 0;
+        
+        if (easterEggActive) {
+          const rotMultiplier = 5.0;
+          const sizeMultiplier = 1.2;
+          
+          return (
+            <group 
+              key={i} 
+              position={point.position}
+              rotation={[
+                rotX + invertedProgress * clock.getElapsedTime() * 0.2 * rotMultiplier,
+                rotY + invertedProgress * clock.getElapsedTime() * 0.3 * rotMultiplier,
+                rotZ * rotMultiplier
+              ]}
+            >
+              <mesh>
+                <torusGeometry args={[size * sizeMultiplier, thickness, 16, 32]} />
+                <meshStandardMaterial 
+                  color={new THREE.Color().setHSL((i / activeTrail.length + clock.getElapsedTime() * 0.1) % 1, 0.8, 0.6)}
+                  opacity={invertedProgress * 0.9}
+                  transparent={true}
+                  emissive={new THREE.Color().setHSL(((i / activeTrail.length) + 0.5 + clock.getElapsedTime() * 0.1) % 1, 0.8, 0.6)}
+                  emissiveIntensity={invertedProgress}
+                  metalness={0.7}
+                  roughness={0.3}
+                />
+              </mesh>
+            </group>
+          );
+        }
         
         return (
           <group 
@@ -296,26 +475,26 @@ const TorusScene = ({ color = new THREE.Color(0x1976d2), mousePosition, isTransi
               </Detailed>
               <meshStandardMaterial 
                 color={color || primary}
-                opacity={invertedProgress * 0.9} // Increased from 0.8
+                opacity={invertedProgress * 0.9}
                 transparent={true}
                 emissive={color || secondary}
-                emissiveIntensity={invertedProgress * 0.7} // Increased from 0.5
-                metalness={0.3} // Increased from 0.2
-                roughness={0.5} // Decreased from 0.6
+                emissiveIntensity={invertedProgress * 0.7}
+                metalness={0.3}
+                roughness={0.5}
               />
             </mesh>
           </group>
         );
       })}
       
-      {/* Trail following current active position - only render when we have enough points */}
+      {/* Enhanced trail for Easter egg mode */}
       {isTrailReady && activeTrail.length >= 3 && (
         <Trail
-          width={3} // Increased from 2
-          // Use a more conservative calculation for length to prevent array overruns
+          width={easterEggActive ? 5 : 3}
           length={Math.min(15, Math.floor(activeTrail.length * 0.5))}
-          color={trailColor}
-          attenuation={(width) => width * 0.8} // Added attenuation for nicer trail
+          color={easterEggActive ? '#ff00ff' : trailColor}
+          attenuation={(width) => width * 0.8}
+          decay={easterEggActive ? 0.2 : 0.5}
         >
           <mesh visible={false} position={trailPositionRef.current} />
         </Trail>

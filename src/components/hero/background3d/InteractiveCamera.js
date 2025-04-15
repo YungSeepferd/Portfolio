@@ -11,6 +11,7 @@ import { useSceneState } from './SceneContext';
  * - Auto-rotation when idle
  * - Smooth transitions between camera positions
  * - Focus on specific scene elements
+ * - Zoom functionality with the scroll wheel
  */
 const InteractiveCamera = ({ enableAutoRotate = true, rotateSpeed = 0.2 }) => {
   const { camera, gl } = useThree();
@@ -21,7 +22,7 @@ const InteractiveCamera = ({ enableAutoRotate = true, rotateSpeed = 0.2 }) => {
   
   // Set initial camera position
   useEffect(() => {
-    camera.position.set(0, 0, 8);
+    camera.position.set(0, 0, 16); // Increased from 12 to 16 for a more zoomed-out view
     camera.lookAt(0, 0, 0);
   }, [camera]);
   
@@ -114,11 +115,14 @@ const InteractiveCamera = ({ enableAutoRotate = true, rotateSpeed = 0.2 }) => {
       
       <OrbitControls
         ref={controlsRef}
-        enableZoom={false}
+        enableZoom={true}
+        minDistance={12} // Increased minimum zoom distance from 6 to 12
+        maxDistance={20} // Increased maximum zoom distance from 16 to 20
+        zoomSpeed={0.6} // Slightly reduced from 0.8 for more controlled zooming
         enablePan={false}
         rotateSpeed={rotateSpeed}
-        minPolarAngle={Math.PI / 6}   // Limit vertical rotation (up)
-        maxPolarAngle={Math.PI / 1.5} // Limit vertical rotation (down)
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI / 1.5}
         dampingFactor={0.05}
         autoRotate={isAutoRotating}
         autoRotateSpeed={0.5}

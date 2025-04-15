@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -12,7 +12,14 @@ import { useSceneState } from '../SceneContext';
  * - Features automatic wave motion when not interacted with
  * - Changes colors based on energy/activation levels
  */
-const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransitioning }) => {
+const BoxScene = ({ 
+  color = new THREE.Color(0x6366F1), 
+  mousePosition, 
+  mouseData,
+  isTransitioning,
+  easterEggActive = false,
+  interactionCount = 0
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { clock } = useThree();
@@ -27,13 +34,25 @@ const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransiti
   
   // Track cursor position in world space
   const cursorWorldPosition = useMemo(() => {
+    // Use mouseData.world if available for more accurate positioning
+    if (mouseData && mouseData.world) {
+      return {
+        x: mouseData.world.x * 2, // Scale to match grid size
+        z: -mouseData.world.z * 2  // Flip Z for proper orientation
+      };
+    }
+    // Fallback to normalized position
     if (!mousePosition) return { x: 0, z: 0 };
     return {
-      // Scale and flip as needed for this scene
       x: mousePosition.x * 5,
       z: -mousePosition.y * 5
     };
-  }, [mousePosition]);
+  }, [mousePosition, mouseData]);
+
+  // Track previous cursor position for movement detection
+  const prevCursorPosition = useRef({ x: 0, z: 0 });
+  const hasCursorMoved = useRef(false);
+  const lastCursorMoveTime = useRef(0);
   
   // Initialize cube grid
   const cubeGrid = useMemo(() => {
@@ -74,15 +93,88 @@ const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransiti
     return grid;
   }, [gridSize]);
   
+  // Add ref for wave origin point
+  const waveOrigin = useRef(new THREE.Vector2(0, 0));
+  const waveActive = useRef(false);
+  const waveTime = useRef(0);
+  
+  // Trigger a wave effect occasionally
+  useEffect(() => {
+    if (easterEggActive) {
+      // Generate random wave origin
+      waveOrigin.current.set(
+        (Math.random() * 2 - 1) * 3,
+        (Math.random() * 2 - 1) * 3
+      );
+      waveActive.current = true;
+      waveTime.current = 0;
+      
+      // Disable wave after a few seconds
+      const timer = setTimeout(() => {
+        waveActive.current = false;
+      }, 4000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [easterEggActive, interactionCount]);
+  
   // Animation logic for cubes with enhanced mouse interaction
   useFrame(() => {
     if (isTransitioning) return;
     
     const currentTime = clock.getElapsedTime();
     
-    // Apply ripple effect if scrolling
-    const rippleCenter = null; // No specific ripple center from scrolling
-    const rippleStrength = Math.sin(currentTime * 3) * 0.5;
+    // Initialize ripple variables at the beginning of the function
+    let rippleCenter = null;
+    let rippleStrength = Math.sin(currentTime * 3) * 0.5;
+    
+    // Track cursor movement
+    if (cursorWorldPosition) {
+      const distMoved = Math.sqrt(
+        Math.pow(cursorWorldPosition.x - prevCursorPosition.current.x, 2) +
+        Math.pow(cursorWorldPosition.z - prevCursorPosition.current.z, 2)
+      );
+      
+      if (distMoved > 0.05) {
+        hasCursorMoved.current = true;
+        lastCursorMoveTime.current = currentTime;
+        
+        // Create a ripple at cursor position when moving
+        rippleCenter = {
+          x: cursorWorldPosition.x,
+          z: cursorWorldPosition.z
+        };
+        rippleStrength = 0.6; // Reduced from 0.8 for a smaller effect
+        
+        // Update previous position
+        prevCursorPosition.current = {...cursorWorldPosition};
+      } else if (currentTime - lastCursorMoveTime.current > 0.3) {
+        hasCursorMoved.current = false;
+      }
+    }
+    
+    // Increment wave time if active
+    if (waveActive.current) {
+      waveTime.current += 0.05;
+    }
+    
+    // Create cursor-based ripples when cursor moves
+    if (hasCursorMoved.current && isInteractionEnabled) {
+      rippleCenter = {
+        x: cursorWorldPosition.x,
+        z: cursorWorldPosition.z
+      };
+      rippleStrength = 0.6; // Reduced strength for smaller effect
+    }
+    // Create automatic ripples occasionally
+    else if (easterEggActive || (currentTime % 10 < 0.1 && !hasInteraction)) {
+      // Random ripple center
+      rippleCenter = {
+        x: (Math.random() * 2 - 1) * (gridSize * 0.4), // Reduced area
+        z: (Math.random() * 2 - 1) * (gridSize * 0.4)  // Reduced area
+      };
+      rippleStrength = 0.6; // Reduced from 0.8
+    }
     
     // Update each cube
     cubeGrid.forEach((cube) => {
@@ -91,58 +183,121 @@ const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransiti
       
       if (!cubeRef.current) return;
       
-      // AUTOMATIC MOTION: Add a gentle wave effect
-      const auto = state.autoMovement;
-      // Using cube's position to create varied wave patterns across the grid
-      const autoHeight = Math.sin(currentTime * auto.speed + auto.phase + cube.position.x + cube.position.z) * auto.amplitude;
+      // Calculate heightmap from various influences
+      let finalHeight = 0;
       
-      // Calculate distance to cursor
-      const dist = Math.sqrt(
-        Math.pow(cube.position.x - cursorWorldPosition.x, 2) + 
-        Math.pow(cube.position.z - cursorWorldPosition.z, 2)
-      );
+      // 1. Basic sine wave pattern
+      const autoHeight = Math.sin(currentTime * state.autoMovement.speed + state.autoMovement.phase + cube.position.x + cube.position.z) * state.autoMovement.amplitude;
+      finalHeight += autoHeight;
       
-      // Set target height based on cursor proximity and auto-motion
-      if (mousePosition && isInteractionEnabled && hasInteraction && dist < 3) {
-        // Closer = higher target + auto motion
-        const strength = 1 - Math.min(1, dist / 3);
-        state.targetY = Math.max(
-          state.targetY, 
-          1.5 * strength + autoHeight * 0.5
+      // 2. Mouse/cursor influence - reduce the influence radius
+      if (mousePosition && isInteractionEnabled) {
+        const dist = Math.sqrt(
+          Math.pow(cube.position.x - cursorWorldPosition.x, 2) + 
+          Math.pow(cube.position.z - cursorWorldPosition.z, 2)
         );
-        state.energy = Math.min(1, state.energy + 0.1);
-        state.lastActive = currentTime;
-      } else {
-        // When no cursor interaction, apply auto motion
-        state.targetY = autoHeight;
-        state.energy = Math.max(0, state.energy - 0.03);
+        
+        // Reduced interaction radius from 3 to 2.2
+        if (dist < 2.2) {
+          // Stronger falloff for more localized effect
+          const strength = Math.pow(1 - Math.min(1, dist / 2.2), 1.5);
+          finalHeight += 1.3 * strength;
+          state.energy = Math.min(1, state.energy + 0.1);
+          state.lastActive = currentTime;
+        }
       }
       
-      // Apply scroll ripple effect
+      // 3. Apply ripple effect with improved parameters
       if (rippleCenter) {
         const rippleDist = Math.sqrt(
           Math.pow(cube.position.x - rippleCenter.x, 2) + 
           Math.pow(cube.position.z - rippleCenter.z, 2)
         );
         
-        if (rippleDist < 5) {
-          const rippleEffect = Math.sin(rippleDist * 2 - currentTime * 4) * rippleStrength;
-          state.targetY += rippleEffect * 0.3;
+        // Smaller ripple effect radius
+        const waveFrequency = 2.5; // Increased from 2.0 for tighter waves
+        const maxRippleDistance = gridSize * 0.5; // Reduced from 0.7
+        
+        if (rippleDist < maxRippleDistance) {
+          // Calculate ripple wave effect
+          const ripplePhase = rippleDist * waveFrequency - currentTime * 6;
+          const rippleEffect = Math.sin(ripplePhase) * rippleStrength * 
+                               Math.pow(1 - rippleDist / maxRippleDistance, 1.2); // Added power for sharper falloff
+          
+          finalHeight += rippleEffect;
+          
+          // Add energy based on ripple for visual effects
+          if (rippleEffect > 0.1) {
+            state.energy = Math.max(state.energy, rippleEffect * 0.5);
+          }
         }
       }
       
-      // Smooth movement toward target height
-      state.currentY += (state.targetY - state.currentY) * 0.1;
+      // 4. Easter egg wave effect
+      if (waveActive.current && waveTime.current < 8) {
+        const distFromWave = Math.sqrt(
+          Math.pow(cube.position.x - waveOrigin.current.x, 2) + 
+          Math.pow(cube.position.z - waveOrigin.current.y, 2)
+        );
+        
+        // Create an expanding circular wave
+        const waveRadius = waveTime.current * 1.2;
+        const waveWidth = 1.0;
+        const distFromWaveEdge = Math.abs(distFromWave - waveRadius);
+        
+        if (distFromWaveEdge < waveWidth) {
+          // Cube is in the wave front
+          const waveIntensity = 1.0 - (distFromWaveEdge / waveWidth);
+          finalHeight += waveIntensity * 2.0 * (1.0 - (waveTime.current / 8));
+          state.energy = Math.max(state.energy, waveIntensity);
+        }
+      }
+      
+      // 5. Easter egg special effects
+      if (easterEggActive) {
+        // Add synchronized height patterns
+        const gridX = Math.floor((cube.position.x + (gridSize/2)) / 1.0);
+        const gridZ = Math.floor((cube.position.z + (gridSize/2)) / 1.0);
+        
+        // Checkerboard pattern
+        const isEvenSquare = (gridX + gridZ) % 2 === 0;
+        const checkerboardHeight = isEvenSquare ? 
+          Math.sin(currentTime * 3) * 0.5 : 
+          Math.sin(currentTime * 3 + Math.PI) * 0.5;
+          
+        finalHeight += checkerboardHeight;
+        
+        // Increase energy for more visual effects
+        state.energy = Math.max(state.energy, 0.3);
+      } else {
+        // When not in Easter egg mode, reduce energy gradually
+        state.energy = Math.max(0, state.energy - 0.03);
+      }
+      
+      // Set the target height
+      state.targetY = finalHeight;
+      
+      // Smooth movement toward target height - faster response
+      state.currentY += (state.targetY - state.currentY) * 0.15; // Increased from 0.1
       
       // Update cube position and appearance
       cubeRef.current.position.y = state.currentY;
       
-      // Auto-rotation - more noticeable when energized
-      const baseRotationSpeed = 0.001;
-      cubeRef.current.rotation.y += baseRotationSpeed + state.energy * 0.03;
-      cubeRef.current.rotation.x += baseRotationSpeed + state.energy * 0.02;
+      // Auto-rotation based on energy level and Easter egg status
+      const rotationMultiplier = easterEggActive ? 3.0 : 1.0;
+      const baseRotationSpeed = 0.001 * rotationMultiplier;
+      cubeRef.current.rotation.y += baseRotationSpeed + state.energy * 0.03 * rotationMultiplier;
+      cubeRef.current.rotation.x += baseRotationSpeed + state.energy * 0.02 * rotationMultiplier;
       
-      // Update color based on energy
+      // Update scale based on energy in Easter egg mode
+      if (easterEggActive) {
+        const scalePulse = 1.0 + state.energy * 0.3 * Math.sin(currentTime * 4 + cube.index * 0.2);
+        cubeRef.current.scale.set(scalePulse, scalePulse, scalePulse);
+      } else {
+        cubeRef.current.scale.set(1, 1, 1);
+      }
+      
+      // Update color based on energy and mode
       if (cubeRef.current.material) {
         const timeOffset = cube.index * 0.1;
         // Get theme colors and interpolate between them
@@ -171,6 +326,14 @@ const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransiti
           state.energy * 0.3 // Only glow when energized
         );
         
+        // Override with rainbow colors in Easter egg mode
+        if (easterEggActive) {
+          const hue = ((currentTime * 0.2) + (cube.index * 0.01)) % 1.0;
+          cubeRef.current.material.color.setHSL(hue, 0.8, 0.5);
+          cubeRef.current.material.emissive.setHSL(hue, 0.9, 0.3);
+          cubeRef.current.material.emissiveIntensity = 0.5;
+        }
+        
         // Update material
         cubeRef.current.material.needsUpdate = true;
       }
@@ -179,6 +342,19 @@ const BoxScene = ({ color = new THREE.Color(0x6366F1), mousePosition, isTransiti
   
   return (
     <group position={[0, -1, 0]}>
+      {/* Remove the floating cube that was added previously */}
+      
+      {/* Add central light in Easter egg mode */}
+      {easterEggActive && (
+        <pointLight
+          position={[0, 2, 0]}
+          intensity={2}
+          distance={10}
+          color={new THREE.Color(0.8, 0.3, 1.0)}
+        />
+      )}
+      
+      {/* Existing cube meshes */}
       {cubeGrid.map((cube, i) => (
         <mesh
           key={i}

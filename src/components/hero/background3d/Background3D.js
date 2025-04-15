@@ -73,7 +73,7 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
       
       {/* Main scene with shapes */}
       <ActiveScene 
-        mousePosition={mouseData?.forThree}
+        mousePosition={mouseData ? mouseData.normalized : null} 
         onClick={handleSceneClick} 
         isDragging={isDragging}
         theme={theme}
@@ -115,6 +115,10 @@ const Background3D = ({ theme, onSceneClick, performanceMode = 'medium' }) => {
         overflow: 'hidden',
         pointerEvents: 'auto',
         userSelect: 'none' 
+      }}
+      onWheel={(e) => {
+        // Prevent page scroll when interacting with the 3D scene
+        e.preventDefault();
       }}
     >
       {isLoading && <LoadingFallback />}

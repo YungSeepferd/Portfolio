@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useCallback } from 'react';
+import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
 import { Box, useTheme, useMediaQuery, IconButton, Tooltip, Fade } from '@mui/material';
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
@@ -14,7 +14,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 /**
  * HeroBackground Component - Handles the 3D background with proper context integration
  */
-const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles }) => {
+const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles, easterEggActive, interactionCount }) => {
   const [showInteractionHint, setShowInteractionHint] = useState(true);
   
   // Hide interaction hint after 5 seconds
@@ -51,6 +51,8 @@ const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles })
           onToggleParticles={onToggleParticles}
           showParticles={showParticles}
           showInteractionHint={showInteractionHint}
+          easterEggActive={easterEggActive}
+          interactionCount={interactionCount}
         />
       </SceneProvider>
     </ErrorBoundary>
@@ -64,7 +66,9 @@ const BackgroundController = memo(({
   onSceneClick, 
   onToggleParticles, 
   showParticles, 
-  showInteractionHint 
+  showInteractionHint,
+  easterEggActive,
+  interactionCount
 }) => {
   const theme = useTheme();
   const [showGuide, setShowGuide] = useState(false);
@@ -201,6 +205,44 @@ const Hero = () => {
   const [sceneNameVisible, setSceneNameVisible] = useState(false);
   const [currentSceneName, setCurrentSceneName] = useState('Sphere');
   
+  // New states for enhanced interactions
+  const [easterEggActive, setEasterEggActive] = useState(false);
+  const [interactionCount, setInteractionCount] = useState(0);
+  const [lastInteractionTime, setLastInteractionTime] = useState(0);
+  const interactionSequence = useRef([]);
+  
+  // Track rapid interactions for combo effects
+  const checkForCombo = useCallback(() => {
+    const now = Date.now();
+    if (now - lastInteractionTime < 1000) {
+      // Increment combo counter for rapid interactions
+      setInteractionCount(prev => {
+        const newCount = prev + 1;
+        // Trigger easter egg on 5 rapid clicks
+        if (newCount >= 5 && !easterEggActive) {
+          setEasterEggActive(true);
+          setTimeout(() => setEasterEggActive(false), 5000);
+          
+          // Analytics tracking
+          if (process.env.NODE_ENV === 'production') {
+            try {
+              window.gtag && window.gtag('event', 'easter_egg_activated', { 
+                interaction_type: 'rapid_clicks'
+              });
+            } catch (err) {
+              console.error('Analytics error:', err);
+            }
+          }
+        }
+        return newCount;
+      });
+    } else {
+      // Reset combo if too much time has passed
+      setInteractionCount(1);
+    }
+    setLastInteractionTime(now);
+  }, [lastInteractionTime, easterEggActive]);
+
   // Two-phase initialization for better stability
   useEffect(() => {
     setHasInitialized(true);
@@ -225,6 +267,20 @@ const Hero = () => {
   // Handle scene click to change scene type
   const handleSceneClick = useCallback(() => {
     console.log("📢 Hero.js: handleSceneClick called - About to change scene");
+    
+    // Track interaction sequence for pattern detection
+    interactionSequence.current.push({
+      type: 'click',
+      time: Date.now()
+    });
+    
+    // Keep sequence limited to last 10 interactions
+    if (interactionSequence.current.length > 10) {
+      interactionSequence.current.shift();
+    }
+    
+    // Check for combo effects
+    checkForCombo();
     
     // Cycle to next scene
     const newSceneIndex = (sceneIndex + 1) % 3;
@@ -252,7 +308,7 @@ const Hero = () => {
         console.error('Analytics error:', err);
       }
     }
-  }, [sceneIndex, getSceneName]);
+  }, [sceneIndex, getSceneName, checkForCombo]);
 
   // Handle particle toggle
   const handleToggleParticles = useCallback(() => {
@@ -303,8 +359,33 @@ const Hero = () => {
           onSceneClick={handleSceneClick}
           onToggleParticles={handleToggleParticles}
           showParticles={showParticles}
+          easterEggActive={easterEggActive}
+          interactionCount={interactionCount}
         />
       )}
+      
+      {/* Easter Egg Activation Indicator */}
+      <Fade in={easterEggActive} timeout={{ enter: 400, exit: 800 }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '15%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(255,100,100,0.8)',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            zIndex: 30,
+            pointerEvents: 'none',
+            fontSize: '16px',
+            fontWeight: 700,
+            boxShadow: '0 0 20px rgba(255,100,100,0.6)'
+          }}
+        >
+          SUPER MODE ACTIVATED!
+        </Box>
+      </Fade>
       
       {/* Scene name indicator - visible when changing scenes */}
       <Fade in={sceneNameVisible} timeout={{ enter: 400, exit: 800 }}>
@@ -327,6 +408,50 @@ const Hero = () => {
           {currentSceneName}
         </Box>
       </Fade>
+      
+      {/* Quick Scene Selector - Small dots at bottom for quick scene switching */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: isMobile ? '5%' : '10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: 2,
+          zIndex: 30,
+          pointerEvents: 'auto',
+        }}
+      >
+        {[0, 1, 2].map((index) => (
+          <Box
+            key={index}
+            onClick={() => {
+              if (sceneIndex !== index) {
+                setSceneIndex(index);
+                setCurrentSceneName(getSceneName(index));
+                setSceneNameVisible(true);
+                setTimeout(() => setSceneNameVisible(false), 2000);
+              }
+            }}
+            sx={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: sceneIndex === index 
+                ? theme.palette.primary.main 
+                : 'rgba(255,255,255,0.3)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              '&:hover': {
+                transform: 'scale(1.2)',
+                backgroundColor: sceneIndex === index 
+                  ? theme.palette.primary.light 
+                  : 'rgba(255,255,255,0.5)',
+              }
+            }}
+          />
+        ))}
+      </Box>
       
       {/* Content Overlay Layer */}
       <Box
