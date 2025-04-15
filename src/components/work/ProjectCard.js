@@ -87,17 +87,21 @@ const ProjectCard = ({ project, onClick }) => {
         onClick={() => onClick(project)}
         sx={{
           cursor: 'pointer',
-          height: '100%',
+          width: '100%',
+          aspectRatio: '1 / 1',
+          minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          position: 'relative', // Needed for overlay positioning
-          overflow: 'hidden', // Ensure overlay stays within bounds
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[2],
+          backgroundColor: theme.palette.background.paper,
           transition: 'transform 0.3s ease, box-shadow 0.3s ease',
           '&:hover': {
             transform: 'translateY(-5px)',
             boxShadow: theme.shadows[6],
           },
-          // Apply variant styling if specified
           ...(cardVariant && cardVariant !== 'default' && {
             borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
           })
@@ -106,9 +110,14 @@ const ProjectCard = ({ project, onClick }) => {
         {/* Image */}
         <Box
           sx={{
-            height: { xs: '200px', sm: '220px', md: '280px' }, // Increased height, responsive
             width: '100%',
-            overflow: 'hidden',
+            flex: '0 0 60%', // 60% of the card height for the image
+            minHeight: 0,
+            background: theme.palette.grey[100],
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
           <ContentAwareImage
@@ -116,44 +125,46 @@ const ProjectCard = ({ project, onClick }) => {
             alt={`${title} preview`}
             containerHeight="100%"
             containerWidth="100%"
-            objectFit="cover" // Ensure image covers the area
+            objectFit="cover"
+            style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
             onError={(e) => {
               console.error(`Failed to load image for ${title}: ${imageSrc}`, e);
               e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
             }}
           />
         </Box>
-
         {/* Content */}
         <CardContent
           sx={{
-            flexGrow: 1,
+            flex: '1 1 40%', // 40% of the card height for content
             display: 'flex',
             flexDirection: 'column',
-            p: { xs: 2, md: 3 }, // Adjust padding
+            p: { xs: 1.5, md: 2 },
+            minHeight: 0,
+            backgroundColor: theme.palette.background.paper,
+            justifyContent: 'flex-start',
+            overflow: 'hidden',
           }}
         >
           <Typography
-            variant="h5" // Increased variant
+            variant="h6"
             component="h3"
             gutterBottom
-            sx={{ fontWeight: 600 }}
+            sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: { xs: '1rem', md: '1.1rem' } }}
           >
             {title}
           </Typography>
           <Typography
-            variant="body1" // Increased variant
+            variant="body2"
             color="text.secondary"
-            sx={{ mb: 2, flexGrow: 1 }}
+            sx={{ mb: 1, flexGrow: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: { xs: '0.95rem', md: '1rem' } }}
           >
             {description}
           </Typography>
-          {/* Display Categories as Tags */}
           {categories && categories.length > 0 && (
             <TagList tags={categories} />
           )}
         </CardContent>
-
         {/* Hover Overlay using ProjectCardPreview */}
         <ProjectCardPreview
           isVisible={isHovered}

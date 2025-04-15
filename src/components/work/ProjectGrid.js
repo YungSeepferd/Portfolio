@@ -49,19 +49,20 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
     >
       <Grid
         container
-        spacing={{ xs: 2, sm: 3, md: 4 }} // Adjust spacing if needed
+        spacing={{ xs: 2, sm: 3, md: 4 }}
       >
         {projects.map((project, index) => (
           <Grid
             item
-            xs={12} // Full width on extra-small screens
-            sm={6}  // Half width on small screens
-            md={6}  // Half width on medium screens (Increased from 4)
-            lg={6}  // Half width on large screens (Adjust as needed, e.g., lg={4} for 3 cards)
+            xs={12} // 1 per row on mobile
+            sm={6}  // 2 per row on small screens
+            md={6}  // 2 per row on medium screens
+            lg={6}  // 2 per row on large screens
+            xl={6}  // 2 per row on extra large screens
             key={project.id || index}
             component={motion.div}
             variants={itemVariants}
-            sx={{ display: 'flex' }} // Ensure cards stretch vertically if needed
+            sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
             <ProjectCard
               project={project}
