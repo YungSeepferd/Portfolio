@@ -31,7 +31,7 @@ const SceneControls = () => {
     const sceneDescriptions = {
       [SHAPE_TYPES.SPHERE]: "Sphere Scene: Interactive floating spheres that follow your mouse cursor.",
       [SHAPE_TYPES.BOX]: "Cube Scene: Grid of cubes that create ripple effects as you move your mouse.",
-      [SHAPE_TYPES.TORUS]: "Torus Scene: Dynamic torus rings that respond to your mouse movement speed and direction."
+      [SHAPE_TYPES.TORUS]: "Drawing Scene: Trail that respond to your mouse movement speed and direction."
     };
     
     const currentSceneDescription = sceneDescriptions[currentShapeType] || "";
