@@ -28,6 +28,14 @@ themeSpacing.contentPadding = {
   lg: '100px',  // Desktops
 };
 
+// Line and paragraph spacing for content
+themeSpacing.content = {
+  itemSpacing: 1.5,    // 12px spacing between items (8px * 1.5)
+  paragraphSpacing: 2, // 16px spacing between paragraphs
+  listItemSpacing: 1,  // 8px spacing between list items
+  sectionSpacing: 3    // 24px spacing between sections
+};
+
 // Additional spacing configurations
 themeSpacing.pagePadding = {
   xs: 2,  // 16px on mobile

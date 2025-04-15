@@ -65,8 +65,8 @@ export const aboutData = [
         <Typography variant="h5" sx={{ mb: 3 }}>Core Competencies</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <BrushIcon color="primary" sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <BrushIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Design</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -74,26 +74,26 @@ export const aboutData = [
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <AccessibilityNewIcon color="primary" sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <AccessibilityNewIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Research</Typography>
             </Box>
             <Typography variant="body2" paragraph>
-              User Research, Usability Testing, A/B Testing, Heuristic Evaluation, User Interviews, Data Analysis
+              User Research, Usability Testing, A/B Testing, Heuristic Evaluation, User Interviews, Data Analysis, Thematic Analysis
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <CodeIcon color="primary" sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <CodeIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Development</Typography>
             </Box>
             <Typography variant="body2" paragraph>
-              Frontend Development, Responsive Design, Design Systems, Accessibility Implementation
+              Frontend Development, Responsive Design, Design Systems, Accessibility Implementation, Mobile Development, Sensor Integration, Haptic Feedback, Audio Programming
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <LocalLibraryIcon color="primary" sx={{ mr: 1 }} />
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <LocalLibraryIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Methodologies</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -103,17 +103,26 @@ export const aboutData = [
         </Grid>
 
         <Typography variant="h5" sx={{ mb: 3 }}>Tools & Technologies</Typography>
-        {/* Split skills into two rows with spacing between them */}
+        {/* Design tools */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
           <SkillTag label="Figma" />
           <SkillTag label="Adobe XD" />
           <SkillTag label="Sketch" />
           <SkillTag label="Prototyping" />
         </Stack>
+        {/* Web technologies */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
           <SkillTag label="User Testing" />
-          <SkillTag label="React.js" />
+          <SkillTag label="Javascript" />
           <SkillTag label="HTML/CSS" />
+        </Stack>
+        {/* Programming and prototyping skills */}
+        <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
+          <SkillTag label="Unity" />
+          <SkillTag label="C" />
+          <SkillTag label="C#" />
+          <SkillTag label="C++" />
+          <SkillTag label="Arduino" />
         </Stack>
       </>
     )
@@ -125,62 +134,62 @@ export const aboutData = [
     pictures: [ExperienceImage],
     content: (
       <>
-        <Typography variant="h5" sx={{ mb: 3 }}>Professional Experience</Typography>
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>Professional Experience</Typography>
+        <Grid container spacing={2} sx={{ mb: 3 }}>
           {/* Experience 1 */}
           <Grid item xs={12} md={6}>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column',
               height: '100%',
-              p: 2,
+              p: 1.5,
               borderRadius: 1,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <BusinessCenterIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>UX Intern</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>DJay Munich | 2022</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
+                <BusinessCenterIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <Box sx={{ lineHeight: 1 }}>
+                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>UX Intern</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>DJay Munich | 2022</Typography>
                 </Box>
               </Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+              <Typography variant="body2" sx={{ mt: 0, mb: 0, fontSize: '0.85rem', lineHeight: 1.1 }}>
                 Conducted user research and prototyped new interaction models for music-related applications.
               </Typography>
-              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
-                <Box component="li"><Typography variant="body2">Designed user flows and wireframes for mobile music applications</Typography></Box>
-                <Box component="li"><Typography variant="body2">Conducted usability testing with musicians and DJs</Typography></Box>
-                <Box component="li"><Typography variant="body2">Created prototypes using Figma and Adobe XD</Typography></Box>
+              <Box component="ul" sx={{ paddingLeft: '1.2rem', mt: 0, mb: 0, pl: 1, flex: 1, lineHeight: 0.9 }}>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Designed user flows and wireframes for mobile music applications</Typography></Box>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Conducted usability testing with musicians and DJs</Typography></Box>
+                <Box component="li"><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Created prototypes using Figma and Adobe XD</Typography></Box>
               </Box>
             </Box>
           </Grid>
           
           {/* Experience 2 */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column',
               height: '100%',
-              p: 2,
+              p: 1.5,
               borderRadius: 1,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <WorkIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>IT & Podcast Production Support</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>University Hospital Munich | 2020–2022</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
+                <WorkIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <Box sx={{ lineHeight: 1 }}>
+                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>IT & Podcast Production Support</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>University Hospital Munich | 2020–2022</Typography>
                 </Box>
               </Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+              <Typography variant="body2" sx={{ mt: 0, mb: 0, fontSize: '0.85rem', lineHeight: 1.1 }}>
                 Provided technical support and developed an audio production pipeline for podcast content.
               </Typography>
-              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
-                <Box component="li"><Typography variant="body2">Managed IT infrastructure for medical education department</Typography></Box>
-                <Box component="li"><Typography variant="body2">Produced and edited educational podcast content</Typography></Box>
-                <Box component="li"><Typography variant="body2">Trained staff on audio recording and editing software</Typography></Box>
+              <Box component="ul" sx={{ paddingLeft: '1.2rem', mt: 0, mb: 0, pl: 1, flex: 1, lineHeight: 0.9 }}>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Managed IT infrastructure for medical education department</Typography></Box>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Produced and edited educational podcast content</Typography></Box>
+                <Box component="li"><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Trained staff on audio recording and editing software</Typography></Box>
               </Box>
             </Box>
           </Grid>
@@ -191,25 +200,25 @@ export const aboutData = [
               display: 'flex', 
               flexDirection: 'column',
               height: '100%',
-              p: 2,
+              p: 1.5,
               borderRadius: 1,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <HeadsetMicIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>Freelance Audio Producer / Sound Designer</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Self-employed | Since 2015</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
+                <HeadsetMicIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <Box sx={{ lineHeight: 1 }}>
+                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>Freelance Audio Producer / Sound Designer</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>Self-employed | Since 2015</Typography>
                 </Box>
               </Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+              <Typography variant="body2" sx={{ mt: 0, mb: 0, fontSize: '0.85rem', lineHeight: 1.1 }}>
                 Created original music compositions (Superior Motive, Din-Z), mixed audio for projects, and collaborated with artists.
               </Typography>
-              <Box component="ul" sx={{ paddingLeft: '1.5rem', margin: '0.5rem 0', color: 'text.secondary', flex: 1 }}>
-                <Box component="li"><Typography variant="body2">Produced original music for independent artists</Typography></Box>
-                <Box component="li"><Typography variant="body2">Designed sound effects and atmospheres for digital media</Typography></Box>
-                <Box component="li"><Typography variant="body2">Mixed and mastered audio for commercial release</Typography></Box>
+              <Box component="ul" sx={{ paddingLeft: '1.2rem', mt: 0, mb: 0, pl: 1, flex: 1, lineHeight: 0.9 }}>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Produced original music for independent artists</Typography></Box>
+                <Box component="li" sx={{ mb: 0 }}><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Designed sound effects and atmospheres for digital media</Typography></Box>
+                <Box component="li"><Typography variant="body2" sx={{ fontSize: '0.85rem', lineHeight: 1.1 }}>Mixed and mastered audio for commercial release</Typography></Box>
               </Box>
             </Box>
           </Grid>
@@ -238,8 +247,7 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <SchoolIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
+                <SchoolIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>M.Sc. Human-Computer Interaction</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>FH Salzburg & PLUS Salzburg | 2022 - 2024</Typography>
                 </Box>
@@ -262,8 +270,7 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
+                <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>B.Sc. Media Informatics</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>LMU Munich | 2017 - 2021</Typography>
                 </Box>
@@ -286,8 +293,7 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0.5 }} />
-                <Box>
+                <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2015 - 2017</Typography>
                 </Box>
