@@ -17,9 +17,9 @@ import resonantRelaxation from './resonantRelaxation';
 export const projectsData = [
   masterThesis,
   resonantRelaxation,
-  adhdeer,
   amiai,
   greenWallet,
+  adhdeer,
   bachelorThesis
 ];
 
@@ -30,10 +30,10 @@ export const projects = projectsData;
 
 // Also export individual projects for direct access
 export {
-  adhdeer,
+  greenWallet,
   amiai,
   bachelorThesis,
-  greenWallet,
+  adhdeer,
   masterThesis,
   resonantRelaxation
 };

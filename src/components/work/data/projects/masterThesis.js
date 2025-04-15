@@ -11,7 +11,7 @@ import SlideshowIcon from '@mui/icons-material/Slideshow';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
 // Import project images directly with standardized naming
-import OverviewImage from '../../../../assets/images/Masterthesis/workshop_preparation.jpg';
+import OverviewImage from '../../../../assets/images/Masterthesis/headerimagemasterthesis.png';
 import ProcessImage from '../../../../assets/images/Masterthesis/workshop_agenda.png';
 import CircumplexModelImage from '../../../../assets/images/Masterthesis/circumplex_model.png';
 import BodyMappingImage from '../../../../assets/images/Masterthesis/body_map_template.png';
