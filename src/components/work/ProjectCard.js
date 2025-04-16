@@ -107,30 +107,37 @@ const ProjectCard = ({ project, onClick }) => {
           })
         }}
       >
-        {/* Image */}
-        <Box
-          sx={{
-            width: '100%',
-            flex: '0 0 60%', // 60% of the card height for the image
-            minHeight: 0,
-            background: theme.palette.grey[100],
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderBottom: `1px solid ${theme.palette.divider}`,
-          }}
-        >
-          <ContentAwareImage
-            src={imageSrc}
-            alt={`${title} preview`}
-            containerHeight="100%"
-            containerWidth="100%"
-            objectFit="cover"
-            style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
-            onError={(e) => {
-              console.error(`Failed to load image for ${title}: ${imageSrc}`, e);
-              e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
+        {/* Image Area with Overlay */}
+        <Box sx={{ position: 'relative', width: '100%', flex: '0 0 60%', minHeight: 0 }}>
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              background: theme.palette.grey[100],
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderBottom: `1px solid ${theme.palette.divider}`,
             }}
+          >
+            <ContentAwareImage
+              src={imageSrc}
+              alt={`${title} preview`}
+              containerHeight="100%"
+              containerWidth="100%"
+              objectFit="cover"
+              style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+              onError={(e) => {
+                console.error(`Failed to load image for ${title}: ${imageSrc}`, e);
+                e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
+              }}
+            />
+          </Box>
+          {/* Hover Overlay using ProjectCardPreview - now only over image */}
+          <ProjectCardPreview
+            isVisible={isHovered}
+            technologies={technologies}
+            links={linksArray}
           />
         </Box>
         {/* Content */}
@@ -165,12 +172,6 @@ const ProjectCard = ({ project, onClick }) => {
             <TagList tags={categories} />
           )}
         </CardContent>
-        {/* Hover Overlay using ProjectCardPreview */}
-        <ProjectCardPreview
-          isVisible={isHovered}
-          technologies={technologies}
-          links={linksArray}
-        />
       </Card>
     </motion.div>
   );

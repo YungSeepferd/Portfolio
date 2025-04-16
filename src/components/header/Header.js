@@ -111,7 +111,7 @@ const Header = () => {
                   fontSize: '1.5rem',
                   letterSpacing: '-0.5px',
                   color: theme.palette.text.primary,
-                  paddingLeft: { xs: '8px', sm: '16px', md: '20px', lg: '32px' },
+                  paddingLeft: { xs: '0px', sm: '0px', md: '8px', lg: '20px' },
                   transition: 'padding 0.2s',
                   display: 'flex',
                   alignItems: 'center',

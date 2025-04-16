@@ -19,7 +19,15 @@ const ProjectSections = ({ project }) => {
   if (!sections || sections.length === 0) return null;
   
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+      }}
+    >
       {/* Render each section */}
       {sections.map((section, index) => (
         <ProjectSection

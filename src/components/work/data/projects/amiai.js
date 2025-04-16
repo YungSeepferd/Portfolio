@@ -161,11 +161,6 @@ const amiai = {
                 <strong>Interactive Digital Experience:</strong> Web-based interactions prompting users to engage directly with pixelation effects, experiencing firsthand the subtle distortion of information
               </Typography>
             </li>
-            <li>
-              <Typography variant="body1">
-                <strong>AR Experience:</strong> Augmented reality elements revealing hidden layers of information when posters are viewed through a smartphone
-              </Typography>
-            </li>
           </Box>
         </>
       ),

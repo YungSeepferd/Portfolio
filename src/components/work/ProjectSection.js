@@ -60,7 +60,16 @@ const ProjectSection = ({
 
   // Section heading (add section number above title)
   const headingElement = (title || formattedNumber) && (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start', // Center horizontally
+        justifyContent: 'center', // Center vertically if needed
+        textAlign: 'left', // Center text
+        width: '100%',
+      }}
+    >
       {formattedNumber && (
         <Typography
           variant="h6"
@@ -134,28 +143,114 @@ const ProjectSection = ({
     );
   };
 
+  // Helper for full-width content box with consistent side padding
+  const fullWidthBox = (children) => (
+    <Box
+      sx={{
+        maxWidth: '1200px',
+        mx: 'auto',
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 3, md: 5 },
+        mb: 6,
+        background: theme.palette.background.paper,
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+      }}
+    >
+      {children}
+    </Box>
+  );
+
+  // Helper for full-width image frame (single or up to 3 images)
+  const fullWidthImageFrame = (mediaArr) => {
+    if (!mediaArr || mediaArr.length === 0) return null;
+    if (mediaArr.length === 1) {
+      const img = mediaArr[0];
+      return (
+        <Box
+          sx={{
+            width: '100%',
+            mb: 3,
+            borderRadius: 3,
+            overflow: 'hidden',
+            boxShadow: theme.shadows[3],
+            aspectRatio: '16/7',
+            background: theme.palette.grey[100],
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <ContentAwareImage
+            src={img.src || img}
+            alt={img.alt || 'Section image'}
+            containerHeight="100%"
+            containerWidth="100%"
+            aspect={img.aspect || 'landscape'}
+          />
+        </Box>
+      );
+    }
+    // Up to 3 images in a row
+    return (
+      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+        {mediaArr.slice(0, 3).map((img, idx) => (
+          <Box
+            key={idx}
+            sx={{
+              flex: 1,
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: theme.shadows[1],
+              aspectRatio: '16/9',
+              background: theme.palette.grey[100],
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <ContentAwareImage
+              src={img.src || img}
+              alt={img.alt || `Section image ${idx + 1}`}
+              containerHeight="100%"
+              containerWidth="100%"
+              aspect={img.aspect || 'landscape'}
+            />
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
   // --- Section type-based rendering ---
   switch (type) {
     case 'gallery':
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
+      // Full-width gallery section
+      return fullWidthBox(
+        <>
           {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
           <ProjectGallery images={mediaData} title={title} />
-        </Box>
+        </>
       );
     case 'outcomes':
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
-          {headingElement}
-          {renderOutcomesTakeaways()}
-        </Box>
-      );
     case 'takeaways':
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
+      // Full-width outcomes/takeaways
+      return fullWidthBox(
+        <>
           {headingElement}
           {renderOutcomesTakeaways()}
-        </Box>
+        </>
+      );
+    case 'textOnly':
+      // Full-width text section, with optional images
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {renderOutcomesTakeaways()}
+        </>
       );
     case 'prototype':
       // Placeholder: Replace with your PrototypeShowcase component if available
@@ -174,11 +269,10 @@ const ProjectSection = ({
         </Box>
       );
     case 'research':
-      // Two-column with quotes (placeholder)
-      return (
-        <Grid container spacing={4} sx={{ ...sx }} id={id}>
+      // Full-width research section, two-column if you want, but keep maxWidth and padding
+      return fullWidthBox(
+        <Grid container spacing={4}>
           <Grid item xs={12} md={7}>
-            {/* Use headingElement to show section number and title */}
             {headingElement}
             {content && (
               React.isValidElement(content)
@@ -187,7 +281,6 @@ const ProjectSection = ({
             )}
           </Grid>
           <Grid item xs={12} md={5}>
-            {/* Placeholder for research quotes/personas */}
             <Box sx={{ p: 2, bgcolor: theme.palette.background.paper, borderRadius: 2 }}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>Highlighted Quotes</Typography>
               <Typography variant="body2" color="text.secondary">"Empathy quote or persona card here..."</Typography>
@@ -236,29 +329,44 @@ const ProjectSection = ({
         </Box>
       );
     default:
-      // ...existing code for default, textOnly, mediaOnly layouts...
+      // ...existing code for split layout...
       const textContentElement = (
-        <Box
-          component={motion.div}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-          id={id}
-        >
-          {headingElement}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {renderOutcomesTakeaways()}
-          {children && (
-            <Box sx={{ mt: 3 }}>
-              <ActionButtonGroup actions={children} layout="row" />
-            </Box>
-          )}
-        </Box>
+        <Grid container justifyContent="center">
+          <Box
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+            id={id}
+          >
+            {headingElement}
+            {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+            {renderOutcomesTakeaways()}
+            {children && (
+              <Box sx={{ mt: 3 }}>
+                <ActionButtonGroup actions={children} layout="row" />
+              </Box>
+            )}
+          </Box>
+        </Grid>
       );
       let mediaElement = null;
       if (Array.isArray(mediaData) && mediaData.length > 0) {
-        mediaElement = <ProjectGallery images={mediaData} title={title} />;
+        mediaElement = (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {mediaData.slice(0, 1).map((img, idx) => (
+              <ContentAwareImage
+                key={idx}
+                src={img.src || img}
+                alt={img.alt || title || 'Project media'}
+                containerHeight="100%"
+                containerWidth="100%"
+                aspect={img.aspect || 'landscape'}
+              />
+            ))}
+          </Box>
+        );
       } else if (mediaData?.src) {
         const aspect = mediaData.aspect || 'landscape';
         const aspectRatioMap = { portrait: 3/4, landscape: 16/9, square: 1 };
@@ -301,17 +409,18 @@ const ProjectSection = ({
         );
       }
       if (isTextOnly) {
-        return <Box id={id} sx={{ ...sx }}>{textContentElement}</Box>;
+        return fullWidthBox(textContentElement);
       }
       if (isMediaOnly) {
-        return <Box id={id} sx={{ ...sx }}>{mediaElement}</Box>;
+        return fullWidthBox(mediaElement);
       }
       return (
-        <Grid container spacing={{ xs: 4, md: 6 }} sx={{ ...sx }} alignItems="center" id={id}>
+        <Grid container spacing={{ xs: 4, md: 6 }} sx={{ mb: 6, maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }} alignItems="stretch" id={id}>
           <Grid
             item
             xs={12}
-            md={mediaElement ? 6 : 12}
+            md={6}
+            sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'left' }}
             order={{ xs: 1, md: isReverse ? 2 : 1 }}
           >
             {textContentElement}
@@ -321,6 +430,7 @@ const ProjectSection = ({
               item
               xs={12}
               md={6}
+              sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
               order={{ xs: 2, md: isReverse ? 1 : 2 }}
             >
               {mediaElement}
