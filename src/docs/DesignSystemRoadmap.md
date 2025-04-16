@@ -1,6 +1,11 @@
 # Design System Roadmap
 
-This document outlines the planned improvements and extensions to our portfolio design system.
+## Status Update (16 April 2025)
+
+- All unused/legacy utilities, hooks, and context files have been deleted.
+- Media/image utilities are consolidated and used consistently.
+- Layout and spacing are handled with MUI's Box and sx prop.
+- The codebase is clean and ready for further design system enhancements.
 
 ## Short-term Goals (1-2 Months)
 

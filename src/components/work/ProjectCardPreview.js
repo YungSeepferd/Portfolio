@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Fade, useTheme } from '@mui/material';
 import TechBar from './TechBar';
 import ActionButtonGroup from '../common/ActionButtonGroup';
+import { getBarStyles } from '../../utils/getBarStyles';
 
 /**
  * ProjectCardPreview Component
@@ -10,6 +11,7 @@ import ActionButtonGroup from '../common/ActionButtonGroup';
  */
 const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
   const theme = useTheme();
+  const styles = getBarStyles('overlay', theme);
 
   // Only render if there's something to show
   const hasContent = (technologies.length > 0 || links.length > 0);
@@ -24,8 +26,8 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)', // Dark overlay
-          color: theme.palette.common.white,
+          ...styles.barBg,
+          color: styles.text.color,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -41,18 +43,8 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
             technologies={technologies}
             variant="outlined"
             size="small"
-            sx={{
-              mb: 2,
-              // Override TechBar styles for overlay
-              '& .MuiChip-root': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: theme.palette.common.white,
-                borderColor: 'rgba(255, 255, 255, 0.5)',
-              },
-              '& .MuiTypography-root': {
-                 color: theme.palette.common.white, // Ensure title is white
-              }
-            }}
+            barVariant="overlay"
+            sx={{ mb: 2 }}
           />
         )}
 
@@ -71,17 +63,7 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
               maxButtons={2}
               size="small"
               variant="outlined"
-              sx={{
-                '& .MuiButton-root': {
-                  color: theme.palette.common.white,
-                  borderColor: 'rgba(255, 255, 255, 0.5)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderColor: theme.palette.common.white,
-                  },
-                }
-              }}
+              barVariant="overlay"
             />
           </Box>
         )}

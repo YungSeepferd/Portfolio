@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Button, useTheme } from '@mui/material';
 import PropTypes from 'prop-types';
-import ActionButton from './ActionButton';
+import { getBarStyles } from '../../utils/getBarStyles';
 
 /**
  * ActionButtonGroup Component
@@ -16,6 +16,7 @@ import ActionButton from './ActionButton';
  * @param {string} props.layout - Layout type ('row', 'column', 'grid')
  * @param {number} props.maxButtons - Maximum number of buttons to show
  * @param {Object} props.sx - Additional styles
+ * @param {string} props.barVariant - Variant for bar styling
  */
 const ActionButtonGroup = ({
   actions = [],
@@ -23,8 +24,12 @@ const ActionButtonGroup = ({
   variant = 'outlined',
   layout = 'row',
   maxButtons = Infinity,
-  sx = {}
+  sx = {},
+  barVariant = 'default'
 }) => {
+  const theme = useTheme();
+  const styles = getBarStyles(barVariant, theme);
+
   // Don't render if no actions
   if (!actions || actions.length === 0) return null;
   
@@ -49,18 +54,18 @@ const ActionButtonGroup = ({
     >
       {visibleActions.map((action, index) => (
         <Box key={`action-${index}`} sx={{ flexShrink: 0 }}>
-          <ActionButton
-            label={action.label}
+          <Button
             href={action.url || action.href}
-            icon={action.icon}
+            target={action.href ? '_blank' : undefined}
+            startIcon={action.icon}
             variant={action.variant || variant}
-            color={action.color || 'primary'}
+            color={action.color || 'accent'}
             size={action.size || size}
-            contentType={action.contentType || 'external'}
-            openInPopup={action.openInPopup !== false}
-            sx={action.sx}
-            onClick={action.onClick}
-          />
+            sx={{ ...styles.button }}
+            aria-label={action.label}
+          >
+            {action.label}
+          </Button>
         </Box>
       ))}
     </Stack>
@@ -87,7 +92,8 @@ ActionButtonGroup.propTypes = {
   variant: PropTypes.string,
   layout: PropTypes.oneOf(['row', 'column', 'grid']),
   maxButtons: PropTypes.number,
-  sx: PropTypes.object
+  sx: PropTypes.object,
+  barVariant: PropTypes.string
 };
 
 export default ActionButtonGroup;

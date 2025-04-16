@@ -82,6 +82,7 @@ const HeroContent = () => {
               lineHeight: 1.2,
               mb: 1,
               color: theme.palette.text.primary,
+              letterSpacing: '-0.5px',
             }}
           >
             Vincent Göke

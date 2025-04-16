@@ -659,6 +659,8 @@ const TorusScene = ({
             </group>
           );
         }
+        
+        return null;
       })}
       
       {/* Enhanced trail for Easter egg mode - make wider and more visible */}

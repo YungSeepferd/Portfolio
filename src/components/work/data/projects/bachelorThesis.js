@@ -1,14 +1,8 @@
-/**
- * Bachelor Thesis Project Data
- * 
- * This file contains the structured data for the Passenger Reroute Bachelor Thesis project.
- */
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import ArticleIcon from '@mui/icons-material/Article';
-import SchoolIcon from '@mui/icons-material/School';
 
 // Import project images and videos with standardized names
 import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';
@@ -238,23 +232,37 @@ const bachelorThesis = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.routeOverview },
-      layout: 'textRight'
+      layout: 'textRight',
+      takeaways: [
+        "Information density significantly impacts user trust in autonomous systems",
+        "Time pressure affects decision-making strategies in human-machine interactions",
+        "Mobile interfaces are effective tools for passenger-AV cooperation",
+        "Balanced information presentation enhances usability in complex systems",
+        "User testing reveals critical insights for future autonomous vehicle interfaces"
+      ],
+      outcomes: {
+        title: "Research Impact",
+        points: [
+          "Development of validated UI design guidelines for automotive interfaces",
+          "Contribution to autonomous vehicle trust and safety research"
+        ]
+      }
     }
   ],
   
   // Update gallery images to use the media object
   galleryImages: [
-    media.images.fastThinkingLevel2GIF,
-    media.images.prototypeFlows,
-    media.images.slowThinkingLevel1,
-    media.images.fastThinkingLevel2,
-    media.images.fastThinkingLevel3,
-    media.images.slowThinkingLevel2,
-    media.images.slowThinkingLevel3,
-    media.images.endScreen,
-    media.images.routeOverview,
-    media.images.slowThinkingLevel3Screenshot,
-    { type: 'video', src: media.videos.slowThinkingVideoPrototype }
+    { type: 'image', src: media.images.fastThinkingLevel2GIF, alt: 'Fast Thinking Level 2 GIF' },
+    { type: 'image', src: media.images.prototypeFlows, alt: 'Prototype Flows Overview' },
+    { type: 'image', src: media.images.slowThinkingLevel1, alt: 'Slow Thinking Level 1' },
+    { type: 'image', src: media.images.fastThinkingLevel2, alt: 'Fast Thinking Level 2 UI' },
+    { type: 'image', src: media.images.fastThinkingLevel3, alt: 'Fast Thinking Level 3' },
+    { type: 'image', src: media.images.slowThinkingLevel2, alt: 'Slow Thinking Level 2' },
+    { type: 'image', src: media.images.slowThinkingLevel3, alt: 'Slow Thinking Level 3' },
+    { type: 'image', src: media.images.endScreen, alt: 'End Screen' },
+    { type: 'image', src: media.images.routeOverview, alt: 'Route Overview' },
+    { type: 'image', src: media.images.slowThinkingLevel3Screenshot, alt: 'Slow Thinking Level 3 Screenshot' },
+    { type: 'video', src: media.videos.slowThinkingVideoPrototype, alt: 'Slow Thinking Video Prototype' }
   ],
   
   technologies: ["Figma", "Adobe After Effects", "Adobe Illustrator", "User Testing"],
@@ -276,33 +284,8 @@ const bachelorThesis = {
       icon: <ArticleIcon fontSize="small" />,
       contentType: 'pdf',
       openInPopup: true
-    },
-    {
-      label: "Academic Publication",
-      url: "https://dl.acm.org/doi/10.1145/3411763.3451713",
-      icon: <SchoolIcon fontSize="small" />,
-      contentType: 'external',
-      openInPopup: true
     }
-  ],
-  
-  takeaways: [
-    "Information density significantly impacts user trust in autonomous systems",
-    "Time pressure affects decision-making strategies in human-machine interactions",
-    "Mobile interfaces are effective tools for passenger-AV cooperation",
-    "Balanced information presentation enhances usability in complex systems",
-    "User testing reveals critical insights for future autonomous vehicle interfaces"
-  ],
-  
-  // Add outcomes object
-  outcomes: {
-    title: "Research Impact",
-    points: [
-      "Academic publication in ACM Digital Library (CHI 2021)",
-      "Development of validated UI design guidelines for automotive interfaces",
-      "Contribution to autonomous vehicle trust and safety research"
-    ]
-  }
+  ]
 };
 
 export default bachelorThesis;

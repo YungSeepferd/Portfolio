@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Paper, useTheme, useMediaQuery } from '@mui/material';
 import TechBar from './TechBar';
 import ActionButtonGroup from '../common/ActionButtonGroup';
+import { getBarStyles } from '../../utils/getBarStyles';
 
 /**
  * ActionsBar Component
@@ -9,7 +10,7 @@ import ActionButtonGroup from '../common/ActionButtonGroup';
  * Displays technologies on the left and action buttons on the right in a single bar.
  * Uses standardized project data.
  */
-const ActionsBar = ({ technologies = [], links = [] }) => {
+const ActionsBar = ({ technologies = [], links = [], barVariant = 'default' }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
@@ -25,7 +26,7 @@ const ActionsBar = ({ technologies = [], links = [] }) => {
       sx={{
         p: 2,
         borderRadius: 0,
-        backgroundColor: theme.palette.background.paper,
+        ...getBarStyles(barVariant, theme).barBg,
         borderBottom: `1px solid ${theme.palette.divider}`,
       }}
     >
@@ -46,6 +47,7 @@ const ActionsBar = ({ technologies = [], links = [] }) => {
               technologies={technologies}
               variant="outlined"
               size="small"
+              barVariant={barVariant}
             />
           ) : null}
         </Box>
@@ -64,6 +66,7 @@ const ActionsBar = ({ technologies = [], links = [] }) => {
             layout={isMobile ? 'grid' : 'row'}
             maxButtons={4}
             size="small"
+            barVariant={barVariant}
           />
         </Box>
       </Box>

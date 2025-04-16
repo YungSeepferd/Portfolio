@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import ProjectSection from './ProjectSection';
-import ProjectSectionNav from './ProjectSectionNav';
 import { processProjectContent } from '../../utils/projectContentParser';
 
 /**
  * ProjectSections Component
  * 
- * Takes raw project data and renders structured sections with navigation.
+ * Takes raw project data and renders structured sections.
  * Uses projectContentParser to transform the data into a standardized format.
  */
 const ProjectSections = ({ project }) => {
@@ -21,23 +20,12 @@ const ProjectSections = ({ project }) => {
   
   return (
     <Box>
-      {/* Section Navigation - Only show if we have multiple sections */}
-      {sections.length > 1 && (
-        <ProjectSectionNav sections={sections} sx={{ mb: 4 }} />
-      )}
-      
       {/* Render each section */}
       {sections.map((section, index) => (
         <ProjectSection
           key={`section-${section.id || index}`}
-          id={section.id || `section-${index}`}
-          title={section.title}
-          content={section.content}
-          mediaData={section.media}
-          layout={section.layout || (index % 2 === 0 ? 'textLeft' : 'textRight')}
+          section={section}
           sectionIndex={index}
-          takeaways={index === sections.length - 1 ? takeaways : null} // Add takeaways to last section
-          outcomes={index === sections.length - 1 ? outcomes : null} // Add outcomes to last section
           sx={{ mb: 6 }}
         />
       ))}

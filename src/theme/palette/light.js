@@ -1,12 +1,48 @@
-import { createLightPalette } from '../../design/tokens';
-
-/**
- * Light theme palette configuration
- * Uses the centralized color tokens for consistency
- */
-export const palette = {
-  mode: 'light',
-  ...createLightPalette()
+// Light theme color palette
+export const lightColors = {
+  primaryMain: '#968445',
+  primaryContrastText: '#05262D',
+  primaryDark: '#085868',
+  primaryLight: '#F6F09C',
+  secondaryMain: '#A1E3D8',
+  secondaryContrastText: '#05262D',
+  secondaryDark: '#085868',
+  secondaryLight: '#F6F09C',
+  backgroundDefault: '#F6F09C',
+  backgroundPaper: '#FFFFFF',
+  backgroundAlternatePanel: '#A1E3D8',
+  textPrimary: '#05262D',
+  textSecondary: '#968445',
+  textMuted: '#085868',
+  textAccent: '#FFE44B',
+  accentMain: '#FFE44B',
+  accentDark: '#968445',
+  accentLight: '#F6F09C',
+  accentContrast: '#05262D',
+  cardBackground: '#FFFFFF',
+  cardShadow: 'rgba(150, 132, 69, 0.15)',
+  cardActiveGlow: 'rgba(246, 240, 156, 0.15)',
+  cardBorder: '#968445',
+  divider: '#968445',
+  shadowLight: 'rgba(150, 132, 69, 0.1)',
+  shadowMedium: 'rgba(150, 132, 69, 0.2)',
+  shadowDark: 'rgba(150, 132, 69, 0.3)',
+  overlayBackground: 'rgba(246, 240, 156, 0.85)',
+  overlayDark: 'rgba(246, 240, 156, 0.95)',
+  dotsInactive: '#A1E3D8',
+  placeholder: '#F6F09C',
+  statusSuccess: '#A1E3D8',
+  statusWarning: '#FFE44B',
+  statusError: '#968445',
+  statusInfo: '#085868',
+  focusOutline: '#FFE44B',
+  structureBorders: '#968445',
+  structureLines: '#968445',
+  structureOutlines: '#968445',
+  errorMain: '#968445',
+  warningMain: '#FFE44B',
+  infoMain: '#085868',
+  successMain: '#A1E3D8',
 };
 
-export default palette;
+export default lightColors;

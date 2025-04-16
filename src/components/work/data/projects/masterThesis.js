@@ -200,27 +200,47 @@ const masterThesis = {
               <Typography variant="body1">Identified technical challenges and subjective emotional interpretations provided critical insights for future toolkit refinement</Typography>
             </li>
           </Box>
+          <Typography variant="body1" paragraph>
+            Emotions can be systematically mapped to haptic parameters using the Circumplex Model of Affect.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Body mapping provides essential context for placing haptic actuators effectively.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Tandem prototyping creates more engaging and emotionally meaningful experiences.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Iterative testing revealed the importance of temporal patterns in emotional haptic feedback.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Cross-disciplinary collaboration significantly enriches the design process.
+          </Typography>
         </>
       ),
       media: { type: 'image', src: media.images.prototype },
-      layout: 'textRight'
+      layout: 'textRight',
+      outcomes: [
+        "Established design patterns for translating emotions into tactile experiences",
+        "Created workshop materials and templates to facilitate emotional haptic prototyping",
+        "Developed a validated methodological toolkit for emotion-driven haptic design"
+      ]
     }
   ],
   
   galleryImages: [
-    media.images.overview,
-    media.images.process,
-    media.images.circumplex,
-    media.images.bodyMapping,
-    media.images.prototype,
-    media.images.hapticLabs,
-    media.images.workshop,
-    media.images.metaphorElicitation,
-    media.images.audioHaptics,
-    media.images.affectivePrototype1,
-    media.images.affectivePrototype2,
-    media.images.bodyMapQuestions,
-    media.images.workshopBodyMaps
+    { type: 'image', src: media.images.overview, alt: 'Overview of the Prototyping Emotions thesis' },
+    { type: 'image', src: media.images.process, alt: 'Workshop agenda flow' },
+    { type: 'image', src: media.images.circumplex, alt: 'Circumplex Model of Affect representation' },
+    { type: 'image', src: media.images.bodyMapping, alt: 'Body mapping template for emotional feedback' },
+    { type: 'image', src: media.images.prototype, alt: 'Prototype session showcasing haptic feedback' },
+    { type: 'image', src: media.images.hapticLabs, alt: 'Haptic Labs prototype demonstration' },
+    { type: 'image', src: media.images.workshop, alt: 'Group workshop activity for haptic design' },
+    { type: 'image', src: media.images.metaphorElicitation, alt: 'Metaphor elicitation template used in workshops' },
+    { type: 'image', src: media.images.audioHaptics, alt: 'Audio haptics integration in design' },
+    { type: 'image', src: media.images.affectivePrototype1, alt: 'First affective prototype showcasing emotional feedback' },
+    { type: 'image', src: media.images.affectivePrototype2, alt: 'Second affective prototype highlighting design iterations' },
+    { type: 'image', src: media.images.bodyMapQuestions, alt: 'Body map questions for emotional exploration' },
+    { type: 'image', src: media.images.workshopBodyMaps, alt: 'Workshop body maps created by participants' }
   ],
   
   technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
@@ -237,24 +257,7 @@ const masterThesis = {
       media.images.workshop
     ]
   },
-  links: links,
-  takeaways: [
-    "Emotions can be systematically mapped to haptic parameters using the Circumplex Model of Affect",
-    "Body mapping provides essential context for placing haptic actuators effectively",
-    "Tandem prototyping creates more engaging and emotionally meaningful experiences",
-    "Iterative testing revealed the importance of temporal patterns in emotional haptic feedback",
-    "Cross-disciplinary collaboration significantly enriches the design process"
-  ],
-  
-  // Fix the outcomes object
-  outcomes: {
-    title: "Research Outcomes",
-    points: [
-      "Established design patterns for translating emotions into tactile experiences",
-      "Created workshop materials and templates to facilitate emotional haptic prototyping",
-      "Developed a validated methodological toolkit for emotion-driven haptic design"
-    ]
-  }
+  links: links
 };
 
 export default masterThesis;

@@ -1,6 +1,13 @@
-# UX Portfolio Website
+# Portfolio Project
 
-This repository contains the source code for Vincent Göke's UX Portfolio website, built with React, Material UI, Framer Motion, and Three.js.
+## Project Status (as of 16 April 2025)
+
+- All unused utility files, hooks, and context files have been reviewed and deleted.
+- Media/image utilities are fully consolidated in `mediaUtils.js` and used by all relevant components.
+- Layout and spacing are handled directly with MUI's `Box` and `sx` prop; no redundant layout components remain.
+- The "Work" section is fully dynamic, modular, and maintainable.
+- Dependency cleanup is complete; the app builds and runs successfully.
+- Documentation and design system are up-to-date.
 
 ## Project Structure
 

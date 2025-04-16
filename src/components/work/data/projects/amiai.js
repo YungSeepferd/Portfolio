@@ -188,7 +188,22 @@ const amiai = {
           </Box>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      takeaways: [
+        "Visual design can effectively communicate complex ethical concepts",
+        "Critical design approaches raise important questions about technological implementation",
+        "Typography can express tension between human and machine systems",
+        "Public interventions can stimulate dialogue about AI ethics",
+        "Interdisciplinary research strengthens the conceptual foundation of design projects"
+      ],
+      outcomes: {
+        title: "Campaign Results",
+        points: [
+          "Successful public exhibition at university gallery space",
+          "Positive feedback from design community and AI ethicists",
+          "Development of a visual language for discussing AI credibility issues"
+        ]
+      }
     },
     {
       id: 'section-future',
@@ -203,10 +218,10 @@ const amiai = {
   ],
   
   galleryImages: [
-    media.images.logo,
-    media.images.intro,
-    { type: 'video', src: media.videos.scene },
-    { type: 'video', src: media.videos.samiai }
+    { type: 'image', src: media.images.logo, alt: 'AMIAI Logo' },
+    { type: 'image', src: media.images.intro, alt: 'Introduction to AMIAI' },
+    { type: 'video', src: media.videos.scene, alt: 'Scene video for AMIAI' },
+    { type: 'video', src: media.videos.samiai, alt: '5samiai video for AMIAI' }
   ],
   technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
   cardVariant: cardVariant,
@@ -216,24 +231,7 @@ const amiai = {
     problem: media.images.intro,
     solution: media.images.logo
   },
-  actions: links,
-  takeaways: [
-    "Visual design can effectively communicate complex ethical concepts",
-    "Critical design approaches raise important questions about technological implementation",
-    "Typography can express tension between human and machine systems",
-    "Public interventions can stimulate dialogue about AI ethics",
-    "Interdisciplinary research strengthens the conceptual foundation of design projects"
-  ],
-  
-  // Add outcomes object
-  outcomes: {
-    title: "Campaign Results",
-    points: [
-      "Successful public exhibition at university gallery space",
-      "Positive feedback from design community and AI ethicists",
-      "Development of a visual language for discussing AI credibility issues"
-    ]
-  }
+  actions: links
 };
 
 export default amiai;

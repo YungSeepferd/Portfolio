@@ -28,14 +28,14 @@ const SkillTag = ({ label, size = "medium", onClick, ...props }) => {
       size={size}
       onClick={onClick}
       sx={{
-        backgroundColor: theme.palette.primary.light, // Use theme reference
-        color: theme.palette.common.white, // Use theme reference
-        border: `1px solid ${theme.palette.primary.main}`, // Use theme reference
+        backgroundColor: theme.palette.accent.main,
+        color: theme.palette.accent.contrastText || '#0E1A27',
+        border: `1px solid ${theme.palette.accent.dark}`,
         fontWeight: theme.typography.fontWeightMedium,
         whiteSpace: 'nowrap',
         '&:hover': {
-          borderColor: theme.palette.secondary.main,
-          backgroundColor: theme.palette.primary.dark,
+          borderColor: theme.palette.accent.main,
+          backgroundColor: theme.palette.accent.light,
         },
         mx: theme.spacing(0.5),
         my: theme.spacing(0.5),

@@ -33,16 +33,22 @@ function TagList({ tags, onTagClick }) {
           label={tag}
           clickable={!!onTagClick}
           onClick={onTagClick ? () => onTagClick(tag) : undefined}
-          color="primary"
+          color="default"
           variant="outlined"
           sx={{
+            backgroundColor: theme.palette.accent.main,
+            color: theme.palette.accent.contrastText || '#0E1A27',
+            border: `1px solid ${theme.palette.accent.dark}`,
+            fontWeight: theme.typography.fontWeightMedium,
             transition: 'all 0.2s ease-in-out',
             '&:hover': {
               transform: 'translateY(-2px)',
               boxShadow: theme.palette.mode === 'dark'
                 ? '0 4px 8px rgba(0,0,0,0.4)'
                 : '0 4px 8px rgba(0,0,0,0.1)',
-            }
+              backgroundColor: theme.palette.accent.light,
+              borderColor: theme.palette.accent.main,
+            },
           }}
         />
       ))}

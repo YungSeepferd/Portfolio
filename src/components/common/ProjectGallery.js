@@ -6,7 +6,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ContentAwareImage from './ContentAwareImage';
 import VideoPlayer from './VideoPlayer';
-import { analyzeImage, isVideo, createVideoThumbnail } from '../../utils/mediaUtils';
+import { analyzeImage, isVideo } from '../../utils/mediaUtils';
 
 const ProjectGallery = ({ images = [], title = '' }) => {
   const theme = useTheme();
@@ -23,31 +23,24 @@ const ProjectGallery = ({ images = [], title = '' }) => {
       // Basic media info
       const isVideoFile = isVideo(media);
       const src = typeof media === 'string' ? media : media?.src || '';
-      
+      // Extract aspect if present
+      const aspect = typeof media === 'object' && media.aspect ? media.aspect : 'landscape';
       // For images, analyze orientation
-      let orientation = 'landscape';
+      let orientation = aspect;
       let thumbnailSrc = src;
-      
       if (isVideoFile) {
-        // Try to generate thumbnail for videos
-        const thumbnail = await createVideoThumbnail(media);
-        if (thumbnail) thumbnailSrc = thumbnail;
-        
-        // Videos are typically landscape, but we could detect this better
         orientation = 'landscape';
-      } else {
-        // Use image analyzer for images
+      } else if (!aspect) {
+        // Use image analyzer for images if aspect not set
         const analysis = analyzeImage(media);
         orientation = analysis.orientation;
       }
-      
       // Detect if it's a phone screenshot
       const isPhone = 
         orientation === 'portrait' || 
         src.toLowerCase().includes('phone') ||
         src.toLowerCase().includes('mobile') ||
         src.toLowerCase().includes('app');
-      
       return {
         id: index,
         original: media,
@@ -55,6 +48,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
         thumbnailSrc,
         isVideo: isVideoFile,
         orientation,
+        aspect,
         isPhone,
         isDesktop: !isPhone
       };
@@ -99,18 +93,6 @@ const ProjectGallery = ({ images = [], title = '' }) => {
 
   return (
     <Box sx={{ mt: 4, mb: 4 }}>
-      <Typography 
-        variant="h5" 
-        sx={{ 
-          mb: 3, 
-          textAlign: 'center',
-          color: theme.palette.text.secondary,
-          fontWeight: 500
-        }}
-      >
-        Project Gallery
-      </Typography>
-
       {/* Grid of thumbnails */}
       <Grid container spacing={2}>
         {mediaInfo.map((item) => (
@@ -120,12 +102,12 @@ const ProjectGallery = ({ images = [], title = '' }) => {
               sx={{
                 position: 'relative',
                 width: '100%',
-                // Calculate fixed aspect ratio for consistent thumbnails
-                paddingTop: item.isPhone ? '177.78%' : '75%', // 16:9 or 9:16 ratio
+                aspectRatio: item.aspect === 'portrait' ? 3/4 : item.aspect === 'square' ? 1 : 16/9,
                 overflow: 'hidden',
                 borderRadius: theme.shape.borderRadius,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
+                background: theme.palette.grey[100],
                 '&:hover': {
                   transform: 'scale(1.02)',
                   boxShadow: theme.shadows[4]
@@ -188,14 +170,16 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   alt={`${title} image ${item.id + 1}`}
                   containerHeight="100%"
                   containerWidth="100%"
-                  containerOrientation={item.isPhone ? 'portrait' : 'landscape'}
-                  objectFit="cover"
+                  containerOrientation={item.orientation}
+                  aspect={item.aspect}
+                  objectFit={item.orientation === 'portrait' ? 'contain' : 'cover'}
                   sx={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     width: '100%',
-                    height: '100%'
+                    height: '100%',
+                    background: theme.palette.grey[100]
                   }}
                 />
               )}
@@ -272,7 +256,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     padding: '64px 16px'
                   }}
                 >
-                  <Box sx={{ maxHeight: '80vh', maxWidth: '90%', position: 'relative' }}>
+                  <Box sx={{ maxHeight: '80vh', maxWidth: '90%', position: 'relative', width: selectedImage?.aspect === 'portrait' ? 'auto' : '100%' }}>
                     {selectedImage.isVideo ? (
                       <VideoPlayer
                         src={selectedImage.src}
@@ -283,13 +267,19 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                         controls={true}
                       />
                     ) : (
-                      <img
+                      <ContentAwareImage
                         src={selectedImage.src}
                         alt={`${title} full view`}
-                        style={{
-                          maxWidth: '100%',
+                        containerHeight="80vh"
+                        containerWidth={selectedImage.aspect === 'portrait' ? '60vw' : '100%'}
+                        aspect={selectedImage.aspect}
+                        objectFit={selectedImage.aspect === 'portrait' ? 'contain' : 'cover'}
+                        sx={{
+                          maxWidth: selectedImage.aspect === 'portrait' ? '60vw' : '100%',
                           maxHeight: '80vh',
-                          objectFit: 'contain'
+                          display: 'block',
+                          margin: '0 auto',
+                          background: theme.palette.grey[100]
                         }}
                       />
                     )}
@@ -346,6 +336,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   alt={`Thumbnail ${item.id + 1}`}
                   containerHeight="100%"
                   containerWidth="100%"
+                  aspect={item.aspect}
                   objectFit="cover"
                 />
               </Box>

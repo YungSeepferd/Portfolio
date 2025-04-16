@@ -9,6 +9,13 @@ export const ThemeContext = createContext({
   theme: darkTheme
 });
 
+// NOTE: For future extensibility, you can add more theme actions/values here, e.g.:
+// - setCustomPalette
+// - syncWithSystemTheme
+// - setPrimaryColor
+// - etc.
+// This will make it easier to add advanced theme features without refactoring consumers.
+
 /**
  * Custom hook to use theme mode functionality
  * Returns the theme mode ('light' or 'dark') and a function to toggle it

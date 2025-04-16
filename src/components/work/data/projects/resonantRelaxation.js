@@ -191,7 +191,22 @@ const resonantRelaxation = {
         </Typography>
       ),
       media: { type: 'image', src: AIAPIFewshotting },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      takeaways: [
+        "AI can enable real-time adaptation of haptic feedback",
+        "Procedural generation reduces development costs for haptic systems",
+        "Multimodal integration (audio-haptic) enhances relaxation efficacy",
+        "Biofeedback integration enhances personalization and user engagement",
+        "Open-source frameworks accelerate innovation in haptic design"
+      ],
+      outcomes: {
+        title: "Research Outcomes",
+        points: [
+          "Presented findings at EuroHaptics 2024 conference",
+          "Developed functioning prototype demonstrating procedural audio-haptic generation",
+          "Established a framework for future affective computing applications"
+        ]
+      }
     },
     {
       id: 'section-impact',
@@ -206,15 +221,15 @@ const resonantRelaxation = {
   ],
   
   galleryImages: [
-    ProcedurallyGenHaptic,
-    UIPrototype,
-    PrincipleSketch,
-    PrincipleVariants,
-    UIPrototypeSketch,
-    FrequencyTheory,
-    AIAPIFewshotting
+    { type: 'image', src: ProcedurallyGenHaptic, alt: 'Procedurally Generated Haptic Feedback' },
+    { type: 'image', src: UIPrototype, alt: 'UI Prototype of the Project' },
+    { type: 'image', src: PrincipleSketch, alt: 'Principle Sketch of the Project' },
+    { type: 'image', src: PrincipleVariants, alt: 'Principle Variants of the Project' },
+    { type: 'image', src: UIPrototypeSketch, alt: 'UI Prototype Sketch' },
+    { type: 'image', src: FrequencyTheory, alt: 'Frequency Theory Illustration' },
+    { type: 'image', src: AIAPIFewshotting, alt: 'AI API Few-shotting Process' }
   ],
-  technologies: ["React.js", "TensorFlow", "GPT-4 API", "Tone.js", "Web Audio API"],
+  technologies: ["React.js", "RNBO.js", "GPT-4 API", "Tone.js", "Bootstrap"],
   cardVariant: cardVariant,
   media: { type: 'image', src: ProcedurallyGenHaptic },
   featuredImages: {
@@ -223,24 +238,7 @@ const resonantRelaxation = {
     solution: UIPrototype,
     prototypeShowcase: [PrincipleVariants, UIPrototypeSketch, AIAPIFewshotting]
   },
-  links: links,
-  takeaways: [
-    "AI can enable real-time adaptation of haptic feedback",
-    "Procedural generation reduces development costs for haptic systems",
-    "Multimodal integration (audio-haptic) enhances relaxation efficacy",
-    "Biofeedback integration enhances personalization and user engagement",
-    "Open-source frameworks accelerate innovation in haptic design"
-  ],
-  
-  // Add outcomes object
-  outcomes: {
-    title: "Research Outcomes",
-    points: [
-      "Presented findings at EuroHaptics 2024 conference",
-      "Developed functioning prototype demonstrating procedural audio-haptic generation",
-      "Established a framework for future affective computing applications"
-    ]
-  }
+  links: links
 };
 
 export default resonantRelaxation;

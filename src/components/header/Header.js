@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import { AppBar, Toolbar, Button, Box, IconButton, Drawer, List, ListItem, Container } from '@mui/material';
+import { AppBar, Toolbar, Box, IconButton, Drawer, List, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -8,14 +8,8 @@ import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { useThemeMode } from '../../context/ThemeContext';
 import ThemeToggle from '../common/ThemeToggle';
-
-// Define navigation items
-const navItems = [
-  { name: 'Home', target: 'hero' },
-  { name: 'About', target: 'about' },
-  { name: 'Work', target: 'work' },
-  { name: 'Contact', target: 'contact', isCallToAction: true }
-];
+import { navItems, socialLinks } from '../../config/uiConfig';
+import NavLinks from './NavLinks';
 
 const Header = () => {
   const theme = useTheme();
@@ -23,13 +17,8 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   
-  // Use a ref to track if this is the first render
   const isFirstMount = React.useRef(true);
   
-  // Use fallback color if accent palette is not defined in the theme
-  const accentColor = theme.palette.accent?.main || theme.palette.primary.main;
-  
-  // Get standardized animation from theme - use useMemo to prevent recreation
   const headerAnimation = useMemo(() => ({
     initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
     animate: { y: 0, opacity: 1 },
@@ -41,7 +30,6 @@ const Header = () => {
   }), []);
 
   useEffect(() => {
-    // Update the ref after the first render
     if (isFirstMount.current) {
       isFirstMount.current = false;
     }
@@ -52,7 +40,6 @@ const Header = () => {
     
     window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // Initial scroll position check
     handleScroll();
 
     return () => {
@@ -64,10 +51,9 @@ const Header = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // Use theme-based colors for transparent header
   const transparentBgColor = mode === 'dark' 
-    ? 'rgba(10, 22, 40, 0.7)'  // Dark mode transparent background
-    : 'rgba(248, 250, 252, 0.7)'; // Light mode transparent background
+    ? 'rgba(10, 22, 40, 0.7)'  
+    : 'rgba(248, 250, 252, 0.7)';
 
   return (
     <motion.div
@@ -82,7 +68,7 @@ const Header = () => {
         sx={{
           backgroundColor: isScrolled 
             ? theme.palette.background.paper
-            : transparentBgColor, // Use theme-based transparent background
+            : transparentBgColor,
           transition: theme.transitions.create(
             ['background-color', 'box-shadow'],
             { duration: 0.3 }
@@ -110,7 +96,6 @@ const Header = () => {
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between', px: 0 }}>
-            {/* Logo/Brand */}
             <ScrollLink
               to="hero"
               spy={true}
@@ -125,8 +110,8 @@ const Header = () => {
                   fontWeight: 700,
                   fontSize: '1.5rem',
                   letterSpacing: '-0.5px',
-                  color: theme.palette.primary.main,
-                  paddingLeft: { xs: '8px', sm: '16px', md: '20px', lg: '32px' }, // Reduced padding
+                  color: theme.palette.text.primary,
+                  paddingLeft: { xs: '8px', sm: '16px', md: '20px', lg: '32px' },
                   transition: 'padding 0.2s',
                   display: 'flex',
                   alignItems: 'center',
@@ -134,92 +119,34 @@ const Header = () => {
                 }}
               >
                 Vincent Göke
-                <IconButton
-                  href="https://www.linkedin.com/in/vincent-g-193124194/"
-                  target="_blank"
-                  size="small"
-                  sx={{
-                    ml: 1,
-                    color: theme.palette.primary.main,
-                    backgroundColor: 'rgba(194,247,80,0.10)',
-                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
-                    p: 0.5
-                  }}
-                  aria-label="LinkedIn profile"
-                >
-                  <LinkedInIcon fontSize="small" />
-                </IconButton>
+                {socialLinks.map(link => link.icon === 'LinkedIn' && (
+                  <IconButton
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    size="small"
+                    sx={{
+                      ml: 1,
+                      color: theme.palette.secondary.dark,
+                      backgroundColor: 'rgba(194,247,80,0.10)',
+                      '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
+                      p: 0.5
+                    }}
+                    aria-label={link.ariaLabel}
+                  >
+                    <LinkedInIcon fontSize="small" />
+                  </IconButton>
+                ))}
               </Box>
             </ScrollLink>
 
-            {/* Desktop Navigation */}
-            <Box sx={{ 
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center', // Ensure vertical alignment
-              gap: 2, // Consistent spacing between items
-              paddingRight: { md: '24px', lg: '40px' }
-            }}>
-              {navItems.map((item, idx) => (
-                <ScrollLink
-                  key={item.target}
-                  to={item.target}
-                  spy={true}
-                  smooth={true}
-                  offset={-70}
-                  duration={500}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <Button
-                    variant={item.isCallToAction ? "contained" : "text"}
-                    color={item.isCallToAction ? "secondary" : "inherit"}
-                    sx={{
-                      ml: idx === 0 ? 0 : 2, // No margin for first item
-                      px: item.isCallToAction ? 3 : 2,
-                      py: item.isCallToAction ? 0.5 : 'auto',
-                      borderRadius: item.isCallToAction ? '50px' : 'default',
-                      position: 'relative',
-                      textTransform: 'none',
-                      fontWeight: 500,
-                      '&::after': !item.isCallToAction ? {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        width: 0,
-                        height: 2,
-                        backgroundColor: accentColor, // Use fallback here
-                        transition: 'width 0.3s ease',
-                      } : {},
-                      '&:hover': {
-                        backgroundColor: item.isCallToAction 
-                          ? theme.palette.secondary.dark
-                          : 'transparent',
-                        color: item.isCallToAction 
-                          ? theme.palette.secondary.contrastText
-                          : accentColor, // Use fallback here
-                        '&::after': !item.isCallToAction ? {
-                          width: '100%',
-                        } : {},
-                      },
-                      '&.active': {
-                        color: accentColor, // Use fallback here
-                        '&::after': !item.isCallToAction ? {
-                          width: '100%',
-                        } : {},
-                      }
-                    }}
-                  >
-                    {item.name}
-                  </Button>
-                </ScrollLink>
-              ))}
-              {/* Theme Toggle */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <NavLinks navItems={navItems} variant="desktop" />
               <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
                 <ThemeToggle mode={mode} onToggle={toggleTheme} />
               </Box>
             </Box>
 
-            {/* Mobile Navigation */}
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -233,7 +160,6 @@ const Header = () => {
         </Container>
       </AppBar>
 
-      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={mobileOpen}
@@ -272,47 +198,7 @@ const Header = () => {
           </Box>
 
           <List>
-            {navItems.map((item) => (
-              <ListItem 
-                key={item.name} 
-                disablePadding
-                sx={{ 
-                  justifyContent: 'center',
-                  mb: 1 
-                }}
-              >
-                <ScrollLink
-                  to={item.target}
-                  spy={true}
-                  smooth={true}
-                  offset={-70}
-                  duration={500}
-                  onClick={handleDrawerToggle}
-                  style={{ width: '100%', textAlign: 'center' }}
-                >
-                  <Button
-                    variant={item.isCallToAction ? "contained" : "text"}
-                    color={item.isCallToAction ? "secondary" : "inherit"}
-                    fullWidth
-                    sx={{
-                      py: 1.5,
-                      borderRadius: item.isCallToAction ? '50px' : 'default',
-                      textTransform: 'none',
-                      '&:hover': {
-                        backgroundColor: item.isCallToAction 
-                          ? theme.palette.secondary.dark
-                          : 'rgba(194, 247, 80, 0.08)',
-                        color: item.isCallToAction 
-                          ? theme.palette.secondary.contrastText
-                          : accentColor, // Use fallback here
-                      }
-                    }}
-                  >
-                    {item.name}
-                  </Button>
-                </ScrollLink>
-              </ListItem>
-            ))}
+            <NavLinks navItems={navItems} variant="mobile" onClick={handleDrawerToggle} />
           </List>
         </Box>
       </Drawer>

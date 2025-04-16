@@ -266,25 +266,40 @@ const greenWallet = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.exhibition },
-      layout: 'textRight'
+      layout: 'textRight',
+      takeaways: [
+        "Gamification can effectively drive sustainable behaviors",
+        "Creating mutual benefit is key to adoption of eco-friendly solutions",
+        "Visual feedback on environmental impact increases user motivation",
+        "Digital wallets can bridge economic and environmental incentives",
+        "Rapid prototyping techniques are essential for time-constrained projects"
+      ],
+      outcomes: {
+        title: "Project Achievements",
+        points: [
+          "First place in the Tourism Technology Festival 2023 Hackathon",
+          "Solution recommended for pilot implementation by Mastercard",
+          "Positive reception from local tourism stakeholders"
+        ]
+      }
     }
   ],
 
   galleryImages: [
-    media.images.overview,
-    media.images.prototypeUI,
-    media.images.phoneScreen1,
-    media.images.phoneScreen2,
-    media.images.phoneScreen3,
-    media.images.phoneScreen4,
-    media.images.shopOwnerInterface1,
-    media.images.shopOwnerInterface2,
-    media.images.conceptOverview1,
-    media.images.conceptOverview2,
-    media.images.hackathonTeam,
-    media.images.exhibition,
-    { type: 'video', src: media.videos.highlightReel },
-    { type: 'video', src: media.videos.presentation }
+    { type: 'image', src: media.images.overview, alt: 'Green Wallet overview' },
+    { type: 'image', src: media.images.prototypeUI, alt: 'Prototype UI' },
+    { type: 'image', src: media.images.phoneScreen1, alt: 'Phone Screen 1' },
+    { type: 'image', src: media.images.phoneScreen2, alt: 'Phone Screen 2' },
+    { type: 'image', src: media.images.phoneScreen3, alt: 'Phone Screen 3' },
+    { type: 'image', src: media.images.phoneScreen4, alt: 'Phone Screen 4' },
+    { type: 'image', src: media.images.shopOwnerInterface1, alt: 'Shop Owner Interface 1' },
+    { type: 'image', src: media.images.shopOwnerInterface2, alt: 'Shop Owner Interface 2' },
+    { type: 'image', src: media.images.conceptOverview1, alt: 'Concept Overview 1' },
+    { type: 'image', src: media.images.conceptOverview2, alt: 'Concept Overview 2' },
+    { type: 'image', src: media.images.hackathonTeam, alt: 'Hackathon Team' },
+    { type: 'image', src: media.images.exhibition, alt: 'Exhibition Photo' },
+    { type: 'video', src: media.videos.highlightReel, alt: 'Highlight Reel Video' },
+    { type: 'video', src: media.videos.presentation, alt: 'Presentation Video' }
   ],
   
   technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
@@ -331,22 +346,6 @@ const greenWallet = {
       openInPopup: true
     }
   ],
-  takeaways: [
-    "Gamification can effectively drive sustainable behaviors",
-    "Creating mutual benefit is key to adoption of eco-friendly solutions",
-    "Visual feedback on environmental impact increases user motivation",
-    "Digital wallets can bridge economic and environmental incentives",
-    "Rapid prototyping techniques are essential for time-constrained projects"
-  ],
-  
-  outcomes: {
-    title: "Project Achievements",
-    points: [
-      "First place in the Tourism Technology Festival 2023 Hackathon",
-      "Solution recommended for pilot implementation by Mastercard",
-      "Positive reception from local tourism stakeholders"
-    ]
-  }
 };
 
 export default greenWallet;

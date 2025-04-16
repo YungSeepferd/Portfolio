@@ -43,7 +43,8 @@ const ActionButton = ({
     if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
     if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
     
-    return color;
+    // Default to accent for all other cases
+    return 'accent';
   };
   
   const buttonColor = determineColor();

@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
+import { fadeInUp, staggerChildren } from '../../theme/animations';
 
 /**
  * ProjectGrid Component
@@ -10,24 +11,8 @@ import ProjectCard from './ProjectCard';
  */
 const ProjectGrid = ({ projects = [], onCardClick }) => {
   // Animation variants for staggered appearance
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
+  const containerVariants = staggerChildren;
+  const itemVariants = fadeInUp;
   
   if (!projects || projects.length === 0) {
     return (
