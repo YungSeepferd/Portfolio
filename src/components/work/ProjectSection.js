@@ -178,12 +178,8 @@ const ProjectSection = ({
       return (
         <Grid container spacing={4} sx={{ ...sx }} id={id}>
           <Grid item xs={12} md={7}>
-            {/* Heading and main content */}
-            {title && (
-              <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
-                {title}
-              </Typography>
-            )}
+            {/* Use headingElement to show section number and title */}
+            {headingElement}
             {content && (
               React.isValidElement(content)
                 ? content

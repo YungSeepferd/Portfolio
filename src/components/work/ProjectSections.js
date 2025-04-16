@@ -30,9 +30,10 @@ const ProjectSections = ({ project }) => {
           mediaData={section.media}
           layout={section.layout || (index % 2 === 0 ? 'textLeft' : 'textRight')}
           sectionIndex={index}
+          sectionNumber={index + 1} // <-- Ensure sectionNumber is always passed
           takeaways={index === sections.length - 1 ? takeaways : null}
           outcomes={index === sections.length - 1 ? outcomes : null}
-          type={section.type} // Pass the type prop
+          type={section.type}
           sx={{ mb: 6 }}
         />
       ))}
