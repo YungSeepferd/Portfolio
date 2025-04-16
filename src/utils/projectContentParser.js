@@ -23,6 +23,23 @@ export const processProjectContent = (project) => {
         };
       }
       
+      // Infer section type if not provided
+      let type = section.type;
+      const title = (section.title || '').toLowerCase();
+      if (!type) {
+        if (title.includes('research')) type = 'research';
+        else if (title.includes('metrics') || title.includes('results') || title.includes('findings')) type = 'metrics';
+        else if (title.includes('prototype') || title.includes('figma')) type = 'figmaEmbed';
+        else if (title.includes('methodology') || title.includes('process')) type = 'methodology';
+        else if (title.includes('timeline')) type = 'timeline';
+        else if (title.includes('comparison')) type = 'comparison';
+        else if (title.includes('links') || title.includes('resources')) type = 'links';
+        else if (title.includes('quote') || title.includes('testimonial')) type = 'quote';
+        else if (title.includes('summary')) type = 'summary';
+        else if (title.includes('video')) type = 'video';
+        // fallback: undefined
+      }
+
       // Process each section to ensure it has proper fields
       return {
         id: section.id || `section-${section.title?.toLowerCase().replace(/\s+/g, '-') || index}`,
@@ -30,6 +47,7 @@ export const processProjectContent = (project) => {
         content: section.content,
         media: section.media || section.image || null,
         layout: section.layout || (index % 2 === 0 ? 'textLeft' : 'textRight'),
+        type, // <-- add type
       };
     });
   } else if (project.content) {

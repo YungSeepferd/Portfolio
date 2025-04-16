@@ -36,18 +36,19 @@ function TagList({ tags, onTagClick }) {
           color="default"
           variant="outlined"
           sx={{
-            backgroundColor: theme.palette.accent.main,
-            color: theme.palette.accent.contrastText || '#0E1A27',
-            border: `1px solid ${theme.palette.accent.dark}`,
+            backgroundColor: 'transparent',
+            color: theme.palette.primary.main,
+            border: `1.5px solid ${theme.palette.primary.main}`,
             fontWeight: theme.typography.fontWeightMedium,
             transition: 'all 0.2s ease-in-out',
             '&:hover': {
-              transform: 'translateY(-2px)',
+              color: theme.palette.secondary.dark,
+              borderColor: theme.palette.secondary.dark,
+              backgroundColor: 'transparent',
               boxShadow: theme.palette.mode === 'dark'
                 ? '0 4px 8px rgba(0,0,0,0.4)'
                 : '0 4px 8px rgba(0,0,0,0.1)',
-              backgroundColor: theme.palette.accent.light,
-              borderColor: theme.palette.accent.main,
+              transform: 'translateY(-2px)',
             },
           }}
         />

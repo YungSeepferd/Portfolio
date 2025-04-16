@@ -140,13 +140,60 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
           {customComponent}
         </Box>
       );
+    case 'research':
+      return (
+        <Grid container spacing={4} sx={{ ...sx }} id={sectionId}>
+          <Grid item xs={12} md={7}>
+            {headingElement}
+            {content && (
+              React.isValidElement(content)
+                ? content
+                : <ProjectContentRenderer content={content} variant="body1" />
+            )}
+          </Grid>
+          <Grid item xs={12} md={5}>
+            <Box sx={{ p: 2, bgcolor: theme.palette.background.paper, borderRadius: 2 }}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>Highlighted Quotes</Typography>
+              <Typography variant="body2" color="text.secondary">"Empathy quote or persona card here..."</Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      );
+    case 'metrics':
+      return (
+        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={sectionId}>
+          {headingElement}
+          <Box sx={{ p: 2, bgcolor: theme.palette.success.light, borderRadius: 2, minWidth: 120 }}>
+            <Typography variant="h6">SUS: 75.38</Typography>
+            <Typography variant="caption">Usability Score</Typography>
+          </Box>
+          <Box sx={{ p: 2, bgcolor: theme.palette.info.light, borderRadius: 2, minWidth: 120 }}>
+            <Typography variant="h6">Trust: 5.82</Typography>
+            <Typography variant="caption">Post-Interaction</Typography>
+          </Box>
+        </Box>
+      );
+    case 'figmaEmbed':
+      return (
+        <Box sx={{ ...sx, width: '100%', textAlign: 'center' }} id={sectionId}>
+          {headingElement}
+          <Box sx={{ my: 2 }}>
+            <iframe
+              title="Figma Prototype"
+              src={typeof content === 'string' ? content : (media?.src || '')}
+              width="100%"
+              height="500"
+              style={{ border: 0, borderRadius: 8 }}
+              allowFullScreen
+            />
+          </Box>
+        </Box>
+      );
     case 'default':
     default:
-      // Default: Text and Media layout
       const isReverse = layout === 'textRight';
       const isTextOnly = layout === 'textOnly';
       const isMediaOnly = layout === 'mediaOnly';
-      // Prepare media element
       let mediaElement = null;
       if (Array.isArray(media) && media.length > 0) {
         mediaElement = <ProjectGallery images={media} title={title} />;
@@ -191,7 +238,6 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
           </Box>
         );
       }
-      // Prepare text content
       const textContentElement = (
         <Box
           component={motion.div}

@@ -8,9 +8,14 @@ export function getBarStyles(variant, theme) {
   if (variant === 'overlay') {
     return {
       chip: {
-        backgroundColor: theme.palette.accent.main,
-        color: theme.palette.accent.contrastText || '#0E1A27',
-        borderColor: theme.palette.accent.dark,
+        backgroundColor: 'transparent',
+        color: theme.palette.primary.main,
+        borderColor: theme.palette.primary.main,
+        '&:hover': {
+          color: theme.palette.secondary.dark,
+          borderColor: theme.palette.secondary.dark,
+          backgroundColor: 'transparent',
+        },
       },
       button: {
         color: theme.palette.accent.contrastText || '#0E1A27',
@@ -32,9 +37,14 @@ export function getBarStyles(variant, theme) {
   // Default (light/dark mode aware)
   return {
     chip: {
-      backgroundColor: theme.palette.accent.main,
-      color: theme.palette.accent.contrastText || '#0E1A27',
-      borderColor: theme.palette.accent.dark,
+      backgroundColor: 'transparent',
+      color: theme.palette.primary.main,
+      borderColor: theme.palette.primary.main,
+      '&:hover': {
+        color: theme.palette.secondary.dark,
+        borderColor: theme.palette.secondary.dark,
+        backgroundColor: 'transparent',
+      },
     },
     button: {
       color: theme.palette.accent.contrastText || '#0E1A27',

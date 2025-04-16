@@ -40,7 +40,19 @@ const TechBar = ({ technologies = [], onClick, variant = 'outlined', size = 'sma
               // Use theme in styles
               my: theme.spacing(0.5),
               fontSize: theme.typography.pxToRem(size === 'small' ? 12 : 14),
-              ...styles.chip,
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+              border: `1.5px solid ${theme.palette.primary.main}`,
+              fontWeight: theme.typography.fontWeightMedium,
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                color: theme.palette.secondary.dark,
+                borderColor: theme.palette.secondary.dark,
+                backgroundColor: theme.palette.primary.main,
+                boxShadow: theme.palette.mode === 'dark'
+                  ? '0 4px 8px rgba(0,0,0,0.4)'
+                  : '0 4px 8px rgba(0,0,0,0.1)',
+              },
             }}
           />
         ))}

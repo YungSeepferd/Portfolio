@@ -24,8 +24,15 @@ const ProjectSections = ({ project }) => {
       {sections.map((section, index) => (
         <ProjectSection
           key={`section-${section.id || index}`}
-          section={section}
+          id={section.id || `section-${index}`}
+          title={section.title}
+          content={section.content}
+          mediaData={section.media}
+          layout={section.layout || (index % 2 === 0 ? 'textLeft' : 'textRight')}
           sectionIndex={index}
+          takeaways={index === sections.length - 1 ? takeaways : null}
+          outcomes={index === sections.length - 1 ? outcomes : null}
+          type={section.type} // <-- pass type
           sx={{ mb: 6 }}
         />
       ))}
