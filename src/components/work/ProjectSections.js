@@ -32,7 +32,7 @@ const ProjectSections = ({ project }) => {
           sectionIndex={index}
           takeaways={index === sections.length - 1 ? takeaways : null}
           outcomes={index === sections.length - 1 ? outcomes : null}
-          type={section.type} // <-- pass type
+          type={section.type} // Pass the type prop
           sx={{ mb: 6 }}
         />
       ))}

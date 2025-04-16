@@ -10,49 +10,82 @@ import ProjectGallery from '../common/ProjectGallery';
 import ActionButtonGroup from '../common/ActionButtonGroup';
 
 /**
+ * Helper function to format section numbers
+ */
+function useSectionNumber(providedNumber, index) {
+  // If a section number is explicitly provided, use it
+  if (providedNumber) {
+    // Format as 2-digit string if it's a number
+    return typeof providedNumber === 'number' 
+      ? providedNumber.toString().padStart(2, '0') 
+      : providedNumber;
+  }
+  
+  // If no number provided but we have an index, generate a section number
+  if (typeof index === 'number') {
+    return (index + 1).toString().padStart(2, '0');
+  }
+  
+  // No section number available
+  return null;
+}
+
+/**
  * ProjectSection Component (Schema-based, type-driven)
  *
  * Renders a project section based on its type and schema.
  */
-const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
+const ProjectSection = ({
+  id,
+  title,
+  content,
+  mediaData,
+  takeaways,
+  outcomes,
+  layout = 'textLeft',
+  children,
+  sectionNumber,
+  sectionIndex,
+  fallbackContent,
+  type, // <-- add type prop
+  sx = {}
+}) => {
   const theme = useTheme();
-  if (!section) return null;
+  const isReverse = layout === 'textRight';
+  const isTextOnly = layout === 'textOnly';
+  const isMediaOnly = layout === 'mediaOnly';
 
-  // Destructure schema fields
-  const {
-    id,
-    type = 'default',
-    title,
-    subtitle,
-    content,
-    media,
-    layout = 'textLeft',
-    takeaways,
-    outcomes,
-    actions,
-    anchor,
-    navigable = true,
-    customComponent,
-    ...rest
-  } = section;
+  // Format section number (from prop or generated from index)
+  const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
 
-  // Section anchor for deep-linking
-  const sectionId = anchor || id || `section-${sectionIndex}`;
-
-  // Section heading
-  const headingElement = title && (
+  // Section heading (add section number above title)
+  const headingElement = (title || formattedNumber) && (
     <Box>
-      <Typography
-        variant="h3"
-        component="h3"
-        id={sectionId}
-        tabIndex={-1}
-        sx={{ mb: 2, scrollMarginTop: '80px' }}
-      >
-        {title}
-      </Typography>
-      {subtitle && (
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 2 }}>{subtitle}</Typography>
+      {formattedNumber && (
+        <Typography
+          variant="h6"
+          component="span"
+          sx={{
+            display: 'block',
+            color: theme.palette.primary.main,
+            fontWeight: 600,
+            mb: 1,
+            fontSize: '1.1rem',
+          }}
+        >
+          {formattedNumber}
+        </Typography>
+      )}
+      {title && (
+        <Typography
+          variant="h3"
+          component="h3"
+          id={id}
+          tabIndex={-1}
+          sx={{ mb: 2, scrollMarginTop: '80px' }}
+        >
+          {title}
+        </Typography>
       )}
     </Box>
   );
@@ -101,25 +134,25 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
     );
   };
 
-  // Type-based rendering
+  // --- Section type-based rendering ---
   switch (type) {
     case 'gallery':
       return (
-        <Box id={sectionId} sx={{ my: 6, ...sx }} role="region" aria-labelledby={sectionId}>
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
-          <ProjectGallery images={media} title={title} />
+          <ProjectGallery images={mediaData} title={title} />
         </Box>
       );
     case 'outcomes':
       return (
-        <Box id={sectionId} sx={{ my: 6, ...sx }} role="region" aria-labelledby={sectionId}>
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
           {renderOutcomesTakeaways()}
         </Box>
       );
     case 'takeaways':
       return (
-        <Box id={sectionId} sx={{ my: 6, ...sx }} role="region" aria-labelledby={sectionId}>
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
           {renderOutcomesTakeaways()}
         </Box>
@@ -127,7 +160,7 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
     case 'prototype':
       // Placeholder: Replace with your PrototypeShowcase component if available
       return (
-        <Box id={sectionId} sx={{ my: 6, ...sx }} role="region" aria-labelledby={sectionId}>
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
           {/* <PrototypeShowcase ... /> */}
           <Typography variant="body2">[Prototype embed coming soon]</Typography>
@@ -135,16 +168,22 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
       );
     case 'custom':
       return (
-        <Box id={sectionId} sx={{ my: 6, ...sx }} role="region" aria-labelledby={sectionId}>
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
-          {customComponent}
+          {children}
         </Box>
       );
     case 'research':
+      // Two-column with quotes (placeholder)
       return (
-        <Grid container spacing={4} sx={{ ...sx }} id={sectionId}>
+        <Grid container spacing={4} sx={{ ...sx }} id={id}>
           <Grid item xs={12} md={7}>
-            {headingElement}
+            {/* Heading and main content */}
+            {title && (
+              <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
+                {title}
+              </Typography>
+            )}
             {content && (
               React.isValidElement(content)
                 ? content
@@ -152,6 +191,7 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
             )}
           </Grid>
           <Grid item xs={12} md={5}>
+            {/* Placeholder for research quotes/personas */}
             <Box sx={{ p: 2, bgcolor: theme.palette.background.paper, borderRadius: 2 }}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>Highlighted Quotes</Typography>
               <Typography variant="body2" color="text.secondary">"Empathy quote or persona card here..."</Typography>
@@ -160,9 +200,14 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
         </Grid>
       );
     case 'metrics':
+      // Metrics/statistics cards (placeholder)
       return (
-        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={sectionId}>
-          {headingElement}
+        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={id}>
+          {title && (
+            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
+              {title}
+            </Typography>
+          )}
           <Box sx={{ p: 2, bgcolor: theme.palette.success.light, borderRadius: 2, minWidth: 120 }}>
             <Typography variant="h6">SUS: 75.38</Typography>
             <Typography variant="caption">Usability Score</Typography>
@@ -174,13 +219,18 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
         </Box>
       );
     case 'figmaEmbed':
+      // Figma iframe embed (placeholder)
       return (
-        <Box sx={{ ...sx, width: '100%', textAlign: 'center' }} id={sectionId}>
-          {headingElement}
+        <Box sx={{ ...sx, width: '100%', textAlign: 'center' }} id={id}>
+          {title && (
+            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
+              {title}
+            </Typography>
+          )}
           <Box sx={{ my: 2 }}>
             <iframe
               title="Figma Prototype"
-              src={typeof content === 'string' ? content : (media?.src || '')}
+              src={typeof content === 'string' ? content : (mediaData?.src || '')}
               width="100%"
               height="500"
               style={{ border: 0, borderRadius: 8 }}
@@ -189,16 +239,32 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
           </Box>
         </Box>
       );
-    case 'default':
     default:
-      const isReverse = layout === 'textRight';
-      const isTextOnly = layout === 'textOnly';
-      const isMediaOnly = layout === 'mediaOnly';
+      // ...existing code for default, textOnly, mediaOnly layouts...
+      const textContentElement = (
+        <Box
+          component={motion.div}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+          id={id}
+        >
+          {headingElement}
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {renderOutcomesTakeaways()}
+          {children && (
+            <Box sx={{ mt: 3 }}>
+              <ActionButtonGroup actions={children} layout="row" />
+            </Box>
+          )}
+        </Box>
+      );
       let mediaElement = null;
-      if (Array.isArray(media) && media.length > 0) {
-        mediaElement = <ProjectGallery images={media} title={title} />;
-      } else if (media?.src) {
-        const aspect = media.aspect || 'landscape';
+      if (Array.isArray(mediaData) && mediaData.length > 0) {
+        mediaElement = <ProjectGallery images={mediaData} title={title} />;
+      } else if (mediaData?.src) {
+        const aspect = mediaData.aspect || 'landscape';
         const aspectRatioMap = { portrait: 3/4, landscape: 16/9, square: 1 };
         const aspectRatio = aspectRatioMap[aspect] || aspectRatioMap.landscape;
         mediaElement = (
@@ -218,9 +284,9 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
               boxShadow: theme.shadows[3],
             }}
           >
-            {media.type === 'video' ? (
+            {mediaData.type === 'video' ? (
               <VideoPlayer
-                src={media.src}
+                src={mediaData.src}
                 containerHeight="100%"
                 containerWidth="100%"
                 controls={true}
@@ -228,8 +294,8 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
               />
             ) : (
               <ContentAwareImage
-                src={media.src}
-                alt={media.alt || title || 'Project media'}
+                src={mediaData.src}
+                alt={mediaData.alt || title || 'Project media'}
                 containerHeight="100%"
                 containerWidth="100%"
                 aspect={aspect}
@@ -238,33 +304,14 @@ const ProjectSection = ({ section, sectionIndex, sx = {} }) => {
           </Box>
         );
       }
-      const textContentElement = (
-        <Box
-          component={motion.div}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-          id={sectionId}
-        >
-          {headingElement}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {renderOutcomesTakeaways()}
-          {actions && actions.length > 0 && (
-            <Box sx={{ mt: 3 }}>
-              <ActionButtonGroup actions={actions} layout="row" />
-            </Box>
-          )}
-        </Box>
-      );
       if (isTextOnly) {
-        return <Box id={sectionId} sx={{ ...sx }}>{textContentElement}</Box>;
+        return <Box id={id} sx={{ ...sx }}>{textContentElement}</Box>;
       }
       if (isMediaOnly) {
-        return <Box id={sectionId} sx={{ ...sx }}>{mediaElement}</Box>;
+        return <Box id={id} sx={{ ...sx }}>{mediaElement}</Box>;
       }
       return (
-        <Grid container spacing={{ xs: 4, md: 6 }} sx={{ ...sx }} alignItems="center" id={sectionId} {...rest}>
+        <Grid container spacing={{ xs: 4, md: 6 }} sx={{ ...sx }} alignItems="center" id={id}>
           <Grid
             item
             xs={12}
