@@ -113,6 +113,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
     <Box
       className="about-tabs-container"
       ref={scrollRef}
+      id="about-tabs-container"
       sx={{
         width: '100%',
         overflowY: 'hidden',
@@ -122,6 +123,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
     >
       <Box
         className="about-tabs-section"
+        id="about-tabs-section"
         sx={{
           width: '100%',
           display: 'flex',
@@ -134,6 +136,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
       >
         {/* MODIFIED: Tabs navigation - Use Box with direct control */}
         <Box 
+          id="about-tabs-navigation"
           sx={{ 
             width: '100%',
             px: { 
@@ -175,6 +178,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
 
         {/* MODIFIED: Content area - Use Box with direct styling */}
         <Box 
+          id="about-tabs-content-area"
           sx={{ 
             width: '100%',
             px: { 
@@ -191,6 +195,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
             <Fade in={fadeIn} timeout={{ enter: 500, exit: 200 }} key={`tab-content-${tabIndex}`}>
               <Box
                 className="about-tab-content"
+                id={`about-tab-content-${tabIndex}`}
                 sx={{
                   width: '100%',
                   mx: { xs: 0, sm: 'auto' },

@@ -20,17 +20,14 @@ export function getBarStyles(variant, theme) {
       button: {
         color: theme.palette.accent.contrastText || '#0E1A27',
         borderColor: theme.palette.accent.dark,
-        backgroundColor: theme.palette.accent.main,
         '&:hover': {
-          backgroundColor: theme.palette.accent.light,
-          borderColor: theme.palette.accent.main,
         },
       },
       text: {
         color: theme.palette.accent.contrastText || '#0E1A27',
       },
       barBg: {
-        backgroundColor: 'rgba(0,0,0,0.75)',
+        backgroundColor: 'transparent',
       }
     };
   }
@@ -49,11 +46,6 @@ export function getBarStyles(variant, theme) {
     button: {
       color: theme.palette.accent.contrastText || '#0E1A27',
       borderColor: theme.palette.accent.dark,
-      backgroundColor: theme.palette.accent.main,
-      '&:hover': {
-        backgroundColor: theme.palette.accent.light,
-        borderColor: theme.palette.accent.main,
-      },
     },
     text: {
       color: theme.palette.accent.contrastText || '#0E1A27',

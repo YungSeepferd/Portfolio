@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import VideoPlayer from '../common/VideoPlayer';
@@ -146,6 +146,7 @@ const ProjectSection = ({
   // Helper for full-width content box with consistent side padding
   const fullWidthBox = (children) => (
     <Box
+      id={`project-section-root-${id || sectionIndex}`}
       sx={{
         maxWidth: '1200px',
         mx: 'auto',
@@ -415,7 +416,13 @@ const ProjectSection = ({
         return fullWidthBox(mediaElement);
       }
       return (
-        <Grid container spacing={{ xs: 4, md: 6 }} sx={{ mb: 6, maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }} alignItems="stretch" id={id}>
+        <Grid
+          id={`project-section-grid-${id || sectionIndex}`}
+          container
+          spacing={{ xs: 4, md: 6 }}
+          sx={{ mb: 6, maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }}
+          alignItems="stretch"
+        >
           <Grid
             item
             xs={12}

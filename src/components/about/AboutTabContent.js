@@ -39,6 +39,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
     >
       {/* Image section - REDUCED FROM 50% to 40% */}
       <Box
+        id={`about-tab-image-section-${tabIndex}`}
         sx={{
           flex: { 
             xs: '1', 
@@ -55,6 +56,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
       
       {/* Text content section - INCREASED TO 60% */}
       <Box
+        id={`about-tab-text-section-${tabIndex}`}
         sx={{
           flex: 1, // Will take remaining 60% in the flex container
           color: theme.palette.text.primary,

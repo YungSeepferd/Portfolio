@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Stack, Button, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import PropTypes from 'prop-types';
 import { getBarStyles } from '../../utils/getBarStyles';
+import ActionButton from './ActionButton';
 
 /**
  * ActionButtonGroup Component
@@ -41,6 +42,7 @@ const ActionButtonGroup = ({
   
   return (
     <Stack 
+      id="action-button-group"
       direction={direction}
       spacing={1.5}
       flexWrap={layout === 'grid' ? 'wrap' : 'nowrap'}
@@ -49,25 +51,32 @@ const ActionButtonGroup = ({
       sx={{
         gap: 1.5,
         width: '100%',
+        // Prevent hover background on Stack itself
+        backgroundColor: 'transparent',
+        '&:hover': {
+          backgroundColor: 'transparent'
+        },
         ...sx
       }}
     >
-      {visibleActions.map((action, index) => (
-        <Box key={`action-${index}`} sx={{ flexShrink: 0 }}>
-          <Button
-            href={action.url || action.href}
-            target={action.href ? '_blank' : undefined}
-            startIcon={action.icon}
-            variant={action.variant || variant}
-            color={action.color || 'accent'}
-            size={action.size || size}
-            sx={{ ...styles.button }}
-            aria-label={action.label}
-          >
-            {action.label}
-          </Button>
-        </Box>
-      ))}
+      {visibleActions.map((action, index) => {
+        // Normalize: if action.url exists and action.href does not, use url as href
+        const normalizedAction = {
+          ...action,
+          href: action.href || action.url
+        };
+        return (
+          <Box key={`action-${index}`} id={`action-button-box-${index}`} sx={{ flexShrink: 0 }}>
+            <ActionButton
+              {...normalizedAction}
+              variant={action.variant || variant}
+              
+              size={action.size || size}
+              sx={{ ...styles.button, ...action.sx }}
+            />
+          </Box>
+        );
+      })}
     </Stack>
   );
 };
@@ -93,7 +102,8 @@ ActionButtonGroup.propTypes = {
   layout: PropTypes.oneOf(['row', 'column', 'grid']),
   maxButtons: PropTypes.number,
   sx: PropTypes.object,
-  barVariant: PropTypes.string
+  barVariant: PropTypes.string,
+  id: PropTypes.string
 };
 
 export default ActionButtonGroup;

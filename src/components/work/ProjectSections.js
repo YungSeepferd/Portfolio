@@ -20,6 +20,7 @@ const ProjectSections = ({ project }) => {
   
   return (
     <Box
+      id="project-sections-container"
       sx={{
         display: 'flex',
         flexDirection: 'column',

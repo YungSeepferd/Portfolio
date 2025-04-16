@@ -92,12 +92,13 @@ const ProjectGallery = ({ images = [], title = '' }) => {
   const gridItemSize = isMobile ? 6 : 3;
 
   return (
-    <Box sx={{ mt: 4, mb: 4 }}>
+    <Box id="project-gallery-root" sx={{ mt: 4, mb: 4 }}>
       {/* Grid of thumbnails */}
-      <Grid container spacing={2}>
+      <Grid container spacing={2} id="project-gallery-grid">
         {mediaInfo.map((item) => (
           <Grid item xs={6} sm={4} md={gridItemSize} key={item.id}>
             <Box
+              id={`project-gallery-thumb-${item.id}`}
               onClick={() => handleImageClick(item)}
               sx={{
                 position: 'relative',
@@ -201,6 +202,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
         }}
       >
         <Box
+          id="project-gallery-overlay-header"
           sx={{
             position: 'fixed',
             top: 0,
@@ -220,7 +222,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
           </IconButton>
         </Box>
 
-        <DialogContent sx={{ p: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <DialogContent id="project-gallery-overlay-content" sx={{ p: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Image viewer with navigation */}
           <Box sx={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Previous button */}
@@ -306,6 +308,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
 
           {/* Thumbnail strip for all images */}
           <Box
+            id="project-gallery-overlay-thumbnails"
             sx={{
               width: '100%',
               p: 2,
@@ -318,6 +321,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
             {mediaInfo.map((item) => (
               <Box
                 key={item.id}
+                id={`project-gallery-overlay-thumb-${item.id}`}
                 onClick={() => setSelectedImage(item)}
                 sx={{
                   width: item.isPhone ? 60 : 100,

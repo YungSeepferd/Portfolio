@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Typography, useTheme } from '@mui/material';
+import { Box, Divider, Typography, useTheme, Paper } from '@mui/material';
 // Removed unused imports: motion, ProjectHeader, ProjectLinks, TechBar
 import ProjectSections from './ProjectSections';
 import PrototypeShowcase from './PrototypeShowcase';
@@ -172,7 +172,7 @@ const ProjectFullContent = ({ project }) => {
   };
   
   return (
-    <Box className="project-full-content" sx={{ 
+    <Box id="project-full-content-root" className="project-full-content" sx={{ 
       width: '100%', 
       height: '100%', 
       overflowY: 'auto',
@@ -220,7 +220,7 @@ const ProjectFullContent = ({ project }) => {
       
       <Divider sx={{ borderColor: theme.palette.divider }} />
       
-      <Box sx={{ 
+      <Paper id="project-full-content-paper" sx={{ 
         p: { xs: 2, sm: 3, md: 4 },
         backgroundColor: theme.palette.background.paper
       }}>
@@ -234,7 +234,7 @@ const ProjectFullContent = ({ project }) => {
             url={project.prototype}
           />
         )}
-      </Box>
+      </Paper>
     </Box>
   );
 };

@@ -89,6 +89,7 @@ const AboutCard = ({
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={title ? `About card: ${title}` : "About card"}
+      id={`about-card-root${title ? '-' + title.toLowerCase().replace(/\s+/g, '-') : ''}`}
       sx={{
         ...sx,
         width: '100%',
@@ -100,6 +101,7 @@ const AboutCard = ({
       {...props}
     >
       <Box
+        id={`about-card-layout${title ? '-' + title.toLowerCase().replace(/\s+/g, '-') : ''}`}
         sx={{
           display: 'flex',
           flexDirection: {
@@ -114,6 +116,7 @@ const AboutCard = ({
         {/* Image Container */}
         {image && !imageError && (
           <Box
+            id={`about-card-image-container${title ? '-' + title.toLowerCase().replace(/\s+/g, '-') : ''}`}
             sx={{
               position: 'relative',
               flex: {
@@ -179,6 +182,7 @@ const AboutCard = ({
         
         {/* Content Container */}
         <Box
+          id={`about-card-content-container${title ? '-' + title.toLowerCase().replace(/\s+/g, '-') : ''}`}
           sx={{
             flex: 1,
             p: isTransparent ? theme.spacing(3, 0) : theme.spacing(4),

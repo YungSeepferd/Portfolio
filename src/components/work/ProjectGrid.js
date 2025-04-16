@@ -33,6 +33,7 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
       sx={{ width: '100%', mt: 4 }}
     >
       <Grid
+        id="project-grid-root"
         container
         spacing={{ xs: 2, sm: 3, md: 4 }}
       >

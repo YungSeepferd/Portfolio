@@ -145,7 +145,7 @@ const ProjectModal = ({
                   if (contentRef.current) contentRef.current.scrollTop = 0;
                 }}
                 sx={{
-                  color: theme.palette.accent.main,
+                  color: theme.palette.accent.dark,
                   backgroundColor: 'rgba(0,0,0,0.08)',
                   boxShadow: theme.shadows[2],
                   borderRadius: theme.shape.borderRadius,
@@ -175,11 +175,12 @@ const ProjectModal = ({
             size="large"
             sx={{
               position: 'absolute',
+              mr: 5,
               top: 16,
               right: 16,
               zIndex: 20,
               color: theme.palette.grey[900],
-              backgroundColor: theme.palette.background.paper,
+              backgroundColor: theme.palette.primary.main,
               boxShadow: theme.shadows[2],
               borderRadius: theme.shape.borderRadius,
               '&:hover': {

@@ -64,6 +64,7 @@ const ProjectActionsBar = ({ technologies = [], links = [], barVariant = 'defaul
           size="small"
           variant="outlined"
           barVariant={barVariant}
+          forceColor="secondary"
           sx={{
             ...styles.button,
             ml: !isMobile ? 'auto' : 0,
@@ -75,13 +76,24 @@ const ProjectActionsBar = ({ technologies = [], links = [], barVariant = 'defaul
               py: 0.5,
               color: theme.palette.secondary.dark,
               borderColor: theme.palette.secondary.dark,
-              backgroundColor: 'rgba(255,255,255,0.04)',
+              background: 'transparent',
+              backgroundColor: 'transparent',
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.18)',
+                background: 'transparent',
+                backgroundColor: 'transparent',
                 borderColor: theme.palette.secondary.dark,
-                color: theme.palette.secondary.main,
               },
-            } : {},
+            } : {
+              color: theme.palette.secondary.dark,
+              borderColor: theme.palette.secondary.dark,
+              background: 'transparent',
+              backgroundColor: 'transparent',
+              '&:hover': {
+                background: 'transparent',
+                backgroundColor: 'transparent',
+                borderColor: theme.palette.secondary.dark,
+              },
+            },
           }}
         />
       )}

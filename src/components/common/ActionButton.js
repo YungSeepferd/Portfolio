@@ -16,6 +16,7 @@ import { useModalContext } from '../../context/ModalContext';
  * @param {Object} props.sx - Additional styles
  * @param {boolean} props.openInPopup - Whether to open in a popup
  * @param {string} props.contentType - Type of content ('pdf', 'iframe', 'external')
+ * @param {string} props.forceColor - Force a specific color for the button
  */
 const ActionButton = ({ 
   label, 
@@ -28,13 +29,15 @@ const ActionButton = ({
   sx = {},
   openInPopup = true,
   contentType = 'external',
+  forceColor, // new prop
   ...props 
 }) => {
   const theme = useTheme();
   const { openPdf, openIframe, openExternalContent } = useModalContext();
   
-  // Determine color based on label content
+  // Determine color based on label content, unless forceColor is set
   const determineColor = () => {
+    if (forceColor) return forceColor;
     if (!label) return color;
     
     const normalizedLabel = label.toLowerCase();
@@ -95,6 +98,7 @@ const ActionButton = ({
   
   return (
     <Button
+      id={`action-button-${label ? label.toLowerCase().replace(/\s+/g, '-') : 'unnamed'}`}
       variant={variant}
       size={size}
       color={buttonColor}
@@ -122,7 +126,9 @@ ActionButton.propTypes = {
   onClick: PropTypes.func,
   sx: PropTypes.object,
   openInPopup: PropTypes.bool,
-  contentType: PropTypes.oneOf(['pdf', 'iframe', 'external'])
+  contentType: PropTypes.oneOf(['pdf', 'iframe', 'external']),
+  forceColor: PropTypes.string, // new prop
+  id: PropTypes.string
 };
 
 export default ActionButton;
