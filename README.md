@@ -122,6 +122,10 @@ The portfolio uses a custom theme system built on top of Material UI's theming c
    - Uses proper theme fallback values
    - Works with canvas instead of ThreeJS for better performance
 
+## Summary of Discussion
+
+1. 
+
 ## Installation
 
 To install all the required dependencies for this portfolio project, follow these steps:

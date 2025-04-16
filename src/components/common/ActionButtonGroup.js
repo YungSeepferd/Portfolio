@@ -31,15 +31,20 @@ const ActionButtonGroup = ({
   const theme = useTheme();
   const styles = getBarStyles(barVariant, theme);
 
-  // Don't render if no actions
+  // 1. WHEN: Only render if there are actions to show
   if (!actions || actions.length === 0) return null;
   
-  // Limit number of buttons if specified
+  // 2. HOW: Limit number of buttons if specified
   const visibleActions = actions.slice(0, maxButtons);
   
-  // Determine direction based on layout
+  // 3. HOW: Determine direction based on layout prop
   const direction = layout === 'column' ? 'column' : 'row';
   
+  // 4. HOW: Render a Stack (from MUI) to layout the buttons
+  //    - Uses direction, spacing, flexWrap, justifyContent, alignItems, and sx for styling
+  //    - sx allows for custom styles, including hover behavior
+  //    - getBarStyles(barVariant, theme) provides additional style variants for the bar and buttons
+
   return (
     <Stack 
       id="action-button-group"
@@ -50,27 +55,29 @@ const ActionButtonGroup = ({
       alignItems={layout === 'column' ? 'flex-start' : 'center'}
       sx={{
         gap: 1.5,
-        width: '100%',
-        // Prevent hover background on Stack itself
         backgroundColor: 'transparent',
         '&:hover': {
           backgroundColor: 'transparent'
         },
+        // Remove absolute positioning, let parent control placement
         ...sx
       }}
     >
       {visibleActions.map((action, index) => {
-        // Normalize: if action.url exists and action.href does not, use url as href
+        // 5. HOW: Normalize action object (url/href)
         const normalizedAction = {
           ...action,
           href: action.href || action.url
         };
+        // 6. HOW: Each button is wrapped in a Box for layout control
+        //    - ActionButton receives variant, color, size, and sx (styles)
+        //    - Styles are merged from getBarStyles and action-specific sx
         return (
           <Box key={`action-${index}`} id={`action-button-box-${index}`} sx={{ flexShrink: 0 }}>
             <ActionButton
               {...normalizedAction}
               variant={action.variant || variant}
-              
+              color={action.color || 'accent'}
               size={action.size || size}
               sx={{ ...styles.button, ...action.sx }}
             />
