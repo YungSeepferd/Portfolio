@@ -1,28 +1,39 @@
-import React, { useState, useRef } from 'react';
-import { Box, Typography, Container, useTheme } from '@mui/material';
+import React, { useState, useRef, useEffect } from 'react';
+import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { motion } from 'framer-motion';
-import { aboutData } from './AboutData';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
+import { aboutData } from './AboutData'; // Import directly for immediate use
 
 /**
  * AboutSection Component
- * 
- * Main container for the About section of the portfolio.
- * Displays a heading and the AboutTabNavigator for browsing
- * different sections of information.
- * 
- * @component
+ * Uses direct data import instead of async loading
  */
 const AboutSection = () => {
   const [activeSection, setActiveSection] = useState(0);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
   
-  /**
-   * Updates the active section when tab navigation occurs
-   * @param {number} newSection - Index of the new active section
-   */
+  // Use direct data import instead of useDataLoader for about section
+  useEffect(() => {
+    // Simulate a short loading delay for UI consistency
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Log the data state
+  useEffect(() => {
+    console.log('About section state:', { 
+      isLoading,
+      dataLength: aboutData?.length || 0,
+    });
+  }, [isLoading]);
+  
   const handleSectionChange = (newSection) => {
     try {
       if (newSection >= 0 && newSection < aboutData.length) {
@@ -48,6 +59,9 @@ const AboutSection = () => {
     }
   };
   
+  // Check if we have valid data
+  const hasValidData = Array.isArray(aboutData) && aboutData.length > 0;
+  
   return (
     <ErrorBoundary componentName="AboutSection">
       <Box
@@ -57,11 +71,22 @@ const AboutSection = () => {
           width: '100%',
           backgroundColor: theme.palette.background.default,
           position: 'relative',
-          // Remove custom spacing values and rely on global theme settings
+          py: 8,
         }}
       >
-        {/* Section Header */}
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 5 } }}> {/* Match container padding */}
+        {/* Header section */}
+        <Box 
+          sx={{ 
+            width: '100%',
+            px: { 
+              xs: '20px',
+              sm: '30px',
+              md: '40px',
+              lg: '50px',
+            },
+            boxSizing: 'border-box',
+          }}
+        >
           <motion.div
             variants={sectionAnimation}
             initial="hidden"
@@ -98,14 +123,62 @@ const AboutSection = () => {
               </Typography>
             </Box>
           </motion.div>
-        </Container>
+        </Box>
         
-        {/* Tab Navigation & Content */}
-        <AboutTabNavigator 
-          ref={tabNavigatorRef} 
-          onSectionChange={handleSectionChange}
-          currentSection={activeSection}
-        />
+        {/* Render loading state or content */}
+        {isLoading ? (
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              justifyContent: 'center', 
+              alignItems: 'center',
+              minHeight: '400px',
+              gap: 2
+            }}
+          >
+            <CircularProgress color="primary" />
+            <Typography variant="body2" color="text.secondary">
+              Loading content...
+            </Typography>
+          </Box>
+        ) : !hasValidData ? (
+          <Box 
+            sx={{ 
+              textAlign: 'center', 
+              p: 4, 
+              minHeight: '400px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              No Content Available
+            </Typography>
+            <Typography variant="body1">
+              We couldn't find any content to display in this section.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<RefreshIcon />}
+              onClick={() => window.location.reload()}
+              sx={{ mt: 3 }}
+            >
+              Reload Page
+            </Button>
+          </Box>
+        ) : (
+          /* Tab Navigation & Content */
+          <AboutTabNavigator 
+            ref={tabNavigatorRef} 
+            onSectionChange={handleSectionChange}
+            currentSection={activeSection}
+            aboutData={aboutData}
+          />
+        )}
       </Box>
     </ErrorBoundary>
   );

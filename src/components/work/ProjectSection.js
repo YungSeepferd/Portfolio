@@ -1,196 +1,251 @@
 import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
-import { isVideo } from '../../utils/mediaHelper';
 import VideoPlayer from '../common/VideoPlayer';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import ProjectContentRenderer from './ProjectContentRenderer';
 
 /**
  * ProjectSection Component
- * 
- * Displays a section of a project with consistent formatting including:
- * - Section number
- * - Section title
- * - Content (React nodes or text)
- * - Media (image or video) with proper formatting
- * 
- * @param {Object} props
- * @param {string|number} props.sectionNumber - The section number (e.g., "01", "02")
- * @param {string} props.title - The section title
- * @param {string} props.titleVariant - MUI Typography variant for the title
- * @param {string} props.titleComponent - HTML element to use for the title
- * @param {React.ReactNode} props.content - The section content
- * @param {string|Object|Array} props.imageData - The image or video to display
- * @param {string} props.direction - Layout direction ("default" or "reverse")
- * @param {string} props.headingColor - Color for the section heading
- * @param {string} props.accentColor - Accent color for the section number
- * @param {React.ReactNode} props.fallbackContent - Content to display if no content is provided
+ *
+ * Displays a single section of a project, supporting alternating text/media layouts,
+ * and rendering key takeaways or project outcomes.
  */
 const ProjectSection = ({
-  sectionNumber,
+  id,
   title,
-  titleVariant = 'h3',
-  titleComponent = 'h3',
   content,
-  imageData,
-  direction = 'default',
-  headingColor,
-  accentColor,
-  fallbackContent
+  mediaData, // Expects { type: 'image'/'video', src: '...', alt: '...' }
+  takeaways, // Array of strings or objects for key takeaways
+  outcomes, // Object { title (optional), points: [] } for project outcomes
+  layout = 'textLeft', // 'textLeft', 'textRight', 'textOnly', 'mediaOnly'
+  fallbackContent,
+  children,
+  sectionNumber, // Section number for display (01, 02, etc.)
+  sectionIndex, // Alternative: automatically generate section number from index
+  sx = {}
 }) => {
   const theme = useTheme();
-  
-  // Format section number
-  const formattedNumber = typeof sectionNumber === 'number' 
-    ? sectionNumber.toString().padStart(2, '0')
-    : sectionNumber || "01";
-  
-  // Determine if media is a video
-  const isMediaVideo = imageData && (
-    (typeof imageData === 'object' && imageData.type === 'video') ||
-    (typeof imageData === 'string' && isVideo(imageData))
-  );
-  
-  // Extract video source if media is a video
-  const videoSrc = isMediaVideo 
-    ? (typeof imageData === 'string' ? imageData : imageData.src)
-    : null;
-  
-  // Extract image source if media is an image
-  const imageSrc = !isMediaVideo && imageData
-    ? (typeof imageData === 'string' 
-       ? imageData 
-       : Array.isArray(imageData) 
-         ? (typeof imageData[0] === 'string' ? imageData[0] : imageData[0]?.src) 
-         : imageData?.src)
-    : null;
-  
-  // Determine layout based on direction prop
-  const isReverse = direction === 'reverse';
-  
-  // Create heading element that will be included with content
-  const headingElement = (
+  const isReverse = layout === 'textRight';
+  const isTextOnly = layout === 'textOnly';
+  const isMediaOnly = layout === 'mediaOnly';
+
+  // Format section number (from prop or generated from index)
+  const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
+
+  // Animation variants
+  const textAnimation = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  };
+  const mediaAnimation = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
+  };
+
+  // Prepare heading element
+  const headingElement = title ? (
     <Box>
       {/* Section number */}
-      <Typography 
-        variant="h5" 
-        sx={{ 
-          color: accentColor || theme.palette.primary.main,
-          fontWeight: 600,
-          mb: 2
-        }}
-      >
-        {formattedNumber}
-      </Typography>
+      {formattedNumber && (
+        <Typography
+          variant="h6"
+          component="span"
+          sx={{
+            display: 'block',
+            color: theme.palette.primary.main,
+            fontWeight: 600,
+            mb: 1,
+            fontSize: '1.1rem',
+          }}
+        >
+          {formattedNumber}
+        </Typography>
+      )}
       
       {/* Section title */}
-      <Typography 
-        variant={titleVariant} 
-        component={titleComponent} 
-        sx={{ 
+      <Typography
+        variant="h4"
+        component="h3"
+        sx={{
           mb: 3,
-          color: headingColor || theme.palette.text.primary
+          fontWeight: 600,
+          color: theme.palette.text.primary,
         }}
       >
         {title}
       </Typography>
     </Box>
-  );
-  
-  return (
-    <Box 
-      component="section"
-      sx={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        py: 4
+  ) : null;
+
+  // Prepare media element
+  const mediaElement = mediaData?.src ? (
+    <Box
+      component={motion.div}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={mediaAnimation}
+      sx={{
+        width: '100%',
+        height: { xs: '300px', sm: '400px', md: 'auto' }, // Adjust height for different screens
+        minHeight: { md: '400px' },
+        maxHeight: { md: '600px' }, // Limit max height on larger screens
+        borderRadius: theme.shape.borderRadius,
+        overflow: 'hidden',
+        boxShadow: theme.shadows[3],
       }}
     >
-      {/* Content and media in responsive layout */}
-      <Box 
-        sx={{ 
-          display: 'grid',
-          gridTemplateColumns: { 
-            xs: '1fr', 
-            md: imageData ? '1fr 1fr' : '1fr' 
-          },
-          gap: 4,
-          '& > *:nth-of-type(1)': {
-            order: { 
-              xs: 0, 
-              md: isReverse && imageData ? 1 : 0 
-            }
-          },
-          '& > *:nth-of-type(2)': {
-            order: { 
-              xs: 1, 
-              md: isReverse && imageData ? 0 : 1 
-            }
-          }
-        }}
-      >
-        {/* Text content with heading */}
-        <Box
-          component={motion.div}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          {/* Include heading with content */}
-          {headingElement}
+      {mediaData.type === 'video' ? (
+        <VideoPlayer
+          src={mediaData.src}
+          containerHeight="100%"
+          containerWidth="100%"
+          controls={true}
+          muted={true}
+        />
+      ) : (
+        <ContentAwareImage
+          src={mediaData.src}
+          alt={mediaData.alt || title || 'Project media'}
+          containerHeight="100%"
+          containerWidth="100%"
+        />
+      )}
+    </Box>
+  ) : null;
 
-          {/* Content */}
-          {content ? (
-            <>{content}</>
-          ) : fallbackContent ? (
-            <>{fallbackContent}</>
-          ) : (
-            <Typography variant="body1">
-              This section provides details about {title.toLowerCase()}.
-            </Typography>
-          )}
+  // Prepare text content element, including children, content, takeaways and outcomes
+  const textContentElement = (
+    <Box
+      component={motion.div}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={textAnimation}
+      id={id}
+    >
+      {/* Include heading */}
+      {headingElement}
+
+      {/* Direct children if provided */}
+      {children && <>{children}</>}
+
+      {/* Render content using ProjectContentRenderer if it's not already a React element */}
+      {content && (
+        React.isValidElement(content) 
+          ? content 
+          : <ProjectContentRenderer content={content} variant="body1" />
+      )}
+
+      {/* Render Key Takeaways if provided */}
+      {takeaways && takeaways.length > 0 && (
+        <Box sx={{ mt: content ? 3 : 0 }}>
+          <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+            Key Takeaways
+          </Typography>
+          <List dense disablePadding>
+            {takeaways.map((item, index) => (
+              <ListItem key={index} disableGutters>
+                <ListItemIcon sx={{ minWidth: '32px' }}>
+                  <StarBorderIcon fontSize="small" color="primary" />
+                </ListItemIcon>
+                <ListItemText primary={item} primaryTypographyProps={{ variant: 'body1' }} />
+              </ListItem>
+            ))}
+          </List>
         </Box>
-        
-        {/* Media content (if provided) */}
-        {imageData && (
-          <Box
-            component={motion.div}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-            sx={{ 
-              height: { xs: '250px', sm: '300px', md: '100%' },
-              minHeight: { md: '300px' },
-              borderRadius: theme.shape.borderRadius,
-              overflow: 'hidden',
-              boxShadow: theme.shadows[2]
-            }}
-          >
-            {isMediaVideo ? (
-              <VideoPlayer
-                src={videoSrc}
-                title={`${title} video`}
-                autoplay={false}
-                loop={true}
-                controls={true}
-                height="100%"
-              />
-            ) : (
-              <ContentAwareImage
-                imageData={imageData}
-                src={imageSrc}
-                alt={`${title}`}
-                containerHeight="100%"
-                containerOrientation="landscape"
-              />
-            )}
-          </Box>
-        )}
-      </Box>
+      )}
+
+      {/* Render Project Outcomes if provided */}
+      {outcomes && outcomes.points && outcomes.points.length > 0 && (
+        <Box sx={{ mt: (content || (takeaways && takeaways.length > 0)) ? 3 : 0 }}>
+          <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+            {outcomes.title || "Project Outcomes"}
+          </Typography>
+          <List dense disablePadding>
+            {outcomes.points.map((point, index) => (
+              <ListItem key={index} disableGutters>
+                <ListItemIcon sx={{ minWidth: '32px' }}>
+                  <CheckCircleOutlineIcon fontSize="small" color="success" />
+                </ListItemIcon>
+                <ListItemText primary={point} primaryTypographyProps={{ variant: 'body1' }} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      )}
+
+      {/* Fallback Content */}
+      {!children && !content && (!takeaways || takeaways.length === 0) && (!outcomes || !outcomes.points || outcomes.points.length === 0) && fallbackContent && (
+        <>{fallbackContent}</>
+      )}
+
+      {/* Default Fallback if nothing else is provided */}
+      {!children && !content && (!takeaways || takeaways.length === 0) && (!outcomes || !outcomes.points || outcomes.points.length === 0) && !fallbackContent && !isMediaOnly && (
+        <Typography variant="body1" color="text.secondary">
+          Details for this section are currently unavailable.
+        </Typography>
+      )}
     </Box>
   );
+
+  // Render based on layout
+  if (isTextOnly) {
+    return <Box id={id} sx={{ ...sx }}>{textContentElement}</Box>;
+  }
+
+  if (isMediaOnly) {
+    return <Box id={id} sx={{ ...sx }}>{mediaElement}</Box>;
+  }
+
+  // Default: Text and Media layout
+  return (
+    <Grid container spacing={{ xs: 4, md: 6 }} sx={{ ...sx }} alignItems="center" id={id}>
+      {/* Text Column */}
+      <Grid
+        item
+        xs={12}
+        md={mediaElement ? 6 : 12} // Take full width if no media
+        order={{ xs: 1, md: isReverse ? 2 : 1 }} // Order changes based on layout
+      >
+        {textContentElement}
+      </Grid>
+
+      {/* Media Column */}
+      {mediaElement && (
+        <Grid
+          item
+          xs={12}
+          md={6}
+          order={{ xs: 2, md: isReverse ? 1 : 2 }} // Order changes based on layout
+        >
+          {mediaElement}
+        </Grid>
+      )}
+    </Grid>
+  );
 };
+
+// Helper function to format section numbers
+function useSectionNumber(providedNumber, index) {
+  // If a section number is explicitly provided, use it
+  if (providedNumber) {
+    // Format as 2-digit string if it's a number
+    return typeof providedNumber === 'number' 
+      ? providedNumber.toString().padStart(2, '0') 
+      : providedNumber;
+  }
+  
+  // If no number provided but we have an index, generate a section number
+  if (typeof index === 'number') {
+    return (index + 1).toString().padStart(2, '0');
+  }
+  
+  // No section number available
+  return null;
+}
 
 export default ProjectSection;

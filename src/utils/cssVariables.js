@@ -60,4 +60,85 @@ const CSSVariables = () => {
   return null;
 };
 
-export default CSSVariables;
+/**
+ * CSS Variables
+ * 
+ * This file exports CSS variables that sync with the theme
+ * for consistent styling across both MUI and custom CSS components.
+ */
+
+// Create CSS variables function that accepts theme
+export const createCssVariables = (theme) => {
+  if (!theme) {
+    console.warn('No theme provided to createCssVariables');
+    return {};
+  }
+  
+  // Extract layout values from theme
+  const layoutVars = {
+    maxContentWidth: theme.layout?.maxContentWidth || '1200px',
+    contentPaddingXs: theme.layout?.contentPadding?.xs || '20px',
+    contentPaddingSm: theme.layout?.contentPadding?.sm || '30px',
+    contentPaddingMd: theme.layout?.contentPadding?.md || '40px',
+    contentPaddingLg: theme.layout?.contentPadding?.lg || '50px',
+  };
+  
+  // Create CSS variables object
+  return {
+    // Layout
+    '--max-content-width': layoutVars.maxContentWidth,
+    '--content-padding-xs': layoutVars.contentPaddingXs,
+    '--content-padding-sm': layoutVars.contentPaddingSm,
+    '--content-padding-md': layoutVars.contentPaddingMd,
+    '--content-padding-lg': layoutVars.contentPaddingLg,
+    
+    // Center alignment helper
+    '--layout-centered': {
+      width: '100%',
+      maxWidth: layoutVars.maxContentWidth,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    
+    // Responsive padding helper
+    '--content-padding': {
+      paddingLeft: layoutVars.contentPaddingXs,
+      paddingRight: layoutVars.contentPaddingXs,
+      '@media (min-width: 600px)': {
+        paddingLeft: layoutVars.contentPaddingSm,
+        paddingRight: layoutVars.contentPaddingSm,
+      },
+      '@media (min-width: 900px)': {
+        paddingLeft: layoutVars.contentPaddingMd,
+        paddingRight: layoutVars.contentPaddingMd,
+      },
+      '@media (min-width: 1200px)': {
+        paddingLeft: layoutVars.contentPaddingLg,
+        paddingRight: layoutVars.contentPaddingLg,
+      },
+    },
+    
+    // Other existing variables...
+  };
+};
+
+// Inject CSS variables into :root
+export const injectCssVariables = (theme) => {
+  if (!theme) {
+    console.error('Theme is required to inject CSS variables');
+    return;
+  }
+  
+  const cssVars = createCssVariables(theme);
+  const root = document.documentElement;
+  
+  // Convert JS object to CSS variables
+  Object.entries(cssVars).forEach(([key, value]) => {
+    // Skip complex objects - they're for JS use
+    if (typeof value === 'string' || typeof value === 'number') {
+      root.style.setProperty(key, value);
+    }
+  });
+};
+
+export default createCssVariables;

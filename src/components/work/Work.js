@@ -1,204 +1,214 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Box, Typography, Grid, CircularProgress, Container } from '@mui/material';
-import { workData, skillTags } from './data';
-import ErrorBoundary from '../common/ErrorBoundary';
-import ProjectCard from './ProjectCard';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
+import { motion } from 'framer-motion';
+import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import { useTheme } from '@mui/material/styles';
+import { getProjects } from './data/index'; // UPDATED: Import from the correct location
+import ErrorBoundary from '../common/ErrorBoundary';
+import useDataLoader from '../../hooks/useDataLoader';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
-function Work() {
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+/**
+ * Work Component
+ * 
+ * Displays a grid of project cards and handles the project modal.
+ * Uses useDataLoader hook for consistent data loading.
+ */
+const Work = () => {
   const theme = useTheme();
-  
-  const currentProject = currentProjectIndex !== null ? workData[currentProjectIndex] : null;
-  
-  // Organize projects into the 2x2x2 matrix structure
-  // First 4 in primary layer, last 2 in secondary layer
-  const matrixProjects = useMemo(() => {
-    return {
-      // Layer 1: First 4 projects (2x2)
-      layer1: [
-        // Row 1
-        [workData[0], workData[1]], 
-        // Row 2
-        [workData[2], workData[3]]
-      ],
-      // Layer 2: Last 2 projects (1x2)
-      layer2: [
-        // Row 1
-        [workData[4], workData[5]]
-      ]
-    };
-  }, []);
-  
-  const handleProjectClick = (project) => {
-    try {
-      setIsLoading(true);
-      const idx = workData.findIndex((p) => p.id === project.id);
-      if (idx === -1) {
-        console.error("Project not found in workData", project.id);
-      }
-      setCurrentProjectIndex(idx);
-      
-      // Reset loading after modal appears
-      const loadingTimeout = 300;
-      setTimeout(() => setIsLoading(false), loadingTimeout);
-    } catch (error) {
-      console.error("Error opening project:", error);
-      setIsLoading(false);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
+
+  // Use the data loader with the proper function, not direct data
+  const { 
+    data: projects, 
+    isLoading, 
+    error,
+    reload 
+  } = useDataLoader(
+    getProjects, // This will now return standardized project data
+    {
+      defaultData: [],
+      validateData: (data) => {
+        const isValid = Array.isArray(data) && data.length > 0;
+        console.log('Work data validation:', isValid ? 'passed' : 'failed');
+        return isValid;
+      },
+      onSuccess: (data) => console.log("Projects loaded successfully:", data.length, "projects"),
+      onError: (err) => console.error("Error loading projects:", err)
+    }
+  );
+
+  // Update filtered projects when projects change
+  useEffect(() => {
+    setFilteredProjects(projects);
+  }, [projects]);
+
+  // Handle project card click
+  const handleCardClick = (project) => {
+    const index = projects.findIndex(p => p.id === project.id);
+    if (index !== -1) {
+      setSelectedProjectIndex(index);
+      setIsModalOpen(true);
     }
   };
-  
-  // Animation variants for the grid items
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle navigation to next project
+  const handleNextProject = () => {
+    if (selectedProjectIndex < projects.length - 1) {
+      setSelectedProjectIndex(selectedProjectIndex + 1);
+    } else {
+      setSelectedProjectIndex(0); // Loop back to first project
+    }
+  };
+
+  // Handle navigation to previous project
+  const handlePrevProject = () => {
+    if (selectedProjectIndex > 0) {
+      setSelectedProjectIndex(selectedProjectIndex - 1);
+    } else {
+      setSelectedProjectIndex(projects.length - 1); // Loop to last project
+    }
+  };
+
+  // Animation variants
+  const sectionAnimation = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.6 }
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+        staggerChildren: 0.2
+      }
     }
   };
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary componentName="WorkSection">
       <Box
         id="work"
         component="section"
-        className="work-section"
         sx={{
           width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxSizing: 'border-box',
-          position: 'relative',
-          overflow: 'hidden',
-          // Use theme spacing values and remove custom spacing
+          py: { xs: 8, md: 12 },
+          backgroundColor: theme.palette.background.default,
         }}
       >
-        {/* Section title */}
-        <Typography 
-          variant="h2" 
-          component="h2" 
-          sx={{ 
-            mb: { xs: theme.spacing(4), md: theme.spacing(6) },
-            textAlign: 'center',
+        <Box
+          sx={{
+            width: '100%',
+            px: {
+              xs: '20px',
+              sm: '30px',
+              md: '40px',
+              lg: '50px',
+            },
+            boxSizing: 'border-box',
           }}
         >
-          Work
-        </Typography>
-        
-        {/* Project matrices container */}
-        <Container maxWidth="xl">
-          <Box sx={{ width: '100%', mb: 6 }}>
-            {/* Layer 1 - First 4 projects in 2x2 grid */}
-            <Grid container spacing={4} sx={{ mb: 4 }}>
-              {matrixProjects.layer1.flatMap((row, rowIndex) => 
-                row.map((project, colIndex) => (
-                  <Grid 
-                    item 
-                    xs={12} 
-                    sm={6}
-                    key={project.id}
-                    component={motion.div}
-                    variants={itemVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    transition={{ delay: rowIndex * 0.2 + colIndex * 0.1 }}
-                  >
-                    <Box 
-                      sx={{ 
-                        height: { xs: '500px', md: '550px' },
-                        width: '100%',
-                      }}
-                    >
-                      <ProjectCard
-                        project={project}
-                        skillTags={skillTags}
-                        onClick={handleProjectClick}
-                        showAllTags={true}
-                      />
-                    </Box>
-                  </Grid>
-                ))
-              )}
-            </Grid>
-            
-            {/* Layer 2 - Last 2 projects in 1x2 grid */}
-            <Grid container spacing={4}>
-              {matrixProjects.layer2.flatMap((row, rowIndex) => 
-                row.map((project, colIndex) => (
-                  <Grid 
-                    item 
-                    xs={12} 
-                    sm={6}
-                    key={project.id}
-                    component={motion.div}
-                    variants={itemVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + colIndex * 0.1 }}
-                  >
-                    <Box 
-                      sx={{ 
-                        height: { xs: '500px', md: '550px' },
-                        width: '100%',
-                      }}
-                    >
-                      <ProjectCard
-                        project={project}
-                        skillTags={skillTags}
-                        onClick={handleProjectClick}
-                        showAllTags={true}
-                      />
-                    </Box>
-                  </Grid>
-                ))
-              )}
-            </Grid>
-          </Box>
-        </Container>
-        
-        {/* Loading overlay */}
-        {isLoading && (
-          <Box 
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 1500,
-            }}
+          <motion.div
+            variants={sectionAnimation}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
           >
-            <CircularProgress color="secondary" size={60} />
-          </Box>
-        )}
-        
-        {/* Project modal */}
-        <AnimatePresence>
-          {currentProject !== null && (
-            <ProjectModal 
-              project={currentProject} 
-              projects={workData} 
-              currentIndex={currentProjectIndex} 
-              setCurrentIndex={setCurrentProjectIndex} 
-              onClose={() => setCurrentProjectIndex(null)} 
-            />
-          )}
-        </AnimatePresence>
+            <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
+              <Typography
+                variant="h2"
+                component="h2"
+                sx={{
+                  mb: 2,
+                  color: theme.palette.text.primary,
+                }}
+              >
+                Work
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  maxWidth: '800px',
+                  mx: 'auto',
+                  color: theme.palette.text.secondary
+                }}
+              >
+                Explore a selection of my projects, showcasing skills in UX research, design, and implementation.
+              </Typography>
+            </Box>
+
+            {/* Render different content based on loading/error state */}
+            {isLoading ? (
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center',
+                  minHeight: '300px'
+                }}
+              >
+                <CircularProgress color="primary" />
+              </Box>
+            ) : error ? (
+              <Box 
+                sx={{ 
+                  textAlign: 'center', 
+                  p: 4, 
+                  color: 'error.main', 
+                  minHeight: '300px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Typography variant="h5" color="error" gutterBottom>
+                  Error Loading Projects
+                </Typography>
+                <Typography variant="body1">
+                  There was a problem loading the projects. Please try refreshing.
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary', mb: 3 }}>
+                  Error details: {error.message || 'Unknown error'}
+                </Typography>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  startIcon={<RefreshIcon />} 
+                  onClick={reload}
+                >
+                  Try Again
+                </Button>
+              </Box>
+            ) : (
+              <ErrorBoundary componentName="ProjectGrid">
+                <ProjectGrid 
+                  projects={filteredProjects} 
+                  onCardClick={handleCardClick} 
+                />
+              </ErrorBoundary>
+            )}
+          </motion.div>
+        </Box>
       </Box>
+
+      <ErrorBoundary componentName="ProjectModal">
+        <ProjectModal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          project={selectedProjectIndex !== null ? projects[selectedProjectIndex] : null}
+          onNextProject={handleNextProject}
+          onPreviousProject={handlePrevProject}
+        />
+      </ErrorBoundary>
     </ErrorBoundary>
   );
-}
+};
 
 export default Work;

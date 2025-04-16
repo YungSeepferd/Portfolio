@@ -1,246 +1,221 @@
 /**
- * Media Configuration
+ * Project Media Configuration
  * 
- * This file centralizes all media asset imports and paths to make maintenance easier
- * and prevent path-related errors
+ * This file centralizes all project media references to ensure consistency
+ * and avoid undefined references.
  */
 
-// Import project main images - these are guaranteed to exist
-import MasterThesisMain from '../assets/images/Masterthesis/Workshop_Room_Setup_defaced.jpg';
-import ResonantRelaxationMain from '../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
-import ADHDeerMain from '../assets/images/ADHDeer/ADHDeer.png';
-import GreenWalletMain from '../assets/images/GreenWallet/Greenwallet.png';
-import AMIAIMain from '../assets/images/AMIAI/AMIAI.svg';
-import BachelorThesisMain from '../assets/images/Bachelorthesis/FT Level 2 GIF.gif';
+// Base asset paths by project
+const basePaths = {
+  masterThesis: '/assets/images/Masterthesis',
+  resonantRelaxation: '/assets/images/ProdecualHaptics',
+  adhdeer: '/assets/images/ADHDeer',
+  amiai: '/assets/images/AMIAI',
+  greenWallet: '/assets/images/GreenWallet',
+  bachelorThesis: '/assets/images/Bachelorthesis',
+};
 
-// Master Thesis additional images
-import PrototypingGroupB from '../assets/images/Masterthesis/Prototyping_Group_B_defaced.jpg';
-import PrototypingGroupC from '../assets/images/Masterthesis/Prototyping_Group_C_defaced_2.jpeg';
-import AP1 from '../assets/images/Masterthesis/AP1.png';
-import AP2_2 from '../assets/images/Masterthesis/AP2_defaced_2.png';
-import AP2_3 from '../assets/images/Masterthesis/AP2_defaced_3.png';
-import CircumplexModel from '../assets/images/Masterthesis/Circumplex Model of Affect.png';
-import Phase2_1 from '../assets/images/Masterthesis/Phase 2 - 1 Embodied Metaphor Elicitation and Emotional Object Sharing.jpg';
-import Phase2 from '../assets/images/Masterthesis/Phase 2 - Preperation of Templates, Documentation of the Object and Ideas and Sheets for the Prototyping Session.jpg';
-import Phase3_1 from '../assets/images/Masterthesis/Phase 3 - 1 Hapticlabs Hardware Kit Setup and Explanation.jpg';
-import Phase3_3 from '../assets/images/Masterthesis/Phase 3 - 3 Agenda Feedback and Prototyping Sessions.png';
+// Default placeholder image if specific one isn't available
+const DEFAULT_PLACEHOLDER = '/assets/images/placeholders/project.jpg';
 
-// Resonant Relaxation additional images
-import UIPrototype from '../assets/images/ProdecualHaptics/UI Prototype.png';
-import PrincipleSketch from '../assets/images/ProdecualHaptics/PrincipleSketch.png';
-import PrincipleVariants from '../assets/images/ProdecualHaptics/PrincipleVariants.png';
-import UIPrototypeSketch from '../assets/images/ProdecualHaptics/UI Prototype Sketch.png';
-import FrequencyTheory from '../assets/images/ProdecualHaptics/FrequencyTheory.png';
-import AIAPIFewshotting from '../assets/images/ProdecualHaptics/AIAPIFewshotting.png';
-
-// AMIAI additional images
-import AMIAIIntro from '../assets/images/AMIAI/Final Presentation amiai/Introduction.png';
-import AMIAIScene from '../assets/images/AMIAI/Scene.mp4';
-import SAMIAI from '../assets/images/AMIAI/5samiai.mov';
-
-// Bachelor Thesis additional images
-import PrototypeFlows from '../assets/images/Bachelorthesis/3_prototype_flows_Figmabboard.png';
-import Level1STUI from '../assets/images/Bachelorthesis/Level 1 ST UI.png';
-import Level2FTUI from '../assets/images/Bachelorthesis/Level 2 FT UI.png';
-import Level3FTUI from '../assets/images/Bachelorthesis/Level 3 FT UI.png';
-import Level2STUI from '../assets/images/Bachelorthesis/Level 2 ST UI.png';
-import Level3STUI from '../assets/images/Bachelorthesis/Level 3 ST UI.png';
-import Endscreen from '../assets/images/Bachelorthesis/Endscreen.png';
-import Routenuebersicht from '../assets/images/Bachelorthesis/Routenuebersicht.PNG';
-
-// Green Wallet additional images
-import CashlessPayment from '../assets/images/GreenWallet/#4 Cashless Payment.png';
-import GWHighlightreel from '../assets/images/GreenWallet/Highlightreel.mp4';
-import GWPresentation from '../assets/images/GreenWallet/Presentation.mp4';
-
-// Export centralized project media mapping
+// Project-specific image paths
 export const projectMedia = {
   masterThesis: {
     images: {
-      main: MasterThesisMain,
-      workshopRoomSetup: MasterThesisMain,
-      prototypingGroupB: PrototypingGroupB,
-      prototypingGroupC: PrototypingGroupC,
-      ap1: AP1,
-      ap2_2: AP2_2,
-      ap2_3: AP2_3,
-      circumplexModel: CircumplexModel,
-      phase2_1: Phase2_1,
-      phase2: Phase2,
-      phase3_1: Phase3_1,
-      phase3_3: Phase3_3
+      main: `${basePaths.masterThesis}/cover.jpg`,
+      overview: `${basePaths.masterThesis}/overview.jpg`,
+      process: `${basePaths.masterThesis}/process.jpg`,
+      toolkit: `${basePaths.masterThesis}/toolkit.jpg`,
+    },
+    featuredImages: {
+      overview: `${basePaths.masterThesis}/overview.jpg`,
+      problem: `${basePaths.masterThesis}/problem.jpg`,
+      solution: `${basePaths.masterThesis}/solution.jpg`,
     },
     allImages: [
-      MasterThesisMain,
-      PrototypingGroupB,
-      PrototypingGroupC,
-      AP1,
-      AP2_2,
-      AP2_3,
-      CircumplexModel,
-      Phase2_1,
-      Phase2,
-      Phase3_1,
-      Phase3_3
-    ],
-    featuredImages: {
-      overview: Phase2,
-      problem: CircumplexModel, 
-      solution: PrototypingGroupB,
-      prototypeShowcase: [PrototypingGroupB, PrototypingGroupC, AP1]
-    },
-    documents: {
-      presentation: '/src/assets/information/Master thesis/Prototyping_Emotions_Thesis_Defense_Presentation_0225.pdf',
-      thesis: '/src/assets/information/Master thesis/Vincent_Master_Thesis0225.pdf',
-      miroTemplate: 'https://miro.com/app/live-embed/uXjVLZy8Sr4=/?moveToViewport=-23778,-21432,70849,35904&embedId=821121874827'
-    }
+      `${basePaths.masterThesis}/cover.jpg`,
+      `${basePaths.masterThesis}/overview.jpg`,
+      `${basePaths.masterThesis}/process.jpg`,
+      `${basePaths.masterThesis}/toolkit.jpg`,
+    ]
   },
+  
   resonantRelaxation: {
     images: {
-      main: ResonantRelaxationMain,
-      uiPrototype: UIPrototype,
-      principleSketch: PrincipleSketch,
-      principleVariants: PrincipleVariants,
-      uiPrototypeSketch: UIPrototypeSketch,
-      frequencyTheory: FrequencyTheory,
-      aiAPIFewshotting: AIAPIFewshotting
+      main: `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
+      uiPrototype: `${basePaths.resonantRelaxation}/UI Prototype.png`,
+      principleSketch: `${basePaths.resonantRelaxation}/PrincipleSketch.png`,
+      principleVariants: `${basePaths.resonantRelaxation}/PrincipleVariants.png`,
+      uiPrototypeSketch: `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`,
+      frequencyTheory: `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
+      aiAPIFewshotting: `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
+    },
+    featuredImages: {
+      overview: `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
+      problem: `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
+      solution: `${basePaths.resonantRelaxation}/UI Prototype.png`,
+      prototypeShowcase: [
+        `${basePaths.resonantRelaxation}/PrincipleVariants.png`, 
+        `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`, 
+        `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
+      ]
     },
     allImages: [
-      ResonantRelaxationMain,
-      UIPrototype,
-      PrincipleSketch,
-      PrincipleVariants,
-      UIPrototypeSketch,
-      FrequencyTheory,
-      AIAPIFewshotting
-    ],
-    featuredImages: {
-      overview: ResonantRelaxationMain,
-      problem: FrequencyTheory,
-      solution: UIPrototype,
-      prototypeShowcase: [PrincipleVariants, UIPrototypeSketch, AIAPIFewshotting]
-    },
-    documents: {
-      presentation: '/src/assets/information/Procedually generated haptics/Affective State Change Concept Presentation.pdf',
-      paper: 'https://zenodo.org/records/12549152',
-      demo: 'https://react-midi.netlify.app/',
-      github: 'https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main'
-    }
+      `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
+      `${basePaths.resonantRelaxation}/UI Prototype.png`,
+      `${basePaths.resonantRelaxation}/PrincipleSketch.png`,
+      `${basePaths.resonantRelaxation}/PrincipleVariants.png`,
+      `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`,
+      `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
+      `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
+    ]
   },
+  
   adhdeer: {
     images: {
-      main: ADHDeerMain
+      main: `${basePaths.adhdeer}/hero.jpg`,
+      process: `${basePaths.adhdeer}/process.jpg`,
+      research: `${basePaths.adhdeer}/research.jpg`,
+      wireframes: `${basePaths.adhdeer}/wireframes.jpg`,
     },
-    allImages: [ADHDeerMain],
     featuredImages: {
-      overview: ADHDeerMain,
-      problem: ADHDeerMain,
-      solution: ADHDeerMain,
-      prototypeShowcase: [ADHDeerMain]
-    },
-    documents: {
-      presentation: '/src/assets/information/ADHDeer/ADHDeerPresentation.pdf',
-      prototype: 'https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share'
-    }
-  },
-  greenWallet: {
-    images: {
-      main: GreenWalletMain,
-      cashlessPayment: CashlessPayment
+      overview: `${basePaths.adhdeer}/hero.jpg`,
+      problem: `${basePaths.adhdeer}/process.jpg`,
+      solution: `${basePaths.adhdeer}/research.jpg`,
     },
     allImages: [
-      GreenWalletMain,
-      CashlessPayment
-    ],
-    videos: {
-      highlightreel: GWHighlightreel,
-      presentation: GWPresentation
-    },
-    featuredImages: {
-      overview: GreenWalletMain,
-      problem: GreenWalletMain,
-      solution: CashlessPayment
-    },
-    documents: {
-      presentation: '/src/assets/information/Master thesis/Prototyping_Emotions_Thesis_Defense_Presentation_0225.pdf',
-      prototype: 'https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share'
-    }
+      `${basePaths.adhdeer}/hero.jpg`,
+      `${basePaths.adhdeer}/process.jpg`,
+      `${basePaths.adhdeer}/research.jpg`,
+      `${basePaths.adhdeer}/wireframes.jpg`
+    ]
   },
+  
   amiai: {
     images: {
-      main: AMIAIMain,
-      intro: AMIAIIntro
+      main: `${basePaths.amiai}/AMIAI.svg`,
+      intro: `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
     },
-    allImages: [
-      AMIAIMain,
-      AMIAIIntro
-    ],
     videos: {
-      scene: AMIAIScene,
-      samiai: SAMIAI
+      scene: `${basePaths.amiai}/Scene.mp4`,
+      samiai: `${basePaths.amiai}/5samiai.mov`
     },
     featuredImages: {
-      overview: AMIAIIntro,
-      problem: AMIAIIntro,
-      solution: AMIAIMain
+      overview: `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
+      problem: `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
+      solution: `${basePaths.amiai}/AMIAI.svg`
     },
-    documents: {
-      presentation: '/src/assets/information/AMIAI/Final Presentation.pdf'
-    }
+    allImages: [
+      `${basePaths.amiai}/AMIAI.svg`,
+      `${basePaths.amiai}/Final Presentation amiai/Introduction.png`
+    ]
   },
+  
+  greenWallet: {
+    images: {
+      main: `${basePaths.greenWallet}/hero.jpg`,
+      screens: `${basePaths.greenWallet}/screens.jpg`,
+      wireframes: `${basePaths.greenWallet}/wireframes.jpg`,
+      process: `${basePaths.greenWallet}/process.jpg`,
+    },
+    videos: {
+      highlightreel: `${basePaths.greenWallet}/Highlightreel.mp4`,
+      presentation: `${basePaths.greenWallet}/Presentation.mp4`
+    },
+    featuredImages: {
+      overview: `${basePaths.greenWallet}/hero.jpg`,
+      problem: `${basePaths.greenWallet}/process.jpg`,
+      solution: `${basePaths.greenWallet}/screens.jpg`,
+    },
+    allImages: [
+      `${basePaths.greenWallet}/hero.jpg`,
+      `${basePaths.greenWallet}/screens.jpg`,
+      `${basePaths.greenWallet}/wireframes.jpg`,
+      `${basePaths.greenWallet}/process.jpg`
+    ]
+  },
+  
   bachelorThesis: {
     images: {
-      main: BachelorThesisMain,
-      prototypeFlows: PrototypeFlows,
-      level1STUI: Level1STUI,
-      level2FTUI: Level2FTUI,
-      level3FTUI: Level3FTUI,
-      level2STUI: Level2STUI,
-      level3STUI: Level3STUI,
-      endscreen: Endscreen,
-      routenuebersicht: Routenuebersicht
+      main: `${basePaths.bachelorThesis}/FT Level 2 GIF.gif`,
+      prototypeFlows: `${basePaths.bachelorThesis}/3_prototype_flows_Figmabboard.png`,
+      level1STUI: `${basePaths.bachelorThesis}/Level 1 ST UI.png`,
+      level2FTUI: `${basePaths.bachelorThesis}/Level 2 FT UI.png`,
+      level3FTUI: `${basePaths.bachelorThesis}/Level 3 FT UI.png`,
+      level2STUI: `${basePaths.bachelorThesis}/Level 2 ST UI.png`,
+      level3STUI: `${basePaths.bachelorThesis}/Level 3 ST UI.png`,
+      endscreen: `${basePaths.bachelorThesis}/Endscreen.png`,
+      routenuebersicht: `${basePaths.bachelorThesis}/Routenuebersicht.PNG`,
+    },
+    videos: {
+      reroutingProcess: `${basePaths.bachelorThesis}/VideoPrototype_ST3.mp4`
+    },
+    featuredImages: {
+      overview: `${basePaths.bachelorThesis}/3_prototype_flows_Figmabboard.png`,
+      problem: `${basePaths.bachelorThesis}/Level 1 ST UI.png`,
+      solution: `${basePaths.bachelorThesis}/Level 2 FT UI.png`,
     },
     allImages: [
-      BachelorThesisMain,
-      PrototypeFlows,
-      Level1STUI,
-      Level2FTUI,
-      Level3FTUI,
-      Level2STUI,
-      Level3STUI,
-      Endscreen,
-      Routenuebersicht
-    ],
-    featuredImages: {
-      overview: PrototypeFlows,
-      problem: Level1STUI,
-      solution: Level2FTUI,
-      prototypeShowcase: [Level3FTUI, Level2STUI, Level3STUI]
-    },
-    documents: {
-      presentation: '/src/assets/information/Bachelor thesis/PassengerReroute-BachelorThesis.pdf',
-      thesis: '/src/assets/information/Bachelor thesis/Vincent_Göke - Phonebased intervention in self-driving cars.pdf'
-    }
+      `${basePaths.bachelorThesis}/FT Level 2 GIF.gif`,
+      `${basePaths.bachelorThesis}/3_prototype_flows_Figmabboard.png`,
+      `${basePaths.bachelorThesis}/Level 1 ST UI.png`,
+      `${basePaths.bachelorThesis}/Level 2 FT UI.png`,
+      `${basePaths.bachelorThesis}/Level 3 FT UI.png`,
+      `${basePaths.bachelorThesis}/Level 2 ST UI.png`,
+      `${basePaths.bachelorThesis}/Level 3 ST UI.png`,
+      `${basePaths.bachelorThesis}/Endscreen.png`,
+      `${basePaths.bachelorThesis}/Routenuebersicht.PNG`
+    ]
   }
 };
 
-// Helper function to get media path by project and type
-export const getMediaPath = (project, type, key) => {
-  if (!projectMedia[project]) return null;
-  if (!projectMedia[project][type]) return null;
-  return projectMedia[project][type][key] || null;
+// Helper functions to get media paths
+export const getProjectMediaPath = (projectId, mediaType = 'images', mediaItem = 'main') => {
+  if (!projectMedia[projectId]) {
+    console.warn(`Project media not found for: ${projectId}`);
+    return DEFAULT_PLACEHOLDER;
+  }
+  
+  if (!projectMedia[projectId][mediaType]) {
+    console.warn(`Media type "${mediaType}" not found for project: ${projectId}`);
+    return DEFAULT_PLACEHOLDER;
+  }
+  
+  if (typeof projectMedia[projectId][mediaType] === 'string') {
+    return projectMedia[projectId][mediaType];
+  }
+  
+  if (!projectMedia[projectId][mediaType][mediaItem]) {
+    console.warn(`Media item "${mediaItem}" not found in ${mediaType} for project: ${projectId}`);
+    return DEFAULT_PLACEHOLDER;
+  }
+  
+  return projectMedia[projectId][mediaType][mediaItem];
 };
 
-// Helper function to get all images for a project
-export const getProjectImages = (projectKey) => {
-  if (!projectMedia[projectKey]) return [];
-  return projectMedia[projectKey].allImages || [];
+// Helper to get all image paths for a project
+export const getProjectImages = (projectId) => {
+  if (!projectMedia[projectId] || !projectMedia[projectId].allImages) {
+    console.warn(`Project images not found for: ${projectId}`);
+    return [DEFAULT_PLACEHOLDER];
+  }
+  
+  return projectMedia[projectId].allImages;
 };
 
-// Helper function to get all document links for a project
-export const getProjectDocuments = (projectKey) => {
-  if (!projectMedia[projectKey] || !projectMedia[projectKey].documents) return {};
-  return projectMedia[projectKey].documents;
+// Helper to get featured images for a project
+export const getProjectFeaturedImages = (projectId) => {
+  if (!projectMedia[projectId] || !projectMedia[projectId].featuredImages) {
+    console.warn(`Featured images not found for: ${projectId}`);
+    return { 
+      overview: DEFAULT_PLACEHOLDER,
+      problem: DEFAULT_PLACEHOLDER,
+      solution: DEFAULT_PLACEHOLDER
+    };
+  }
+  
+  return projectMedia[projectId].featuredImages;
 };
 
+// Default export of the entire media configuration
 export default projectMedia;

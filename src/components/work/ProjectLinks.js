@@ -1,91 +1,117 @@
 import React from 'react';
-import { Box, useTheme, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Box, Typography, Stack } from '@mui/material'; // Added Stack for better spacing and alignment
 import ActionButton from '../common/ActionButton';
+import { resolveMediaPath } from '../../utils/MediaPathResolver';
+
+// Import MUI icons
+import SlideshowIcon from '@mui/icons-material/Slideshow';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ArticleIcon from '@mui/icons-material/Article';
+import CodeIcon from '@mui/icons-material/Code';
 
 /**
- * Displays project links as styled action buttons
- * Updated to use ActionButton for consistent overlay behavior
+ * ProjectLinks Component
+ * 
+ * Displays action buttons for various project resources like
+ * presentations, prototypes, code repositories, etc.
  */
-const ProjectLinks = ({ links = [], title = '', compact = false }) => {
-  const theme = useTheme();
+const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
+  // Handle links as either array or object for backward compatibility
+  const linksArray = Array.isArray(links) ? links : 
+                    (links && typeof links === 'object' ? Object.values(links) : []);
   
-  if (!links || links.length === 0) return null;
+  if (!prototype && !presentation && linksArray.length === 0) {
+    return null;
+  }
+  
+  // Resolve presentation path if present
+  const presentationPath = presentation ? resolveMediaPath(presentation) : null;
   
   return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: compact ? 'flex-start' : 'center',
-        mt: compact ? 3 : 4,
-        mb: compact ? 0 : 3,
-      }}
-    >
-      {!compact && (
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            mb: 2,
-            opacity: 0.9,
-            color: theme.palette.text.secondary
-          }}
-        >
-          Learn more about {title}
-        </Typography>
-      )}
+    <Box sx={{ width: '100%', mb: 4 }}>
+      <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>
+        Learn more about {title}
+      </Typography>
       
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
-          justifyContent: compact ? 'flex-start' : 'center',
-        }}
+      {/* Use Stack for better button layout with consistent spacing */}
+      <Stack 
+        direction="row" 
+        flexWrap="wrap" 
+        spacing={2} 
+        justifyContent="center"
+        sx={{ mt: 2 }}
       >
-        {links.map((link, index) => (
+        {/* Presentation PDF button */}
+        {presentationPath && (
           <ActionButton
-            key={index}
-            label={link.label}
-            href={link.url}
-            icon={link.icon}
-            variant={index === 0 ? 'contained' : 'outlined'}
-            size="medium"
-            contentType={link.contentType || determineContentType(link.url, link.label)}
+            label="View Presentation"
+            href={presentationPath}
+            icon={<SlideshowIcon />}
+            variant="contained"
+            color="primary"
+            contentType="pdf"
+            openInPopup={true}
           />
-        ))}
-      </Box>
+        )}
+        
+        {/* Prototype button */}
+        {prototype && (
+          <ActionButton
+            label="Try Prototype"
+            href={prototype}
+            icon={<DesignServicesIcon />}
+            variant="outlined"
+            color="success"
+            contentType="iframe"
+            openInPopup={true}
+          />
+        )}
+        
+        {/* Additional links */}
+        {linksArray.length > 0 && linksArray.map((link, index) => {
+          // Determine icon based on link type/label
+          let icon = link.icon || <OpenInNewIcon />;
+          if (!link.icon) {
+            if (link.type === 'github' || (link.label && link.label.toLowerCase().includes('github'))) {
+              icon = <GitHubIcon />;
+            } else if (link.type === 'paper' || (link.label && link.label.toLowerCase().includes('paper'))) {
+              icon = <ArticleIcon />;
+            } else if (link.type === 'code' || (link.label && link.label.toLowerCase().includes('code'))) {
+              icon = <CodeIcon />;
+            }
+          }
+          
+          // Determine content type for modal handling
+          let contentType = link.contentType || 'external';
+          if (!link.contentType) {
+            if (link.url && link.url.endsWith('.pdf')) {
+              contentType = 'pdf';
+            } else if (link.url && (link.url.includes('figma.com') || link.url.includes('prototype'))) {
+              contentType = 'iframe';
+            }
+          }
+          
+          // Resolve URL if it's a local path
+          const resolvedUrl = resolveMediaPath(link.url);
+          
+          return (
+            <ActionButton
+              key={`link-${index}`}
+              label={link.label || 'View Resource'}
+              href={resolvedUrl}
+              icon={icon}
+              variant={link.primary ? 'contained' : 'outlined'}
+              color={link.color || 'primary'}
+              contentType={contentType}
+              openInPopup={link.openInPopup !== false}
+            />
+          );
+        })}
+      </Stack>
     </Box>
   );
-};
-
-/**
- * Determine content type from URL and label
- */
-const determineContentType = (url, label) => {
-  if (!url) return 'external';
-  
-  const normalizedUrl = url.toLowerCase();
-  const normalizedLabel = label.toLowerCase();
-  
-  if (normalizedUrl.includes('.pdf') || 
-      normalizedLabel.includes('pdf') || 
-      normalizedLabel.includes('thesis')) {
-    return 'pdf';
-  }
-  
-  if (normalizedUrl.includes('figma.com') || 
-      normalizedUrl.includes('miro.com') || 
-      normalizedLabel.includes('prototype')) {
-    return 'iframe';
-  }
-  
-  return 'external';
 };
 
 export default ProjectLinks;

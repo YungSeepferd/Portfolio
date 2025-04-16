@@ -3,6 +3,7 @@
  */
 
 import { alpha } from '@mui/material/styles';
+import { tokens } from '../design/tokens';
 
 /**
  * Creates responsive padding based on theme spacing
@@ -325,4 +326,56 @@ export const getProjectCardStyle = (project, theme) => {
       boxShadow: `0 8px 20px ${alpha(accentColor, 0.25)}`,
     }
   };
+};
+
+/**
+ * Gets an appropriate color for a status/state
+ * @param {string} status - The status (success, error, warning, info)
+ * @param {string} [variant='main'] - Which variant of the color (main, light, dark)
+ * @returns {string} The color value
+ */
+export const getStatusColor = (status, variant = 'main') => {
+  const colorMap = {
+    success: tokens.colors.green,
+    error: tokens.colors.red,
+    warning: tokens.colors.orange,
+    info: tokens.colors.teal,
+    primary: tokens.colors.blue,
+    secondary: tokens.colors.pink
+  };
+  
+  const variantMap = {
+    light: 300,
+    main: 500,
+    dark: 700
+  };
+  
+  const colorToken = colorMap[status] || colorMap.primary;
+  return colorToken[variantMap[variant] || variantMap.main];
+};
+
+/**
+ * Determines if a color is light or dark
+ * @param {string} hexColor - Hex color code
+ * @returns {boolean} True if the color is light
+ */
+export const isLightColor = (hexColor) => {
+  // Remove the hash
+  const hex = hexColor.replace('#', '');
+  
+  // Convert to RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return true if light, false if dark
+  return luminance > 0.5;
+};
+
+export default {
+  getStatusColor,
+  isLightColor
 };

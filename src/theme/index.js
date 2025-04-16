@@ -1,146 +1,43 @@
 /**
- * Main Theme Configuration
+ * Theme Index
  * 
- * This file combines all theme modules and creates the final Material UI theme.
+ * This file exports theme components from the theme folder structure
+ * and re-exports theme objects/functions from the root theme.js.
+ * 
+ * This creates a unified access point for theme-related imports.
  */
-import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-// Import theme modules
-import colors, { createPalette } from './colors';
-import { createTypography } from './typography';
-import spacing, { createSpacing } from './spacing';
-import animations, { createAnimationVariants, createGlobalAnimations } from './animations';
-import { createBreakpoints, createMediaQueries, createCustomBreakpoints } from './breakpoints';
-import {
-  createComponentStyles,
-  createCustomComponents,
-  createCustomSections,
-  createResponsiveStyles,
-  createCustomButtons,
-  createCustomSizes
-} from './components';
+// First, export individual theme components
+export { default as typography } from './typography';
+export { default as breakpoints } from './breakpoints';
+export { palette as lightPalette } from './palette/light';
+export { palette as darkPalette } from './palette/dark';
+export { default as shadows } from './shadows';
+export { default as shape } from './shape';
 
-// Create base theme with all modules
-const baseTheme = createTheme({
-  // Core theme settings
-  palette: {
-    ...createPalette(),
-    background: {
-      ...createPalette().background,
-      overlay: 'rgba(19, 31, 45, 0.7)',
-      overlayHover: 'rgba(19, 31, 45, 0.9)',
-    },
-  },
-  typography: createTypography(colors),
-  spacing: createSpacing(),
-  breakpoints: createBreakpoints(),
-  
-  // Shape settings
-  shape: {
-    borderRadius: 4,
-  },
-  
-  // Add custom properties
-  mediaQueries: createMediaQueries(),
-  elevations: {
-    1: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-    2: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    3: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
-    4: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
-    5: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)',
-  },
-  
-  customSizes: createCustomSizes(),
-  spacingSizes: {
-    section: 8,
-    container: 4,
-    cardPadding: 3,
-    elementGap: 2,
-  },
-  zIndex: {
-    mobileStepper: 1000,
-    fab: 1050,
-    speedDial: 1050,
-    appBar: 1100,
-    drawer: 1200,
-    modal: 1300,
-    snackbar: 1400,
-    tooltip: 1500,
-  },
-  customBreakpoints: createCustomBreakpoints(),
-  
-  // Animation settings
-  animations: {
-    slideIn: {
-      from: { transform: 'translateX(-50%)', opacity: 0 },
-      to: { transform: 'translateX(0)', opacity: 1 },
-      duration: '1.5s',
-      easing: 'ease',
-      fillMode: 'forwards',
-    },
-  },
-  animationSettings: {
-    ...animations,
-    variants: createAnimationVariants(),
-    durations: {
-      short: 300,
-      medium: 500,
-      long: 800,
-    },
-    easings: {
-      default: 'cubic-bezier(0.4, 0, 0.2, 1)',
-      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
-      easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
-      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
-    },
-  },
-  
-  // Custom components configuration
-  customComponents: createCustomComponents(),
-  customSections: createCustomSections(),
-  responsiveStyles: createResponsiveStyles(),
-  heroBottomMargin: 15,
-  heroLeftMargin: 8,
-  customButtons: createCustomButtons(),
-  
-  // Add default values needed by components
-  customDefaults: {
-    placeholderImage: '/images/placeholder.png'
-  },
-  
-  components: {
-    MuiTypography: {
-      variants: [
-        {
-          props: { variant: 'projectTitle' },
-          style: {
-            fontSize: '2.5rem',
-            fontWeight: 700,
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-          },
-        },
-        // Add other custom typography variants
-      ],
-    },
-  }
-});
+// Import components if available
+let components = {};
+try {
+  components = require('./components').default;
+} catch (error) {
+  console.info('No components found in theme/components.js');
+}
+export { components };
 
-// Apply component style overrides
-baseTheme.components = createComponentStyles(baseTheme);
+// Import from theme.js and re-export
+import createAppTheme, { 
+  lightTheme, 
+  darkTheme, 
+  designConstants 
+} from '../theme';
 
-// Apply responsive font sizes
-const theme = responsiveFontSizes(baseTheme);
-
-// Generate global CSS animation keyframes
-const globalStyles = createGlobalAnimations();
-
-// Export theme-related constants for use in other files
-export const themeConstants = {
-  colors,
-  spacing,
-  animations
+// Re-export the theme objects and functions
+export {
+  createAppTheme,
+  lightTheme,
+  darkTheme,
+  designConstants
 };
 
-export { globalStyles };
-export default theme;
+// Default export is the theme creation function
+export default createAppTheme;

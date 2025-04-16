@@ -1,197 +1,189 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Skeleton, Typography, useTheme } from '@mui/material';
-import { analyzeImage, getOptimalObjectFit } from '../../utils/imageAnalyzer';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Box, useTheme, Skeleton } from '@mui/material';
+import { analyzeImage, getOptimalObjectFit } from '../../utils/mediaUtils';
+import ImageErrorHandler from './ImageErrorHandler';
 
 /**
- * ContentAwareImage
+ * ContentAwareImage Component
  * 
- * A smart image component that handles different image orientations and types.
- * - Analyzes image dimensions and sets appropriate object-fit properties
- * - Handles loading states with skeleton placeholders
- * - Manages error states with fallback images
+ * Enhanced image component that analyzes, displays, and gracefully handles errors
+ * for images with intelligent object-fit and positioning decisions.
  * 
- * @param {string} src - Image URL
- * @param {string} alt - Alt text for accessibility
- * @param {object} imageData - Optional pre-processed image data
- * @param {string} containerHeight - Height of the container
- * @param {string} containerWidth - Width of the container
- * @param {boolean} expandOnHover - Whether the image expands on hover
- * @param {string} objectFit - Explicit object-fit property
- * @param {string} containerOrientation - Orientation of the container
- * @param {function} onLoad - Callback function for image load event
- * @param {function} onError - Callback function for image error event
- * @param {string} fallbackSrc - Fallback image source if primary fails
- * @param {object} props - Additional props
+ * @param {Object} props
+ * @param {string} props.src - The image source URL
+ * @param {string} props.alt - Alt text for accessibility
+ * @param {Object} props.imageData - Optional pre-analyzed image data
+ * @param {string} props.containerHeight - Height for the container
+ * @param {string} props.containerWidth - Width for the container
+ * @param {string} props.objectFit - Override detected object-fit
+ * @param {string} props.objectPosition - CSS object-position value
+ * @param {boolean} props.expandOnHover - Whether to zoom image on hover
+ * @param {Function} props.onError - Error handler for image loading failure
+ * @param {string} props.fallbackSrc - Fallback image to use on error
+ * @param {string} props.containerOrientation - Force container orientation
+ * @param {Object} props.sx - Additional styles for container
  */
-const ContentAwareImage = ({ 
-  src, 
-  alt = '',
-  imageData = null, // Allow passing pre-processed image data
-  containerHeight = '100%',
-  containerWidth = '100%',
+const ContentAwareImage = ({
+  src,
+  alt = "Image",
+  imageData = null,
+  containerHeight = "100%",
+  containerWidth = "100%",
+  objectFit = null,
+  objectPosition = "center center",
   expandOnHover = false,
-  objectFit = null, // Allow explicit override
-  containerOrientation = 'landscape',
-  onLoad = () => {},
-  onError = () => {},
-  fallbackSrc = null,
-  ...props
+  onError,
+  fallbackSrc,
+  containerOrientation = "auto",
+  sx = {},
+  ...otherProps
 }) => {
   const theme = useTheme();
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-  const [imageDetails, setImageDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [processedImageData, setProcessedImageData] = useState(imageData);
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 2;
-  
-  // Process image data on component mount or when src changes
+
+  // Process image dimensions and aspects if not already provided
   useEffect(() => {
-    // Reset states when src changes
-    setLoaded(false);
-    setError(false);
-    setRetryCount(0);
-    
-    // Use provided imageData if available, otherwise analyze from src
-    try {
-      const processedImage = imageData || analyzeImage(src);
-      setImageDetails(processedImage);
-    } catch (err) {
-      console.error("Error analyzing image:", err);
-      setError(true);
-    }
-  }, [src, imageData]);
-  
-  // Handle image loading and additional orientation detection
-  const handleLoad = (e) => {
-    try {
-      const img = e.target;
-      
-      // Update orientation based on actual dimensions if not already determined
-      if (imageDetails && imageDetails.orientation === 'unknown' && img.naturalWidth && img.naturalHeight) {
-        const isVertical = img.naturalHeight > img.naturalWidth;
-        setImageDetails({
-          ...imageDetails,
-          orientation: isVertical ? 'portrait' : 'landscape',
-          aspectRatio: img.naturalWidth / img.naturalHeight
+    if (!processedImageData && src && !error) {
+      try {
+        const data = analyzeImage(src);
+        setProcessedImageData(data);
+      } catch (err) {
+        console.error("Error analyzing image:", err);
+        setError({
+          message: "Failed to analyze image dimensions",
+          error: err
         });
+        
+        // Call external error handler if provided
+        if (onError) {
+          onError(err);
+        }
       }
-      
-      setLoaded(true);
-      setError(false);
-      onLoad(e);
-    } catch (err) {
-      console.error("Error in image load handler:", err);
-      setError(true);
     }
-  };
-  
-  // Handle image loading errors with retry mechanism
-  const handleError = (e) => {
+  }, [src, processedImageData, error, onError]);
+
+  // Determine best object-fit value based on image and container
+  const determinedObjectFit = objectFit || 
+    (processedImageData ? getOptimalObjectFit(processedImageData, containerOrientation) : 'cover');
+
+  // Handle image load success
+  const handleImageLoad = useCallback(() => {
+    setLoading(false);
+    setError(null);
+  }, []);
+
+  // Handle image load error with retry logic
+  const handleImageError = useCallback((e) => {
+    console.error(`Error loading image: ${src}`, e);
+    
     if (retryCount < maxRetries) {
-      // Retry loading the image after a short delay
+      // Try loading again after a delay
       setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        // Force reload by adding a cache-busting parameter
-        e.target.src = `${imageSrc}?retry=${retryCount + 1}`;
+        setRetryCount(prevCount => prevCount + 1);
+        // Force image reload by adding timestamp to src
+        const img = e.target;
+        if (img) {
+          const cacheBuster = `?cb=${Date.now()}`;
+          img.src = src.includes('?') ? `${src}&cb=${Date.now()}` : `${src}${cacheBuster}`;
+        }
       }, 1000);
     } else {
-      console.error("Failed to load image after retries:", src);
-      setError(true);
+      // Max retries reached, show error
+      setLoading(false);
+      setError({
+        message: `Failed to load image after ${maxRetries} attempts`,
+        source: src
+      });
       
-      // Use fallback image if provided, otherwise use theme default
-      if (fallbackSrc) {
-        e.target.src = fallbackSrc;
-      } else if (theme.customDefaults?.placeholderImage) {
-        e.target.src = theme.customDefaults.placeholderImage;
-      } else {
-        // If no fallback is available, show the error state
-        e.target.style.display = 'none';
+      // Call external error handler if provided
+      if (onError) {
+        onError(e);
       }
-      
-      onError(e);
     }
-  };
-  
-  // Determine the best object-fit property
-  const determineObjectFit = () => {
-    // If explicitly specified, use that
-    if (objectFit) return objectFit;
-    
-    // If we have image details, compute optimal fit
-    if (imageDetails && imageDetails.orientation !== 'unknown') {
-      return getOptimalObjectFit(imageDetails, containerOrientation);
-    }
-    
-    // Default fallback behavior
-    return 'cover';
-  };
-  
-  const imageSrc = imageDetails?.src || src;
-  const imageAlt = alt || imageDetails?.alt || 'Image';
-  const finalObjectFit = determineObjectFit();
-  
+  }, [src, retryCount, maxRetries, onError]);
+
+  // Reset state when source changes
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    setRetryCount(0);
+    setProcessedImageData(null);
+  }, [src]);
+
+  // Handle manual retry from error handler
+  const handleRetry = useCallback(() => {
+    setError(null);
+    setLoading(true);
+    setRetryCount(0);
+    // Force re-render and reload
+    setProcessedImageData(null);
+  }, []);
+
   return (
     <Box
       sx={{
-        position: 'relative',
-        width: containerWidth,
+        position: "relative",
+        overflow: "hidden",
         height: containerHeight,
-        overflow: 'hidden',
-        borderRadius: theme.shape.borderRadius,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.palette.background.default,
+        width: containerWidth,
+        ...sx,
       }}
     >
-      {!loaded && !error && (
-        <Skeleton 
-          variant="rectangular" 
-          width="100%" 
-          height="100%" 
+      {/* Skeleton loader shown while loading */}
+      {loading && !error && (
+        <Skeleton
+          variant="rectangular"
           animation="wave"
+          width="100%"
+          height="100%"
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+            bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
+          }}
         />
       )}
-      
-      {error && !loaded && (
-        <Box 
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
-            padding: theme.spacing(2),
-            backgroundColor: 'rgba(0,0,0,0.05)',
-          }}
-        >
-          <Typography variant="body2" color="text.secondary" align="center">
-            Image could not be loaded
-          </Typography>
-        </Box>
+
+      {/* Show error handler when there's an error */}
+      {error && (
+        <ImageErrorHandler
+          src={src}
+          alt={alt}
+          fallbackSrc={fallbackSrc}
+          onRetry={handleRetry}
+          errorMessage={error.message || "Failed to load image"}
+          errorDetails={error}
+        />
       )}
-      
+
+      {/* Image element (hidden while loading or on error) */}
       <Box
         component="img"
-        src={imageSrc}
-        alt={imageAlt}
-        onLoad={handleLoad}
-        onError={handleError}
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onLoad={handleImageLoad}
+        onError={handleImageError}
         sx={{
-          width: '100%',
-          height: '100%',
-          objectFit: finalObjectFit,
-          objectPosition: 'center',
-          transition: theme.transitions.create(['transform', 'opacity']),
-          opacity: loaded ? 1 : 0,
-          display: error && !loaded ? 'none' : 'block',
+          display: error ? 'none' : 'block',
+          width: "100%",
+          height: "100%",
+          objectFit: determinedObjectFit,
+          objectPosition: objectPosition,
+          transition: "transform 0.3s ease",
           ...(expandOnHover && {
-            '&:hover': {
-              transform: 'scale(1.05)',
-            }
+            "&:hover": {
+              transform: "scale(1.05)",
+            },
           }),
-          ...props.sx
         }}
+        {...otherProps}
       />
     </Box>
   );

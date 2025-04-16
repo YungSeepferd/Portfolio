@@ -1,91 +1,89 @@
 import React from 'react';
+import { Box, Typography, Chip, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { Box, Typography, Grid, useTheme } from '@mui/material';
-import ContentAwareImage from '../common/ContentAwareImage';
-import TechBar from './TechBar';
-import SkillTag from '../common/SkillTag';
+
+// Styled components for project header
+const HeaderWrapper = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  width: '100%',
+}));
 
 /**
  * ProjectHeader Component
  * 
- * Displays the main project information at the top of a project modal,
- * including title, description, cover image, categories, and tech bar.
+ * Displays the title, description, and categories for a project.
+ * It's the main information section at the top of the project modal.
+ * 
+ * @param {Object} props
+ * @param {string} props.title - Project title
+ * @param {string} props.description - Project description
+ * @param {Array} props.categories - Array of category strings
+ * @param {Object} props.project - Full project object for additional data
  */
-const ProjectHeader = ({ project }) => {
-  const theme = useTheme();
-  
-  if (!project) return null;
-  
-  const coverImage = project.images?.[0] || project.media;
+const ProjectHeader = ({ title, description, categories = [], project }) => {
+  // Combine directly passed props with data from project object if available
+  const displayTitle = title || (project?.title || '');
+  const displayDesc = description || (project?.description || '');
+  const displayCategories = categories.length > 0 ? categories : (project?.categories || []);
   
   return (
-    <>
-      <Box variant="heroSection" sx={{ mb: 6 }}>
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Box 
-              sx={{
-                overflow: 'hidden',
-                borderRadius: theme.shape.borderRadius,
-                position: 'relative',
-                height: { xs: 300, md: 400 },
-              }}
-            >
-              <ContentAwareImage
-                imageData={coverImage}
-                src={typeof coverImage === 'string' ? coverImage : coverImage?.src}
-                alt={project.title}
-                expandOnHover={true}
-                containerHeight="100%"
-                containerOrientation="landscape"
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography 
-              variant="h2" // Change from "projectTitle" to standard variant
-              sx={{ 
-                color: theme.palette.text.primary,
-                mb: 2
-              }}
-            >
-              {project.title}
-            </Typography>
-            <Typography variant="subtitle1" sx={{ mb: 3 }}>
-              {project.description}
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-              {project.categories?.map(tag => (
-                <SkillTag key={tag} label={tag} />
+    <HeaderWrapper>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography 
+            variant="h3" 
+            component="h1" 
+            gutterBottom
+            sx={{ 
+              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
+              fontWeight: 700,
+              lineHeight: 1.2,
+            }}
+          >
+            {displayTitle}
+          </Typography>
+          
+          <Typography 
+            variant="subtitle1"
+            sx={{ 
+              mb: 3,
+              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+              color: 'text.secondary',
+              fontWeight: 400,
+              lineHeight: 1.5,
+            }}
+          >
+            {displayDesc}
+          </Typography>
+          
+          {displayCategories.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+              {displayCategories.map((category, index) => (
+                <Chip
+                  key={`category-${index}`}
+                  label={category}
+                  size="small"
+                  variant="outlined"
+                  sx={{ 
+                    borderRadius: '4px',
+                    fontWeight: 500,
+                  }}
+                />
               ))}
             </Box>
-          </Grid>
+          )}
         </Grid>
-      </Box>
-      
-      {project.tools?.length > 0 && (
-        <Box sx={{ mb: 6 }}>
-          <TechBar 
-            technologies={project.tools} 
-            projectTitle={project.title}
-            links={project.links}
-          />
-        </Box>
-      )}
-    </>
+      </Grid>
+    </HeaderWrapper>
   );
 };
 
 ProjectHeader.propTypes = {
-  project: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    categories: PropTypes.arrayOf(PropTypes.string),
-    tools: PropTypes.arrayOf(PropTypes.string),
-    images: PropTypes.array,
-    media: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    links: PropTypes.array
-  }).isRequired
+  title: PropTypes.string,
+  description: PropTypes.string,
+  categories: PropTypes.array,
+  project: PropTypes.object,
 };
 
 export default ProjectHeader;

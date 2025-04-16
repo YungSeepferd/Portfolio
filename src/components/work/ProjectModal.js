@@ -1,160 +1,204 @@
-import React, { useMemo, useState } from 'react';
-import { Box, Divider, useTheme } from '@mui/material';
-import { motion } from 'framer-motion';
-import { isVideo } from '../../utils/mediaHelper';
-import ErrorBoundary from '../common/ErrorBoundary';
-import { processProjectContent, sectionImageKeyMap, getFallbackContent } from '../../utils/projectContentParser';
-
-import ProjectHeader from './ProjectHeader';
-import ProjectNavigation from './ProjectNavigation';
-import HeroVideo from './HeroVideo';
-import ProjectSections from './ProjectSections';
-import ProjectOutcomes from './ProjectOutcomes';
-import FooterContact from '../contact/FooterContact';
-import ProjectPrototypeEmbed from './ProjectPrototypeEmbed';
+import React, { useEffect, useCallback, useRef } from 'react';
+import { Modal, Box, IconButton, useTheme } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ProjectFullContent from './ProjectFullContent';
-import ProjectGallerySection from './ProjectGallerySection';
-import { skillTags } from './data/skillTags';
 
 /**
  * ProjectModal Component
- * Displays detailed information about a selected project.
+ * 
+ * Displays a project in a modal dialog with navigation controls
+ * Now appears almost full screen with a close button in the top left
  */
-const ProjectModal = ({ project, projects, currentIndex, setCurrentIndex, onClose }) => {
+const ProjectModal = ({ 
+  open, 
+  onClose, 
+  project, 
+  onNextProject, 
+  onPreviousProject 
+}) => {
   const theme = useTheme();
-  const parsedContent = useMemo(() => processProjectContent(project), [project]);
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const contentRef = useRef(null);
+  
+  // Reset scroll position when project changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+  }, [project?.id]);
 
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e) => {
+    if (!open) return;
+    
+    switch (e.key) {
+      case 'ArrowLeft':
+        if (onPreviousProject) {
+          e.preventDefault();
+          onPreviousProject();
+        }
+        break;
+      case 'ArrowRight':
+        if (onNextProject) {
+          e.preventDefault();
+          onNextProject();
+        }
+        break;
+      case 'Escape':
+        if (onClose) {
+          e.preventDefault();
+          onClose();
+        }
+        break;
+      default:
+        break;
+    }
+  }, [open, onNextProject, onPreviousProject, onClose]);
+
+  // Add and remove keyboard event listener
+  useEffect(() => {
+    // Only add the listener when the modal is open
+    if (open) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, handleKeyDown]);
+
+  // Don't render anything if no project is provided
   if (!project) return null;
 
-  // Find hero video if available
-  const heroVideo = project.images?.find(img => 
-    (typeof img === 'object' && img.type === 'video') || 
-    (typeof img === 'string' && isVideo(img))
-  );
-
-  // Determine project layout type
-  const layoutType = project.layoutType || 'default';
-  
-  // Determine if we should show individual sections or just the full content
-  const useFullContentLayout = layoutType === 'single-column' || 
-                              !parsedContent.sections || 
-                              parsedContent.sections.length === 0 || 
-                              (parsedContent.fullContent && parsedContent.sectionCount <= 1);
-
-  // Get project accent color for section numbering
-  const projectAccentColor = project.color || theme.palette.primary.main;
-
-  // Define animation for the modal
-  const modalAnimation = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 }
-  };
-
-  const handleSectionChange = (sectionIndex) => {
-    setActiveSectionIndex(sectionIndex);
-    const sectionEl = document.getElementById(`project-section-${sectionIndex}`);
-    if (sectionEl) {
-      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
-    <ErrorBoundary componentName="ProjectModal">
-      <motion.div
-        initial={modalAnimation.initial}
-        animate={modalAnimation.animate}
-        exit={modalAnimation.exit}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: theme.palette.background.default,
-          zIndex: theme.zIndex.modal,
-          overflow: 'auto',
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby={`project-modal-${project.id}-title`}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // Backdrop styling
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+        }
+      }}
+    >
+      <Box
+        sx={{
+          // Increased to almost full screen
+          width: '95vw',
+          height: '95vh',
+          maxWidth: '95vw', 
+          maxHeight: '95vh',
+          // Consistent box styling
+          bgcolor: 'background.default',
+          borderRadius: 1,
+          boxShadow: 24,
+          overflow: 'hidden',
+          // Improved position
+          position: 'relative', 
+          // Animation
+          opacity: 1,
+          transition: 'opacity 0.3s ease-in-out',
         }}
       >
-        <ProjectNavigation 
-          onClose={onClose}
-          onPrev={() => {
-            const newIndex = (currentIndex - 1 + projects.length) % projects.length;
-            setCurrentIndex(newIndex);
-          }}
-          onNext={() => {
-            const newIndex = (currentIndex + 1) % projects.length;
-            setCurrentIndex(newIndex);
-          }}
-        />
-        <Box 
-          component="article"
-          sx={{ 
-            p: { xs: 2, sm: 4, md: 8 },
-            pt: { xs: 8, sm: 10 },
-            maxWidth: '1600px',
-            mx: 'auto',
-            width: '100%'
+        {/* Close Button - Top Left with Design System Styling */}
+        <IconButton
+          aria-label="close project"
+          onClick={onClose}
+          size="large"
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            zIndex: 10,
+            color: theme.palette.common.white,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            boxShadow: theme.shadows[2],
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              transform: 'scale(1.1)',
+            },
+            transition: 'all 0.2s ease-in-out',
           }}
         >
-          {/* Project header */}
-          <ProjectHeader project={project} />
-          
-          {/* Hero video if available */}
-          {heroVideo && <HeroVideo videoSrc={heroVideo} />}
-          
-          {/* Prototype embed if available */}
-          {project.hasPrototypeEmbed && project.prototypeEmbedUrl && (
-            <ProjectPrototypeEmbed embedUrl={project.prototypeEmbedUrl} title={project.title} />
-          )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Project content */}
-          {!useFullContentLayout ? (
-            <ProjectSections 
-              project={project} 
-              sections={parsedContent.sections} 
-              accentColor={projectAccentColor} 
-              onSectionChange={handleSectionChange}
-            />
-          ) : (
-            <ProjectFullContent 
-              project={project} 
-              content={parsedContent.fullContent} 
-              description={project.description} 
-            />
-          )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Project outcomes */}
-          <ProjectOutcomes 
-            project={project} 
-            outcomes={parsedContent.outcomes} 
-            sectionNumber={parsedContent.sections.length > 0 
-              ? (parsedContent.sections.length + 1).toString().padStart(2, '0')
-              : "01"}
-            accentColor={projectAccentColor}
-          />
-          
-          {/* Project gallery */}
-          {project.images?.length > 1 && (
-            <Box component="section">
-              <ProjectGallerySection images={project.images} title={project.title} />
-            </Box>
-          )}
-          
-          <Divider sx={{ my: 6 }} />
-          
-          {/* Replace ProjectCTA with FooterContact */}
-          <FooterContact/>
+          <CloseIcon />
+        </IconButton>
+
+        {/* Navigation Buttons */}
+        {onPreviousProject && (
+          <IconButton
+            aria-label="previous project"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              onPreviousProject();
+              // Reset scroll position when navigating
+              if (contentRef.current) {
+                contentRef.current.scrollTop = 0;
+              }
+            }}
+            sx={{
+              position: 'absolute',
+              left: 16,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              color: theme.palette.common.white,
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              },
+            }}
+          >
+            <KeyboardArrowLeftIcon fontSize="large" />
+          </IconButton>
+        )}
+        
+        {onNextProject && (
+          <IconButton
+            aria-label="next project"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              onNextProject();
+              // Reset scroll position when navigating
+              if (contentRef.current) {
+                contentRef.current.scrollTop = 0;
+              }
+            }}
+            sx={{
+              position: 'absolute',
+              right: 16,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              color: theme.palette.common.white,
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              },
+            }}
+          >
+            <KeyboardArrowRightIcon fontSize="large" />
+          </IconButton>
+        )}
+        
+        {/* Scrollable Content Area with ref */}
+        <Box 
+          ref={contentRef}
+          sx={{ 
+            width: '100%', 
+            height: '100%',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+          }}
+        >
+          <ProjectFullContent project={project} />
         </Box>
-      </motion.div>
-    </ErrorBoundary>
+      </Box>
+    </Modal>
   );
 };
 
