@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import { AppBar, Toolbar, Box, IconButton, Drawer, List, Container } from '@mui/material';
+import { AppBar, Toolbar, Box, IconButton, List, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import Popover from '@mui/material/Popover';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { useThemeMode } from '../../context/ThemeContext';
@@ -16,9 +19,10 @@ const Header = () => {
   const { mode, toggleTheme } = useThemeMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const isFirstMount = React.useRef(true);
-  
+
   const headerAnimation = useMemo(() => ({
     initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
     animate: { y: 0, opacity: 1 },
@@ -47,8 +51,14 @@ const Header = () => {
     };
   }, []);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+    setMobileOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setMobileOpen(false);
   };
 
   const transparentBgColor = mode === 'dark' 
@@ -114,6 +124,7 @@ const Header = () => {
                     fontSize: '1.5rem',
                     letterSpacing: '-0.5px',
                     color: theme.palette.text.primary,
+                    fontFamily: theme.typography.fontFamily,
                     paddingLeft: { xs: '15px', sm: '6px', md: '40px', lg: '20px' },
                     transition: 'padding 0.2s',
                     display: 'flex',
@@ -146,21 +157,31 @@ const Header = () => {
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
-              <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
-                <ThemeToggle mode={mode} onToggle={toggleTheme} />
-              </Box>
+            </Box>
+            {/* Centered Theme Toggle for all viewports */}
+            <Box sx={{
+              position: { xs: 'absolute', md: 'static' },
+              left: { xs: '50%', md: 'auto' },
+              top: { xs: 0, md: 'auto' },
+              transform: { xs: 'translateX(-50%)', md: 'none' },
+              zIndex: 1202,
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%',
+            }}>
+              <ThemeToggle mode={mode} onToggle={toggleTheme} />
             </Box>
 
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="end"
-              onClick={handleDrawerToggle}
+              onClick={handleMenuOpen}
               sx={{ 
                 display: { md: 'none' },
                 ml: 0, // Remove any margin-right, force to left
                 position: 'relative',
-                right: { xs: 30, sm: 20 }, // Move 30px to the left on mobile
+                left: { xs: 30, sm: 0 }, // Move 30px to the right on mobile
                 zIndex: 1201
               }}
             >
@@ -170,51 +191,66 @@ const Header = () => {
         </Container>
       </AppBar>
 
-      <Drawer
-        anchor="left"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box', 
-            width: 240,
-            backgroundColor: theme.palette.background.paper,
-          },
-        }}
-      >
-        <Box sx={{ textAlign: 'center' }}>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
+      {/* Mobile Popover Menu */}
+      <Popover
+        open={Boolean(anchorEl) && mobileOpen}
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        PaperProps={{
+          sx: {
+            mt: 1.5,
+            ml: 0,
+            borderRadius: 3,
+            boxShadow: 4,
+            minWidth: 180,
+            maxWidth: '90vw',
             p: 2,
-            borderBottom: `1px solid ${theme.palette.divider}`
-          }}>
-            <Box 
-              component="div" 
-              sx={{ 
-                fontWeight: 700,
-                fontSize: '1.5rem',
-                color: theme.palette.primary.main
-              }}
-            >
-              Navigation
-            </Box>
-            <IconButton color="inherit" onClick={handleDrawerToggle}>
-              <CloseIcon />
-            </IconButton>
+            background: theme => theme.palette.background.paper,
+            display: { xs: 'flex', md: 'none' },
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            gap: 1.5,
+            position: 'relative',
+          }
+        }}
+        disableScrollLock
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'theme.palette.secondary.main', pl: 1, fontFamily: theme.typography.fontFamily }}>
+            Menu
           </Box>
-          {/* Theme toggle for mobile menu */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2 }}>
-            <ThemeToggle mode={mode} onToggle={toggleTheme} />
-          </Box>
-          <List>
-            <NavLinks navItems={navItems} variant="mobile" onClick={handleDrawerToggle} />
-          </List>
+          <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
+            <CloseIcon />
+          </IconButton>
         </Box>
-      </Drawer>
+        {/* Navigation buttons */}
+        {navItems.map((item, idx) => (
+          <Button
+            key={item.target}
+            variant={item.isCallToAction ? 'contained' : 'text'}
+            color={item.isCallToAction ? 'secondary' : 'inherit'}
+            fullWidth
+            sx={{
+              py: 1.2,
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: '1.05rem',
+              mb: idx === navItems.length - 1 ? 2 : 0,
+              textTransform: 'none',
+              justifyContent: 'flex-start',
+              fontFamily: theme.typography.fontFamily,
+            }}
+            onClick={() => {
+              handleMenuClose();
+              document.getElementById(item.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+          >
+            {item.name}
+          </Button>
+        ))}
+      </Popover>
     </motion.div>
   );
 };
