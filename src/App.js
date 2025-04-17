@@ -20,8 +20,8 @@ function App() {
           <Header />
           <main>
             <Hero />
-            <AboutSection />
             <Work />
+            <AboutSection />
           </main>
           <FooterContact />
           {process.env.NODE_ENV === 'development' && <ThemeDebugger />}

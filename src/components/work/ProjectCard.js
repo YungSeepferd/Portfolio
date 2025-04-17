@@ -111,7 +111,8 @@ const ProjectCard = ({ project, onClick }) => {
                 containerWidth="100%"
                 autoplay={true}
                 muted={true}
-                controls={true}
+                controls={false} // Hide overlay controls for project card
+                showOverlayControls={false} // Explicitly hide overlay controls
                 poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
                 onError={(e) => {
                   console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);

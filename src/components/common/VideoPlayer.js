@@ -17,6 +17,7 @@ const VideoPlayer = ({
   controls = true,
   loop = true,
   onLoad = () => {},
+  showOverlayControls = true, // NEW: controls overlay toggle
   ...props 
 }) => {
   const [isPlaying, setIsPlaying] = useState(autoplay);
@@ -92,7 +93,7 @@ const VideoPlayer = ({
         }}
       />
       
-      {controls && !isLoading && (
+      {controls && showOverlayControls && !isLoading && (
         <Box
           sx={{
             position: 'absolute',
