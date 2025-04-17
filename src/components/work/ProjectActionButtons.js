@@ -133,7 +133,14 @@ const standardizeAction = (action) => {
 const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, size = 'small', ...rest }) => {
   if (!actions.length) return null;
   return (
-    <Stack direction="row" spacing={1} flexWrap="nowrap" alignItems="center">
+    <Stack 
+      direction={{ xs: 'column', sm: 'row' }} 
+      spacing={1} 
+      flexWrap={{ xs: 'wrap', sm: 'nowrap' }} 
+      alignItems="center"
+      justifyContent={{ xs: 'flex-start', sm: 'center' }}
+      sx={{ width: '100%' }}
+    >
       {actions.slice(0, maxButtons).map((action, idx) => (
         <ActionButton
           key={action.label + idx}
@@ -142,8 +149,9 @@ const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, si
           {...rest}
           sx={{
             whiteSpace: 'nowrap',
-            minWidth: 'unset',
+            minWidth: { xs: '100%', sm: 'unset' },
             px: 2,
+            mb: { xs: 1, sm: 0 },
             ...action.sx,
           }}
         />

@@ -65,7 +65,7 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
               key={label}
               label={label}
               icon={getTechIcon(label)}
-              size={validSize}
+              size="responsive"
               sx={theme.chip}
             />
           );

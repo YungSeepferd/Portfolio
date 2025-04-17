@@ -13,9 +13,9 @@ import { scrollToSection } from '../../utils/scrollUtils';
 const ScrollIndicator = () => {
   const theme = useTheme();
   
-  // Handle click to scroll to about section
+  // Handle click to scroll to work section
   const handleClick = () => {
-    scrollToSection('about');
+    scrollToSection('work');
   };
   
   return (

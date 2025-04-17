@@ -32,7 +32,7 @@ function CategoryTagList({ tags, onTagClick, sx }) {
         <SkillTag
           key={tag}
           label={tag}
-          size="small"
+          size="responsive"
           variant="category"
           sx={{ my: 0.5 }}
           onClick={onTagClick ? () => onTagClick(tag) : undefined}

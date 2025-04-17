@@ -93,7 +93,11 @@ const Header = () => {
             mx: 0,
           }}
         >
-          <Toolbar sx={{ justifyContent: 'space-between', px: 0 }}>
+          <Toolbar sx={{
+            minHeight: { xs: 56, sm: 64 }, // 56px for mobile, 64px for tablet/desktop
+            px: 0,
+            justifyContent: 'space-between'
+          }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <ScrollLink
                 to="hero"
@@ -110,7 +114,7 @@ const Header = () => {
                     fontSize: '1.5rem',
                     letterSpacing: '-0.5px',
                     color: theme.palette.text.primary,
-                    paddingLeft: { xs: '0px', sm: '0px', md: '8px', lg: '20px' },
+                    paddingLeft: { xs: '15px', sm: '6px', md: '40px', lg: '20px' },
                     transition: 'padding 0.2s',
                     display: 'flex',
                     alignItems: 'center',
@@ -152,7 +156,13 @@ const Header = () => {
               aria-label="open drawer"
               edge="end"
               onClick={handleDrawerToggle}
-              sx={{ display: { md: 'none' } }}
+              sx={{ 
+                display: { md: 'none' },
+                ml: 0, // Remove any margin-right, force to left
+                position: 'relative',
+                right: { xs: 30, sm: 20 }, // Move 30px to the left on mobile
+                zIndex: 1201
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -161,7 +171,7 @@ const Header = () => {
       </AppBar>
 
       <Drawer
-        anchor="right"
+        anchor="left"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{ keepMounted: true }}
@@ -190,13 +200,16 @@ const Header = () => {
                 color: theme.palette.primary.main
               }}
             >
-              VG
+              Navigation
             </Box>
             <IconButton color="inherit" onClick={handleDrawerToggle}>
               <CloseIcon />
             </IconButton>
           </Box>
-
+          {/* Theme toggle for mobile menu */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2 }}>
+            <ThemeToggle mode={mode} onToggle={toggleTheme} />
+          </Box>
           <List>
             <NavLinks navItems={navItems} variant="mobile" onClick={handleDrawerToggle} />
           </List>

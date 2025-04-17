@@ -284,10 +284,27 @@ const Hero = () => {
     scrollIndicator: theme.zIndex?.scrollIndicator || 10
   };
 
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const heroRef = useRef();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      // Show indicator if hero section is at least 40% visible
+      const isVisible = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.2;
+      setShowScrollIndicator(isVisible);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <Box
       id="hero"
       component="section"
+      ref={heroRef}
       aria-label="Hero section"
       sx={{
         width: '100%',
@@ -342,32 +359,27 @@ const Hero = () => {
         sx={{
           width: '100%',
           height: '100%',
-          minHeight: '100vh',
+          minHeight: { xs: '80vh', md: '100vh' }, // Less height on mobile to move content higher
           display: 'flex',
-          alignItems: 'center',
+          alignItems: { xs: 'flex-start', md: 'center' }, // Top on mobile, center on desktop
           justifyContent: 'flex-start',
           position: 'relative',
           zIndex: zIndexes.content,
           pointerEvents: 'none', // Allow clicks to pass through to background
-          pt: { xs: 8, md: 0 },
+          pt: { xs: 0, md: 0 }, // Remove extra padding top
         }}
       >
         <HeroContent />
       </Box>
       
       {/* Scroll Indicator - Desktop Only */}
-      {!isMobile && (
-        <Box 
-          sx={{ 
-            position: 'relative', 
-            zIndex: zIndexes.scrollIndicator, 
-            pointerEvents: 'auto',
-            mt: 'auto',
-          }}
-        >
-          <ScrollIndicator />
+      <Fade in={showScrollIndicator} timeout={{ enter: 600, exit: 400 }}>
+        <Box sx={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 20, pointerEvents: 'none', display: { xs: 'flex', sm: 'flex', md: 'none' }, justifyContent: 'center' }}>
+          <Box sx={{ pointerEvents: 'auto' }}>
+            <ScrollIndicator />
+          </Box>
         </Box>
-      )}
+      </Fade>
     </Box>
   );
 };

@@ -50,12 +50,13 @@ const HeroContent = () => {
         width: '100%',
         maxWidth: '100%',
         display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        justifyContent: { xs: 'flex-start', sm: 'flex-start', md: 'flex-start' },
+        alignItems: { xs: 'flex-start', md: 'top' }, // Left-align on mobile, center on desktop
         zIndex: 10,
         pointerEvents: 'none', // All content is non-interactive by default
         userSelect: 'none',
         pl: { xs: 2, sm: 4, md: 8, lg: 12 }, // Responsive padding
+        mt: { xs: '72px', sm: '72px', md: 0 }, // Aligns with tooltip on mobile
       }}
     >
       <motion.div
@@ -63,9 +64,8 @@ const HeroContent = () => {
         animate="visible"
         variants={containerVariants}
         style={{
-          maxWidth: `min(100%, 650px)`,
-          textAlign: window.innerWidth < isMobileBreakpoint ? 'center' : 'left',
-          pointerEvents: 'none',
+          maxWidth: 'min(100%, 340px)', // Smaller on mobile
+          textAlign: 'left',
         }}
       >
         {/* Main Title */}
@@ -74,10 +74,10 @@ const HeroContent = () => {
             variant="h1"
             sx={{
               fontSize: {
-                xs: '2.5rem', // Mobile
-                sm: '3.5rem', // Tablet
-                md: '4.5rem', // Desktop
-                lg: '5rem'    // Large desktop
+                xs: '3rem', // Smaller for mobile
+                sm: '2rem',
+                md: '4.5rem',
+                lg: '5rem'
               },
               fontWeight: 700,
               lineHeight: 1.2,
@@ -97,12 +97,12 @@ const HeroContent = () => {
             component="h2"
             sx={{
               fontSize: {
-                xs: '0.8rem',
-                sm: '1rem',
+                xs: '0.9rem',
+                sm: '0.9rem',
                 md: '1.35rem'
               },
               fontWeight: 500,
-              mb: 4,
+              mb: 2,
               color: theme.palette.secondary.main, // Changed to secondary (yellow) color
             }}
           >
@@ -116,7 +116,11 @@ const HeroContent = () => {
             variant="body1"
             sx={{ 
               mb: 2,
-              fontSize: '1.1rem',
+              fontSize: {
+                xs: '0.65rem',
+                sm: '0.9rem',
+                md: '1.35rem'
+              },
               lineHeight: 1.7,
               color: theme.palette.text.secondary,
             }}
@@ -144,7 +148,7 @@ const HeroContent = () => {
               <SkillTagList
                 key={index}
                 label={skill}
-                size="medium"
+                size="responsive"
                 variant="skill"
                 sx={{ pointerEvents: 'none' }}
               />
@@ -162,7 +166,7 @@ const HeroContent = () => {
               <SkillTagList
                 key={index}
                 label={skill}
-                size="medium"
+                size="responsive"
                 variant="skill"
                 sx={{ pointerEvents: 'none' }}
               />

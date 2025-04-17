@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Fade, useTheme } from '@mui/material';
+import { Box, Typography, Fade, useTheme, useMediaQuery } from '@mui/material';
 import MouseIcon from '@mui/icons-material/Mouse';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
@@ -21,6 +21,7 @@ const InteractionGuide = ({
   position = 'bottom'
 }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [visible, setVisible] = useState(true);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const { currentShapeType } = useSceneState();
@@ -45,23 +46,19 @@ const InteractionGuide = ({
     return () => clearTimeout(timer);
   }, [show, autoHideDelay]);
   
-  // Position styles
-  const positionStyles = {
-    top: {
-      top: '20%',
-      left: '50%',
-      transform: 'translateX(-50%)',
-    },
-    center: {
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-    },
-    bottom: {
-      bottom: '15%',
-      left: '50%',
-      transform: 'translateX(-50%)',
-    }
+  // Responsive position and style
+  const positionStyles = isMobile ? {
+    top: '72px', // Move further down below header (56px header + margin)
+    left: '50%',
+    transform: 'translateX(-50%)',
+    maxWidth: 120,
+    padding: theme.spacing(0.6, 1),
+  } : {
+    ...(position === 'top' ? { top: '20%' } : position === 'center' ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '15%' }),
+    left: '50%',
+    transform: position === 'center' ? 'translate(-50%, -50%)' : 'translateX(-50%)',
+    maxWidth: 280,
+    padding: '12px 20px',
   };
 
   // Get scene-specific instructions
@@ -113,10 +110,8 @@ const InteractionGuide = ({
       <Box
         sx={{
           position: 'absolute',
-          ...positionStyles[position],
           bgcolor: 'rgba(0, 0, 0, 0.7)',
           color: 'white',
-          padding: '12px 20px',
           borderRadius: '24px',
           backdropFilter: 'blur(4px)',
           boxShadow: theme.shadows[4],
@@ -127,17 +122,18 @@ const InteractionGuide = ({
           flexDirection: 'column',
           alignItems: 'center',
           gap: 1,
-          maxWidth: '280px',
+          fontSize: isMobile ? '0.48rem' : '1rem',
+          ...positionStyles,
         }}
       >
         {isTouchDevice ? (
           <>
-            <TouchAppIcon fontSize="medium" />
+            <TouchAppIcon fontSize={isMobile ? 'inherit' : 'medium'} sx={isMobile ? { fontSize: 18 } : {}} />
             <Box>
-              <Typography variant="body2" fontWeight="bold">
+              <Typography variant="body2" fontWeight="bold" sx={{ fontSize: isMobile ? '0.49rem' : '1rem' }}>
                 {instructions.action}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>
+              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5, fontSize: isMobile ? '0.46rem' : '1rem' }}>
                 {instructions.secondary}
               </Typography>
             </Box>
@@ -145,14 +141,14 @@ const InteractionGuide = ({
         ) : (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <MouseIcon fontSize="small" />
-              <ThreeDRotationIcon fontSize="small" />
+              <MouseIcon fontSize={isMobile ? 'inherit' : 'small'} sx={isMobile ? { fontSize: 16 } : {}} />
+              <ThreeDRotationIcon fontSize={isMobile ? 'inherit' : 'small'} sx={isMobile ? { fontSize: 16 } : {}} />
             </Box>
             <Box>
-              <Typography variant="body2" fontWeight="bold">
+              <Typography variant="body2" fontWeight="bold" sx={{ fontSize: isMobile ? '0.49rem' : '1rem' }}>
                 {instructions.action}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>
+              <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5, fontSize: isMobile ? '0.46rem' : '1rem' }}>
                 {instructions.secondary}
               </Typography>
             </Box>

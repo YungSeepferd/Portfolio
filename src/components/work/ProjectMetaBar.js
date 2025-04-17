@@ -34,9 +34,18 @@ const ProjectMetaBar = ({
   const skillTagSize = variant === 'full' || variant === 'hover' ? 'medium' : 'small';
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, flexWrap: 'nowrap', justifyContent: 'space-between', ...sx }}>
+    <Box sx={{ 
+      width: '100%', 
+      display: 'flex', 
+      flexDirection: { xs: 'column', sm: 'row' }, 
+      alignItems: 'center', 
+      gap: { xs: 1.5, sm: 2 }, 
+      flexWrap: { xs: 'wrap', sm: 'nowrap' }, 
+      justifyContent: { xs: 'flex-start', sm: 'space-between' }, 
+      ...sx 
+    }}>
       {technologies.length > 0 && (
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', ...techPadding }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', ...techPadding, mb: { xs: 1, sm: 0 } }}>
           <TechnologyTags technologies={technologies} variant={variant} size={skillTagSize} />
         </Box>
       )}
@@ -44,7 +53,15 @@ const ProjectMetaBar = ({
         <SkillTags skills={skills} size={skillTagSize} />
       )}
       {actions.length > 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'flex-end', minWidth: 0, ...actionsPadding }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' }, 
+          flexWrap: { xs: 'wrap', sm: 'nowrap' }, 
+          justifyContent: { xs: 'flex-start', sm: 'flex-end' }, 
+          minWidth: 0, 
+          ...actionsPadding,
+          gap: { xs: 1, sm: 0 }
+        }}>
           <ProjectActionButtons actions={actions} layout="row" maxButtons={maxButtons} size={actionButtonSize} />
         </Box>
       )}

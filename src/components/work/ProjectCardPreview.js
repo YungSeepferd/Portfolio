@@ -85,9 +85,10 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
-              <ProjectActionButtons actions={links} layout="row" maxButtons={4} size="small" />
+              <ProjectActionButtons actions={links} layout={{ xs: 'column', sm: 'row' }} maxButtons={4} size="small" />
             </Box>
           </Box>
         )}
