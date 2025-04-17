@@ -94,49 +94,51 @@ const Header = () => {
           }}
         >
           <Toolbar sx={{ justifyContent: 'space-between', px: 0 }}>
-            <ScrollLink
-              to="hero"
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-            >
-              <Box 
-                component="div" 
-                sx={{ 
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: '1.5rem',
-                  letterSpacing: '-0.5px',
-                  color: theme.palette.text.primary,
-                  paddingLeft: { xs: '0px', sm: '0px', md: '8px', lg: '20px' },
-                  transition: 'padding 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.5
-                }}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <ScrollLink
+                to="hero"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
               >
-                Vincent Göke
-                {socialLinks.map(link => link.icon === 'LinkedIn' && (
-                  <IconButton
-                    key={link.name}
-                    href={link.url}
-                    target="_blank"
-                    size="small"
-                    sx={{
-                      ml: 1,
-                      color: theme.palette.secondary.dark,
-                      backgroundColor: 'rgba(194,247,80,0.10)',
-                      '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
-                      p: 0.5
-                    }}
-                    aria-label={link.ariaLabel}
-                  >
-                    <LinkedInIcon fontSize="small" />
-                  </IconButton>
-                ))}
-              </Box>
-            </ScrollLink>
+                <Box 
+                  component="div" 
+                  sx={{ 
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    fontSize: '1.5rem',
+                    letterSpacing: '-0.5px',
+                    color: theme.palette.text.primary,
+                    paddingLeft: { xs: '0px', sm: '0px', md: '8px', lg: '20px' },
+                    transition: 'padding 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Vincent Göke
+                </Box>
+              </ScrollLink>
+              {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}
+              {socialLinks.map(link => link.icon === 'LinkedIn' && (
+                <IconButton
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    color: theme.palette.secondary.dark,
+                    backgroundColor: 'rgba(194,247,80,0.10)',
+                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
+                    p: 0.5
+                  }}
+                  aria-label={link.ariaLabel}
+                >
+                  <LinkedInIcon fontSize="small" />
+                </IconButton>
+              ))}
+            </Box>
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />

@@ -25,19 +25,27 @@ const ProjectMetaBar = ({
   const techPadding = variant === 'full' ? { pl: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
   const actionsPadding = variant === 'full' ? { pr: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
 
+  // Map variant to valid ActionButton size
+  let actionButtonSize = 'medium';
+  if (variant === 'full') actionButtonSize = 'large';
+  if (variant === 'hover') actionButtonSize = 'small';
+
+  // Map variant to valid SkillTag size
+  const skillTagSize = variant === 'full' || variant === 'hover' ? 'medium' : 'small';
+
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, flexWrap: 'nowrap', justifyContent: 'space-between', ...sx }}>
       {technologies.length > 0 && (
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', ...techPadding }}>
-          <TechnologyTags technologies={technologies} variant={variant} size={variant} />
+          <TechnologyTags technologies={technologies} variant={variant} size={skillTagSize} />
         </Box>
       )}
       {skills.length > 0 && (
-        <SkillTags skills={skills} size={variant} />
+        <SkillTags skills={skills} size={skillTagSize} />
       )}
       {actions.length > 0 && (
         <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'flex-end', minWidth: 0, ...actionsPadding }}>
-          <ProjectActionButtons actions={actions} layout="row" maxButtons={maxButtons} size={variant} />
+          <ProjectActionButtons actions={actions} layout="row" maxButtons={maxButtons} size={actionButtonSize} />
         </Box>
       )}
     </Box>

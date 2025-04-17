@@ -315,29 +315,6 @@ const Hero = () => {
         />
       )}
       
-      {/* Easter Egg Activation Indicator */}
-      <Fade in={easterEggActive} timeout={{ enter: 400, exit: 800 }}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '15%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'rgba(255,100,100,0.8)',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            zIndex: 30,
-            pointerEvents: 'none',
-            fontSize: '16px',
-            fontWeight: 700,
-            boxShadow: '0 0 20px rgba(255,100,100,0.6)'
-          }}
-        >
-          SUPER MODE ACTIVATED!
-        </Box>
-      </Fade>
-      
       {/* Scene name indicator - visible when changing scenes */}
       <Fade in={sceneNameVisible} timeout={{ enter: 400, exit: 800 }}>
         <Box
@@ -349,7 +326,7 @@ const Hero = () => {
             backgroundColor: 'rgba(0,0,0,0.7)',
             color: 'white',
             padding: '8px 16px',
-            borderRadius: '20px',
+            borderRadius: theme.shape.borderRadius.lg,
             zIndex: 30,
             pointerEvents: 'none',
             fontSize: '16px',

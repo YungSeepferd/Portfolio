@@ -86,6 +86,8 @@ const ProjectCard = ({ project, onClick }) => {
               alignItems: 'center',
               justifyContent: 'center',
               borderBottom: `1px solid ${theme.palette.divider}`,
+              borderRadius: theme.shape.borderRadius,
+              overflow: 'hidden',
             }}
           >
             {primaryMedia?.type === 'image' && (

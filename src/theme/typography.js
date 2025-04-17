@@ -1,5 +1,3 @@
-import { tokens } from '../design/tokens';
-
 /**
  * Typography System
  * 
@@ -7,85 +5,76 @@ import { tokens } from '../design/tokens';
  * It includes font families, sizes, weights, and variants.
  */
 
-// Define typography settings
+// Define and export typography settings directly (do not import tokens here)
 const typography = {
-  // Base font settings
-  fontFamily: tokens.typography.fontFamilies.body,
-  
-  // Headings (h1-h6)
+  fontFamily: [
+    'Inter',
+    'Roboto',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    'Arial',
+    'sans-serif',
+  ].join(','),
   h1: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: tokens.typography.fontSizes.xxxl,
-    fontWeight: tokens.typography.fontWeights.bold,
-    lineHeight: tokens.typography.lineHeights.tight,
-    letterSpacing: '-0.01em',
+    fontWeight: 700,
+    fontSize: '3.5rem',
+    lineHeight: 1.2,
   },
   h2: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: tokens.typography.fontSizes.xxl,
-    fontWeight: tokens.typography.fontWeights.bold,
-    lineHeight: tokens.typography.lineHeights.tight,
-    letterSpacing: '-0.01em',
+    fontWeight: 700,
+    fontSize: '2.75rem',
+    lineHeight: 1.2,
   },
   h3: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: '1.75rem',
-    fontWeight: tokens.typography.fontWeights.semiBold,
-    lineHeight: tokens.typography.lineHeights.tight,
+    fontWeight: 600,
+    fontSize: '2.25rem',
+    lineHeight: 1.3,
   },
   h4: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: tokens.typography.fontSizes.xl,
-    fontWeight: tokens.typography.fontWeights.semiBold,
-    lineHeight: tokens.typography.lineHeights.tight,
+    fontWeight: 600,
+    fontSize: '1.75rem',
+    lineHeight: 1.4,
   },
   h5: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: tokens.typography.fontSizes.lg,
-    fontWeight: tokens.typography.fontWeights.semiBold,
-    lineHeight: tokens.typography.lineHeights.normal,
+    fontWeight: 600,
+    fontSize: '1.5rem',
+    lineHeight: 1.4,
   },
   h6: {
-    fontFamily: tokens.typography.fontFamilies.heading,
-    fontSize: tokens.typography.fontSizes.md,
-    fontWeight: tokens.typography.fontWeights.semiBold,
-    lineHeight: tokens.typography.lineHeights.normal,
+    fontWeight: 600,
+    fontSize: '1.25rem',
+    lineHeight: 1.4,
   },
-  
-  // Other typography variants
   subtitle1: {
-    fontSize: tokens.typography.fontSizes.md,
-    fontWeight: tokens.typography.fontWeights.medium,
-    lineHeight: tokens.typography.lineHeights.normal,
-  },
-  subtitle2: {
-    fontSize: tokens.typography.fontSizes.sm,
-    fontWeight: tokens.typography.fontWeights.medium,
-    lineHeight: tokens.typography.lineHeights.normal,
+    fontWeight: 500,
+    fontSize: '1.1rem',
+    lineHeight: 1.5,
+    letterSpacing: '0.00938em',
   },
   body1: {
-    fontSize: tokens.typography.fontSizes.md,
-    lineHeight: tokens.typography.lineHeights.relaxed,
-    letterSpacing: '0.01em',
+    fontSize: '1rem',
+    lineHeight: 1.6,
+    letterSpacing: '0.00938em',
   },
   body2: {
-    fontSize: tokens.typography.fontSizes.sm,
-    lineHeight: tokens.typography.lineHeights.relaxed,
-    letterSpacing: '0.01em',
-  },
-  caption: {
-    fontSize: tokens.typography.fontSizes.xs,
-    lineHeight: tokens.typography.lineHeights.normal,
-  },
-  overline: {
-    fontSize: tokens.typography.fontSizes.xs,
-    fontWeight: tokens.typography.fontWeights.medium,
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
+    fontSize: '0.875rem',
+    lineHeight: 1.6,
+    letterSpacing: '0.01071em',
   },
   button: {
-    textTransform: 'none', // MUI buttons use uppercase by default
-    fontWeight: tokens.typography.fontWeights.medium,
+    fontWeight: 600,
+    fontSize: '0.875rem',
+    letterSpacing: '0.02857em',
+    textTransform: 'none',
+  },
+  caption: {
+    fontSize: '0.75rem',
+    lineHeight: 1.5,
+    letterSpacing: '0.03333em',
+  },
+  chipText: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
   },
 };
 

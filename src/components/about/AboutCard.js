@@ -137,6 +137,7 @@ const AboutCard = ({
               expandOnHover={true}
               onError={handleImageError}
               containerOrientation={imagePosition === "right" ? "portrait" : "landscape"}
+              sx={{ borderRadius: theme.shape.borderRadius }}
             />
             
             {imageOverlayColor && (
