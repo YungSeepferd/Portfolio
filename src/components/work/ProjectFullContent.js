@@ -6,6 +6,7 @@ import PrototypeShowcase from './PrototypeShowcase';
 import HeroVideo from './HeroVideo';
 import TitleOverlay from './TitleOverlay';
 import ProjectMetaBar from './ProjectMetaBar';
+import ProjectLinks from './ProjectLinks';
 
 /**
  * ProjectFullContent Component
@@ -218,7 +219,7 @@ const ProjectFullContent = ({ project }) => {
         actions={linksArray}
         variant="full"
       />
-      
+
       <Divider sx={{ borderColor: theme.palette.divider }} />
       
       <Paper id="project-full-content-paper" sx={{ 

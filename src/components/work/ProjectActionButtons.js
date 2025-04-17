@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Stack, useTheme } from '@mui/material';
 import { useModalContext } from '../../context/ModalContext';
+import { resolveMediaPath } from '../../utils/MediaPathResolver';
 
 const ActionButton = ({ 
   label, 
@@ -92,6 +93,43 @@ ActionButton.propTypes = {
   id: PropTypes.string
 };
 
+const standardizeAction = (action) => {
+  const getLinkIcon = (label) => {
+    if (!label) return undefined;
+    const normalizedLabel = label.toLowerCase();
+    if (normalizedLabel.includes('github')) return action.icon;
+    if (normalizedLabel.includes('paper') || normalizedLabel.includes('article')) return action.icon;
+    if (normalizedLabel.includes('pdf') || normalizedLabel.includes('presentation')) return action.icon;
+    if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return action.icon;
+    if (normalizedLabel.includes('view') || normalizedLabel.includes('visit')) return action.icon;
+    return action.icon;
+  };
+  const getLinkColor = (label) => {
+    if (!label) return 'primary';
+    const normalizedLabel = label.toLowerCase();
+    if (normalizedLabel.includes('github')) return 'info';
+    if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
+    if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
+    return 'primary';
+  };
+  let contentType = action.contentType || 'external';
+  if (!action.contentType && action.url) {
+    if (action.url.endsWith('.pdf')) contentType = 'pdf';
+    else if (action.url.includes('figma.com') || action.url.includes('prototype')) contentType = 'iframe';
+  }
+  const resolvedUrl = resolveMediaPath(action.url || action.href || '#');
+  return {
+    ...action,
+    label: action.label || 'View',
+    href: resolvedUrl,
+    icon: action.icon || getLinkIcon(action.label),
+    color: action.color || getLinkColor(action.label),
+    contentType,
+    openInPopup: action.openInPopup !== false,
+    variant: action.variant === 'projectAction' ? 'outlined' : (action.variant || 'outlined'),
+  };
+};
+
 const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, size = 'small', ...rest }) => {
   if (!actions.length) return null;
   return (
@@ -99,14 +137,13 @@ const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, si
       {actions.slice(0, maxButtons).map((action, idx) => (
         <ActionButton
           key={action.label + idx}
-          {...action}
+          {...standardizeAction(action)}
           size={size}
-          variant="projectAction"
           {...rest}
           sx={{
             whiteSpace: 'nowrap',
             minWidth: 'unset',
-            px: 2, // Padding for icon + text
+            px: 2,
             ...action.sx,
           }}
         />

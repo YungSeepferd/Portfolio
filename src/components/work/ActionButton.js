@@ -22,7 +22,7 @@ const ActionButton = ({
   label, 
   href, 
   icon, 
-  variant = 'projectAction',
+  variant = 'contained', // changed from 'projectAction' to 'contained'
   color = 'primary',
   size = 'small',
   onClick,

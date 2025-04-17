@@ -332,13 +332,6 @@ const greenWallet = {
       openInPopup: true
     },
     {
-      label: "View Script",
-      url: scriptPDF,
-      icon: <DescriptionIcon fontSize="small" />,
-      contentType: 'pdf',
-      openInPopup: true
-    },
-    {
       label: "Hackathon Winner",
       url: "https://tourism-technology-festival.at/",
       icon: <EmojiEventsIcon fontSize="small" />,
