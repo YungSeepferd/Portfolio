@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Chip, Stack, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
+import CategoryTagList from '../common/CategoryTagList';
 
 /**
  * TitleOverlay Component
@@ -58,29 +59,7 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
       
       {/* Categories */}
       {categories.length > 0 && (
-        <Stack 
-          direction="row" 
-          spacing={1} 
-          flexWrap="wrap"
-          useFlexGap
-          sx={{ gap: 1 }}
-        >
-          {categories.map((category, index) => (
-            <Chip
-              key={`category-${index}`}
-              label={category}
-              size="small"
-              sx={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: theme.palette.common.white,
-                borderRadius: '4px',
-                fontWeight: 500,
-                textShadow: '0px 1px 1px rgba(0,0,0,0.2)',
-                my: 0.5,
-              }}
-            />
-          ))}
-        </Stack>
+        <CategoryTagList tags={categories} sx={{ mt: 1 }} />
       )}
     </Box>
   );

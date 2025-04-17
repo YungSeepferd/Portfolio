@@ -1,166 +1,139 @@
-# Portfolio Project
+# UX Portfolio Project
 
-## Project Status (as of 16 April 2025)
+_Last updated: 17 April 2025_
 
-- All unused utility files, hooks, and context files have been reviewed and deleted.
-- Media/image utilities are fully consolidated in `mediaUtils.js` and used by all relevant components.
-- Layout and spacing are handled directly with MUI's `Box` and `sx` prop; no redundant layout components remain.
-- The "Work" section is fully dynamic, modular, and maintainable.
-- Dependency cleanup is complete; the app builds and runs successfully.
-- Documentation and design system are up-to-date.
+## Overview
+A modular, maintainable UX portfolio built with React and Material UI, featuring a dynamic project showcase, design system, and robust theme management. All legacy, unused, and redundant files have been removed for clarity and maintainability.
 
-## Project Structure
+---
 
-### Core Files
+## File & Folder Structure
 
--   `src/index.js` - Main entry point for the React application. Initializes the theme using `createAppTheme` from `src/theme.js` and renders the `App` component.
--   `src/App.js` - Main application component with routing and layout structure. Wraps content with `ThemeProvider` and `ModalProvider`. Renders `Header`, `Hero`, `AboutSection`, `Work`, and `FooterContact`.
--   `public/index.html` - HTML template used for the production build.
--   `src/theme.js` - Exports the `createAppTheme` function which creates theme objects for light and dark modes with proper palette configuration.
--   `src/context/ThemeContext.js` - Provides theme context with toggle functionality between light and dark modes.
+```
+/ (root)
+├── README.md                # Project documentation (this file)
+├── package.json             # Project dependencies and scripts
+├── public/                  # Static assets and HTML template
+│   └── index.html           # Main HTML entry point
+├── build/                   # Production build output
+├── docs/                    # Documentation and code citations
+├── src/                     # Source code
+│   ├── index.js             # React entry point, theme initialization
+│   ├── App.js               # Main app layout, context providers, routing
+│   ├── index.css            # Global styles
+│   ├── theme.js             # Theme creation and export
+│   ├── assets/              # Images, information, and static content
+│   ├── components/          # All UI components (see below)
+│   ├── config/              # App configuration (media, UI)
+│   ├── context/             # React context providers (Theme, Modal)
+│   ├── docs/                # Design system, usage, and roadmap docs
+│   ├── hooks/               # Custom React hooks
+│   ├── pages/               # Top-level page components (Home, NotFound, ThemePreview)
+│   ├── theme/               # Modular theme system (tokens, palettes, overrides)
+│   └── utils/               # Utility functions (media, project parsing, etc.)
+```
 
-### Components
+### Key Folders & Their Functions
 
--   `src/components/common/` - Reusable components used throughout the application.
-    -   `ActionButton.js` - Consistent button for actions (links, modals), integrates with `ModalContext`.
-    -   `ContentAwareImage.js` - Image component adapting object-fit based on content/container analysis using `imageAnalyzer.js`. Includes lazy loading and retry logic.
-    -   `ContentBox.js` - Container applying standard padding without width restrictions.
-    -   `ContentContainer.js` - Full-width container applying standard padding.
-    -   `ContentWrapper.js` - Basic full-width wrapper component.
-    -   `ErrorBoundary.js` - Catches and displays errors in child components, providing retry options and logging.
-    -   `IframeModal.js` - Displays external content (like Figma prototypes) within an iframe modal, managed by `ModalContext`.
-    -   `LazyImage.js` - Image component that loads when in viewport using `useIntersectionObserver`, includes retry logic.
-    -   `PDFViewer.js` - Component for viewing PDF documents inline using an iframe, managed by `ModalContext`. Handles path resolution.
-    -   `ProjectGallery.js` - Image/video gallery with thumbnails and fullscreen lightbox view. Uses `ContentAwareImage` and `VideoPlayer`.
-    -   `SkillTag.js` - Standardized tag for skills/technologies.
-    -   `TagList.js` - Displays a list of tags using `Chip` components.
-    -   `ThemeToggle.js` - IconButton to switch between light and dark themes using `ThemeContext`.
-    -   `ThemedCard.js` - Example of a reusable card demonstrating theme usage.
-    -   `VideoPlayer.js` - Custom video player component with basic controls.
+- **src/components/**
+  - `about/`      : About section, tabbed interface, data-driven (see AboutData.js)
+  - `common/`     : Reusable UI elements (buttons, images, error boundaries, wrappers)
+  - `contact/`    : Footer contact form and social links
+  - `dev/`        : Development-only tools (DesignSystemViewer, ThemeDebugger)
+  - `header/`     : Main navigation/header
+  - `hero/`       : Hero section, 3D/canvas backgrounds, skills
+  - `work/`       : Portfolio/work section, dynamic project modal, project data pipeline
+    - `data/`     : Project data (per-project files), skill tags, UI config
 
--   `src/components/hero/` - Hero section components.
-    -   `Hero.js` - Main hero section component, includes `HeroContent` and `Background3D`.
-    -   `HeroContent.js` - Content display for hero section (text, buttons, skills). Uses `SkillTag`.
-    -   `ScrollIndicator.js` - Animated scroll indicator component.
-    -   `skillsData.js` - Data for skills displayed in the hero section.
-    -   `Background3D.js` - A canvas-based animated particle background that responds to theme changes.
+- **src/config/**
+  - `mediaConfig.js` : Centralized media asset mapping
+  - `uiConfig.js`    : UI and grid configuration for the Work section
 
--   `src/components/header/` - Header components.
-    -   `Header.js` - Main header/navigation component. Uses `ScrollLink` for smooth scrolling and `ThemeToggle`.
+- **src/context/**
+  - `ThemeContext.js` : Theme mode (light/dark) context and toggle
+  - `ModalContext.js` : Modal state/context for PDF, iframe, and project modals
 
--   `src/components/contact/` - Contact section components.
-    -   `FooterContact.js` - Contact information, social links, and message form in the footer.
+- **src/docs/**
+  - `DesignSystem.md`        : Design system structure, tokens, and usage
+  - `DesignSystemRoadmap.md` : Roadmap for design system improvements
+  - `MUISystemUsage.md`      : How to use MUI and the sx prop
+  - `NextSteps.md`           : Refactoring and cleanup plans
 
--   `src/components/work/` - Work/Portfolio section components.
-    -   `Work.js` - Main work section component. Fetches project data and manages project display.
-    -   `ProjectGrid.js`, `ProjectCard.js`, `ProjectSection.js`, etc. - Various components for displaying project information.
-    -   `TitleOverlay.js`, `ActionsBar.js` - UI components for project details.
+- **src/hooks/**
+  - Custom hooks for data loading, debouncing, intersection observer, etc.
 
--   `src/components/dev/` - Development and debugging tools (not for production).
-    -   `DesignSystemViewer.js` - Component to visualize design system elements.
-    -   `ThemeDebugger.js` - Tool to inspect the current theme values.
-    -   `ThemePreview.js` - Sandbox to preview components with theme settings, includes mode toggle.
+- **src/pages/**
+  - `HomePage.js`        : Main landing page (if used)
+  - `NotFoundPage.js`    : 404 fallback
+  - `ThemePreviewPage.js`: Theme preview sandbox
 
-### Context Providers
+- **src/theme/**
+  - Modular theme system: `index.js`, `typography.js`, `spacing.js`, `breakpoints.js`, `palette/`, `design/tokens.js`, etc.
+  - All design tokens and theme overrides are defined here.
 
--   `src/context/` - React context providers for global state management.
-    -   `ModalContext.js` - Manages state and content for various modal types.
-    -   `ThemeContext.js` - Manages the current theme mode (light/dark) and provides a toggle function.
+- **src/utils/**
+  - `mediaUtils.js`           : All image/video/media handling logic
+  - `projectContentParser.js` : Parses project data into modal sections
+  - `projectUtils.js`         : Project data helpers (filtering, searching, etc.)
+  - `themeUtils.js`           : Theme-related helpers
+  - `scrollUtils.js`          : Smooth scrolling helpers
+  - `MediaPathResolver.js`    : Resolves asset paths for media
 
-### Configuration
+---
 
--   `src/config/mediaConfig.js` - Centralized media asset configuration. Maps project IDs to their associated image, video, and document paths.
--   `src/design/tokens.js` - Defines design tokens (primarily colors) used by the theme.
+## Data Flow (Work/Portfolio Section)
+- Project data is defined in `src/components/work/data/projects/` (one file per project)
+- Aggregated in `src/components/work/data/projects/index.js`
+- Standardized and exported in `src/components/work/data/index.js`
+- Loaded in `Work.js` using the `useDataLoader` hook
+- Passed to `ProjectModal` and rendered dynamically in `ProjectFullContent.js` using `projectContentParser.js`
+- Supports text, media, galleries, outcomes, prototypes, and custom sections
 
-### Theme Configuration
+---
 
--   `src/theme/` - Material UI theme customization.
-    -   `index.js` - Main theme creation logic. Imports tokens and specific configurations to build the light and dark theme objects.
-    -   `breakpoints.js` - Responsive breakpoints definition.
-    -   `colors.js` - Color palette definitions.
-    -   `components.js` - Global component style overrides.
-    -   `custom.js` - Custom theme extensions for additional functionality.
-    -   `shadows.js` - Shadow definitions for elevation levels.
-    -   `shape.js` - Shape configurations like border radius.
-    -   `spacing.js` - Spacing scale definition.
-    -   `typography.js` - Typography settings (font families, sizes, weights).
+## Theme & Design System
+- Fully modular, all tokens (colors, spacing, typography, breakpoints, etc.) in `src/theme/`
+- Custom theme extensions and overrides in `src/theme/custom.js` and `src/theme/components.js`
+- See `src/docs/DesignSystem.md` for full details
 
-## Dependencies
+---
 
-### Core Dependencies
+## Development & Debugging
+- Dev-only tools: `DesignSystemViewer.js`, `ThemeDebugger.js` (only rendered in development mode)
+- Error boundaries and global error handlers are used throughout for robust error recovery
 
--   **React (^18.2.0)**: The foundation of the application.
--   **React DOM (^18.2.0)**: Handles DOM-specific methods for React.
--   **React Scripts (^5.0.1)**: Configuration and scripts for the Create React App environment.
+---
 
-### Key Libraries
+## Scripts & Installation
 
--   **@mui/material (^5.17.1)**: Material UI component library for UI elements and styling.
--   **@emotion/react, @emotion/styled**: Styling libraries used by Material UI.
--   **framer-motion (^11.0.8)**: For animations and transitions.
--   **react-scroll**: For smooth scrolling navigation.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start development server:
+   ```bash
+   npm start
+   ```
+3. Build for production:
+   ```bash
+   npm run build
+   ```
+4. Deploy (if configured):
+   ```bash
+   npm run deploy
+   ```
 
-## Theme System
+---
 
-The portfolio uses a custom theme system built on top of Material UI's theming capabilities:
+## Further Documentation
+- See `src/docs/` for:
+  - Design system structure and usage
+  - MUI system and sx prop usage
+  - Roadmap and next steps
 
-1. **ThemeContext.js** - Provides global theme state management:
-   - Stores current theme mode ('light' or 'dark')
-   - Provides mode toggling functionality
-   - Persists user theme preference in localStorage
-   - Respects system color scheme preferences
-   - Provides theme object to components
+---
 
-2. **theme.js** - Creates theme objects with:
-   - Proper palette configuration for light and dark modes
-   - Custom typography settings
-   - Responsive breakpoints
-   - Consistent spacing, shadows, and border radius
-
-3. The Background3D component now:
-   - Adapts to theme changes (light/dark)
-   - Uses proper theme fallback values
-   - Works with canvas instead of ThreeJS for better performance
-
-## Summary of Discussion
-
-1. 
-
-## Installation
-
-To install all the required dependencies for this portfolio project, follow these steps:
-
-1.  Make sure you have [Node.js](https://nodejs.org/) (v14 or higher) and npm installed.
-
-2.  Clone the repository:
-    ```bash
-    git clone https://github.com/YourUsername/portfolio.git
-    cd portfolio
-    ```
-
-3.  Install all dependencies:
-    ```bash
-    npm install
-    ```
-
-4.  Start the development server:
-    ```bash
-    npm start
-    ```
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.
-
-### `npm run deploy`
-
-Deploys the application to GitHub Pages using the `gh-pages` package.
+## Notes
+- All unused/legacy files, hooks, and utilities have been removed.
+- The codebase is clean, modular, and ready for further development.
+- For a full list of dependencies, see `package.json`.

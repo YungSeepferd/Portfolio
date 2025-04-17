@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Grid, Box, Stack, Chip } from '@mui/material';
-import SkillTag from '../common/SkillTag';
+import SkillTagList from '../common/SkillTagList';
 // Import Material UI icons for visual enhancement
 import CodeIcon from '@mui/icons-material/Code';
 import BrushIcon from '@mui/icons-material/Brush';
@@ -105,24 +105,24 @@ export const aboutData = [
         <Typography variant="h5" sx={{ mb: 3 }}>Tools & Technologies</Typography>
         {/* Design tools */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTag label="Figma" />
-          <SkillTag label="Adobe XD" />
-          <SkillTag label="Sketch" />
-          <SkillTag label="Prototyping" />
+          <SkillTagList label="Figma" />
+          <SkillTagList label="Adobe XD" />
+          <SkillTagList label="Sketch" />
+          <SkillTagList label="Prototyping" />
         </Stack>
         {/* Web technologies */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTag label="User Testing" />
-          <SkillTag label="Javascript" />
-          <SkillTag label="HTML/CSS" />
+          <SkillTagList label="User Testing" />
+          <SkillTagList label="Javascript" />
+          <SkillTagList label="HTML/CSS" />
         </Stack>
         {/* Programming and prototyping skills */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTag label="Unity" />
-          <SkillTag label="C" />
-          <SkillTag label="C#" />
-          <SkillTag label="C++" />
-          <SkillTag label="Arduino" />
+          <SkillTagList label="Unity" />
+          <SkillTagList label="C" />
+          <SkillTagList label="C#" />
+          <SkillTagList label="C++" />
+          <SkillTagList label="Arduino" />
         </Stack>
       </>
     )

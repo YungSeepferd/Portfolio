@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
-import TagList from '../common/TagList';
+import CategoryTagList from '../common/CategoryTagList';
 
 /**
  * ProjectCard Component
@@ -169,7 +169,7 @@ const ProjectCard = ({ project, onClick }) => {
             {description}
           </Typography>
           {categories && categories.length > 0 && (
-            <TagList tags={categories} />
+            <CategoryTagList tags={categories} />
           )}
         </CardContent>
       </Card>

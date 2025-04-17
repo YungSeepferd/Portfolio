@@ -5,7 +5,7 @@ import ProjectSections from './ProjectSections';
 import PrototypeShowcase from './PrototypeShowcase';
 import HeroVideo from './HeroVideo';
 import TitleOverlay from './TitleOverlay';
-import ActionsBar from './ActionsBar';
+import ProjectMetaBar from './ProjectMetaBar';
 
 /**
  * ProjectFullContent Component
@@ -213,9 +213,10 @@ const ProjectFullContent = ({ project }) => {
       </Box>
       
       {/* Actions Bar - Contains both Technologies and Links */}
-      <ActionsBar 
+      <ProjectMetaBar 
         technologies={technologies}
-        links={linksArray}
+        actions={linksArray}
+        variant="full"
       />
       
       <Divider sx={{ borderColor: theme.palette.divider }} />

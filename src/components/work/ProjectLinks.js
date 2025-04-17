@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@mui/material'; // Added Stack for better spacing and alignment
-import ActionButton from '../common/ActionButton';
+import ActionButton from './ActionButton';
 import { resolveMediaPath } from '../../utils/MediaPathResolver';
 
 // Import MUI icons

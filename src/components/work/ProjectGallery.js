@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CloseIcon from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import ContentAwareImage from './ContentAwareImage';
-import VideoPlayer from './VideoPlayer';
+import ContentAwareImage from '../common/ContentAwareImage';
+import VideoPlayer from '../common/VideoPlayer';
 import { analyzeImage, isVideo } from '../../utils/mediaUtils';
 
 const ProjectGallery = ({ images = [], title = '' }) => {

@@ -22,7 +22,7 @@ const ActionButton = ({
   label, 
   href, 
   icon, 
-  variant = 'outlined',
+  variant = 'projectAction',
   color = 'primary',
   size = 'small',
   onClick,
@@ -79,23 +79,6 @@ const ActionButton = ({
     // If not opening in popup, the default link behavior will happen
   };
   
-  // Get consistent button styling based on size and variant
-  const getButtonStyles = () => {
-    const baseStyles = {
-      minWidth: 'auto',
-      fontWeight: 'medium',
-      fontSize: size === 'large' ? '0.875rem' : '0.75rem',
-      textTransform: 'none',
-      borderRadius: theme.shape.borderRadius,
-      boxShadow: variant === 'contained' ? theme.shadows[2] : 'none',
-      '&:hover': {
-        boxShadow: variant === 'contained' ? theme.shadows[4] : theme.shadows[1],
-      }
-    };
-    
-    return baseStyles;
-  };
-  
   return (
     <Button
       id={`action-button-${label ? label.toLowerCase().replace(/\s+/g, '-') : 'unnamed'}`}
@@ -106,7 +89,9 @@ const ActionButton = ({
       onClick={handleClick}
       startIcon={icon}
       sx={{
-        ...getButtonStyles(),
+        minWidth: 'auto',
+        fontWeight: 'medium',
+        fontSize: size === 'large' ? '0.875rem' : '0.75rem',
         ...sx
       }}
       {...props}

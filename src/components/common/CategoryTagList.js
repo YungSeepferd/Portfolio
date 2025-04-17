@@ -1,19 +1,19 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { motion } from 'framer-motion';
-import SkillTag from './SkillTag';
+import SkillTag from './SkillTagList';
 
 /**
  * TagList Component
  *
- * Displays a list of tags as clickable chips.
+ * Displays a list of tags as clickable chips, styled for categories.
  *
  * @param {Object} props
  * @param {Array} props.tags - Array of tag strings to display
  * @param {Function} props.onTagClick - Optional callback when a tag is clicked
  * @param {Object} props.sx - Optional styles to override default styles
  */
-function TagList({ tags, onTagClick, sx }) {
+function CategoryTagList({ tags, onTagClick, sx }) {
   return (
     <Box
       component={motion.div}
@@ -33,12 +33,13 @@ function TagList({ tags, onTagClick, sx }) {
           key={tag}
           label={tag}
           size="small"
-          onClick={onTagClick ? () => onTagClick(tag) : undefined}
+          variant="category"
           sx={{ my: 0.5 }}
+          onClick={onTagClick ? () => onTagClick(tag) : undefined}
         />
       ))}
     </Box>
   );
 }
 
-export default TagList;
+export default CategoryTagList;

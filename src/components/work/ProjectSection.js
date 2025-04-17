@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import VideoPlayer from '../common/VideoPlayer';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ProjectContentRenderer from './ProjectContentRenderer';
-import ProjectGallery from '../common/ProjectGallery';
-import ActionButtonGroup from '../common/ActionButtonGroup';
+import ProjectGallery from './ProjectGallery';
+import { ProjectActionButtonsBar } from './ProjectMetaBar';
 
 /**
  * Helper function to format section numbers
@@ -346,7 +346,7 @@ const ProjectSection = ({
             {renderOutcomesTakeaways()}
             {children && (
               <Box sx={{ mt: 3 }}>
-                <ActionButtonGroup actions={children} layout="row" />
+                <ProjectActionButtonsBar actions={children} layout="row" />
               </Box>
             )}
           </Box>
