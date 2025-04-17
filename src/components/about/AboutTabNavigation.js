@@ -37,9 +37,9 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
         disableGutters
         sx={{ 
           px: { 
-            xs: '24px',  // Minimal padding for readability
-            sm: '32px',
-            md: '40px',
+            xs: theme.spacing(2),  // Use theme spacing instead of hardcoded px
+            sm: theme.spacing(4),
+            md: theme.spacing(6),
           },
           width: '100%',
           display: 'flex',

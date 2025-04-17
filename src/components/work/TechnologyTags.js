@@ -50,6 +50,10 @@ const getTechIcon = (name) => {
  */
 const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small', sx = {} }) => {
   const theme = useTheme();
+
+  // Map size to valid values for SkillTagList
+  const validSize = size === 'full' || size === 'hover' ? 'medium' : size;
+
   if (!technologies.length) return null;
   return (
     <Box sx={{ width: '100%', ...sx }}>
@@ -61,7 +65,7 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
               key={label}
               label={label}
               icon={getTechIcon(label)}
-              size={size}
+              size={validSize}
               sx={theme.chip}
             />
           );

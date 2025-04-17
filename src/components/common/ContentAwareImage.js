@@ -131,6 +131,7 @@ const ContentAwareImage = ({
         overflow: "hidden",
         height: containerHeight,
         width: containerWidth,
+        borderRadius: theme.shape.borderRadius,
         ...sx,
       }}
     >
@@ -147,6 +148,7 @@ const ContentAwareImage = ({
             left: 0,
             zIndex: 1,
             bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
+            borderRadius: theme.shape.borderRadius,
           }}
         />
       )}
@@ -178,6 +180,7 @@ const ContentAwareImage = ({
           objectFit: determinedObjectFit,
           objectPosition: objectPosition,
           transition: "transform 0.3s ease",
+          borderRadius: theme.shape.borderRadius,
           ...(expandOnHover && {
             "&:hover": {
               transform: "scale(1.05)",

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ListItem, Stack } from '@mui/material';
-import { Link as ScrollLink } from 'react-scroll';
+import { scroller } from 'react-scroll';
 
 /**
  * NavLinks component for rendering navigation items
@@ -9,6 +9,16 @@ import { Link as ScrollLink } from 'react-scroll';
  * @param {function} [onClick] - Optional click handler (for mobile drawer)
  */
 const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
+  // Handler to scroll to section
+  const handleScroll = (target) => {
+    scroller.scrollTo(target, {
+      smooth: true,
+      offset: -70,
+      duration: 500,
+    });
+    if (onClick) onClick();
+  };
+
   if (variant === 'mobile') {
     return navItems.map((item) => (
       <ListItem 
@@ -16,28 +26,19 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
         disablePadding
         sx={{ justifyContent: 'center', mb: 1 }}
       >
-        <ScrollLink
-          to={item.target}
-          spy={true}
-          smooth={true}
-          offset={-70}
-          duration={500}
-          onClick={onClick}
-          style={{ width: '100%', textAlign: 'center' }}
+        <Button
+          variant={item.isCallToAction ? 'contained' : 'text'}
+          color={item.isCallToAction ? 'secondary' : 'inherit'}
+          fullWidth
+          sx={{
+            py: 1.5,
+            borderRadius: item.isCallToAction ? '50px' : 'default',
+            textTransform: 'none',
+          }}
+          onClick={() => handleScroll(item.target)}
         >
-          <Button
-            variant={item.isCallToAction ? 'contained' : 'text'}
-            color={item.isCallToAction ? 'secondary' : 'inherit'}
-            fullWidth
-            sx={{
-              py: 1.5,
-              borderRadius: item.isCallToAction ? '50px' : 'default',
-              textTransform: 'none',
-            }}
-          >
-            {item.name}
-          </Button>
-        </ScrollLink>
+          {item.name}
+        </Button>
       </ListItem>
     ));
   }
@@ -46,31 +47,23 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
   return (
     <Stack direction="row" alignItems="center" gap={2} pr={{ md: 3, lg: 5 }}>
       {navItems.map((item, idx) => (
-        <ScrollLink
+        <Button
           key={item.target}
-          to={item.target}
-          spy={true}
-          smooth={true}
-          offset={-70}
-          duration={500}
-          style={{ textDecoration: 'none' }}
+          variant={item.isCallToAction ? 'contained' : 'text'}
+          color={item.isCallToAction ? 'secondary' : 'inherit'}
+          sx={{
+            ml: idx === 0 ? 0 : 2,
+            px: item.isCallToAction ? 3 : 2,
+            py: item.isCallToAction ? 0.5 : 'auto',
+            borderRadius: item.isCallToAction ? '50px' : 'default',
+            position: 'relative',
+            textTransform: 'none',
+            fontWeight: 500,
+          }}
+          onClick={() => handleScroll(item.target)}
         >
-          <Button
-            variant={item.isCallToAction ? 'contained' : 'text'}
-            color={item.isCallToAction ? 'secondary' : 'inherit'}
-            sx={{
-              ml: idx === 0 ? 0 : 2,
-              px: item.isCallToAction ? 3 : 2,
-              py: item.isCallToAction ? 0.5 : 'auto',
-              borderRadius: item.isCallToAction ? '50px' : 'default',
-              position: 'relative',
-              textTransform: 'none',
-              fontWeight: 500,
-            }}
-          >
-            {item.name}
-          </Button>
-        </ScrollLink>
+          {item.name}
+        </Button>
       ))}
     </Stack>
   );

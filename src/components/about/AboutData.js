@@ -143,7 +143,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 1.5,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
@@ -172,7 +172,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 1.5,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
@@ -201,7 +201,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 1.5,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
@@ -242,7 +242,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 2,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
@@ -265,7 +265,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 2,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>
@@ -288,7 +288,7 @@ export const aboutData = [
               flexDirection: 'column',
               height: '100%',
               p: 2,
-              borderRadius: 1,
+              borderRadius: theme => theme.shape.borderRadius.sm,
               backgroundColor: 'background.paper',
               boxShadow: 1
             }}>

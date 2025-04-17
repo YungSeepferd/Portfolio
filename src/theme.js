@@ -1,4 +1,12 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { tokens } from './theme/design/tokens';
+
+// Utility to get responsive border radius from theme/tokens
+export const getResponsiveRadius = (theme, bp = 'md') => {
+  // Prefer theme.shape.radius if available, else fallback to tokens
+  const shape = theme?.shape?.radius || tokens.shape.radius;
+  return shape[bp] || shape.default || 8;
+};
 
 /**
  * Primary theme configuration for the portfolio
@@ -160,7 +168,8 @@ const createAppTheme = (mode = 'dark') => {
       },
     },
     shape: {
-      borderRadius: 8,
+      borderRadius: tokens.shape.radius?.default || 8, // number for MUI
+      radius: tokens.shape.radius || { xs: 2, sm: 4, md: 8, lg: 12, xl: 16, default: 8 }, // object for custom use
     },
     spacing: 8,
     shadows: [
@@ -188,7 +197,7 @@ const createAppTheme = (mode = 'dark') => {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: '8px',
+            borderRadius: getResponsiveRadius(tokens, 'md'),
             boxShadow: 'none',
             '&:hover': {
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
@@ -208,7 +217,7 @@ const createAppTheme = (mode = 'dark') => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: '12px',
+            borderRadius: getResponsiveRadius(tokens, 'lg'),
             boxShadow: isDark 
               ? '0 4px 20px rgba(0, 0, 0, 0.4)'
               : '0 4px 20px rgba(0, 0, 0, 0.08)',
@@ -218,7 +227,7 @@ const createAppTheme = (mode = 'dark') => {
       MuiChip: {
         styleOverrides: {
           root: {
-            borderRadius: '16px',
+            borderRadius: getResponsiveRadius(tokens, 'sm'),
             fontWeight: 500,
           }
         }

@@ -188,6 +188,7 @@ const ProjectSection = ({
             containerHeight="100%"
             containerWidth="100%"
             aspect={img.aspect || 'landscape'}
+            sx={{ borderRadius: theme.shape.borderRadius }}
           />
         </Box>
       );
@@ -216,6 +217,7 @@ const ProjectSection = ({
               containerHeight="100%"
               containerWidth="100%"
               aspect={img.aspect || 'landscape'}
+              sx={{ borderRadius: theme.shape.borderRadius }}
             />
           </Box>
         ))}
@@ -364,6 +366,7 @@ const ProjectSection = ({
                 containerHeight="100%"
                 containerWidth="100%"
                 aspect={img.aspect || 'landscape'}
+                sx={{ borderRadius: theme.shape.borderRadius }}
               />
             ))}
           </Box>
@@ -404,6 +407,7 @@ const ProjectSection = ({
                 containerHeight="100%"
                 containerWidth="100%"
                 aspect={aspect}
+                sx={{ borderRadius: theme.shape.borderRadius }}
               />
             )}
           </Box>

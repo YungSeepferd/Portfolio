@@ -180,7 +180,8 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    background: theme.palette.grey[100]
+                    background: theme.palette.grey[100],
+                    borderRadius: theme.shape.borderRadius
                   }}
                 />
               )}
@@ -281,7 +282,8 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                           maxHeight: '80vh',
                           display: 'block',
                           margin: '0 auto',
-                          background: theme.palette.grey[100]
+                          background: theme.palette.grey[100],
+                          borderRadius: theme.shape.borderRadius
                         }}
                       />
                     )}
@@ -342,6 +344,9 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   containerWidth="100%"
                   aspect={item.aspect}
                   objectFit="cover"
+                  sx={{
+                    borderRadius: theme.shape.borderRadius
+                  }}
                 />
               </Box>
             ))}
