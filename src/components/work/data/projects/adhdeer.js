@@ -64,10 +64,27 @@ const adhdeer = {
   description: "A mobile app supporting youth with ADHD through empathic UX design and structured daily routines.",
   categories: ["UI Design", "UX Research", "Mental Health UX", "Prototyping", "Design Thinking"],
   cardVariant: 'warning',
-
+  technologies: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
+  links: [
+    {
+      label: "View Presentation",
+      url: presentationPDF,
+      icon: <DashboardIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
+    },
+    {
+      label: "Try Prototype",
+      url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
+      icon: <DashboardIcon fontSize="small" />,
+      contentType: 'iframe',
+      openInPopup: true
+    }
+  ],
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Project Overview',
       content: (
         <>
@@ -77,10 +94,13 @@ const adhdeer = {
         </>
       ),
       media: { type: 'image', src: media.images.overview, aspect: 'landscape' },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-motivation',
+      type: 'default',
       title: 'Motivation and Context',
       content: (
         <Typography variant="body1" paragraph>
@@ -88,10 +108,13 @@ const adhdeer = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.coreDimensions, aspect: 'landscape' },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'motivation',
+      navigable: true
     },
     {
       id: 'section-problem',
+      type: 'default',
       title: 'Defining the Problem',
       content: (
         <>
@@ -106,10 +129,13 @@ const adhdeer = {
         </>
       ),
       media: { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'problem',
+      navigable: true
     },
     {
       id: 'section-research',
+      type: 'gallery',
       title: 'Research and Empathy',
       content: (
         <>
@@ -131,10 +157,13 @@ const adhdeer = {
         { type: 'image', src: media.images.forumPostStep1, aspect: 'portrait' },
         { type: 'image', src: media.images.forumPostStep2, aspect: 'portrait' }
       ],
-      layout: 'gallery'
+      layout: 'gallery',
+      anchor: 'research',
+      navigable: true
     },
     {
       id: 'section-ideation',
+      type: 'gallery',
       title: 'Ideation and Core Functionalities',
       content: (
         <>
@@ -162,10 +191,13 @@ const adhdeer = {
         { type: 'image', src: media.images.diaryStep2, aspect: 'portrait' },
         { type: 'image', src: media.images.diaryStep3, aspect: 'portrait' }
       ],
-      layout: 'gallery'
+      layout: 'gallery',
+      anchor: 'ideation',
+      navigable: true
     },
     {
       id: 'section-prototype',
+      type: 'gallery',
       title: 'Prototyping and Design Execution',
       content: (
         <>
@@ -184,10 +216,13 @@ const adhdeer = {
         { type: 'image', src: media.images.moodCalendarStep2, aspect: 'portrait' },
         { type: 'image', src: media.images.moodCalendarSymptoms, aspect: 'portrait' }
       ],
-      layout: 'gallery'
+      layout: 'gallery',
+      anchor: 'prototype',
+      navigable: true
     },
     {
       id: 'section-articles',
+      type: 'gallery',
       title: 'Educational Content',
       content: (
         <Typography variant="body1" paragraph>
@@ -198,10 +233,13 @@ const adhdeer = {
         { type: 'image', src: media.images.articlesStep1, aspect: 'portrait' },
         { type: 'image', src: media.images.articlesStep2, aspect: 'portrait' }
       ],
-      layout: 'gallery'
+      layout: 'gallery',
+      anchor: 'articles',
+      navigable: true
     },
     {
       id: 'section-onboarding',
+      type: 'gallery',
       title: 'Onboarding and Registration',
       content: (
         <Typography variant="body1" paragraph>
@@ -212,10 +250,13 @@ const adhdeer = {
         { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
         { type: 'image', src: media.images.registrationDone, aspect: 'portrait' }
       ],
-      layout: 'gallery'
+      layout: 'gallery',
+      anchor: 'onboarding',
+      navigable: true
     },
     {
       id: 'section-video',
+      type: 'video',
       title: 'Prototype Video',
       content: (
         <Typography variant="body1" paragraph>
@@ -223,20 +264,26 @@ const adhdeer = {
         </Typography>
       ),
       media: { type: 'video', src: media.videos.prototype, aspect: 'landscape' },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'video',
+      navigable: true
     },
     {
       id: 'section-outcomes',
+      type: 'default',
       title: 'Outcomes and Evaluation',
       content: (
         <Typography variant="body1" paragraph>
           The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone. Users highlighted the application’s potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'outcomes',
+      navigable: true
     },
     {
       id: 'section-future',
+      type: 'default',
       title: 'Future Directions',
       content: (
         <>
@@ -250,67 +297,58 @@ const adhdeer = {
           </ul>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'future',
+      navigable: true
     },
     {
       id: 'section-impact',
+      type: 'default',
       title: 'Impact and Conclusion',
       content: (
         <Typography variant="body1" paragraph>
           ADHDeer exemplifies how user-centric, empathetic UX design can significantly enhance the quality of life for young individuals with ADHD. Through comprehensive research, compassionate ideation, and effective prototyping, the project showcases tangible potential for a supportive digital environment, empowering neurodivergent youth to achieve better emotional health, daily structure, and increased self-esteem.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'impact',
+      navigable: true
     }
-  ],
-
-  galleryImages: [
-    media.images.overview,
-    media.images.coreDimensions,
-    media.images.forumOverview,
-    media.images.forumPostStep1,
-    media.images.forumPostStep2,
-    media.images.diaryStep1,
-    media.images.diaryStep2,
-    media.images.diaryStep3,
-    media.images.moodCalendarStep1,
-    media.images.moodCalendarStep2,
-    media.images.moodCalendarSymptoms,
-    media.images.articlesStep1,
-    media.images.articlesStep2,
-    media.images.mainMenuOverview,
-    media.images.registrationDone,
-    { type: 'video', src: media.videos.prototype, aspect: 'landscape' }
-  ],
-  technologies: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
-  media: { type: 'image', src: media.images.overview, aspect: 'landscape' },
-  featuredImages: {
-    overview: media.images.overview,
-    problem: media.images.coreDimensions,
-    solution: media.images.overview,
-    prototypeShowcase: [
-      media.images.overview,
-      media.images.coreDimensions,
-      { type: 'video', src: media.videos.prototype, aspect: 'landscape' }
-    ]
-  },
-  links: [
-    {
-      label: "View Presentation",
-      url: presentationPDF,
-      icon: <DashboardIcon fontSize="small" />,
-      contentType: 'pdf',
-      openInPopup: true
-    },
-    {
-      label: "Try Prototype",
-      url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
-      icon: <DashboardIcon fontSize="small" />,
-      contentType: 'iframe',
-      openInPopup: true
-    }
-  ],
-  
+  ]
 };
+
+adhdeer.media = (() => {
+  // Find first video section
+  const firstVideo = adhdeer.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'video');
+    }
+    return s.media && s.media.type === 'video';
+  });
+  if (firstVideo) {
+    if (Array.isArray(firstVideo.media)) {
+      const video = firstVideo.media.find(m => m.type === 'video');
+      if (video) return video;
+    } else {
+      return firstVideo.media;
+    }
+  }
+  // Otherwise, find first image
+  const firstImage = adhdeer.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'image');
+    }
+    return s.media && s.media.type === 'image';
+  });
+  if (firstImage) {
+    if (Array.isArray(firstImage.media)) {
+      const image = firstImage.media.find(m => m.type === 'image');
+      if (image) return image;
+    } else {
+      return firstImage.media;
+    }
+  }
+  return undefined;
+})();
 
 export default adhdeer;

@@ -1,23 +1,15 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import ProjectSection from './ProjectSection';
-import { processProjectContent } from '../../utils/projectContentParser';
 
 /**
  * ProjectSections Component
- * 
- * Takes raw project data and renders structured sections.
- * Uses projectContentParser to transform the data into a standardized format.
+ *
+ * Renders an array of normalized project sections.
  */
-const ProjectSections = ({ project }) => {
-  if (!project) return null;
-  
-  // Process the project data into structured sections, outcomes, takeaways
-  const { sections, outcomes, takeaways } = processProjectContent(project);
-  
-  // Don't render if no sections
+const ProjectSections = ({ sections }) => {
   if (!sections || sections.length === 0) return null;
-  
+
   return (
     <Box
       id="project-sections-container"
@@ -29,7 +21,6 @@ const ProjectSections = ({ project }) => {
         width: '100%'
       }}
     >
-      {/* Render each section */}
       {sections.map((section, index) => (
         <ProjectSection
           key={`section-${section.id || index}`}
@@ -39,10 +30,12 @@ const ProjectSections = ({ project }) => {
           mediaData={section.media}
           layout={section.layout || (index % 2 === 0 ? 'textLeft' : 'textRight')}
           sectionIndex={index}
-          sectionNumber={index + 1} // <-- Ensure sectionNumber is always passed
-          takeaways={index === sections.length - 1 ? takeaways : null}
-          outcomes={index === sections.length - 1 ? outcomes : null}
+          sectionNumber={index + 1}
+          takeaways={section.takeaways}
+          outcomes={section.outcomes}
           type={section.type}
+          anchor={section.anchor}
+          navigable={section.navigable}
           sx={{ mb: 6 }}
         />
       ))}

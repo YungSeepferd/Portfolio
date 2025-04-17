@@ -28,6 +28,9 @@ const LazyImage = ({
     freezeOnceVisible: true
   });
 
+  // Clamp maxRetries to 5 to prevent excessive retries
+  const effectiveMaxRetries = Math.min(maxRetries, 5);
+
   // Fix: Wrap handleError in useCallback to prevent recreating it on every render
   const handleError = useCallback((e) => {
     console.error(`Image failed to load: ${src}`);
@@ -57,8 +60,8 @@ const LazyImage = ({
     
     img.onerror = (e) => {
       // Implement retry logic with progressive backoff
-      if (retryCount < maxRetries) {
-        console.log(`Retry ${retryCount + 1}/${maxRetries} for image: ${src}`);
+      if (retryCount < effectiveMaxRetries) {
+        console.log(`Retry ${retryCount + 1}/${effectiveMaxRetries} for image: ${src}`);
         
         // Increase delay progressively
         const progressiveDelay = retryDelay * (1 + (retryCount * 0.5));
@@ -89,7 +92,7 @@ const LazyImage = ({
         clearTimeout(retryTimeoutRef.current);
       }
     };
-  }, [src, isVisible, onLoad, isLoaded, retryCount, maxRetries, retryDelay, permanentError, handleError]);
+  }, [src, isVisible, onLoad, isLoaded, retryCount, retryDelay, effectiveMaxRetries, permanentError, handleError]);
   
   return (
     <Box 

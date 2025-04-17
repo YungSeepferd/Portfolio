@@ -78,15 +78,17 @@ const links = [
 
 // Project data object
 const masterThesis = {
-  id: 1,
+  id: 'masterThesis',
   title: "Prototyping Emotions – Master Thesis",
   description: "A structured methodology for prototyping emotional haptic feedback using the Circumplex Model of Affect.",
   categories: ["UX Research", "Interaction Design", "HCI Methodologies", "Haptic Design"],
-  
-  // Replace details with structured sections
+  technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
+  cardVariant: cardVariant,
+  links: links,
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -94,10 +96,13 @@ const masterThesis = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.overview },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-problem',
+      type: 'default',
       title: 'Motivation & Problem Statement',
       content: (
         <>
@@ -115,10 +120,13 @@ const masterThesis = {
         </>
       ),
       media: { type: 'image', src: media.images.circumplex },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'problem',
+      navigable: true
     },
     {
       id: 'section-methodology',
+      type: 'default',
       title: 'Methodological Approach',
       content: (
         <>
@@ -149,10 +157,13 @@ const masterThesis = {
           </Box>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'methodology',
+      navigable: true
     },
     {
       id: 'section-toolkit',
+      type: 'default',
       title: 'Toolkit Components',
       content: (
         <>
@@ -179,10 +190,13 @@ const masterThesis = {
         </>
       ),
       media: { type: 'image', src: media.images.bodyMapping },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'toolkit',
+      navigable: true
     },
     {
       id: 'section-outcomes',
+      type: 'outcomes',
       title: 'Key Outcomes & Contributions',
       content: (
         <>
@@ -219,45 +233,24 @@ const masterThesis = {
       ),
       media: { type: 'image', src: media.images.prototype },
       layout: 'textRight',
+      anchor: 'outcomes',
+      navigable: true,
       outcomes: [
         "Established design patterns for translating emotions into tactile experiences",
         "Created workshop materials and templates to facilitate emotional haptic prototyping",
         "Developed a validated methodological toolkit for emotion-driven haptic design"
       ]
     }
-  ],
-  
-  galleryImages: [
-    { type: 'image', src: media.images.overview, alt: 'Overview of the Prototyping Emotions thesis' },
-    { type: 'image', src: media.images.process, alt: 'Workshop agenda flow' },
-    { type: 'image', src: media.images.circumplex, alt: 'Circumplex Model of Affect representation' },
-    { type: 'image', src: media.images.bodyMapping, alt: 'Body mapping template for emotional feedback' },
-    { type: 'image', src: media.images.prototype, alt: 'Prototype session showcasing haptic feedback' },
-    { type: 'image', src: media.images.hapticLabs, alt: 'Haptic Labs prototype demonstration' },
-    { type: 'image', src: media.images.workshop, alt: 'Group workshop activity for haptic design' },
-    { type: 'image', src: media.images.metaphorElicitation, alt: 'Metaphor elicitation template used in workshops' },
-    { type: 'image', src: media.images.audioHaptics, alt: 'Audio haptics integration in design' },
-    { type: 'image', src: media.images.affectivePrototype1, alt: 'First affective prototype showcasing emotional feedback' },
-    { type: 'image', src: media.images.affectivePrototype2, alt: 'Second affective prototype highlighting design iterations' },
-    { type: 'image', src: media.images.bodyMapQuestions, alt: 'Body map questions for emotional exploration' },
-    { type: 'image', src: media.images.workshopBodyMaps, alt: 'Workshop body maps created by participants' }
-  ],
-  
-  technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.overview }, 
-  featuredImages: {
-    overview: media.images.overview,
-    problem: media.images.circumplex,
-    solution: media.images.bodyMapping,
-    prototypeShowcase: [
-      media.images.prototype,
-      media.images.hapticLabs,
-      media.images.audioHaptics,
-      media.images.workshop
-    ]
-  },
-  links: links
+  ]
 };
+
+// Assign the media field after initialization to avoid ReferenceError
+masterThesis.media = (() => {
+  const firstVideo = masterThesis.sections?.find(s => s.media && s.media.type === 'video');
+  if (firstVideo) return firstVideo.media;
+  const firstImage = masterThesis.sections?.find(s => s.media && s.media.type === 'image');
+  if (firstImage) return firstImage.media;
+  return undefined;
+})();
 
 export default masterThesis;

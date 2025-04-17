@@ -43,15 +43,17 @@ const links = [
 
 // Project data object
 const amiai = {
-  id: 3,
+  id: 'amiai',
   title: "AMIAI – Critical Visual Campaign",
   description: "A visual campaign exploring AI-generated content credibility and digital literacy.",
   categories: ["Graphic Design", "Visual Communication", "Marketing Campaigns"],
-  
-  // Replace details with structured sections
+  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
+  cardVariant: cardVariant,
+  links: links,
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -59,20 +61,26 @@ const amiai = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.intro },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-context',
+      type: 'default',
       title: 'Context & Motivation',
       content: (
         <Typography variant="body1" paragraph>
           In an era increasingly dominated by digital content, misleading or altered information can rapidly influence public perceptions and decisions. AMIAI addresses this growing issue by highlighting the critical need for digital literacy and verification through impactful visual communication. The goal is not only to raise awareness but also to empower audiences to maintain autonomy over their digital interactions.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'context',
+      navigable: true
     },
     {
       id: 'section-pixelation',
+      type: 'default',
       title: 'Key Design Element: Pixelation Metaphor',
       content: (
         <Typography variant="body1" paragraph>
@@ -80,10 +88,13 @@ const amiai = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.logo },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'pixelation',
+      navigable: true
     },
     {
       id: 'section-research',
+      type: 'default',
       title: 'Research & Conceptual Development',
       content: (
         <>
@@ -100,10 +111,13 @@ const amiai = {
           </Typography>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'research',
+      navigable: true
     },
     {
       id: 'section-process',
+      type: 'video',
       title: 'Design Process & Execution',
       content: (
         <>
@@ -135,10 +149,13 @@ const amiai = {
         </>
       ),
       media: { type: 'video', src: media.videos.scene },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'process',
+      navigable: true
     },
     {
       id: 'section-components',
+      type: 'video',
       title: 'Campaign Components',
       content: (
         <>
@@ -165,10 +182,13 @@ const amiai = {
         </>
       ),
       media: { type: 'video', src: media.videos.samiai },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'components',
+      navigable: true
     },
     {
       id: 'section-impact',
+      type: 'outcomes',
       title: 'Impact & Outcomes',
       content: (
         <>
@@ -184,6 +204,8 @@ const amiai = {
         </>
       ),
       layout: 'textOnly',
+      anchor: 'impact',
+      navigable: true,
       takeaways: [
         "Visual design can effectively communicate complex ethical concepts",
         "Critical design approaches raise important questions about technological implementation",
@@ -202,31 +224,26 @@ const amiai = {
     },
     {
       id: 'section-future',
+      type: 'default',
       title: 'Future Directions',
       content: (
         <Typography variant="body1" paragraph>
           Future development could expand AMIAI's impact through educational workshops, AR/VR experiences, and partnerships with digital platforms to amplify the campaign's reach and effectiveness in promoting critical digital literacy.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'future',
+      navigable: true
     }
-  ],
-  
-  galleryImages: [
-    { type: 'image', src: media.images.logo, alt: 'AMIAI Logo' },
-    { type: 'image', src: media.images.intro, alt: 'Introduction to AMIAI' },
-    { type: 'video', src: media.videos.scene, alt: 'Scene video for AMIAI' },
-    { type: 'video', src: media.videos.samiai, alt: '5samiai video for AMIAI' }
-  ],
-  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.logo },
-  featuredImages: {
-    overview: media.images.intro,
-    problem: media.images.intro,
-    solution: media.images.logo
-  },
-  actions: links
+  ]
 };
+
+amiai.media = (() => {
+  const firstVideo = amiai.sections?.find(s => s.media && s.media.type === 'video');
+  if (firstVideo) return firstVideo.media;
+  const firstImage = amiai.sections?.find(s => s.media && s.media.type === 'image');
+  if (firstImage) return firstImage.media;
+  return undefined;
+})();
 
 export default amiai;

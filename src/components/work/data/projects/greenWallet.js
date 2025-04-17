@@ -70,14 +70,39 @@ const cardVariant = 'success';
 
 // Project data object
 const greenWallet = {
-  id: 4,
+  id: 'greenWallet',
   title: "Green Wallet – Sustainable Tourism",
   description: "A gamified cashless payment system for sustainable tourism developed during a hackathon.",
   categories: ["UI Design", "UX Research", "Sustainable UX", "Tourism", "Gamification"],
-  
+  technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
+  cardVariant: cardVariant,
+  links: [
+    {
+      label: "Try Prototype",
+      url: "https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share",
+      icon: <SmartphoneIcon fontSize="small" />,
+      contentType: 'iframe',
+      openInPopup: true
+    },
+    {
+      label: "View Presentation",
+      url: presentationPDF,
+      icon: <SlideshowIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
+    },
+    {
+      label: "Hackathon Winner",
+      url: "https://www.linkedin.com/posts/alles-fuer-den-gast_allesfaesrdengast-gastmesse-gastrohackathon-activity-7129517120463192064-_11i?utm_source=share&utm_medium=member_desktop&rcm=ACoAAC2Uif8Be-XBXBcxg2OW-UH9jV1ETYju6Dw",
+      icon: <EmojiEventsIcon fontSize="small" />,
+      contentType: 'external',
+      openInPopup: true
+    }
+  ],
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -85,10 +110,13 @@ const greenWallet = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.overview },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-hackathon',
+      type: 'default',
       title: 'Hackathon Context',
       content: (
         <Typography variant="body1" paragraph>
@@ -96,10 +124,13 @@ const greenWallet = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.hackathonTeam },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'hackathon',
+      navigable: true
     },
     {
       id: 'section-problem',
+      type: 'default',
       title: 'Problem Statement',
       content: (
         <>
@@ -116,10 +147,13 @@ const greenWallet = {
         </>
       ),
       media: { type: 'image', src: media.images.cashlessPayment },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'problem',
+      navigable: true
     },
     {
       id: 'section-concept',
+      type: 'default',
       title: 'Innovative Concept: Green Wallet',
       content: (
         <>
@@ -148,10 +182,13 @@ const greenWallet = {
         </>
       ),
       media: { type: 'image', src: media.images.prototypeUI },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'concept',
+      navigable: true
     },
     {
       id: 'section-process',
+      type: 'video',
       title: 'Research & Development Process',
       content: (
         <>
@@ -183,10 +220,13 @@ const greenWallet = {
         </>
       ),
       media: { type: 'video', src: media.videos.highlightReel },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'process',
+      navigable: true
     },
     {
       id: 'section-user-interfaces',
+      type: 'default',
       title: 'User Interfaces',
       content: (
         <>
@@ -206,10 +246,13 @@ const greenWallet = {
         </>
       ),
       media: { type: 'image', src: media.images.shopOwnerInterface1 },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'user-interfaces',
+      navigable: true
     },
     {
       id: 'section-benefits',
+      type: 'default',
       title: 'Multi-stakeholder Benefits',
       content: (
         <>
@@ -244,10 +287,13 @@ const greenWallet = {
           </Box>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'benefits',
+      navigable: true
     },
     {
       id: 'section-outcome',
+      type: 'video',
       title: 'Hackathon Outcome',
       content: (
         <Typography variant="body1" paragraph>
@@ -255,10 +301,13 @@ const greenWallet = {
         </Typography>
       ),
       media: { type: 'video', src: media.videos.presentation },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'outcome',
+      navigable: true
     },
     {
       id: 'section-future',
+      type: 'outcomes',
       title: 'Future Directions',
       content: (
         <Typography variant="body1" paragraph>
@@ -267,6 +316,8 @@ const greenWallet = {
       ),
       media: { type: 'image', src: media.images.exhibition },
       layout: 'textRight',
+      anchor: 'future',
+      navigable: true,
       takeaways: [
         "Gamification can effectively drive sustainable behaviors",
         "Creating mutual benefit is key to adoption of eco-friendly solutions",
@@ -283,62 +334,15 @@ const greenWallet = {
         ]
       }
     }
-  ],
-
-  galleryImages: [
-    { type: 'image', src: media.images.overview, alt: 'Green Wallet overview' },
-    { type: 'image', src: media.images.prototypeUI, alt: 'Prototype UI' },
-    { type: 'image', src: media.images.phoneScreen1, alt: 'Phone Screen 1' },
-    { type: 'image', src: media.images.phoneScreen2, alt: 'Phone Screen 2' },
-    { type: 'image', src: media.images.phoneScreen3, alt: 'Phone Screen 3' },
-    { type: 'image', src: media.images.phoneScreen4, alt: 'Phone Screen 4' },
-    { type: 'image', src: media.images.shopOwnerInterface1, alt: 'Shop Owner Interface 1' },
-    { type: 'image', src: media.images.shopOwnerInterface2, alt: 'Shop Owner Interface 2' },
-    { type: 'image', src: media.images.conceptOverview1, alt: 'Concept Overview 1' },
-    { type: 'image', src: media.images.conceptOverview2, alt: 'Concept Overview 2' },
-    { type: 'image', src: media.images.hackathonTeam, alt: 'Hackathon Team' },
-    { type: 'image', src: media.images.exhibition, alt: 'Exhibition Photo' },
-    { type: 'video', src: media.videos.highlightReel, alt: 'Highlight Reel Video' },
-    { type: 'video', src: media.videos.presentation, alt: 'Presentation Video' }
-  ],
-  
-  technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.overview },
-  featuredImages: {
-    overview: media.images.overview,
-    problem: media.images.cashlessPayment,
-    solution: media.images.prototypeUI,
-    prototypeShowcase: [
-      media.images.phoneScreen1,
-      media.images.phoneScreen2,
-      media.images.shopOwnerInterface1,
-      { type: 'video', src: media.videos.highlightReel }
-    ]
-  },
-  links: [
-    {
-      label: "Try Prototype",
-      url: "https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share",
-      icon: <SmartphoneIcon fontSize="small" />,
-      contentType: 'iframe',
-      openInPopup: true
-    },
-    {
-      label: "View Presentation",
-      url: presentationPDF,
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf',
-      openInPopup: true
-    },
-    {
-      label: "Hackathon Winner",
-      url: "https://tourism-technology-festival.at/",
-      icon: <EmojiEventsIcon fontSize="small" />,
-      contentType: 'external',
-      openInPopup: true
-    }
-  ],
+  ]
 };
+
+greenWallet.media = (() => {
+  const firstVideo = greenWallet.sections?.find(s => s.media && s.media.type === 'video');
+  if (firstVideo) return firstVideo.media;
+  const firstImage = greenWallet.sections?.find(s => s.media && s.media.type === 'image');
+  if (firstImage) return firstImage.media;
+  return undefined;
+})();
 
 export default greenWallet;

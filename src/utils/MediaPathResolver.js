@@ -27,60 +27,23 @@ const mediaPaths = designConstants?.media?.paths || DEFAULT_PATHS;
 const fileFormats = designConstants?.media?.fileFormats || DEFAULT_FILE_FORMATS;
 
 /**
- * Resolves a media path based on the file type and project context
+ * Resolves image/video paths for both imported assets and public/static paths
  * 
- * @param {string} path - The relative or absolute path to resolve
- * @param {string} [projectId] - Optional project ID for project-specific paths
- * @returns {string} The resolved absolute path
+ * @param {string|object} input - The input path or imported asset
+ * @returns {string} The resolved path
  */
-export const resolveMediaPath = (path, projectId = null) => {
-  // If path is null, undefined, or empty, return empty string
-  if (!path) return '';
-  
-  // If it's already an absolute URL (starts with http, https, or data:), return as is
-  if (typeof path === 'string' && (path.startsWith('http') || path.startsWith('data:'))) {
-    return path;
+export const resolveMediaPath = (input) => {
+  if (!input) return '/assets/images/placeholders/project.jpg';
+  // If it's already a full URL or imported image, just return it
+  if (typeof input === 'string' && (input.startsWith('http') || input.startsWith('/'))) {
+    return input;
   }
-  
-  // Handle module imports (webpack processed)
-  if (typeof path === 'object' && path.hasOwnProperty('default')) {
-    return path.default;
+  // If it's an imported image (webpack will resolve to a string), just return it
+  if (typeof input === 'string') {
+    return input;
   }
-  
-  try {
-    // String path processing
-    if (typeof path === 'string') {
-      // If it starts with a slash or assets/, treat as absolute within the app
-      if (path.startsWith('/') || path.startsWith('assets/')) {
-        return path;
-      }
-      
-      // Determine media type by extension
-      const ext = path.substring(path.lastIndexOf('.')).toLowerCase();
-      
-      // Check file type and use appropriate path
-      if (fileFormats.documents.includes(ext)) {
-        return `${mediaPaths.documents}/${projectId ? `${projectId}/` : ''}${path}`;
-      } else if (fileFormats.images.includes(ext)) {
-        return `${mediaPaths.images}/${projectId ? `${projectId}/` : ''}${path}`;
-      } else if (fileFormats.videos.includes(ext)) {
-        return `${mediaPaths.videos}/${projectId ? `${projectId}/` : ''}${path}`;
-      }
-      
-      // If no extension match, assume it's a document
-      return `${mediaPaths.documents}/${projectId ? `${projectId}/` : ''}${path}`;
-    }
-    
-    // If it's an object with src property, resolve that
-    if (typeof path === 'object' && path.src) {
-      return resolveMediaPath(path.src, projectId);
-    }
-  } catch (error) {
-    console.error('Error resolving media path:', error);
-  }
-  
-  // Return the original path if all else fails
-  return path;
+  // Fallback
+  return '/assets/images/placeholders/project.jpg';
 };
 
 /**
