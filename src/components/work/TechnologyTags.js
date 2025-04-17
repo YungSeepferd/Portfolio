@@ -1,6 +1,7 @@
 import React from 'react';
 import SkillTag from '../common/SkillTagList';
 import { Box, Stack, useTheme } from '@mui/material';
+import BuildIcon from '@mui/icons-material/Build';
 
 /**
  * TechnologyTags Component
@@ -16,7 +17,12 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
     <Box sx={{ width: '100%', ...sx }}>
       <Stack direction="row" spacing={1} flexWrap="wrap">
         {technologies.map((tech) => (
-          <SkillTag key={tech} label={tech} size={size} sx={theme.chip} />
+          <SkillTag 
+            key={tech} 
+            label={<><BuildIcon sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />{tech}</>} 
+            size={size} 
+            sx={theme.chip} 
+          />
         ))}
       </Stack>
     </Box>

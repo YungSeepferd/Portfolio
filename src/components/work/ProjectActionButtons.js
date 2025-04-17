@@ -95,9 +95,21 @@ ActionButton.propTypes = {
 const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, size = 'small', ...rest }) => {
   if (!actions.length) return null;
   return (
-    <Stack direction={layout} spacing={1} flexWrap="wrap">
+    <Stack direction="row" spacing={1} flexWrap="nowrap" alignItems="center">
       {actions.slice(0, maxButtons).map((action, idx) => (
-        <ActionButton key={action.label + idx} {...action} size={size} variant="projectAction" {...rest} />
+        <ActionButton
+          key={action.label + idx}
+          {...action}
+          size={size}
+          variant="projectAction"
+          {...rest}
+          sx={{
+            whiteSpace: 'nowrap',
+            minWidth: 'unset',
+            px: 2, // Padding for icon + text
+            ...action.sx,
+          }}
+        />
       ))}
     </Stack>
   );
