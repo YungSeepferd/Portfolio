@@ -78,20 +78,18 @@ const Header = () => {
             ? `1px solid ${theme.palette.divider}`
             : 'none',
           color: theme.palette.text.primary,
-          width: '100%',
+          width: '100vw', // Ensure full viewport width
+          maxWidth: '100vw', // Prevent any maxWidth restriction
+          left: 0,
         }}
       >
         <Container
           maxWidth={false}
           disableGutters={true}
           sx={{
-            px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
-            },
-            width: '100%',
+            px: 0, // Remove all horizontal padding at the top level
+            width: '100vw',
+            maxWidth: '100vw',
             mx: 0,
           }}
         >

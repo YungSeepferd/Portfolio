@@ -22,7 +22,8 @@ const FooterContact = ({ projectContext }) => {
       component="footer" 
       id="footer-contact" 
       sx={{ 
-        width: '100%',
+        width: '100vw', // Ensure full viewport width
+        maxWidth: '100vw',
         padding: 0,
         marginBottom: 0,
         textAlign: 'left',

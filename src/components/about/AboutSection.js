@@ -80,10 +80,10 @@ const AboutSection = () => {
           sx={{ 
             width: '100%',
             px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
+              xs: theme.spacing(2),
+              sm: theme.spacing(4),
+              md: theme.spacing(6),
+              lg: theme.spacing(8),
             },
             boxSizing: 'border-box',
           }}

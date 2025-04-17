@@ -140,10 +140,10 @@ const AboutTabNavigator = forwardRef((props, ref) => {
           sx={{ 
             width: '100%',
             px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
+              xs: theme.spacing(2),
+              sm: theme.spacing(4),
+              md: theme.spacing(6),
+              lg: theme.spacing(8),
             },
             mb: 4,
             boxSizing: 'border-box',
@@ -182,10 +182,10 @@ const AboutTabNavigator = forwardRef((props, ref) => {
           sx={{ 
             width: '100%',
             px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
+              xs: theme.spacing(2),
+              sm: theme.spacing(4),
+              md: theme.spacing(6),
+              lg: theme.spacing(8),
             },
             py: { xs: 4, md: 6 },
             boxSizing: 'border-box',

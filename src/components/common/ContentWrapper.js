@@ -20,7 +20,18 @@ const ContentWrapper = ({
   const theme = useTheme();
   
   return (
-    <Container maxWidth={maxWidth} {...props}>
+    <Container 
+      maxWidth={maxWidth} 
+      sx={{
+        px: {
+          xs: theme.spacing(2),
+          sm: theme.spacing(4),
+          md: theme.spacing(6),
+          lg: theme.spacing(8),
+        }
+      }}
+      {...props}
+    >
       {title && (
         <Typography 
           variant={titleVariant} 
@@ -28,8 +39,6 @@ const ContentWrapper = ({
           gutterBottom
           sx={{ 
             mb: subtitle ? 1 : 3,
-            // Theme typography values are properly inherited
-            // No need to set fontWeight if using variant
           }}
         >
           {title}
@@ -46,7 +55,6 @@ const ContentWrapper = ({
         </Typography>
       )}
       
-      {/* Example of properly using strong element with theme-defined font weight */}
       <Box sx={{ mb: spacing }}>
         {children}
       </Box>

@@ -1,0 +1,10 @@
+/* Global CSS to ensure full viewport width and remove restrictions */
+html, body, #root, .App {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
