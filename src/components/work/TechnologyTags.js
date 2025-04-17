@@ -57,7 +57,7 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
   if (!technologies.length) return null;
   return (
     <Box sx={{ width: '100%', ...sx }}>
-      <Stack direction="row" spacing={1} flexWrap="wrap">
+      <Stack direction="row" spacing={1} flexWrap="wrap" rowGap={{ xs: 1.5, sm: 2 }}>
         {technologies.map((tech) => {
           const label = typeof tech === 'string' ? tech : tech?.name || '';
           return (

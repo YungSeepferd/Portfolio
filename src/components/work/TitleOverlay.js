@@ -27,6 +27,7 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
         color: theme.palette.common.white,
         padding: { xs: 3, sm: 4, md: 5 },
         boxSizing: 'border-box',
+        mt: { xs: 8, sm: 10 }, // Add extra top margin to move content down
       }}
     >
       {/* Project Title */}

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { Modal, Box } from '@mui/material';
+import { Modal, Box, Dialog, AppBar, Toolbar, IconButton, Typography, useMediaQuery, useTheme, Slide } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import PDFViewer from '../components/common/PDFViewer';
 import IframeModal from '../components/common/IframeModal';
 
@@ -40,6 +41,9 @@ export const ModalProvider = ({ children }) => {
 
   const [projectOpen, setProjectOpen] = useState(false);
   const [projectContent, setProjectContent] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Open PDF modal
   const openPdf = useCallback((url, title = '') => {
@@ -105,70 +109,96 @@ export const ModalProvider = ({ children }) => {
       }}
     >
       {children}
-      
-      {/* PDF Modal */}
-      <Modal
+      {/* PDF Modal - Responsive Dialog for mobile */}
+      <Dialog
         open={pdfOpen}
         onClose={closeModal}
+        fullScreen={isMobile}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Slide}
         aria-labelledby="pdf-modal-title"
         aria-describedby="pdf-modal-description"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          // Backdrop styling
-          '& .MuiBackdrop-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
-          }
+        PaperProps={{
+          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
         }}
       >
-        <Box sx={modalStyle}>
+        {isMobile && (
+          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+            <Toolbar sx={{ minHeight: 56, px: 1 }}>
+              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+                PDF Document
+              </Typography>
+              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close PDF" size="large">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        )}
+        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
           <PDFViewer url={pdfUrl} title="PDF Document" />
         </Box>
-      </Modal>
-      
-      {/* Iframe Modal */}
-      <Modal
+      </Dialog>
+      {/* Iframe Modal - Responsive Dialog for mobile */}
+      <Dialog
         open={iframeOpen}
         onClose={closeModal}
+        fullScreen={isMobile}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Slide}
         aria-labelledby="iframe-modal-title"
         aria-describedby="iframe-modal-description"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          // Backdrop styling
-          '& .MuiBackdrop-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
-          }
+        PaperProps={{
+          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
         }}
       >
-        <Box sx={modalStyle}>
+        {isMobile && (
+          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+            <Toolbar sx={{ minHeight: 56, px: 1 }}>
+              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+                {iframeTitle || 'External Content'}
+              </Typography>
+              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close content" size="large">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        )}
+        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
           <IframeModal url={iframeUrl} title={iframeTitle} />
         </Box>
-      </Modal>
-      
-      {/* External Content Modal */}
-      <Modal
+      </Dialog>
+      {/* External Content Modal - Responsive Dialog for mobile */}
+      <Dialog
         open={externalOpen}
         onClose={closeModal}
+        fullScreen={isMobile}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Slide}
         aria-labelledby="external-modal-title"
         aria-describedby="external-modal-description"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          // Backdrop styling
-          '& .MuiBackdrop-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
-          }
+        PaperProps={{
+          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
         }}
       >
-        <Box sx={modalStyle}>
+        {isMobile && (
+          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+            <Toolbar sx={{ minHeight: 56, px: 1 }}>
+              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+                {externalTitle || 'External Website'}
+              </Typography>
+              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close external" size="large">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        )}
+        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
           <IframeModal url={externalUrl} title={externalTitle} />
         </Box>
-      </Modal>
-      
+      </Dialog>
       {/* Project Modal is rendered by the ProjectModal component */}
     </ModalContext.Provider>
   );

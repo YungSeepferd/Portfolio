@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, CircularProgress, Typography, Button } from '@mui/material';
+import { Box, CircularProgress, Typography, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
@@ -13,6 +13,7 @@ const PDFViewer = ({ url, title }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Generate a proper URL for the PDF, whether it's an imported file or string path
   const pdfUrl = typeof url === 'object' ? URL.createObjectURL(new Blob([url], { type: 'application/pdf' })) : url;
@@ -86,6 +87,22 @@ const PDFViewer = ({ url, title }) => {
   
   return (
     <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* Mobile rotation tip */}
+      {isMobile && (
+        <Box sx={{
+          width: '100%',
+          bgcolor: 'warning.light',
+          color: 'warning.contrastText',
+          textAlign: 'center',
+          py: 1,
+          px: 2,
+          fontSize: '0.98rem',
+          fontWeight: 500,
+          zIndex: 2,
+        }}>
+          Tip: Rotate your device for a better PDF experience.
+        </Box>
+      )}
       {isLoading && (
         <Box 
           sx={{

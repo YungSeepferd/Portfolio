@@ -23,46 +23,52 @@ const ProjectMetaBar = ({
 }) => {
   // Responsive side paddings for detail view
   const techPadding = variant === 'full' ? { pl: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
-  const actionsPadding = variant === 'full' ? { pr: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
-
-  // Map variant to valid ActionButton size
-  let actionButtonSize = 'medium';
-  if (variant === 'full') actionButtonSize = 'large';
-  if (variant === 'hover') actionButtonSize = 'small';
-
-  // Map variant to valid SkillTag size
-  const skillTagSize = variant === 'full' || variant === 'hover' ? 'medium' : 'small';
 
   return (
-    <Box sx={{ 
-      width: '100%', 
-      display: 'flex', 
-      flexDirection: { xs: 'column', sm: 'row' }, 
-      alignItems: 'center', 
-      gap: { xs: 1.5, sm: 2 }, 
-      flexWrap: { xs: 'wrap', sm: 'nowrap' }, 
-      justifyContent: { xs: 'flex-start', sm: 'space-between' }, 
-      ...sx 
-    }}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: { xs: 'stretch', sm: 'center' },
+        gap: { xs: 2, sm: 3 },
+        py: { xs: 2, sm: 2 },
+        px: { xs: 1, sm: 2, md: 4 },
+        mb: { xs: 6, sm: 0 }, // Extra bottom margin on mobile for nav
+        ...sx,
+      }}
+      {...rest}
+    >
+      {/* Technologies/Skill tags */}
       {technologies.length > 0 && (
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', ...techPadding, mb: { xs: 1, sm: 0 } }}>
-          <TechnologyTags technologies={technologies} variant={variant} size={skillTagSize} />
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: { xs: 6, sm: 2 }, // EXTREME gap on mobile
+            rowGap: { xs: 6, sm: 2 }, // EXTREME row gap for stacked rows
+            mb: { xs: 2, sm: 0 },
+            justifyContent: { xs: 'flex-start', sm: 'flex-start' },
+          }}
+        >
+          <TechnologyTags technologies={technologies} variant={variant} size="medium" />
         </Box>
       )}
-      {skills.length > 0 && (
-        <SkillTags skills={skills} size={skillTagSize} />
-      )}
+      {/* Action buttons */}
       {actions.length > 0 && (
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', sm: 'row' }, 
-          flexWrap: { xs: 'wrap', sm: 'nowrap' }, 
-          justifyContent: { xs: 'flex-start', sm: 'flex-end' }, 
-          minWidth: 0, 
-          ...actionsPadding,
-          gap: { xs: 1, sm: 0 }
-        }}>
-          <ProjectActionButtons actions={actions} layout="row" maxButtons={maxButtons} size={actionButtonSize} />
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 1.5, sm: 2 },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+            width: { xs: '100%', sm: 'auto' },
+          }}
+        >
+          <ProjectActionButtons actions={actions} layout={{ xs: 'column', sm: 'row' }} maxButtons={maxButtons} size="medium" />
         </Box>
       )}
     </Box>

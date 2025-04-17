@@ -68,12 +68,15 @@ const ProjectFullContent = ({ project }) => {
         />
       </Box>
 
-      {/* Actions Bar - Technologies and Links */}
-      <ProjectMetaBar
-        technologies={technologies}
-        actions={links}
-        variant="full"
-      />
+      {/* Add extra top margin for modal header area */}
+      <Box sx={{ mt: { xs: 2, sm: 3 } }}>
+        {/* Actions Bar - Technologies and Links */}
+        <ProjectMetaBar
+          technologies={technologies}
+          actions={links}
+          variant="full"
+        />
+      </Box>
 
       <Divider sx={{ borderColor: theme.palette.divider }} />
 

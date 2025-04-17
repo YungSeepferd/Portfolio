@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Tooltip from '@mui/material/Tooltip';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import ProjectFullContent from './ProjectFullContent';
 
 /**
@@ -20,6 +21,7 @@ const ProjectModal = ({
   onPreviousProject 
 }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const contentRef = useRef(null);
   
   // Reset scroll position when project changes
@@ -72,6 +74,133 @@ const ProjectModal = ({
   // Don't render anything if no project is provided
   if (!project) return null;
 
+  // Project index indicator (e.g., 2/6)
+  // These props are passed from Work.js, which has projects and selectedProjectIndex
+  // We'll infer index and total from project and navigation props if possible
+  let projectIndex = null;
+  let projectTotal = null;
+  if (typeof project === 'object' && project.id && onNextProject && onPreviousProject) {
+    // Try to infer index/total from parent if possible
+    // (This logic can be improved if you pass index/total directly)
+  }
+
+  // Navigation UI
+  const Navigation = () => (
+    <Box
+      sx={{
+        position: isMobile ? 'fixed' : 'absolute',
+        left: isMobile ? '50%' : 16,
+        bottom: isMobile ? 24 : 'auto',
+        top: isMobile ? 'auto' : 16,
+        right: isMobile ? 'auto' : 16,
+        zIndex: 30,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 2,
+        transform: isMobile ? 'translateX(-50%)' : 'none',
+        background: isMobile ? 'rgba(30,30,40,0.85)' : 'none',
+        borderRadius: isMobile ? 3 : 0,
+        boxShadow: isMobile ? 4 : 'none',
+        px: isMobile ? 2 : 0,
+        py: isMobile ? 1 : 0,
+      }}
+    >
+      {onPreviousProject && (
+        <Tooltip title="Previous Project">
+          <IconButton
+            aria-label="previous project"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPreviousProject();
+              if (contentRef.current) contentRef.current.scrollTop = 0;
+            }}
+            sx={{
+              color: theme.palette.primary.main,
+              backgroundColor: 'rgba(0,0,0,0.08)',
+              boxShadow: theme.shadows[2],
+              borderRadius: '50%',
+              p: 1.2,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.background.paper,
+                transform: 'scale(1.1)',
+              },
+              transition: 'all 0.2s',
+            }}
+            size={isMobile ? 'large' : 'medium'}
+          >
+            <KeyboardArrowLeftIcon fontSize={isMobile ? 'large' : 'medium'} />
+          </IconButton>
+        </Tooltip>
+      )}
+      {/* Project index indicator (optional, if index/total available) */}
+      {typeof projectIndex === 'number' && typeof projectTotal === 'number' && (
+        <Box sx={{ color: 'white', fontWeight: 600, fontSize: isMobile ? '1.1rem' : '1rem', mx: 1 }}>
+          {projectIndex + 1} / {projectTotal}
+        </Box>
+      )}
+      {onNextProject && (
+        <Tooltip title="Next Project">
+          <IconButton
+            aria-label="next project"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNextProject();
+              if (contentRef.current) contentRef.current.scrollTop = 0;
+            }}
+            sx={{
+              color: theme.palette.primary.main,
+              backgroundColor: 'rgba(0,0,0,0.08)',
+              boxShadow: theme.shadows[2],
+              borderRadius: '50%',
+              p: 1.2,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.background.paper,
+                transform: 'scale(1.1)',
+              },
+              transition: 'all 0.2s',
+            }}
+            size={isMobile ? 'large' : 'medium'}
+          >
+            <KeyboardArrowRightIcon fontSize={isMobile ? 'large' : 'medium'} />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Box>
+  );
+
+  // Close button (always top right, large and touch-friendly on mobile)
+  const CloseBtn = () => (
+    <Tooltip title="Close Project">
+      <IconButton
+        aria-label="close project"
+        onClick={onClose}
+        size={isMobile ? 'small' : 'small'}
+        sx={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 40,
+          color: theme.palette.background.default, // icon color
+          backgroundColor: theme.palette.secondary.main, // design system background
+          boxShadow: theme.shadows[2],
+          borderRadius: '50%',
+          p: 0.6,
+          '&:hover': {
+            backgroundColor: theme.palette.secondary.dark,
+            color: theme.palette.background.default,
+            transform: 'scale(1.1)',
+          },
+          transition: 'all 0.2s',
+        }}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+
   return (
     <Modal
       open={open}
@@ -81,18 +210,16 @@ const ProjectModal = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // Backdrop styling
         '& .MuiBackdrop-root': {
-          backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
         }
       }}
     >
       <Box
         sx={{
-          // Increased to almost full screen
           width: '95vw',
           height: '95vh',
-          maxWidth: '95vw', 
+          maxWidth: '95vw',
           maxHeight: '95vh',
           bgcolor: 'background.default',
           borderRadius: 1,
@@ -103,98 +230,10 @@ const ProjectModal = ({
           transition: 'opacity 0.3s ease-in-out',
         }}
       >
-        {/* Navigation Buttons - Both Top Left, Accent Color */}
-        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 30, display: 'flex', gap: 2 }}>
-          {onPreviousProject && (
-            <Tooltip title="Previous Project">
-              <IconButton
-                aria-label="previous project"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPreviousProject();
-                  if (contentRef.current) contentRef.current.scrollTop = 0;
-                }}
-                sx={{
-                  color: theme.palette.accent.main,
-                  backgroundColor: 'rgba(0,0,0,0.08)',
-                  boxShadow: theme.shadows[2],
-                  borderRadius: theme.shape.borderRadius,
-                  display: 'flex',
-                  alignItems: 'center',
-                  px: 2,
-                  '&:hover': {
-                    backgroundColor: theme.palette.warning.main,
-                    color: theme.palette.success.dark,
-                    transform: 'scale(1.1)',
-                  },
-                  transition: 'all 0.2s ease-in-out',
-                }}
-              >
-                <KeyboardArrowLeftIcon fontSize="medium" sx={{ mr: 1 }} />
-                <span style={{ fontSize: '1rem', fontWeight: 500 }}>Previous Project</span>
-              </IconButton>
-            </Tooltip>
-          )}
-          {onNextProject && (
-            <Tooltip title="Next Project">
-              <IconButton
-                aria-label="next project"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNextProject();
-                  if (contentRef.current) contentRef.current.scrollTop = 0;
-                }}
-                sx={{
-                  color: theme.palette.accent.dark,
-                  backgroundColor: 'rgba(0,0,0,0.08)',
-                  boxShadow: theme.shadows[2],
-                  borderRadius: theme.shape.borderRadius,
-                  display: 'flex',
-                  alignItems: 'center',
-                  px: 2,
-                  '&:hover': {
-                    backgroundColor: theme.palette.warning.main,
-                    color: theme.palette.success.dark,
-                    transform: 'scale(1.1)',
-                  },
-                  transition: 'all 0.2s ease-in-out',
-                }}
-              >
-                <span style={{ fontSize: '1rem', fontWeight: 500, marginRight: 8 }}>Next Project</span>
-                <KeyboardArrowRightIcon fontSize="medium" />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Box>
-
-        {/* Close Button - Top Right, Design System Styling */}
-        <Tooltip title="Close Project">
-          <IconButton
-            aria-label="close project"
-            onClick={onClose}
-            size="large"
-            sx={{
-              position: 'absolute',
-              mr: 5,
-              top: 16,
-              right: 16,
-              zIndex: 20,
-              color: theme.palette.grey[900],
-              backgroundColor: theme.palette.primary.main,
-              boxShadow: theme.shadows[2],
-              borderRadius: theme.shape.borderRadius,
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-                color: theme.palette.grey[800],
-                transform: 'scale(1.1)',
-              },
-              transition: 'all 0.2s ease-in-out',
-            }}
-          >
-            <CloseIcon fontSize="large" />
-          </IconButton>
-        </Tooltip>
-
+        {/* Navigation (bottom center on mobile, top left on desktop) */}
+        <Navigation />
+        {/* Close Button (always top right) */}
+        <CloseBtn />
         {/* Scrollable Content Area with ref */}
         <Box 
           ref={contentRef}
@@ -202,7 +241,8 @@ const ProjectModal = ({
             width: '100%', 
             height: '100%',
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            mt: { xs: 8, sm: 10 }, // Move content down for all projects
           }}
         >
           <ProjectFullContent project={project} />
