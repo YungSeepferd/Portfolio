@@ -45,6 +45,9 @@ const ContentAwareImage = ({
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 2;
 
+  // Clamp maxRetries to 5 to prevent excessive retries
+  const effectiveMaxRetries = Math.min(maxRetries, 5);
+
   // Process image dimensions and aspects if not already provided
   useEffect(() => {
     if (!processedImageData && src && !error) {
@@ -79,8 +82,7 @@ const ContentAwareImage = ({
   // Handle image load error with retry logic
   const handleImageError = useCallback((e) => {
     console.error(`Error loading image: ${src}`, e);
-    
-    if (retryCount < maxRetries) {
+    if (retryCount < effectiveMaxRetries) {
       // Try loading again after a delay
       setTimeout(() => {
         setRetryCount(prevCount => prevCount + 1);
@@ -95,16 +97,15 @@ const ContentAwareImage = ({
       // Max retries reached, show error
       setLoading(false);
       setError({
-        message: `Failed to load image after ${maxRetries} attempts`,
+        message: `Failed to load image after ${effectiveMaxRetries} attempts`,
         source: src
       });
-      
       // Call external error handler if provided
       if (onError) {
         onError(e);
       }
     }
-  }, [src, retryCount, maxRetries, onError]);
+  }, [src, retryCount, effectiveMaxRetries, onError]);
 
   // Reset state when source changes
   useEffect(() => {

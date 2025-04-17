@@ -91,6 +91,68 @@ const DesignSystemViewer = () => {
         
         {/* Add other component showcases here */}
       </Paper>
+
+      {/* Shadows */}
+      <Paper sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h4" gutterBottom>Shadows</Typography>
+        <Divider sx={{ mb: 3 }} />
+        <Grid container spacing={2}>
+          {Object.entries(theme.shadows).map(([key, value]) => (
+            <Grid item xs={6} sm={4} md={3} key={key}>
+              <Box sx={{ boxShadow: value, p: 2, mb: 1, borderRadius: 1, bgcolor: 'background.paper' }}>
+                <Typography variant="body2">{`shadows[${key}]`}</Typography>
+                <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>{value}</Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      {/* Shape & Border Radius */}
+      <Paper sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h4" gutterBottom>Shape & Border Radius</Typography>
+        <Divider sx={{ mb: 3 }} />
+        <Grid container spacing={2}>
+          {Object.entries(theme.shape).map(([key, value]) => (
+            <Grid item xs={6} sm={4} md={3} key={key}>
+              <Box sx={{ borderRadius: value, border: '2px solid', borderColor: 'primary.main', p: 2, mb: 1 }}>
+                <Typography variant="body2">{`shape.${key}`}</Typography>
+                <Typography variant="caption">{value}</Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      {/* Breakpoints */}
+      <Paper sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h4" gutterBottom>Breakpoints</Typography>
+        <Divider sx={{ mb: 3 }} />
+        <Grid container spacing={2}>
+          {Object.entries(theme.breakpoints.values).map(([key, value]) => (
+            <Grid item xs={6} sm={4} md={3} key={key}>
+              <Box sx={{ p: 2, mb: 1, border: '1px dashed', borderColor: 'secondary.main', borderRadius: 1 }}>
+                <Typography variant="body2">{key}</Typography>
+                <Typography variant="caption">{value}px</Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      {/* Animations */}
+      <Paper sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h4" gutterBottom>Animations & Transitions</Typography>
+        <Divider sx={{ mb: 3 }} />
+        <Box>
+          {Object.entries(theme.transitions).map(([key, value]) => (
+            <Box key={key} sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>{key}:</Typography>
+              <Typography variant="caption">{JSON.stringify(value)}</Typography>
+            </Box>
+          ))}
+        </Box>
+      </Paper>
     </Box>
   );
 };

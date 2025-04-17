@@ -5,13 +5,25 @@
  */
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
 // Import project images and videos directly with standardized naming
-import ADHDeerHeroImage from '../../../../assets/images/ADHDeer/ADHDeer.png';
-import ADHDeerScreenshotImage from '../../../../assets/images/ADHDeer/Screenshot 2025-04-07 at 10.01.09.png';
-import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer - Video Prototype.mp4';
+import ADHDeerOverview from '../../../../assets/images/ADHDeer/ADHDeer_Overview.png';
+import ADHDeerCoreDimensions from '../../../../assets/images/ADHDeer/ADHDeer_CoreDimensions.png';
+import ADHDeerForumOverview from '../../../../assets/images/ADHDeer/ADHDeer_Forum_Overview.png';
+import ADHDeerForumPostStep1 from '../../../../assets/images/ADHDeer/ADHDeer_ForumPost_Step1.png';
+import ADHDeerForumPostStep2 from '../../../../assets/images/ADHDeer/ADHDeer_ForumPost_Step2.png';
+import ADHDeerDiaryStep1 from '../../../../assets/images/ADHDeer/ADHDeer_Diary_Step1.png';
+import ADHDeerDiaryStep2 from '../../../../assets/images/ADHDeer/ADHDeer_Diary_Step2.png';
+import ADHDeerDiaryStep3 from '../../../../assets/images/ADHDeer/ADHDeer_Diary_Step3.png';
+import ADHDeerArticlesStep1 from '../../../../assets/images/ADHDeer/ADHDeer_Articles_Step1.png';
+import ADHDeerArticlesStep2 from '../../../../assets/images/ADHDeer/ADHDeer_Articles_Step2.png';
+import ADHDeerMoodCalendarStep1 from '../../../../assets/images/ADHDeer/ADHDeer_MoodCalendar_Step1.png';
+import ADHDeerMoodCalendarStep2 from '../../../../assets/images/ADHDeer/ADHDeer_MoodCalendar_Step2.png';
+import ADHDeerMoodCalendarSymptoms from '../../../../assets/images/ADHDeer/ADHDeer_MoodCalendar_Symptoms.png';
+import ADHDeerMainMenuOverview from '../../../../assets/images/ADHDeer/ADHDeer_MainMenu_Overview.png';
+import ADHDeerRegistrationDone from '../../../../assets/images/ADHDeer/ADHDeer_Registration_Done.png';
+import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer_Video_Prototype.mp4';
 import presentationPDF from '../../../../assets/information/ADHDeer/ADHDeerPresentation.pdf';
 
 // Import utility for asset paths (only for documents)
@@ -20,8 +32,21 @@ import { getAssetPath } from '../../../../utils/mediaUtils';
 // Create a media object to hold all our imported media
 const media = {
   images: {
-    hero: ADHDeerHeroImage,
-    screenshot: ADHDeerScreenshotImage
+    overview: ADHDeerOverview,
+    coreDimensions: ADHDeerCoreDimensions,
+    forumOverview: ADHDeerForumOverview,
+    forumPostStep1: ADHDeerForumPostStep1,
+    forumPostStep2: ADHDeerForumPostStep2,
+    diaryStep1: ADHDeerDiaryStep1,
+    diaryStep2: ADHDeerDiaryStep2,
+    diaryStep3: ADHDeerDiaryStep3,
+    articlesStep1: ADHDeerArticlesStep1,
+    articlesStep2: ADHDeerArticlesStep2,
+    moodCalendarStep1: ADHDeerMoodCalendarStep1,
+    moodCalendarStep2: ADHDeerMoodCalendarStep2,
+    moodCalendarSymptoms: ADHDeerMoodCalendarSymptoms,
+    mainMenuOverview: ADHDeerMainMenuOverview,
+    registrationDone: ADHDeerRegistrationDone
   },
   videos: {
     prototype: ADHDeerPrototypeVideo
@@ -32,166 +57,14 @@ const media = {
   }
 };
 
-// Define card variant without direct theme dependency
-const cardVariant = 'warning';
-
 // Project data object
 const adhdeer = {
   id: 'adhdeer',
   title: "ADHDeer – ADHD Support App",
   description: "A mobile app supporting youth with ADHD through empathic UX design and structured daily routines.",
   categories: ["UI Design", "UX Research", "Mental Health UX", "Prototyping", "Design Thinking"],
-  
-  // Replace details with structured sections
-  sections: [
-    {
-      id: 'section-overview',
-      title: 'Project Overview',
-      content: (
-        <Typography variant="body1" paragraph>
-          ADHDeer is an innovative mobile app designed during a Design Thinking project at FH Salzburg. The app specifically targets young adults and children with Attention Deficit Hyperactivity Disorder (ADHD), helping them and their families <strong>manage daily life challenges</strong> associated with the condition. The team leveraged personal experiences, user-centered research, and <strong>empathic design methodologies</strong> to create a practical, supportive digital companion that promotes self-awareness, emotional regulation, and structured daily routines.
-        </Typography>
-      ),
-      media: { type: 'image', src: media.images.hero },
-      layout: 'textLeft'
-    },
-    {
-      id: 'section-motivation',
-      title: 'Motivation & Team Context',
-      content: (
-        <Typography variant="body1" paragraph>
-          ADHD, characterized by inattentiveness, hyperactivity, and impulsivity, significantly impacts everyday life, academic performance, social interactions, and emotional health. Team members Anica Hummel and Lucia Migacová brought personal and professional ADHD expertise, having first-hand experience with the challenges faced by neurodivergent individuals. This personal connection provided valuable insight into the actual needs and frustrations of the target audience.
-        </Typography>
-      ),
-      layout: 'textOnly'
-    },
-    {
-      id: 'section-problem',
-      title: 'Defining the Problem',
-      content: (
-        <>
-          <Typography variant="body1">
-            Through extensive research and empathizing phases, key challenges emerged clearly:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>Communication Barriers:</strong> Children and young adults often find it difficult to express their emotional needs or struggles to parents, caregivers, or educators</Typography></li>
-            <li><Typography variant="body1"><strong>Underdiagnosis and Misdiagnosis:</strong> A lack of accurate diagnosis leads many to face exacerbated mental health issues like anxiety or depression</Typography></li>
-            <li><Typography variant="body1"><strong>Lack of Daily Structure:</strong> Individuals with ADHD frequently struggle with time management, maintaining routines, and managing emotional fluctuations</Typography></li>
-            <li><Typography variant="body1"><strong>Need for age-appropriate tools:</strong> Many existing solutions don't feel engaging or accessible to younger users</Typography></li>
-          </Box>
-        </>
-      ),
-      layout: 'textRight'
-    },
-    {
-      id: 'section-research',
-      title: 'Research & Empathy Phase',
-      content: (
-        <>
-          <Typography variant="body1" paragraph>
-            The research phase incorporated diverse methods to gain comprehensive insights:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>Interviews & Personal Insights:</strong> In-depth conversations with ADHD experts, individuals diagnosed with ADHD, and their families</Typography></li>
-            <li><Typography variant="body1"><strong>Digital Ethnography:</strong> Engagement with online communities (Reddit, Quora) and ADHD-specific forums</Typography></li>
-            <li><Typography variant="body1"><strong>Focus Groups and Ideation Sessions:</strong> Collaborative brainstorming using Mind Mapping, Brainstorming, and Storyboarding techniques</Typography></li>
-          </Box>
-        </>
-      ),
-      layout: 'textLeft'
-    },
-    {
-      id: 'section-dimensions',
-      title: 'Core Dimensions & Functionalities',
-      content: (
-        <>
-          <Typography variant="body1" paragraph>
-            Through intensive ideation, three critical dimensions were identified:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>Mental Health and Emotional Regulation:</strong> Tools for tracking mood and managing emotional responses</Typography></li>
-            <li><Typography variant="body1"><strong>Awareness and Understanding of ADHD:</strong> Educational content and self-awareness development</Typography></li>
-            <li><Typography variant="body1"><strong>Daily Routine Management:</strong> Structured task planning and organization systems</Typography></li>
-          </Box>
-          
-          <Typography variant="body1" paragraph>
-            These dimensions were implemented through practical features including:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>Gamified Task Management:</strong> Converting daily routines into engaging quests and challenges</Typography></li>
-            <li><Typography variant="body1"><strong>Emotion Tracking:</strong> Helping users identify emotional triggers and develop coping strategies</Typography></li>
-            <li><Typography variant="body1"><strong>Parent/Child Mode:</strong> Separate interfaces with appropriate features for each user type</Typography></li>
-            <li><Typography variant="body1"><strong>Reward System:</strong> Visual progress tracking and achievement badges to build confidence</Typography></li>
-          </Box>
-        </>
-      ),
-      layout: 'textOnly'
-    },
-    {
-      id: 'section-prototype',
-      title: 'Prototyping & Design',
-      content: (
-        <>
-          <Typography variant="body1" paragraph>
-            The prototype was crafted in Figma, designed with close attention to accessibility, usability, and engagement for neurodiverse audiences. The UI/UX emphasized clarity, visual appeal, and simplicity, avoiding overwhelming or distracting elements. Key prototype features included:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>Gamified Daily Planner:</strong> Encouraging active engagement with routines through rewards and progress tracking</Typography></li>
-            <li><Typography variant="body1"><strong>Mood and Focus Journal:</strong> Easy logging of emotions and concentration levels with visual pattern representation</Typography></li>
-            <li><Typography variant="body1"><strong>Educational Modules:</strong> User-friendly resources on ADHD management strategies and communication skills</Typography></li>
-          </Box>
-        </>
-      ),
-      media: { type: 'video', src: media.videos.prototype },
-      layout: 'textRight'
-    },
-    {
-      id: 'section-outcomes',
-      title: 'Outcomes & User Feedback',
-      content: (
-        <Typography variant="body1" paragraph>
-          The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone. Users highlighted the application's potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
-        </Typography>
-      ),
-      layout: 'textOnly'
-    },
-    {
-      id: 'section-future',
-      title: 'Future Directions',
-      content: (
-        <>
-          <Typography variant="body1" paragraph>
-            To further develop ADHDeer, recommended enhancements include:
-          </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1"><strong>AI-driven Personalization:</strong> Integrating AI capabilities to provide personalized feedback based on user behavior patterns</Typography></li>
-            <li><Typography variant="body1"><strong>Expanded Community Features:</strong> Developing safe, moderated peer-support forums within the app</Typography></li>
-            <li><Typography variant="body1"><strong>Parent and Educator Modules:</strong> Creating specialized sections with tailored guidance for supporting ADHD children</Typography></li>
-          </Box>
-        </>
-      ),
-      layout: 'textLeft'
-    }
-  ],
-  
-  galleryImages: [
-    media.images.hero,
-    media.images.screenshot,
-    { type: 'video', src: media.videos.prototype }
-  ],
+  cardVariant: 'warning',
   technologies: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.hero }, 
-  featuredImages: {
-    overview: media.images.hero,
-    problem: media.images.screenshot,
-    solution: media.images.hero,
-    prototypeShowcase: [
-      media.images.hero,
-      media.images.screenshot,
-      { type: 'video', src: media.videos.prototype }
-    ]
-  },
   links: [
     {
       label: "View Presentation",
@@ -208,22 +81,274 @@ const adhdeer = {
       openInPopup: true
     }
   ],
-  takeaways: [
-    "Empathic design creates more effective solutions for neurodivergent users",
-    "Gamification can increase engagement for users with attention challenges",
-    "Visual design plays a critical role in accessibility for ADHD users",
-    "User research with diverse stakeholders leads to more comprehensive solutions",
-    "Digital tools can significantly improve daily functioning for individuals with ADHD"
-  ],
-  
-  outcomes: {
-    title: "Project Outcomes",
-    points: [
-      "Created a user-centered digital tool for ADHD management",
-      "Developed a prototype that received positive feedback from test users",
-      "Established design principles for neurodiverse-friendly applications"
-    ]
-  }
+  sections: [
+    {
+      id: 'section-overview',
+      type: 'default',
+      title: 'Project Overview',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            <strong>ADHDeer</strong> is an innovative mobile app designed during a Design Thinking project at FH Salzburg. The app specifically targets young adults and children with Attention Deficit Hyperactivity Disorder (ADHD), helping them and their families manage daily life challenges associated with the condition. The team leveraged personal experiences, user-centered research, and empathic design methodologies to create a practical, supportive digital companion that promotes self-awareness, emotional regulation, and structured daily routines.
+          </Typography>
+        </>
+      ),
+      media: { type: 'image', src: media.images.overview, aspect: 'landscape' },
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
+    },
+    {
+      id: 'section-motivation',
+      type: 'default',
+      title: 'Motivation and Context',
+      content: (
+        <Typography variant="body1" paragraph>
+          ADHD, characterized by inattentiveness, hyperactivity, and impulsivity, significantly impacts everyday life, academic performance, social interactions, and emotional health. Team members Anica Hummel and Lucia Migacová brought personal and professional ADHD expertise, having first-hand experience with the challenges faced by neurodivergent individuals. The project was motivated by their understanding that young people with ADHD often feel misunderstood, isolated, and lack effective tools to manage their condition proactively.
+        </Typography>
+      ),
+      media: { type: 'image', src: media.images.coreDimensions, aspect: 'landscape' },
+      layout: 'textRight',
+      anchor: 'motivation',
+      navigable: true
+    },
+    {
+      id: 'section-problem',
+      type: 'default',
+      title: 'Defining the Problem',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            Through extensive research and empathizing phases, key challenges emerged clearly:
+          </Typography>
+          <ul>
+            <li><strong>Communication Barriers:</strong> Children and young adults often find it difficult to express their emotional needs or struggles to parents, caregivers, or educators. Similarly, parents often struggle to appropriately gauge how close or distant their support should be.</li>
+            <li><strong>Underdiagnosis and Misdiagnosis:</strong> A lack of accurate diagnosis and understanding leads many individuals with ADHD to face exacerbated mental health issues, such as anxiety or depression.</li>
+            <li><strong>Lack of Daily Structure and Routine:</strong> Individuals with ADHD frequently struggle with time management, maintaining routines, setting achievable goals, and managing emotional fluctuations, severely impacting their confidence and self-esteem.</li>
+          </ul>
+        </>
+      ),
+      media: { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
+      layout: 'textLeft',
+      anchor: 'problem',
+      navigable: true
+    },
+    {
+      id: 'section-research',
+      type: 'gallery',
+      title: 'Research and Empathy',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            The research phase incorporated diverse methods:
+          </Typography>
+          <ul>
+            <li><strong>Interviews & Personal Insights:</strong> Conducted in-depth conversations with ADHD experts, individuals diagnosed with ADHD, and their families to deeply understand everyday challenges and emotional landscapes.</li>
+            <li><strong>Digital Ethnography:</strong> Engaged with online communities (Reddit, Quora) and ADHD-specific forums, identifying common struggles, coping strategies, and gaps in current support tools.</li>
+            <li><strong>Focus Groups and Ideation Sessions:</strong> Regularly hosted collaborative brainstorming and ideation sessions utilizing techniques like Mind Mapping, Brainstorming, and Storyboarding to visualize user journeys clearly.</li>
+          </ul>
+          <Typography variant="body2" paragraph>
+            Insights gained from these research methods profoundly shaped the conceptual framework, emphasizing the need for emotional and structural support tools.
+          </Typography>
+        </>
+      ),
+      media: [
+        { type: 'image', src: media.images.forumOverview, aspect: 'portrait' },
+        { type: 'image', src: media.images.forumPostStep1, aspect: 'portrait' },
+        { type: 'image', src: media.images.forumPostStep2, aspect: 'portrait' }
+      ],
+      layout: 'gallery',
+      anchor: 'research',
+      navigable: true
+    },
+    {
+      id: 'section-ideation',
+      type: 'gallery',
+      title: 'Ideation and Core Functionalities',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            Through intensive ideation, three core dimensions were identified as critical to the app’s success:
+          </Typography>
+          <ul>
+            <li>Mental Health and Emotional Regulation</li>
+            <li>Awareness and Understanding of ADHD</li>
+            <li>Daily Routine Management and Self-assessment</li>
+          </ul>
+          <Typography variant="body2" paragraph>
+            These dimensions were distilled further into practical functionalities including:
+          </Typography>
+          <ul>
+            <li>Emotion Tracking and Management: Interactive tools allowing users to identify, articulate, and manage emotional states effectively.</li>
+            <li>Routine and Task Management: Simplified task scheduling and prioritization features, designed specifically for users with ADHD, emphasizing visual and gamified components.</li>
+            <li>Educational Content and Self-awareness Tools: Informative content structured to help users recognize symptoms, strengths, and effective coping strategies tailored specifically for ADHD users.</li>
+            <li>Emergency Support and Low-threshold Contact: Integrated access to immediate mental health support resources, addressing acute emotional crises and stress management.</li>
+          </ul>
+        </>
+      ),
+      media: [
+        { type: 'image', src: media.images.diaryStep1, aspect: 'portrait' },
+        { type: 'image', src: media.images.diaryStep2, aspect: 'portrait' },
+        { type: 'image', src: media.images.diaryStep3, aspect: 'portrait' }
+      ],
+      layout: 'gallery',
+      anchor: 'ideation',
+      navigable: true
+    },
+    {
+      id: 'section-prototype',
+      type: 'gallery',
+      title: 'Prototyping and Design Execution',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            The prototype was crafted in Figma, designed with close attention to accessibility, usability, and engagement for neurodiverse audiences. The UI and UX emphasized clarity, visual appeal, and simplicity, avoiding overwhelming or distracting elements. Key prototype features included:
+          </Typography>
+          <ul>
+            <li>Gamified Daily Planner: Encouraged users to engage actively with their routines, incorporating rewards and progress tracking to maintain motivation.</li>
+            <li>Mood and Focus Journal: Enabled easy logging of emotions and concentration levels, visually representing emotional patterns and triggers.</li>
+            <li>Educational Modules: User-friendly, digestible resources on ADHD management strategies, symptom recognition, and communication skills.</li>
+          </ul>
+        </>
+      ),
+      media: [
+        { type: 'image', src: media.images.moodCalendarStep1, aspect: 'portrait' },
+        { type: 'image', src: media.images.moodCalendarStep2, aspect: 'portrait' },
+        { type: 'image', src: media.images.moodCalendarSymptoms, aspect: 'portrait' }
+      ],
+      layout: 'gallery',
+      anchor: 'prototype',
+      navigable: true
+    },
+    {
+      id: 'section-articles',
+      type: 'gallery',
+      title: 'Educational Content',
+      content: (
+        <Typography variant="body1" paragraph>
+          The app provides accessible articles and resources to help users and their families better understand ADHD and effective coping strategies.
+        </Typography>
+      ),
+      media: [
+        { type: 'image', src: media.images.articlesStep1, aspect: 'portrait' },
+        { type: 'image', src: media.images.articlesStep2, aspect: 'portrait' }
+      ],
+      layout: 'gallery',
+      anchor: 'articles',
+      navigable: true
+    },
+    {
+      id: 'section-onboarding',
+      type: 'gallery',
+      title: 'Onboarding and Registration',
+      content: (
+        <Typography variant="body1" paragraph>
+          The main menu and onboarding screens are designed for clarity and accessibility, ensuring a smooth start for all users.
+        </Typography>
+      ),
+      media: [
+        { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
+        { type: 'image', src: media.images.registrationDone, aspect: 'portrait' }
+      ],
+      layout: 'gallery',
+      anchor: 'onboarding',
+      navigable: true
+    },
+    {
+      id: 'section-video',
+      type: 'video',
+      title: 'Prototype Video',
+      content: (
+        <Typography variant="body1" paragraph>
+          Explore the interactive prototype to experience the app’s core flows and gamified features.
+        </Typography>
+      ),
+      media: { type: 'video', src: media.videos.prototype, aspect: 'landscape' },
+      layout: 'textRight',
+      anchor: 'video',
+      navigable: true
+    },
+    {
+      id: 'section-outcomes',
+      type: 'default',
+      title: 'Outcomes and Evaluation',
+      content: (
+        <Typography variant="body1" paragraph>
+          The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone. Users highlighted the application’s potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
+        </Typography>
+      ),
+      layout: 'textOnly',
+      anchor: 'outcomes',
+      navigable: true
+    },
+    {
+      id: 'section-future',
+      type: 'default',
+      title: 'Future Directions',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            To further develop ADHDeer, recommended enhancements include:
+          </Typography>
+          <ul>
+            <li>AI-driven Personalization: Integrating AI capabilities to provide personalized feedback, dynamically adapting to the user’s behavior and emotional trends.</li>
+            <li>Expanded Community Features: Developing safe, moderated peer-support forums within the app to foster community and peer understanding among young ADHD users.</li>
+            <li>Parent and Educator Modules: Introducing specialized sections providing tailored guidance and resources for parents and educators to better support their children’s developmental needs.</li>
+          </ul>
+        </>
+      ),
+      layout: 'textOnly',
+      anchor: 'future',
+      navigable: true
+    },
+    {
+      id: 'section-impact',
+      type: 'default',
+      title: 'Impact and Conclusion',
+      content: (
+        <Typography variant="body1" paragraph>
+          ADHDeer exemplifies how user-centric, empathetic UX design can significantly enhance the quality of life for young individuals with ADHD. Through comprehensive research, compassionate ideation, and effective prototyping, the project showcases tangible potential for a supportive digital environment, empowering neurodivergent youth to achieve better emotional health, daily structure, and increased self-esteem.
+        </Typography>
+      ),
+      layout: 'textOnly',
+      anchor: 'impact',
+      navigable: true
+    }
+  ]
 };
+
+adhdeer.media = (() => {
+  // Find first video section
+  const firstVideo = adhdeer.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'video');
+    }
+    return s.media && s.media.type === 'video';
+  });
+  if (firstVideo) {
+    if (Array.isArray(firstVideo.media)) {
+      const video = firstVideo.media.find(m => m.type === 'video');
+      if (video) return video;
+    } else {
+      return firstVideo.media;
+    }
+  }
+  // Otherwise, find first image
+  const firstImage = adhdeer.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'image');
+    }
+    return s.media && s.media.type === 'image';
+  });
+  if (firstImage) {
+    if (Array.isArray(firstImage.media)) {
+      const image = firstImage.media.find(m => m.type === 'image');
+      if (image) return image;
+    } else {
+      return firstImage.media;
+    }
+  }
+  return undefined;
+})();
 
 export default adhdeer;

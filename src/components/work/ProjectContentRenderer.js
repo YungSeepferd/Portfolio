@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Typography, List, ListItem, ListItemText, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { resolveMediaPath } from '../../utils/MediaPathResolver';
-import { isVideo } from '../../utils/mediaUtils';
 import LazyImage from '../common/LazyImage';
 import VideoPlayer from '../common/VideoPlayer';
 
@@ -13,22 +11,25 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 
 /**
  * Renders different types of project content including text, lists, grids, and media
+ * Assumes all media is already normalized and imported.
  */
 const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
   if (!content) return null;
-  
-  // Handle different content types
+
+  // If content is a valid React element, render as-is
+  if (React.isValidElement(content)) return content;
+
+  // Simple string content
   if (typeof content === 'string') {
-    // Simple text content
     return (
       <ContentWrapper>
         <Typography variant="body1">{content}</Typography>
       </ContentWrapper>
     );
   }
-  
+
+  // Array of paragraphs or items
   if (Array.isArray(content)) {
-    // Array of items could be paragraphs, list items, grid items, etc.
     if (layout === 'list') {
       return (
         <ContentWrapper>
@@ -42,7 +43,6 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
         </ContentWrapper>
       );
     }
-    
     if (layout === 'grid') {
       return (
         <ContentWrapper>
@@ -62,8 +62,7 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
         </ContentWrapper>
       );
     }
-    
-    // Default array rendering as paragraphs
+    // Default: render as paragraphs
     return (
       <ContentWrapper>
         {content.map((paragraph, index) => (
@@ -74,12 +73,10 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
       </ContentWrapper>
     );
   }
-  
-  if (content.type === 'media') {
-    // Media content (image or video)
-    const mediaSrc = resolveMediaPath(content.src);
+
+  // Normalized media object (image or video)
+  if (content.type === 'media' || content.type === 'image' || content.type === 'video') {
     const mediaAlt = content.alt || 'Project media';
-    
     return (
       <ContentWrapper>
         {content.caption && (
@@ -87,26 +84,17 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
             {content.caption}
           </Typography>
         )}
-        
-        <Box 
-          sx={{ 
-            width: '100%', 
-            height: content.height || '400px',
-            borderRadius: 1,
-            overflow: 'hidden',
-          }}
-        >
-          {isVideo(mediaSrc) ? (
-            <VideoPlayer src={mediaSrc} poster={content.poster} title={mediaAlt} />
+        <Box sx={{ width: '100%', height: content.height || '400px', borderRadius: 1, overflow: 'hidden' }}>
+          {content.type === 'video' ? (
+            <VideoPlayer src={content.src} poster={content.poster} title={mediaAlt} />
           ) : (
-            <LazyImage
-              src={mediaSrc}
+            <img
+              src={content.src}
               alt={mediaAlt}
-              style={{ objectFit: content.objectFit || 'cover' }}
+              style={{ width: '100%', height: '100%', objectFit: content.objectFit || 'cover' }}
             />
           )}
         </Box>
-        
         {content.description && (
           <Typography variant="body2" sx={{ mt: 1 }} align="center" color="text.secondary">
             {content.description}
@@ -115,7 +103,7 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
       </ContentWrapper>
     );
   }
-  
+
   // Unknown content type
   return (
     <ContentWrapper>

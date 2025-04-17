@@ -3,6 +3,7 @@ import { Modal, Box, IconButton, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import Tooltip from '@mui/material/Tooltip';
 import ProjectFullContent from './ProjectFullContent';
 
 /**
@@ -93,98 +94,107 @@ const ProjectModal = ({
           height: '95vh',
           maxWidth: '95vw', 
           maxHeight: '95vh',
-          // Consistent box styling
           bgcolor: 'background.default',
           borderRadius: 1,
           boxShadow: 24,
           overflow: 'hidden',
-          // Improved position
-          position: 'relative', 
-          // Animation
+          position: 'relative',
           opacity: 1,
           transition: 'opacity 0.3s ease-in-out',
         }}
       >
-        {/* Close Button - Top Left with Design System Styling */}
-        <IconButton
-          aria-label="close project"
-          onClick={onClose}
-          size="large"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            zIndex: 10,
-            color: theme.palette.common.white,
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            boxShadow: theme.shadows[2],
-            '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
-              transform: 'scale(1.1)',
-            },
-            transition: 'all 0.2s ease-in-out',
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+        {/* Navigation Buttons - Both Top Left, Accent Color */}
+        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 30, display: 'flex', gap: 2 }}>
+          {onPreviousProject && (
+            <Tooltip title="Previous Project">
+              <IconButton
+                aria-label="previous project"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPreviousProject();
+                  if (contentRef.current) contentRef.current.scrollTop = 0;
+                }}
+                sx={{
+                  color: theme.palette.accent.main,
+                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  boxShadow: theme.shadows[2],
+                  borderRadius: theme.shape.borderRadius,
+                  display: 'flex',
+                  alignItems: 'center',
+                  px: 2,
+                  '&:hover': {
+                    backgroundColor: theme.palette.warning.main,
+                    color: theme.palette.success.dark,
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.2s ease-in-out',
+                }}
+              >
+                <KeyboardArrowLeftIcon fontSize="medium" sx={{ mr: 1 }} />
+                <span style={{ fontSize: '1rem', fontWeight: 500 }}>Previous Project</span>
+              </IconButton>
+            </Tooltip>
+          )}
+          {onNextProject && (
+            <Tooltip title="Next Project">
+              <IconButton
+                aria-label="next project"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNextProject();
+                  if (contentRef.current) contentRef.current.scrollTop = 0;
+                }}
+                sx={{
+                  color: theme.palette.accent.dark,
+                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  boxShadow: theme.shadows[2],
+                  borderRadius: theme.shape.borderRadius,
+                  display: 'flex',
+                  alignItems: 'center',
+                  px: 2,
+                  '&:hover': {
+                    backgroundColor: theme.palette.warning.main,
+                    color: theme.palette.success.dark,
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.2s ease-in-out',
+                }}
+              >
+                <span style={{ fontSize: '1rem', fontWeight: 500, marginRight: 8 }}>Next Project</span>
+                <KeyboardArrowRightIcon fontSize="medium" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
 
-        {/* Navigation Buttons */}
-        {onPreviousProject && (
+        {/* Close Button - Top Right, Design System Styling */}
+        <Tooltip title="Close Project">
           <IconButton
-            aria-label="previous project"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent event bubbling
-              onPreviousProject();
-              // Reset scroll position when navigating
-              if (contentRef.current) {
-                contentRef.current.scrollTop = 0;
-              }
-            }}
+            aria-label="close project"
+            onClick={onClose}
+            size="large"
             sx={{
               position: 'absolute',
-              left: 16,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              color: theme.palette.common.white,
-              backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
-              },
-            }}
-          >
-            <KeyboardArrowLeftIcon fontSize="large" />
-          </IconButton>
-        )}
-        
-        {onNextProject && (
-          <IconButton
-            aria-label="next project"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent event bubbling
-              onNextProject();
-              // Reset scroll position when navigating
-              if (contentRef.current) {
-                contentRef.current.scrollTop = 0;
-              }
-            }}
-            sx={{
-              position: 'absolute',
+              mr: 5,
+              top: 16,
               right: 16,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              color: theme.palette.common.white,
-              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              zIndex: 20,
+              color: theme.palette.grey[900],
+              backgroundColor: theme.palette.primary.main,
+              boxShadow: theme.shadows[2],
+              borderRadius: theme.shape.borderRadius,
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                backgroundColor: theme.palette.action.hover,
+                color: theme.palette.grey[800],
+                transform: 'scale(1.1)',
               },
+              transition: 'all 0.2s ease-in-out',
             }}
           >
-            <KeyboardArrowRightIcon fontSize="large" />
+            <CloseIcon fontSize="large" />
           </IconButton>
-        )}
-        
+        </Tooltip>
+
         {/* Scrollable Content Area with ref */}
         <Box 
           ref={contentRef}

@@ -1,5 +1,12 @@
 # Portfolio Design System
 
+## Project Status Update (16 April 2025)
+
+- The design system is now fully modular and decentralized. All design tokens (colors, spacing, typography, breakpoints, etc.) are defined in their own files in `src/theme/`.
+- Light and dark color palettes are defined in `src/theme/palette/light.js` and `src/theme/palette/dark.js`.
+- The `tokens.js` file simply aggregates and exports all tokens from the modular files.
+- The `ThemeDebugger` component is available in development for live inspection of the current theme.
+
 ## Overview
 
 This design system provides a comprehensive set of guidelines and components for maintaining a consistent visual language throughout the UX portfolio. It extends Material UI's theming capabilities with portfolio-specific components and patterns.
@@ -14,54 +21,48 @@ This design system provides a comprehensive set of guidelines and components for
 6. [Animation Guidelines](#animation-guidelines)
 7. [Custom Theme Extensions](#custom-theme-extensions)
 8. [Usage Guidelines](#usage-guidelines)
+9. [Project Section Schema & Modal Structure](#project-section-schema--modal-structure)
 
 ## Core System Structure
 
 The design system is modularized into specialized files:
 
-- **colors.js** - Color palette, semantic color usage, and project-specific color variants
-- **typography.js** - Text styles, font families, and typographic scale
-- **spacing.js** - Spacing units and layout measurements
-- **breakpoints.js** - Responsive design breakpoints
-- **animations.js** - Motion design principles, durations, and easings
-- **components.js** - Shared component styling
-- **index.js** - Theme composition from individual modules
+- **palette/light.js** and **palette/dark.js** – Light and dark color palettes (single source of truth for theme colors)
+- **colors.js** – Color utilities and semantic color helpers
+- **typography.js** – Text styles, font families, and typographic scale
+- **spacing.js** – Spacing units and layout measurements
+- **breakpoints.js** – Responsive design breakpoints
+- **animations.js** – Motion design principles, durations, and easings
+- **shadows.js** – Shadow and elevation tokens
+- **shape.js** – Border radius and shape tokens
+- **components.js** – Shared component styling
+- **design/tokens.js** – Aggregates all tokens from the above files for export and design tool integration
+- **index.js** – Central export hub for all theme modules and theme creation logic
 
 ## Color System
 
-### Base Palette
+### Light & Dark Palettes
 
-```jsx
-const palette = {
-  mode: 'dark',
-  primary: {
-    main: '#5363EE', // Core brand blue
-    light: '#8A94F2',
-    dark: '#3545D6',
-    contrastText: '#FFFFFF',
-  },
-  secondary: {
-    main: '#E56B9E', // Accent pink
-    light: '#F1A0C2',
-    dark: '#C2477C',
-    contrastText: '#FFFFFF',
-  },
-  // ...additional colors
-}
+Color palettes are defined in their own files:
+
+```js
+// src/theme/palette/light.js
+export const lightColors = { ... };
+
+// src/theme/palette/dark.js
+export const darkColors = { ... };
+```
+
+To use them in your theme:
+```js
+import { createLightPalette, createDarkPalette } from './design/tokens';
+const lightPalette = createLightPalette();
+const darkPalette = createDarkPalette();
 ```
 
 ### Semantic Color Usage
-
-- **Primary** - Main actions, key highlights, primary brand elements
-- **Secondary** - Supporting actions, accents, secondary emphasis
-- **Error/Warning/Info/Success** - System feedback and states
-- **Project Colors** - Each project has a dedicated color theme:
-  - Master Thesis: Primary Blue
-  - Resonant Relaxation: Secondary Pink
-  - AMIAI: Error Red
-  - Green Wallet: Success Green
-  - ADHDeer: Warning Orange
-  - Bachelor Thesis: Info Teal
+- Use `theme.palette.<role>.<shade>` in your components and sx props.
+- Add new semantic roles to the palette files as needed.
 
 ## Typography
 
@@ -160,48 +161,129 @@ const customExtensions = {
 };
 ```
 
+## Theme Debugger
+
+A development-only component (`src/components/dev/ThemeDebugger.js`) is available. It provides a floating button to open a drawer with live views of the current palette, typography, spacing, breakpoints, and animation tokens. Add it to your app root for development:
+
+```js
+import ThemeDebugger from './components/dev/ThemeDebugger';
+// ...
+{process.env.NODE_ENV === 'development' && <ThemeDebugger />}
+```
+
 ## Usage Guidelines
 
-### Theme Hook
+- Always use the theme and tokens for all design values.
+- Never hardcode colors, spacing, or typography in components.
+- For new design tokens, add them to the appropriate modular file.
+- Use the Theme Debugger to inspect and verify theme values during development.
 
-```jsx
+## Example: Using the Modular Design System
+
+```js
 import { useTheme } from '@mui/material';
 
 function MyComponent() {
   const theme = useTheme();
-  
   return (
-    <Box sx={{ 
-      padding: theme.spacing(3),
-      color: theme.palette.text.primary
+    <Box sx={{
+      bgcolor: 'background.paper',
+      color: 'text.primary',
+      p: theme.spacing(3),
+      borderRadius: theme.shape.borderRadius,
+      boxShadow: theme.shadows[2],
     }}>
-      Content
+      Themed content
     </Box>
   );
 }
 ```
 
-### Styled Components
+## Project Section Schema & Modal Structure
 
-```jsx
-import { styled } from '@mui/material/styles';
+### Section Object Schema
 
-const StyledElement = styled('div')(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.background.paper,
-}));
+Each project section should follow this schema:
+
+```js
+{
+  id: string,                // Unique section ID (e.g. 'section-overview')
+  type: string,              // Section type: 'default', 'gallery', 'outcomes', 'takeaways', 'prototype', 'custom', etc.
+  title: string,             // Section title
+  subtitle?: string,         // Optional subtitle
+  content?: ReactNode,       // Main content (text, JSX, etc.)
+  media?: object|array,      // Media object or array (image, video, gallery)
+  layout?: string,           // 'textLeft', 'textRight', 'textOnly', 'mediaOnly', 'gallery', etc.
+  takeaways?: array,         // Array of key takeaways (strings or objects)
+  outcomes?: { title: string, points: array }, // Outcomes object
+  actions?: array,           // Array of action/link objects
+  anchor?: string,           // Optional anchor for deep-linking
+  navigable?: boolean,       // If false, section is not shown in navigation
+  customComponent?: ReactNode // For advanced custom rendering
+}
 ```
 
-### Responsive Design
+### Section Types & Rendering
 
-```jsx
-<Box
-  sx={{
-    padding: { xs: 2, sm: 3, md: 4 },
-    fontSize: { xs: '1rem', md: '1.2rem' }
-  }}
->
-  Responsive content
-</Box>
+| type         | Rendered By           | Description                                  |
+|--------------|----------------------|----------------------------------------------|
+| default      | ProjectSection       | Standard text/media layout                   |
+| gallery      | ProjectGallery       | Image/video gallery with lightbox            |
+| outcomes     | OutcomesList         | List of project outcomes/metrics             |
+| takeaways    | TakeawaysList        | List of key takeaways                        |
+| prototype    | PrototypeShowcase    | Interactive prototype/iframe/modal           |
+| custom       | customComponent      | Custom React component for advanced cases    |
+
+### Example Section Array
+
+```js
+const sections = [
+  {
+    id: 'section-overview',
+    type: 'default',
+    title: 'Project Overview',
+    content: <Typography>...</Typography>,
+    media: { type: 'image', src: '...' },
+    layout: 'textLeft',
+    anchor: 'overview',
+    navigable: true
+  },
+  {
+    id: 'section-gallery',
+    type: 'gallery',
+    title: 'Screenshots',
+    media: [ ... ],
+    anchor: 'gallery',
+    navigable: true
+  },
+  {
+    id: 'section-outcomes',
+    type: 'outcomes',
+    title: 'Results',
+    outcomes: { title: 'Key Results', points: [ ... ] },
+    anchor: 'results',
+    navigable: true
+  },
+  {
+    id: 'section-custom',
+    type: 'custom',
+    title: 'Interactive Demo',
+    customComponent: <MyCustomDemoComponent />, 
+    anchor: 'demo',
+    navigable: false // Not shown in navigation
+  }
+];
 ```
+
+### Deep-Linking & Navigation
+- Use the `anchor` property for section deep-linking (e.g. `#overview`).
+- Use `navigable: false` for sections that should not appear in navigation.
+
+### Accessibility
+- All sections should use semantic HTML and ARIA roles where appropriate.
+- Media must have descriptive alt text.
+- Navigation should be keyboard accessible.
+
+### Notes
+- This schema enables flexible, future-proof project modals.
+- Update all project data and rendering logic to follow this structure.

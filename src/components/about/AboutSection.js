@@ -65,7 +65,7 @@ const AboutSection = () => {
   return (
     <ErrorBoundary componentName="AboutSection">
       <Box
-        id="about"
+        id="about-section-root"
         component="section"
         sx={{
           width: '100%',
@@ -76,13 +76,14 @@ const AboutSection = () => {
       >
         {/* Header section */}
         <Box 
+          id="about-section-header"
           sx={{ 
             width: '100%',
             px: { 
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
+              xs: theme.spacing(2),
+              sm: theme.spacing(4),
+              md: theme.spacing(6),
+              lg: theme.spacing(8),
             },
             boxSizing: 'border-box',
           }}
@@ -94,6 +95,7 @@ const AboutSection = () => {
             viewport={{ once: true, margin: "-100px" }}
           >
             <Box 
+              id="about-section-header-inner"
               sx={{ 
                 width: '100%', 
                 textAlign: 'center',
@@ -128,6 +130,7 @@ const AboutSection = () => {
         {/* Render loading state or content */}
         {isLoading ? (
           <Box 
+            id="about-section-loading"
             sx={{ 
               display: 'flex', 
               flexDirection: 'column',
@@ -144,6 +147,7 @@ const AboutSection = () => {
           </Box>
         ) : !hasValidData ? (
           <Box 
+            id="about-section-nocontent"
             sx={{ 
               textAlign: 'center', 
               p: 4, 

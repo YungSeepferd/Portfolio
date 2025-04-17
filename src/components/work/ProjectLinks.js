@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@mui/material'; // Added Stack for better spacing and alignment
-import ActionButton from '../common/ActionButton';
+import ActionButton from './ActionButton';
 import { resolveMediaPath } from '../../utils/MediaPathResolver';
 
 // Import MUI icons
@@ -17,6 +17,28 @@ import CodeIcon from '@mui/icons-material/Code';
  * Displays action buttons for various project resources like
  * presentations, prototypes, code repositories, etc.
  */
+
+// Centralized icon and color logic (migrated from buttonStyles.js)
+const getLinkIcon = (label) => {
+  if (!label) return <OpenInNewIcon />;
+  const normalizedLabel = label.toLowerCase();
+  if (normalizedLabel.includes('github')) return <GitHubIcon />;
+  if (normalizedLabel.includes('paper') || normalizedLabel.includes('article')) return <ArticleIcon />;
+  if (normalizedLabel.includes('pdf') || normalizedLabel.includes('presentation')) return <SlideshowIcon />;
+  if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return <DesignServicesIcon />;
+  if (normalizedLabel.includes('view') || normalizedLabel.includes('visit')) return <OpenInNewIcon />;
+  return <OpenInNewIcon />;
+};
+
+const getLinkColor = (label) => {
+  if (!label) return 'primary';
+  const normalizedLabel = label.toLowerCase();
+  if (normalizedLabel.includes('github')) return 'info';
+  if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
+  if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
+  return 'primary';
+};
+
 const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
   // Handle links as either array or object for backward compatibility
   const linksArray = Array.isArray(links) ? links : 
@@ -71,17 +93,9 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
         
         {/* Additional links */}
         {linksArray.length > 0 && linksArray.map((link, index) => {
-          // Determine icon based on link type/label
-          let icon = link.icon || <OpenInNewIcon />;
-          if (!link.icon) {
-            if (link.type === 'github' || (link.label && link.label.toLowerCase().includes('github'))) {
-              icon = <GitHubIcon />;
-            } else if (link.type === 'paper' || (link.label && link.label.toLowerCase().includes('paper'))) {
-              icon = <ArticleIcon />;
-            } else if (link.type === 'code' || (link.label && link.label.toLowerCase().includes('code'))) {
-              icon = <CodeIcon />;
-            }
-          }
+          // Determine icon and color based on label
+          const icon = link.icon || getLinkIcon(link.label);
+          const color = link.color || getLinkColor(link.label);
           
           // Determine content type for modal handling
           let contentType = link.contentType || 'external';
@@ -103,7 +117,7 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
               href={resolvedUrl}
               icon={icon}
               variant={link.primary ? 'contained' : 'outlined'}
-              color={link.color || 'primary'}
+              color={color}
               contentType={contentType}
               openInPopup={link.openInPopup !== false}
             />

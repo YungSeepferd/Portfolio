@@ -1,6 +1,9 @@
 # Using MUI System in the Portfolio Project
 
-MUI System provides CSS utilities that help build custom designs efficiently. Here's how to use it in this project:
+## Project Status Update (16 April 2025)
+
+- All layout and spacing is handled with the MUI `Box` component and `sx` prop.
+- No redundant layout or utility files remain; the codebase is clean and up-to-date.
 
 ## The `sx` Prop
 

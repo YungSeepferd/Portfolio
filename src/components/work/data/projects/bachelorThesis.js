@@ -1,14 +1,8 @@
-/**
- * Bachelor Thesis Project Data
- * 
- * This file contains the structured data for the Passenger Reroute Bachelor Thesis project.
- */
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import ArticleIcon from '@mui/icons-material/Article';
-import SchoolIcon from '@mui/icons-material/School';
 
 // Import project images and videos with standardized names
 import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';
@@ -50,15 +44,32 @@ const cardVariant = 'info';
 
 // Project data object
 const bachelorThesis = {
-  id: 6,
+  id: 'bachelorThesis',
   title: "Passenger Reroute – Bachelor Thesis",
   description: "Investigating passenger interaction with autonomous vehicle systems for spontaneous route adjustments.",
   categories: ["Automotive UX", "UI Design", "Prototyping", "UX Research", "User Testing"],
-  
-  // Replace details with structured sections
+  technologies: ["Figma", "Adobe After Effects", "Adobe Illustrator", "User Testing"],
+  cardVariant: cardVariant,
+  links: [
+    {
+      label: "View Presentation",
+      url: presentationPDF,
+      icon: <SlideshowIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
+    },
+    {
+      label: "View Thesis",
+      url: thesisPDF,
+      icon: <ArticleIcon fontSize="small" />,
+      contentType: 'pdf',
+      openInPopup: true
+    }
+  ],
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -66,10 +77,13 @@ const bachelorThesis = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.prototypeFlows },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-problem',
+      type: 'default',
       title: 'Problem Statement',
       content: (
         <>
@@ -84,10 +98,13 @@ const bachelorThesis = {
         </>
       ),
       media: { type: 'image', src: media.images.slowThinkingLevel1 },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'problem',
+      navigable: true
     },
     {
       id: 'section-research',
+      type: 'default',
       title: 'Research Questions',
       content: (
         <>
@@ -100,10 +117,13 @@ const bachelorThesis = {
           </Box>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'research',
+      navigable: true
     },
     {
       id: 'section-methodology',
+      type: 'default',
       title: 'Comprehensive Research Methodology',
       content: (
         <>
@@ -142,10 +162,13 @@ const bachelorThesis = {
         </>
       ),
       media: { type: 'image', src: media.images.fastThinkingLevel2GIF },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'methodology',
+      navigable: true
     },
     {
       id: 'section-technical',
+      type: 'video',
       title: 'Technical Implementation',
       content: (
         <Typography variant="body1" paragraph>
@@ -153,10 +176,13 @@ const bachelorThesis = {
         </Typography>
       ),
       media: { type: 'video', src: media.videos.slowThinkingVideoPrototype },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'technical',
+      navigable: true
     },
     {
       id: 'section-findings',
+      type: 'default',
       title: 'Key Findings & Results',
       content: (
         <>
@@ -193,10 +219,13 @@ const bachelorThesis = {
         </>
       ),
       media: { type: 'image', src: media.images.fastThinkingLevel3 },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'findings',
+      navigable: true
     },
     {
       id: 'section-recommendations',
+      type: 'default',
       title: 'Recommendations & Future Work',
       content: (
         <>
@@ -227,10 +256,13 @@ const bachelorThesis = {
           </Box>
         </>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'recommendations',
+      navigable: true
     },
     {
       id: 'section-impact',
+      type: 'outcomes',
       title: 'Academic Impact',
       content: (
         <Typography variant="body1" paragraph>
@@ -238,71 +270,34 @@ const bachelorThesis = {
         </Typography>
       ),
       media: { type: 'image', src: media.images.routeOverview },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'impact',
+      navigable: true,
+      takeaways: [
+        "Information density significantly impacts user trust in autonomous systems",
+        "Time pressure affects decision-making strategies in human-machine interactions",
+        "Mobile interfaces are effective tools for passenger-AV cooperation",
+        "Balanced information presentation enhances usability in complex systems",
+        "User testing reveals critical insights for future autonomous vehicle interfaces"
+      ],
+      outcomes: {
+        title: "Research Impact",
+        points: [
+          "Development of validated UI design guidelines for automotive interfaces",
+          "Contribution to autonomous vehicle trust and safety research"
+        ]
+      }
     }
-  ],
-  
-  // Update gallery images to use the media object
-  galleryImages: [
-    media.images.fastThinkingLevel2GIF,
-    media.images.prototypeFlows,
-    media.images.slowThinkingLevel1,
-    media.images.fastThinkingLevel2,
-    media.images.fastThinkingLevel3,
-    media.images.slowThinkingLevel2,
-    media.images.slowThinkingLevel3,
-    media.images.endScreen,
-    media.images.routeOverview,
-    media.images.slowThinkingLevel3Screenshot,
-    { type: 'video', src: media.videos.slowThinkingVideoPrototype }
-  ],
-  
-  technologies: ["Figma", "Adobe After Effects", "Adobe Illustrator", "User Testing"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: media.images.fastThinkingLevel2GIF },
-  
-  // Update links with presentationPDF and thesisPDF
-  links: [
-    {
-      label: "View Presentation",
-      url: presentationPDF,
-      icon: <SlideshowIcon fontSize="small" />,
-      contentType: 'pdf',
-      openInPopup: true
-    },
-    {
-      label: "View Thesis",
-      url: thesisPDF,
-      icon: <ArticleIcon fontSize="small" />,
-      contentType: 'pdf',
-      openInPopup: true
-    },
-    {
-      label: "Academic Publication",
-      url: "https://dl.acm.org/doi/10.1145/3411763.3451713",
-      icon: <SchoolIcon fontSize="small" />,
-      contentType: 'external',
-      openInPopup: true
-    }
-  ],
-  
-  takeaways: [
-    "Information density significantly impacts user trust in autonomous systems",
-    "Time pressure affects decision-making strategies in human-machine interactions",
-    "Mobile interfaces are effective tools for passenger-AV cooperation",
-    "Balanced information presentation enhances usability in complex systems",
-    "User testing reveals critical insights for future autonomous vehicle interfaces"
-  ],
-  
-  // Add outcomes object
-  outcomes: {
-    title: "Research Impact",
-    points: [
-      "Academic publication in ACM Digital Library (CHI 2021)",
-      "Development of validated UI design guidelines for automotive interfaces",
-      "Contribution to autonomous vehicle trust and safety research"
-    ]
-  }
+  ]
 };
+
+// Assign the media field after initialization to avoid ReferenceError
+bachelorThesis.media = (() => {
+  const firstVideo = bachelorThesis.sections?.find(s => s.media && s.media.type === 'video');
+  if (firstVideo) return firstVideo.media;
+  const firstImage = bachelorThesis.sections?.find(s => s.media && s.media.type === 'image');
+  if (firstImage) return firstImage.media;
+  return undefined;
+})();
 
 export default bachelorThesis;

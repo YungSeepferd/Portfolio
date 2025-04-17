@@ -22,6 +22,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
   
   return (
     <Box 
+      id="about-tab-navigation-root"
       sx={{ 
         width: '100%',
         backgroundColor: theme.palette.background.paper,
@@ -31,6 +32,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
       }}
     >
       <Container 
+        id="about-tab-navigation-container"
         maxWidth={false} 
         disableGutters
         sx={{ 
@@ -45,6 +47,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
         }}
       >
         <Box
+          id="about-tab-navigation-tabsbox"
           sx={{
             width: '100%', // Take full width of the container
             display: 'flex',

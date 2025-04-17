@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, useTheme } from '@mui/material';
 import { skillsRow1, skillsRow2 } from './skillsData';
+import SkillTagList from '../common/SkillTagList';
 
 /**
  * HeroContent Component
@@ -82,6 +83,7 @@ const HeroContent = () => {
               lineHeight: 1.2,
               mb: 1,
               color: theme.palette.text.primary,
+              letterSpacing: '-0.5px',
             }}
           >
             Vincent Göke
@@ -139,25 +141,15 @@ const HeroContent = () => {
             }}
           >
             {skillsRow1.map((skill, index) => (
-              <Box
+              <SkillTagList
                 key={index}
-                sx={{
-                  bgcolor: theme.palette.background.paper,
-                  color: theme.palette.text.primary,
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: '16px',
-                  px: 1.5,
-                  py: 0.5,
-                  fontSize: theme.typography.chipText?.fontSize || '0.9rem',
-                  display: 'inline-block',
-                  pointerEvents: 'none',
-                }}
-              >
-                {skill}
-              </Box>
+                label={skill}
+                size="medium"
+                variant="skill"
+                sx={{ pointerEvents: 'none' }}
+              />
             ))}
           </Box>
-          
           <Box 
             sx={{ 
               display: 'flex', 
@@ -167,22 +159,13 @@ const HeroContent = () => {
             }}
           >
             {skillsRow2.map((skill, index) => (
-              <Box
+              <SkillTagList
                 key={index}
-                sx={{
-                  bgcolor: theme.palette.background.paper,
-                  color: theme.palette.text.primary,
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: '16px',
-                  px: 1.5,
-                  py: 0.5,
-                  fontSize: theme.typography.chipText?.fontSize || '0.9rem',
-                  display: 'inline-block',
-                  pointerEvents: 'none',
-                }}
-              >
-                {skill}
-              </Box>
+                label={skill}
+                size="medium"
+                variant="skill"
+                sx={{ pointerEvents: 'none' }}
+              />
             ))}
           </Box>
         </Box>

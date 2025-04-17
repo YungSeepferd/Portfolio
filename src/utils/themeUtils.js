@@ -375,7 +375,9 @@ export const isLightColor = (hexColor) => {
   return luminance > 0.5;
 };
 
-export default {
+const themeUtils = {
   getStatusColor,
   isLightColor
 };
+
+export default themeUtils;

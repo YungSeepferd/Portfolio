@@ -22,7 +22,8 @@ const FooterContact = ({ projectContext }) => {
       component="footer" 
       id="footer-contact" 
       sx={{ 
-        width: '100%',
+        width: '100vw', // Ensure full viewport width
+        maxWidth: '100vw',
         padding: 0,
         marginBottom: 0,
         textAlign: 'left',
@@ -101,6 +102,18 @@ const FooterContact = ({ projectContext }) => {
                       {contactMessage}
                     </Typography>
                     
+                    <Typography 
+                      variant="h5"
+                      sx={{
+                        color: theme.palette.common.white,
+                        mb: 2,
+                        fontWeight: 'medium',
+                        wordBreak: 'break-word'
+                      }}
+                    >
+                      goeke.vincent@gmail.com
+                    </Typography>
+                    
                     {/* Contact Icons */}
                     <Box 
                       sx={{ 
@@ -109,16 +122,17 @@ const FooterContact = ({ projectContext }) => {
                         mb: 3 
                       }}
                     >
-                      <IconButton 
-                        href={mailtoLink}
-                        sx={{ 
-                          color: theme.palette.common.white,
-                          backgroundColor: 'rgba(255,255,255,0.1)',
-                          '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' },
-                        }}
-                      >
-                        <EmailIcon />
-                      </IconButton>
+                      <a href={mailtoLink} style={{ textDecoration: 'none' }}>
+                        <IconButton 
+                          sx={{ 
+                            color: theme.palette.common.white,
+                            backgroundColor: 'rgba(255,255,255,0.1)',
+                            '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' },
+                          }}
+                        >
+                          <EmailIcon />
+                        </IconButton>
+                      </a>
                       
                       <IconButton 
                         href="https://www.linkedin.com/in/vincent-g-193124194/"

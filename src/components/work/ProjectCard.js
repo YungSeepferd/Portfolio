@@ -3,7 +3,9 @@ import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
-import TagList from '../common/TagList';
+import CategoryTagList from '../common/CategoryTagList';
+import projectUtils from '../../utils/projectUtils';
+import VideoPlayer from '../common/VideoPlayer';
 
 /**
  * ProjectCard Component
@@ -30,43 +32,9 @@ const ProjectCard = ({ project, onClick }) => {
   const linksArray = Array.isArray(links) ? links : 
                     (links && typeof links === 'object' ? Object.values(links) : []);
 
-  // Determine image source with proper fallbacks and path resolution
-  const getProjectImage = () => {
-    // Try direct media object first
-    if (project.media) {
-      if (typeof project.media === 'string') {
-        return project.media;
-      }
-      if (project.media.src) {
-        return project.media.src;
-      }
-    }
-    
-    // Then try featuredImages.overview
-    if (project.featuredImages?.overview) {
-      if (typeof project.featuredImages.overview === 'string') {
-        return project.featuredImages.overview;
-      }
-      if (typeof project.featuredImages.overview === 'object' && project.featuredImages.overview.src) {
-        return project.featuredImages.overview.src;
-      }
-    }
-    
-    // Fall back to gallery image or placeholder
-    if (project.galleryImages && project.galleryImages.length > 0) {
-      const firstImage = project.galleryImages[0];
-      if (typeof firstImage === 'string') {
-        return firstImage;
-      }
-      if (firstImage && firstImage.src) {
-        return firstImage.src;
-      }
-    }
-    
-    return 'https://via.placeholder.com/400x250?text=Project+Image+Not+Found';
-  };
-
-  const imageSrc = getProjectImage();
+  // Use robust utility for card image
+  // Get the full media object (type + src)
+  const primaryMedia = project.media || projectUtils.getProjectPrimaryMedia(project);
   
   // Animation for the card itself
   const cardVariants = {
@@ -107,30 +75,64 @@ const ProjectCard = ({ project, onClick }) => {
           })
         }}
       >
-        {/* Image */}
-        <Box
-          sx={{
-            width: '100%',
-            flex: '0 0 60%', // 60% of the card height for the image
-            minHeight: 0,
-            background: theme.palette.grey[100],
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderBottom: `1px solid ${theme.palette.divider}`,
-          }}
-        >
-          <ContentAwareImage
-            src={imageSrc}
-            alt={`${title} preview`}
-            containerHeight="100%"
-            containerWidth="100%"
-            objectFit="cover"
-            style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
-            onError={(e) => {
-              console.error(`Failed to load image for ${title}: ${imageSrc}`, e);
-              e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Found';
+        {/* Image Area with Overlay */}
+        <Box sx={{ position: 'relative', width: '100%', flex: '0 0 60%', minHeight: 0 }}>
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              background: 'theme.palette.background.default', // Set background to black
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderBottom: `1px solid ${theme.palette.divider}`,
             }}
+          >
+            {primaryMedia?.type === 'image' && (
+              <ContentAwareImage
+                src={primaryMedia.src}
+                alt={`${title} preview`}
+                containerHeight="100%"
+                containerWidth="100%"
+                objectFit="cover"
+                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+                onError={(e) => {
+                  console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
+                  e.target.src = '/assets/images/placeholders/project.jpg';
+                }}
+              />
+            )}
+            {primaryMedia?.type === 'video' && (
+              <VideoPlayer
+                src={primaryMedia.src}
+                containerHeight="100%"
+                containerWidth="100%"
+                autoplay={true}
+                muted={true}
+                controls={true}
+                poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
+                onError={(e) => {
+                  console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+                }}
+              />
+            )}
+            {/* fallback if no media */}
+            {!primaryMedia && (
+              <ContentAwareImage
+                src={'/assets/images/placeholders/project.jpg'}
+                alt={`${title} preview`}
+                containerHeight="100%"
+                containerWidth="100%"
+                objectFit="cover"
+                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+              />
+            )}
+          </Box>
+          {/* Hover Overlay using ProjectCardPreview - now only over image */}
+          <ProjectCardPreview
+            isVisible={isHovered}
+            technologies={technologies}
+            links={linksArray}
           />
         </Box>
         {/* Content */}
@@ -162,15 +164,9 @@ const ProjectCard = ({ project, onClick }) => {
             {description}
           </Typography>
           {categories && categories.length > 0 && (
-            <TagList tags={categories} />
+            <CategoryTagList tags={categories} />
           )}
         </CardContent>
-        {/* Hover Overlay using ProjectCardPreview */}
-        <ProjectCardPreview
-          isVisible={isHovered}
-          technologies={technologies}
-          links={linksArray}
-        />
       </Card>
     </motion.div>
   );

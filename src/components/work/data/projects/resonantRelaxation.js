@@ -66,17 +66,18 @@ const links = [
   }
 ];
 
-// Project data object
 const resonantRelaxation = {
-  id: 2,
+  id: 'resonantRelaxation',
   title: "Resonant Relaxation – Procedural Haptics",
   description: "Exploring procedural generation of haptic feedback for relaxation and mindfulness applications.",
   categories: ["Haptic Design", "AI Integration", "UX Research", "Sound Design"],
-  
-  // Replace details with structured sections
+  technologies: ["React.js", "RNBO.js", "GPT-4 API", "Tone.js", "Bootstrap"],
+  cardVariant: cardVariant,
+  links: links,
   sections: [
     {
       id: 'section-overview',
+      type: 'default',
       title: 'Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -84,10 +85,13 @@ const resonantRelaxation = {
         </Typography>
       ),
       media: { type: 'image', src: ProcedurallyGenHaptic },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'overview',
+      navigable: true
     },
     {
       id: 'section-problem',
+      type: 'default',
       title: 'Problem Statement',
       content: (
         <>
@@ -108,20 +112,26 @@ const resonantRelaxation = {
         </>
       ),
       media: { type: 'image', src: FrequencyTheory },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'problem',
+      navigable: true
     },
     {
       id: 'section-research',
+      type: 'default',
       title: 'Research Evolution',
       content: (
         <Typography variant="body1" paragraph>
           The initial research hypothesis focused on directly inducing flow states; however, empirical explorations revealed practical challenges due to the complexity of reliably eliciting flow. Consequently, the project strategically shifted towards relaxation as a foundational affective state, significantly more attainable through controlled audio-haptic stimulation, which could potentially facilitate transitions into deeper cognitive states later.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'research',
+      navigable: true
     },
     {
       id: 'section-methodology',
+      type: 'default',
       title: 'Methodological Approach',
       content: (
         <>
@@ -150,10 +160,13 @@ const resonantRelaxation = {
         </>
       ),
       media: { type: 'image', src: PrincipleSketch },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'methodology',
+      navigable: true
     },
     {
       id: 'section-technical',
+      type: 'default',
       title: 'Technical Implementation',
       content: (
         <>
@@ -180,10 +193,13 @@ const resonantRelaxation = {
         </>
       ),
       media: { type: 'image', src: UIPrototype },
-      layout: 'textRight'
+      layout: 'textRight',
+      anchor: 'technical',
+      navigable: true
     },
     {
       id: 'section-evaluation',
+      type: 'outcomes',
       title: 'Evaluation & Results',
       content: (
         <Typography variant="body1" paragraph>
@@ -191,56 +207,48 @@ const resonantRelaxation = {
         </Typography>
       ),
       media: { type: 'image', src: AIAPIFewshotting },
-      layout: 'textLeft'
+      layout: 'textLeft',
+      anchor: 'evaluation',
+      navigable: true,
+      takeaways: [
+        "AI can enable real-time adaptation of haptic feedback",
+        "Procedural generation reduces development costs for haptic systems",
+        "Multimodal integration (audio-haptic) enhances relaxation efficacy",
+        "Biofeedback integration enhances personalization and user engagement",
+        "Open-source frameworks accelerate innovation in haptic design"
+      ],
+      outcomes: {
+        title: "Research Outcomes",
+        points: [
+          "Presented findings at EuroHaptics 2024 conference",
+          "Developed functioning prototype demonstrating procedural audio-haptic generation",
+          "Established a framework for future affective computing applications"
+        ]
+      }
     },
     {
       id: 'section-impact',
+      type: 'default',
       title: 'Academic Impact & Future Directions',
       content: (
         <Typography variant="body1" paragraph>
           The project's innovative integration of AI-generated audio with real-time tactile feedback represents a notable advancement within affective haptic research. By demonstrating the practical feasibility and emotional efficacy of procedurally generated multimodal stimuli, the project opens new avenues for emotion-driven interface design. Future work includes expanding the framework to support additional use cases such as rehabilitation, stress management applications, gaming, and enhanced creative tools.
         </Typography>
       ),
-      layout: 'textOnly'
+      layout: 'textOnly',
+      anchor: 'impact',
+      navigable: true
     }
-  ],
-  
-  galleryImages: [
-    ProcedurallyGenHaptic,
-    UIPrototype,
-    PrincipleSketch,
-    PrincipleVariants,
-    UIPrototypeSketch,
-    FrequencyTheory,
-    AIAPIFewshotting
-  ],
-  technologies: ["React.js", "TensorFlow", "GPT-4 API", "Tone.js", "Web Audio API"],
-  cardVariant: cardVariant,
-  media: { type: 'image', src: ProcedurallyGenHaptic },
-  featuredImages: {
-    overview: ProcedurallyGenHaptic,
-    problem: FrequencyTheory,
-    solution: UIPrototype,
-    prototypeShowcase: [PrincipleVariants, UIPrototypeSketch, AIAPIFewshotting]
-  },
-  links: links,
-  takeaways: [
-    "AI can enable real-time adaptation of haptic feedback",
-    "Procedural generation reduces development costs for haptic systems",
-    "Multimodal integration (audio-haptic) enhances relaxation efficacy",
-    "Biofeedback integration enhances personalization and user engagement",
-    "Open-source frameworks accelerate innovation in haptic design"
-  ],
-  
-  // Add outcomes object
-  outcomes: {
-    title: "Research Outcomes",
-    points: [
-      "Presented findings at EuroHaptics 2024 conference",
-      "Developed functioning prototype demonstrating procedural audio-haptic generation",
-      "Established a framework for future affective computing applications"
-    ]
-  }
+  ]
 };
+
+// Assign the media field after initialization to avoid ReferenceError
+resonantRelaxation.media = (() => {
+  const firstVideo = resonantRelaxation.sections?.find(s => s.media && s.media.type === 'video');
+  if (firstVideo) return firstVideo.media;
+  const firstImage = resonantRelaxation.sections?.find(s => s.media && s.media.type === 'image');
+  if (firstImage) return firstImage.media;
+  return undefined;
+})();
 
 export default resonantRelaxation;

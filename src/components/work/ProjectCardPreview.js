@@ -1,17 +1,14 @@
 import React from 'react';
-import { Box, Fade, useTheme } from '@mui/material';
-import TechBar from './TechBar';
-import ActionButtonGroup from '../common/ActionButtonGroup';
+import { Box, Fade } from '@mui/material';
+import TechnologyTags from './TechnologyTags';
+import ProjectActionButtons from './ProjectActionButtons';
 
 /**
  * ProjectCardPreview Component
  * 
- * Displays technology tags and action buttons when hovering over a project card
+ * Displays technology tags (top) and action buttons (bottom) in a hover overlay.
  */
 const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
-  const theme = useTheme();
-
-  // Only render if there's something to show
   const hasContent = (technologies.length > 0 || links.length > 0);
   if (!hasContent) return null;
 
@@ -24,65 +21,74 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)', // Dark overlay
-          color: theme.palette.common.white,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          p: 2,
-          boxSizing: 'border-box',
-          pointerEvents: 'none', // Allow clicks to pass through to the card
+          zIndex: 2,
+          pointerEvents: 'none',
         }}
       >
-        {/* Tech Bar */}
-        {technologies && technologies.length > 0 && (
-          <TechBar
-            technologies={technologies}
-            variant="outlined"
-            size="small"
+        {/* Top overlay: Technology tags */}
+        {technologies.length > 0 && (
+          <Box
             sx={{
-              mb: 2,
-              // Override TechBar styles for overlay
-              '& .MuiChip-root': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: theme.palette.common.white,
-                borderColor: 'rgba(255, 255, 255, 0.5)',
-              },
-              '& .MuiTypography-root': {
-                 color: theme.palette.common.white, // Ensure title is white
-              }
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              pt: { xs: 2, sm: 3 },
+              pb: 0,
+              pointerEvents: 'auto',
+              zIndex: 3,
             }}
-          />
+          >
+            <Box
+              sx={{
+                background: 'rgba(0,0,0,0.55)',
+                borderRadius: 2,
+                px: 2,
+                py: 0.5,
+                maxWidth: '90%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TechnologyTags technologies={technologies} variant="hover" size="small" />
+            </Box>
+          </Box>
         )}
 
-        {/* Quick links - using ActionButtonGroup with pointerEvents: auto */}
+        {/* Bottom overlay: Action buttons */}
         {links.length > 0 && (
-          <Box sx={{ 
-            pointerEvents: 'auto', // Override parent's pointer-events: none
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            mt: 2
-          }}>
-            <ActionButtonGroup
-              actions={links}
-              layout="column"
-              maxButtons={2}
-              size="small"
-              variant="outlined"
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+              pb: { xs: 2, sm: 3 },
+              pointerEvents: 'auto',
+              zIndex: 3,
+            }}
+          >
+            <Box
               sx={{
-                '& .MuiButton-root': {
-                  color: theme.palette.common.white,
-                  borderColor: 'rgba(255, 255, 255, 0.5)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderColor: theme.palette.common.white,
-                  },
-                }
+                background: 'rgba(0,0,0,0.55)',
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                maxWidth: '95%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
-            />
+            >
+              <ProjectActionButtons actions={links} layout="row" maxButtons={4} size="small" />
+            </Box>
           </Box>
         )}
       </Box>
