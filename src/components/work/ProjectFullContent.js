@@ -42,14 +42,17 @@ const ProjectFullContent = ({ project }) => {
       height: '100%',
       overflowY: 'auto',
       backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary
+      color: theme.palette.text.primary,
+      p: { xs: 0, sm: 0, md: 0 },
+      boxSizing: 'border-box',
     }}>
       {/* Hero Media Section with Title Overlay */}
       <Box sx={{
         width: '100%',
-        height: '50vh',
+        height: { xs: '50vh', sm: '40vh', md: '50vh' }, // Reduce hero height on mobile
         position: 'relative',
-        boxShadow: theme.shadows[4]
+        boxShadow: theme.shadows[4],
+        minHeight: { xs: 120, sm: 180, md: 240 },
       }}>
         {heroMedia.type === 'video' ? (
           <HeroVideo videoSrc={heroMedia.src} />
@@ -69,20 +72,41 @@ const ProjectFullContent = ({ project }) => {
       </Box>
 
       {/* Add extra top margin for modal header area */}
-      <Box sx={{ mt: { xs: 2, sm: 3 } }}>
+      <Box sx={{
+        mt: { xs: 8, sm: 10, md: 12 }, // Increased top margin for more space below hero
+        mb: { xs: 2, sm: 3 },        // Added bottom margin for separation from content
+        px: { xs: 1, sm: 2, md: 4 }, // Add horizontal padding for tooltags
+        width: '100%',
+        boxSizing: 'border-box',
+      }}>
         {/* Actions Bar - Technologies and Links */}
         <ProjectMetaBar
           technologies={technologies}
           actions={links}
           variant="full"
+          sx={{
+            flexWrap: 'wrap',
+            rowGap: { xs: 2.5, sm: 2 }, // More vertical space for tooltags
+            columnGap: { xs: 1.5, sm: 2 },
+            justifyContent: { xs: 'flex-start', sm: 'flex-start' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            width: '100%',
+            overflowX: 'auto',
+            pb: { xs: 1, sm: 0 },
+          }}
         />
       </Box>
 
-      <Divider sx={{ borderColor: theme.palette.divider }} />
+      <Divider sx={{ borderColor: theme.palette.divider, my: { xs: 1, sm: 2 } }} />
 
       <Paper id="project-full-content-paper" sx={{
-        p: { xs: 2, sm: 3, md: 4 },
-        backgroundColor: theme.palette.background.paper
+        p: { xs: 1.5, sm: 3, md: 4 },
+        backgroundColor: theme.palette.background.paper,
+        minHeight: { xs: 120, sm: 180 },
+        boxSizing: 'border-box',
+        width: '100%',
+        maxWidth: '100vw',
+        overflowX: 'auto',
       }}>
         {/* Project Content Sections */}
         <ProjectSections sections={sections} />

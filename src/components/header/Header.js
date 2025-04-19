@@ -207,43 +207,47 @@ const Header = () => {
         }}
         disableScrollLock
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'theme.palette.secondary.main', pl: 1, fontFamily: theme.typography.fontFamily }}>
-            Menu
+        <Paper elevation={0} sx={{ background: 'none', boxShadow: 'none', p: 0 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'theme.palette.secondary.main', pl: 1, fontFamily: theme.typography.fontFamily }}>
+              Menu
+            </Box>
+            <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
+              <CloseIcon />
+            </IconButton>
           </Box>
-          <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        {/* Theme toggle for mobile menu */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-          <ThemeToggle mode={mode} onToggle={toggleTheme} />
-        </Box>
-        {/* Navigation buttons */}
-        {navItems.map((item, idx) => (
-          <Button
-            key={item.target}
-            variant={item.isCallToAction ? 'contained' : 'text'}
-            color={item.isCallToAction ? 'secondary' : 'inherit'}
-            fullWidth
-            sx={{
-              py: 1.2,
-              borderRadius: 2,
-              fontWeight: 600,
-              fontSize: '1.05rem',
-              mb: idx === navItems.length - 1 ? 2 : 0,
-              textTransform: 'none',
-              justifyContent: 'flex-start',
-              fontFamily: theme.typography.fontFamily,
-            }}
-            onClick={() => {
-              handleMenuClose();
-              document.getElementById(item.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-          >
-            {item.name}
-          </Button>
-        ))}
+          {/* Theme toggle for mobile menu */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <ThemeToggle mode={mode} onToggle={toggleTheme} />
+          </Box>
+          {/* Navigation buttons in a List for accessibility */}
+          <List>
+            {navItems.map((item, idx) => (
+              <Button
+                key={item.target}
+                variant={item.isCallToAction ? 'contained' : 'text'}
+                color={item.isCallToAction ? 'secondary' : 'inherit'}
+                fullWidth
+                sx={{
+                  py: 1.2,
+                  borderRadius: 2,
+                  fontWeight: 600,
+                  fontSize: '1.05rem',
+                  mb: idx === navItems.length - 1 ? 2 : 0,
+                  textTransform: 'none',
+                  justifyContent: 'flex-start',
+                  fontFamily: theme.typography.fontFamily,
+                }}
+                onClick={() => {
+                  handleMenuClose();
+                  document.getElementById(item.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                {item.name}
+              </Button>
+            ))}
+          </List>
+        </Paper>
       </Popover>
     </motion.div>
   );

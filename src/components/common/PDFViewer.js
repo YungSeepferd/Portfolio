@@ -45,6 +45,11 @@ const PDFViewer = ({ url, title }) => {
     }
   };
   
+  // Debugging: log url and pdfUrl
+  console.log('PDFViewer url prop:', url);
+  console.log('PDFViewer computed pdfUrl:', pdfUrl);
+  console.log('PDFViewer isLoading:', isLoading, 'hasError:', hasError);
+
   if (hasError) {
     return (
       <Box 
@@ -86,8 +91,8 @@ const PDFViewer = ({ url, title }) => {
   }
   
   return (
-    <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-      {/* Mobile rotation tip */}
+    <Box sx={{ width: '100%', height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* Mobile rotation and pinch-to-zoom tip */}
       {isMobile && (
         <Box sx={{
           width: '100%',
@@ -100,7 +105,7 @@ const PDFViewer = ({ url, title }) => {
           fontWeight: 500,
           zIndex: 2,
         }}>
-          Tip: Rotate your device for a better PDF experience.
+          Tip: Pinch to zoom and pan the PDF. Rotate your device for a better experience.
         </Box>
       )}
       {isLoading && (
@@ -121,25 +126,36 @@ const PDFViewer = ({ url, title }) => {
           <CircularProgress size={60} />
         </Box>
       )}
-      
-      {/* Close button would be added in the parent modal */}
-      
       <Box 
-        component="iframe"
-        src={pdfUrl}
-        title={title || "PDF Document"}
-        onLoad={handleLoad}
-        onError={handleError}
         sx={{
           width: '100%',
-          height: '100%', // Use full height
-          flex: 1, // Take up remaining space
+          height: '100%',
+          minHeight: 0,
+          flex: 1,
           border: 'none',
           display: 'block',
           borderRadius: theme.shape.borderRadius,
+          overflow: 'auto',
+          touchAction: 'pan-x pan-y',
+          WebkitOverflowScrolling: 'touch',
         }}
-      />
-      
+      >
+        <Box
+          component="iframe"
+          src={pdfUrl}
+          title={title || "PDF Document"}
+          onLoad={handleLoad}
+          onError={handleError}
+          sx={{
+            width: '100%',
+            height: '100%',
+            minHeight: 0,
+            border: 'none',
+            display: 'block',
+            borderRadius: theme.shape.borderRadius,
+          }}
+        />
+      </Box>
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'flex-end',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
+import { Card, CardContent, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
@@ -15,6 +15,7 @@ import VideoPlayer from '../common/VideoPlayer';
  */
 const ProjectCard = ({ project, onClick }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [isHovered, setIsHovered] = useState(false);
 
   if (!project) return null;
@@ -42,136 +43,139 @@ const ProjectCard = ({ project, onClick }) => {
     visible: { opacity: 1, y: 0 },
   };
 
+  // Only show hover preview on non-mobile
+  const showPreview = !isMobile && isHovered;
+
   return (
-    <motion.div
+    <Card
+      component={motion.div}
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      style={{ height: '100%' }} // Ensure motion div takes full height
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      whileHover={!isMobile ? { scale: 1.03, boxShadow: theme.shadows[6] } : {}}
+      onMouseEnter={() => { if (!isMobile) setIsHovered(true); }}
+      onMouseLeave={() => { if (!isMobile) setIsHovered(false); }}
+      onClick={() => onClick(project)} // Always allow click/tap to open modal
+      sx={{
+        cursor: 'pointer',
+        width: '100%',
+        aspectRatio: '1 / 1',
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+        backgroundColor: theme.palette.background.paper,
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        '&:hover': !isMobile ? {
+          transform: 'translateY(-5px)',
+          boxShadow: theme.shadows[6],
+        } : {},
+        ...(cardVariant && cardVariant !== 'default' && {
+          borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
+        })
+      }}
     >
-      <Card
-        onClick={() => onClick(project)}
-        sx={{
-          cursor: 'pointer',
-          width: '100%',
-          aspectRatio: '1 / 1',
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: theme.shape.borderRadius,
-          boxShadow: theme.shadows[2],
-          backgroundColor: theme.palette.background.paper,
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-          '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: theme.shadows[6],
-          },
-          ...(cardVariant && cardVariant !== 'default' && {
-            borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
-          })
-        }}
-      >
-        {/* Image Area with Overlay */}
-        <Box sx={{ position: 'relative', width: '100%', flex: '0 0 60%', minHeight: 0 }}>
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              background: 'theme.palette.background.default', // Set background to black
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderBottom: `1px solid ${theme.palette.divider}`,
-              borderRadius: theme.shape.borderRadius,
-              overflow: 'hidden',
-            }}
-          >
-            {primaryMedia?.type === 'image' && (
-              <ContentAwareImage
-                src={primaryMedia.src}
-                alt={`${title} preview`}
-                containerHeight="100%"
-                containerWidth="100%"
-                objectFit="cover"
-                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
-                onError={(e) => {
-                  console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
-                  e.target.src = '/assets/images/placeholders/project.jpg';
-                }}
-              />
-            )}
-            {primaryMedia?.type === 'video' && (
-              <VideoPlayer
-                src={primaryMedia.src}
-                containerHeight="100%"
-                containerWidth="100%"
-                autoplay={true}
-                muted={true}
-                controls={false} // Hide overlay controls for project card
-                showOverlayControls={false} // Explicitly hide overlay controls
-                poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
-                onError={(e) => {
-                  console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
-                }}
-              />
-            )}
-            {/* fallback if no media */}
-            {!primaryMedia && (
-              <ContentAwareImage
-                src={'/assets/images/placeholders/project.jpg'}
-                alt={`${title} preview`}
-                containerHeight="100%"
-                containerWidth="100%"
-                objectFit="cover"
-                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
-              />
-            )}
-          </Box>
-          {/* Hover Overlay using ProjectCardPreview - now only over image */}
-          <ProjectCardPreview
-            isVisible={isHovered}
-            technologies={technologies}
-            links={linksArray}
-          />
-        </Box>
-        {/* Content */}
-        <CardContent
+      {/* Image Area with Overlay */}
+      <Box sx={{ position: 'relative', width: '100%', flex: '0 0 60%', minHeight: 0 }}>
+        <Box
           sx={{
-            flex: '1 1 40%', // 40% of the card height for content
+            width: '100%',
+            height: '100%',
+            background: 'theme.palette.background.default', // Set background to black
             display: 'flex',
-            flexDirection: 'column',
-            p: { xs: 1.5, md: 2 },
-            minHeight: 0,
-            backgroundColor: theme.palette.background.paper,
-            justifyContent: 'flex-start',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            borderRadius: theme.shape.borderRadius,
             overflow: 'hidden',
           }}
         >
-          <Typography
-            variant="h6"
-            component="h3"
-            gutterBottom
-            sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: { xs: '1rem', md: '1.1rem' } }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 1, flexGrow: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: { xs: '0.95rem', md: '1rem' } }}
-          >
-            {description}
-          </Typography>
-          {categories && categories.length > 0 && (
-            <CategoryTagList tags={categories} />
+          {primaryMedia?.type === 'image' && (
+            <ContentAwareImage
+              src={primaryMedia.src}
+              alt={`${title} preview`}
+              containerHeight="100%"
+              containerWidth="100%"
+              objectFit="cover"
+              style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+              onError={(e) => {
+                console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
+                e.target.src = '/assets/images/placeholders/project.jpg';
+              }}
+            />
           )}
-        </CardContent>
-      </Card>
-    </motion.div>
+          {primaryMedia?.type === 'video' && (
+            <VideoPlayer
+              src={primaryMedia.src}
+              containerHeight="100%"
+              containerWidth="100%"
+              autoplay={true}
+              muted={true}
+              controls={false} // Hide overlay controls for project card
+              showOverlayControls={false} // Explicitly hide overlay controls
+              poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
+              onError={(e) => {
+                console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+              }}
+            />
+          )}
+          {/* fallback if no media */}
+          {!primaryMedia && (
+            <ContentAwareImage
+              src={'/assets/images/placeholders/project.jpg'}
+              alt={`${title} preview`}
+              containerHeight="100%"
+              containerWidth="100%"
+              objectFit="cover"
+              style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+            />
+          )}
+        </Box>
+        {/* Hover Overlay using ProjectCardPreview - now only over image */}
+        {showPreview && (
+          <ProjectCardPreview
+            isVisible={showPreview}
+            technologies={technologies}
+            links={linksArray}
+          />
+        )}
+      </Box>
+      {/* Content */}
+      <CardContent
+        sx={{
+          flex: '1 1 40%', // 40% of the card height for content
+          display: 'flex',
+          flexDirection: 'column',
+          p: { xs: 1.5, md: 2 },
+          minHeight: 0,
+          backgroundColor: theme.palette.background.paper,
+          justifyContent: 'flex-start',
+          overflow: 'hidden',
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="h3"
+          gutterBottom
+          sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: { xs: '1rem', md: '1.1rem' } }}
+        >
+          {title}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 1, flexGrow: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: { xs: '0.95rem', md: '1rem' } }}
+        >
+          {description}
+        </Typography>
+        {categories && categories.length > 0 && (
+          <CategoryTagList tags={categories} />
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -156,6 +156,11 @@ const ProjectSection = ({
         background: theme.palette.background.paper,
         borderRadius: theme.shape.borderRadius,
         boxShadow: theme.shadows[2],
+        minHeight: { xs: 220, sm: 320 }, // Enforce a minimum height for all sections
+        boxSizing: 'border-box', // Ensure padding is included in height
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
       }}
     >
       {children}
@@ -424,7 +429,16 @@ const ProjectSection = ({
           id={`project-section-grid-${id || sectionIndex}`}
           container
           spacing={{ xs: 4, md: 6 }}
-          sx={{ mb: 6, maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }}
+          sx={{ 
+            mb: 6, 
+            maxWidth: '1200px', 
+            mx: 'auto', 
+            px: { xs: 2, sm: 3, md: 4 },
+            minHeight: { xs: 220, sm: 320 }, // Enforce a minimum height for split layout
+            boxSizing: 'border-box',
+            alignItems: 'stretch',
+            display: 'flex',
+          }}
           alignItems="stretch"
         >
           <Grid

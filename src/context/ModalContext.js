@@ -109,33 +109,40 @@ export const ModalProvider = ({ children }) => {
       }}
     >
       {children}
-      {/* PDF Modal - Responsive Dialog for mobile */}
+      {/* PDF Modal - Responsive Dialog for all devices */}
       <Dialog
         open={pdfOpen}
         onClose={closeModal}
-        fullScreen={isMobile}
-        maxWidth="md"
-        fullWidth
+        fullScreen={false}
+        maxWidth={false}
+        fullWidth={false}
         TransitionComponent={Slide}
         aria-labelledby="pdf-modal-title"
         aria-describedby="pdf-modal-description"
         PaperProps={{
-          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
+          sx: {
+            m: 0,
+            borderRadius: 2,
+            width: '95vw',
+            height: '80vh',
+            maxWidth: '95vw',
+            maxHeight: '80vh',
+            display: 'flex',
+            flexDirection: 'column',
+          }
         }}
       >
-        {isMobile && (
-          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
-            <Toolbar sx={{ minHeight: 56, px: 1 }}>
-              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
-                PDF Document
-              </Typography>
-              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close PDF" size="large">
-                <CloseIcon />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-        )}
-        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
+        <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+          <Toolbar sx={{ minHeight: 56, px: 1 }}>
+            <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+              PDF Document
+            </Typography>
+            <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close PDF" size="large">
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ flex: 1, width: '100vw', height: '100%', minHeight: 0, p: 0, display: 'flex', flexDirection: 'column' }}>
           <PDFViewer url={pdfUrl} title="PDF Document" />
         </Box>
       </Dialog>
@@ -200,6 +207,19 @@ export const ModalProvider = ({ children }) => {
         </Box>
       </Dialog>
       {/* Project Modal is rendered by the ProjectModal component */}
+      {/* Purpose: Custom Modal for future use (e.g., onboarding, announcements, or special overlays) */}
+      {/* This Modal is not shown by default, but is ready for future use and uses modalStyle for responsive design. */}
+      <Modal open={false} onClose={() => {}}>
+        <Box sx={modalStyle}>
+          {/* Future: Place onboarding, announcement, or custom overlay content here */}
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Special Announcement
+          </Typography>
+          <Typography variant="body1">
+            This is a placeholder for a custom modal overlay. You can use this for onboarding, announcements, or any special content that should appear above the main app. The modalStyle ensures it is responsive and visually consistent.
+          </Typography>
+        </Box>
+      </Modal>
     </ModalContext.Provider>
   );
 };
