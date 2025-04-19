@@ -6,6 +6,7 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import Box from '@mui/material/Box';
 
 // Import project images and videos directly with standardized naming
 import ADHDeerOverview from '../../../../assets/images/ADHDeer/ADHDeer_Overview.png';
@@ -273,9 +274,22 @@ const adhdeer = {
       type: 'default',
       title: 'Outcomes and Evaluation',
       content: (
-        <Typography variant="body1" paragraph>
-          The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone. Users highlighted the application’s potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
-        </Typography>
+        <>
+          <Box sx={{
+            bgcolor: 'success.light',
+            color: 'success.contrastText',
+            borderRadius: 2,
+            p: 2,
+            mb: 2,
+            fontWeight: 600,
+            fontSize: { xs: '1.1rem', md: '1.25rem' }
+          }}>
+            The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone.
+          </Box>
+          <Typography variant="body1" paragraph>
+            Users highlighted the application’s potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
+          </Typography>
+        </>
       ),
       layout: 'textOnly',
       anchor: 'outcomes',
@@ -316,6 +330,31 @@ const adhdeer = {
     }
   ]
 };
+
+// Add a placeholder section for unused images
+const unusedImages = [
+  media.images.coreDimensions,
+  media.images.forumOverview,
+  media.images.forumPostStep1,
+  media.images.forumPostStep2
+].filter(Boolean);
+
+if (unusedImages.length > 0) {
+  adhdeer.sections.push({
+    id: 'section-extra-gallery',
+    type: 'gallery',
+    title: 'More Screenshots',
+    content: (
+      <Typography variant="body1" paragraph>
+        Additional visuals and wireframes from the design and research process.
+      </Typography>
+    ),
+    media: unusedImages.map(src => ({ type: 'image', src })),
+    layout: 'gallery',
+    anchor: 'extra-gallery',
+    navigable: false
+  });
+}
 
 adhdeer.media = (() => {
   // Find first video section

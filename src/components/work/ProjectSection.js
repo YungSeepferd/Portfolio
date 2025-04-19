@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import VideoPlayer from '../common/VideoPlayer';
@@ -55,18 +55,21 @@ const ProjectSection = ({
   const isTextOnly = layout === 'textOnly';
   const isMediaOnly = layout === 'mediaOnly';
 
+  // Responsive aspect ratio for media
+  const mediaAspect = { xs: '16/9', sm: '21/9', md: '21/9' };
+
   // Format section number (from prop or generated from index)
   const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
 
-  // Section heading (add section number above title)
+  // Section heading with color highlight for important words
   const headingElement = (title || formattedNumber) && (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start', // Center horizontally
-        justifyContent: 'center', // Center vertically if needed
-        textAlign: 'left', // Center text
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        textAlign: 'left',
         width: '100%',
       }}
     >
@@ -79,7 +82,7 @@ const ProjectSection = ({
             color: theme.palette.primary.main,
             fontWeight: 600,
             mb: 1,
-            fontSize: '1.1rem',
+            fontSize: { xs: '1.1rem', md: '1.3rem' },
           }}
         >
           {formattedNumber}
@@ -91,9 +94,16 @@ const ProjectSection = ({
           component="h3"
           id={id}
           tabIndex={-1}
-          sx={{ mb: 2, scrollMarginTop: '80px' }}
+          sx={{ mb: 2, scrollMarginTop: '80px', fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, fontWeight: 700 }}
         >
-          {title}
+          {/* Example: color highlight for important words */}
+          {title.split(' ').map((word, i) =>
+            ["ADHD", "Support", "App", "Key", "Outcomes", "Results", "Impact"].includes(word) ? (
+              <Box key={i} component="span" sx={{ color: theme.palette.secondary.main, fontWeight: 800 }}>{word} </Box>
+            ) : (
+              word + ' '
+            )
+          )}
         </Typography>
       )}
     </Box>
@@ -143,9 +153,9 @@ const ProjectSection = ({
     );
   };
 
-  // Helper for full-width content box with consistent side padding
+  // In all layouts, wrap content in a Paper for consistent card look
   const fullWidthBox = (children) => (
-    <Box
+    <Paper
       id={`project-section-root-${id || sectionIndex}`}
       sx={{
         maxWidth: '1200px',
@@ -159,56 +169,29 @@ const ProjectSection = ({
       }}
     >
       {children}
-    </Box>
+    </Paper>
   );
 
   // Helper for full-width image frame (single or up to 3 images)
   const fullWidthImageFrame = (mediaArr) => {
     if (!mediaArr || mediaArr.length === 0) return null;
-    if (mediaArr.length === 1) {
-      const img = mediaArr[0];
-      return (
-        <Box
-          sx={{
-            width: '100%',
-            mb: 3,
-            borderRadius: 3,
-            overflow: 'hidden',
-            boxShadow: theme.shadows[3],
-            aspectRatio: '16/7',
-            background: theme.palette.grey[100],
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <ContentAwareImage
-            src={img.src || img}
-            alt={img.alt || 'Section image'}
-            containerHeight="100%"
-            containerWidth="100%"
-            aspect={img.aspect || 'landscape'}
-            sx={{ borderRadius: theme.shape.borderRadius }}
-          />
-        </Box>
-      );
-    }
-    // Up to 3 images in a row
     return (
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        {mediaArr.slice(0, 3).map((img, idx) => (
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: '100%', justifyContent: 'center', mb: 2 }}>
+        {mediaArr.map((img, idx) => (
           <Box
             key={idx}
             sx={{
-              flex: 1,
+              flex: '1 1 300px',
+              minWidth: 220,
+              maxWidth: 400,
+              aspectRatio: mediaAspect,
               borderRadius: 2,
               overflow: 'hidden',
               boxShadow: theme.shadows[1],
-              aspectRatio: '16/9',
               background: theme.palette.grey[100],
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
           >
             <ContentAwareImage

@@ -1,6 +1,6 @@
 # UX Portfolio Project
 
-_Last updated: 17 April 2025_
+_Last updated: 18 April 2025_
 
 ## Overview
 A modular, maintainable UX portfolio built with React and Material UI, featuring a dynamic project showcase, design system, and robust theme management. All legacy, unused, and redundant files have been removed for clarity and maintainability.
