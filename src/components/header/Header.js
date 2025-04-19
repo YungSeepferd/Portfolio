@@ -158,19 +158,8 @@ const Header = () => {
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
             </Box>
-            {/* Centered Theme Toggle for all viewports */}
-            <Box sx={{
-              position: { xs: 'absolute', md: 'static' },
-              left: { xs: '50%', md: 'auto' },
-              top: { xs: 0, md: 'auto' },
-              transform: { xs: 'translateX(-50%)', md: 'none' },
-              zIndex: 1202,
-              display: 'flex',
-              alignItems: 'center',
-              height: '100%',
-            }}>
-              <ThemeToggle mode={mode} onToggle={toggleTheme} />
-            </Box>
+            {/* Remove centered Theme Toggle for all viewports */}
+            {/* <Box sx={{ ... }}><ThemeToggle ... /></Box> */}
 
             <IconButton
               color="inherit"
@@ -179,9 +168,10 @@ const Header = () => {
               onClick={handleMenuOpen}
               sx={{ 
                 display: { md: 'none' },
-                ml: 0, // Remove any margin-right, force to left
-                position: 'relative',
-                left: { xs: 30, sm: 0 }, // Move 30px to the right on mobile
+                ml: 0,
+                position: 'absolute',
+                right: { xs: 20, sm: 24, md: 8 }, // Responsive spacing for burger menu
+                top: 8,
                 zIndex: 1201
               }}
             >
@@ -196,8 +186,8 @@ const Header = () => {
         open={Boolean(anchorEl) && mobileOpen}
         anchorEl={anchorEl}
         onClose={handleMenuClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
             mt: 1.5,
@@ -224,6 +214,10 @@ const Header = () => {
           <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
             <CloseIcon />
           </IconButton>
+        </Box>
+        {/* Theme toggle for mobile menu */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <ThemeToggle mode={mode} onToggle={toggleTheme} />
         </Box>
         {/* Navigation buttons */}
         {navItems.map((item, idx) => (
