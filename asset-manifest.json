@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Portfolio/static/css/main.88a18194.css",
-    "main.js": "/Portfolio/static/js/main.964b0748.js",
+    "main.js": "/Portfolio/static/js/main.b9e18f9b.js",
     "static/media/AMIAI_Presentation.pdf": "/Portfolio/static/media/AMIAI_Presentation.37a23d3027db3379fa36.pdf",
     "static/media/Vincent_Master_Thesis0225.pdf": "/Portfolio/static/media/Vincent_Master_Thesis0225.7db83f748772553b08cf.pdf",
     "static/media/5samiai.mov": "/Portfolio/static/media/5samiai.8343a7370093eed7be44.mov",
@@ -91,10 +91,10 @@
     "static/media/green_wallet_logo.png": "/Portfolio/static/media/green_wallet_logo.6a15b61f0e40adeaade2.png",
     "index.html": "/Portfolio/index.html",
     "main.88a18194.css.map": "/Portfolio/static/css/main.88a18194.css.map",
-    "main.964b0748.js.map": "/Portfolio/static/js/main.964b0748.js.map"
+    "main.b9e18f9b.js.map": "/Portfolio/static/js/main.b9e18f9b.js.map"
   },
   "entrypoints": [
     "static/css/main.88a18194.css",
-    "static/js/main.964b0748.js"
+    "static/js/main.b9e18f9b.js"
   ]
 }
