@@ -91,18 +91,17 @@ const HeroVideo = ({ videoSrc, posterImage }) => {
           <CircularProgress color="secondary" />
         </Box>
       )}
-      <VideoPlayer
+      
+      <video
         src={typeof videoSrc === 'object' ? videoSrc.src : videoSrc}
-        containerWidth="100%"
-        containerHeight="100%"
-        autoplay
-        muted
-        controls={false}
+        autoPlay
         loop
+        muted
+        playsInline
+        controls={false} // Remove control bar
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 0 }}
         onLoad={handleVideoLoad}
         onError={handleVideoError}
-        showOverlayControls={false}
-        poster={posterImage}
       />
     </Box>
   );

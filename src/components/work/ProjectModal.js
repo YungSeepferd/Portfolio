@@ -6,6 +6,9 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Tooltip from '@mui/material/Tooltip';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ProjectFullContent from './ProjectFullContent';
+import { useSwipeable } from 'react-swipeable';
+import SwipeRightAltIcon from '@mui/icons-material/SwipeRightAlt';
+import SwipeLeftAltIcon from '@mui/icons-material/SwipeLeftAlt';
 
 /**
  * ProjectModal Component
@@ -23,6 +26,15 @@ const ProjectModal = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const contentRef = useRef(null);
+
+  // Move useSwipeable hook call to top level (not inside any condition)
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => isMobile && onNextProject && onNextProject(),
+    onSwipedRight: () => isMobile && onPreviousProject && onPreviousProject(),
+    trackMouse: false,
+    preventDefaultTouchmoveEvent: true,
+    delta: 40,
+  });
   
   // Reset scroll position when project changes
   useEffect(() => {
@@ -201,6 +213,38 @@ const ProjectModal = ({
     </Tooltip>
   );
 
+  const SwipeIndicator = () => (
+    <Box
+      sx={{
+        position: 'absolute',
+        bottom: 24,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 50,
+        display: { xs: 'flex', sm: 'none' },
+        alignItems: 'center',
+        bgcolor: 'rgba(30,30,40,0.7)',
+        color: 'white',
+        borderRadius: 2,
+        px: 2,
+        py: 1,
+        fontSize: '1rem',
+        boxShadow: 3,
+        pointerEvents: 'none',
+        gap: 1,
+        opacity: 0.85,
+        animation: 'fadeOut 3s 2s forwards', // fade out after 2s
+        '@keyframes fadeOut': {
+          to: { opacity: 0 }
+        }
+      }}
+    >
+      <SwipeRightAltIcon fontSize="medium" sx={{ opacity: 0.7 }} />
+      <Box component="span" sx={{ mx: 1 }}>Swipe for next/prev project</Box>
+      <SwipeLeftAltIcon fontSize="medium" sx={{ opacity: 0.7 }} />
+    </Box>
+  );
+
   return (
     <Modal
       open={open}
@@ -229,11 +273,12 @@ const ProjectModal = ({
           opacity: 1,
           transition: 'opacity 0.3s ease-in-out',
         }}
+        {...(isMobile ? swipeHandlers : {})}
       >
-        {/* Navigation (bottom center on mobile, top left on desktop) */}
-        <Navigation />
         {/* Close Button (always top right) */}
         <CloseBtn />
+        {/* Swipe indicator for mobile */}
+        {isMobile && <SwipeIndicator />}
         {/* Scrollable Content Area with ref */}
         <Box 
           ref={contentRef}

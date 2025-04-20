@@ -6,6 +6,8 @@
  * and error handling.
  */
 
+import { MediaPathResolver } from './MediaPathResolver';
+
 /**
  * Analyzes an image to determine optimal display settings
  * 
@@ -109,16 +111,24 @@ export const getOptimalObjectFit = (imageData, containerOrientation = 'landscape
  * @returns {boolean} True if the file appears to be a video
  */
 export const isVideo = (src) => {
-  if (!src || typeof src !== 'string') return false;
+  if (!src) return false;
   
-  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
-  const hasVideoExtension = videoExtensions.some(ext => 
-    src.toLowerCase().endsWith(ext)
-  );
+  // Handle case where src is an object with type and src properties
+  if (typeof src === 'object' && src.type) {
+    return src.type === 'video';
+  }
   
-  // Check for video in URL
-  const hasVideoInUrl = src.toLowerCase().includes('video') || 
-                        src.toLowerCase().includes('movie');
+  // Get the actual src string
+  const srcString = typeof src === 'object' ? src.src : src;
+  if (!srcString) return false;
+
+  // Check file extension
+  const hasVideoExtension = srcString.toLowerCase().match(/\.(mp4|webm|mov|avi)$/);
+  
+  // Check URL patterns that might indicate video content
+  const hasVideoInUrl = srcString.toLowerCase().includes('/video/') ||
+                        srcString.toLowerCase().includes('movie') ||
+                        srcString.toLowerCase().includes('video');
   
   return hasVideoExtension || hasVideoInUrl;
 };
@@ -152,6 +162,62 @@ export const createAboutImage = (imgSrc, alt, position = 'center center') => {
   };
 };
 
+/**
+ * Validates and normalizes project section types to ensure they match allowed types
+ * 
+ * @param {string} type - The original section type
+ * @returns {string} - A valid section type that's supported by the ProjectSections component
+ */
+export const normalizeSectionType = (type) => {
+  // List of allowed section types from the error message
+  const allowedTypes = [
+    "default", "overview", "problem", "research", "methodology", 
+    "technical", "findings", "recommendations", "content", "concept", 
+    "impact", "benefits", "future", "gallery", "outcomes", "takeaways", 
+    "prototype", "custom", "persona", "testimonial", "timeline", "video", 
+    "onboarding", "researchHighlight", "motivation"
+  ];
+  
+  // If the type is null or undefined, default to "custom"
+  if (!type) return "custom";
+  
+  // Convert to lowercase for case-insensitive comparison
+  const normalizedType = type.toLowerCase();
+  
+  // If the type is already allowed (case-insensitive), return the properly cased version
+  const matchedType = allowedTypes.find(t => t.toLowerCase() === normalizedType);
+  if (matchedType) {
+    return matchedType;
+  }
+  
+  // Map common non-standard types to standard ones
+  const typeMap = {
+    "context": "overview",   // Map 'context' to 'overview' as it seems the most appropriate
+    "background": "overview",
+    "introduction": "overview",
+    "summary": "overview",
+    "details": "content",
+    "process": "methodology",
+    "result": "outcomes",
+    "results": "outcomes",
+    "conclusion": "takeaways"
+    // Add more mappings as needed
+  };
+  
+  // Return the mapped type or default to "custom" if no mapping exists
+  return typeMap[normalizedType] || "custom";
+};
+
+/**
+ * Gets the media type (image/video) for a given source
+ * @param {string} src - The source URL or path of the media
+ * @returns {string} The media type ('image', 'video', or null)
+ */
+export const getMediaType = (src) => {
+  const resolver = new MediaPathResolver();
+  return resolver.detectMediaType(src);
+};
+
 // Export all utilities as named exports
 export {
   // Functions already exported above
@@ -163,7 +229,9 @@ const mediaUtils = {
   isVideo,
   getAssetPath,
   createAboutImage,
-  getOptimalObjectFit
+  getOptimalObjectFit,
+  getMediaType,
+  normalizeSectionType
 };
 
 // Export the named object as default

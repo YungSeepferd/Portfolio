@@ -86,9 +86,10 @@ const masterThesis = {
   cardVariant: cardVariant,
   links: links,
   sections: [
+    // 1. Overview
     {
       id: 'section-overview',
-      type: 'default',
+      type: 'overview',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -100,9 +101,10 @@ const masterThesis = {
       anchor: 'overview',
       navigable: true
     },
+    // 2. Problem
     {
       id: 'section-problem',
-      type: 'default',
+      type: 'problem',
       title: 'Motivation & Problem Statement',
       content: (
         <>
@@ -124,9 +126,10 @@ const masterThesis = {
       anchor: 'problem',
       navigable: true
     },
+    // 3. Methodology
     {
       id: 'section-methodology',
-      type: 'default',
+      type: 'methodology',
       title: 'Methodological Approach',
       content: (
         <>
@@ -161,9 +164,10 @@ const masterThesis = {
       anchor: 'methodology',
       navigable: true
     },
+    // 4. Concept (Toolkit)
     {
       id: 'section-toolkit',
-      type: 'default',
+      type: 'concept',
       title: 'Toolkit Components',
       content: (
         <>
@@ -194,6 +198,7 @@ const masterThesis = {
       anchor: 'toolkit',
       navigable: true
     },
+    // 5. Outcomes
     {
       id: 'section-outcomes',
       type: 'outcomes',
@@ -235,11 +240,14 @@ const masterThesis = {
       layout: 'textRight',
       anchor: 'outcomes',
       navigable: true,
-      outcomes: [
-        "Established design patterns for translating emotions into tactile experiences",
-        "Created workshop materials and templates to facilitate emotional haptic prototyping",
-        "Developed a validated methodological toolkit for emotion-driven haptic design"
-      ]
+      outcomes: {
+        title: 'Key Outcomes',
+        points: [
+          "Established design patterns for translating emotions into tactile experiences",
+          "Created workshop materials and templates to facilitate emotional haptic prototyping",
+          "Developed a validated methodological toolkit for emotion-driven haptic design"
+        ]
+      }
     }
   ]
 };

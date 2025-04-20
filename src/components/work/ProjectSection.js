@@ -8,6 +8,9 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ProjectContentRenderer from './ProjectContentRenderer';
 import ProjectGallery from './ProjectGallery';
 import { ProjectActionButtonsBar } from './ProjectMetaBar';
+import PropTypes from 'prop-types';
+import sectionPropTypes from './sectionPropTypes';
+import { isVideo } from '../../utils/mediaUtils';
 
 /**
  * Helper function to format section numbers
@@ -167,41 +170,64 @@ const ProjectSection = ({
     </Box>
   );
 
-  // Helper for full-width image frame (single or up to 3 images)
-  const fullWidthImageFrame = (mediaArr) => {
-    if (!mediaArr || mediaArr.length === 0) return null;
-    if (mediaArr.length === 1) {
-      const img = mediaArr[0];
-      return (
-        <Box
-          sx={{
-            width: '100%',
-            mb: 3,
-            borderRadius: 3,
-            overflow: 'hidden',
-            boxShadow: theme.shadows[3],
-            aspectRatio: '16/7',
-            background: theme.palette.grey[100],
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
+  // Helper for rendering media frames
+  const renderMediaContent = (media, aspectRatio = 16/9) => {
+    if (!media) return null;
+
+    // Handle case where media is direct video/image source
+    const mediaObj = typeof media === 'string' ? { src: media } : media;
+    const isVideoContent = isVideo(mediaObj);
+
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          aspectRatio,
+          minHeight: { xs: 240, md: 320 },
+          overflow: 'hidden',
+          borderRadius: theme.shape.borderRadius,
+          backgroundColor: theme.palette.background.default,
+          position: 'relative'
+        }}
+      >
+        {isVideoContent ? (
+          <VideoPlayer
+            src={mediaObj.src}
+            poster={mediaObj.poster}
+            containerWidth="100%"
+            containerHeight="100%"
+            autoplay={false}
+            muted={true}
+            controls={true}
+            showOverlayControls={true}
+          />
+        ) : (
           <ContentAwareImage
-            src={img.src || img}
-            alt={img.alt || 'Section image'}
+            src={mediaObj.src}
+            alt={mediaObj.alt || title}
             containerHeight="100%"
             containerWidth="100%"
-            aspect={img.aspect || 'landscape'}
+            aspect={mediaObj.aspect || 'landscape'}
             sx={{ borderRadius: theme.shape.borderRadius }}
           />
-        </Box>
-      );
+        )}
+      </Box>
+    );
+  };
+
+  // Helper for full-width image/video frame
+  const fullWidthImageFrame = (mediaArray) => {
+    if (!mediaArray || mediaArray.length === 0) return null;
+
+    // Single media item
+    if (mediaArray.length === 1) {
+      return renderMediaContent(mediaArray[0]);
     }
+
     // Up to 3 images in a row
     return (
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        {mediaArr.slice(0, 3).map((img, idx) => (
+        {mediaArray.slice(0, 3).map((media, idx) => (
           <Box
             key={idx}
             sx={{
@@ -216,14 +242,7 @@ const ProjectSection = ({
               justifyContent: 'center'
             }}
           >
-            <ContentAwareImage
-              src={img.src || img}
-              alt={img.alt || `Section image ${idx + 1}`}
-              containerHeight="100%"
-              containerWidth="100%"
-              aspect={img.aspect || 'landscape'}
-              sx={{ borderRadius: theme.shape.borderRadius }}
-            />
+            {renderMediaContent(media)}
           </Box>
         ))}
       </Box>
@@ -232,8 +251,41 @@ const ProjectSection = ({
 
   // --- Section type-based rendering ---
   switch (type) {
+    // --- Text+Media (shared but explicit cases) ---
+    case 'overview':
+    case 'problem':
+    case 'context':
+    case 'motivation':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
+          {mediaData && !Array.isArray(mediaData) && fullWidthImageFrame([mediaData])}
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+        </>
+      );
+    // --- Research/Methodology/Technical/Findings/Recommendations/Content/Concept/Impact/Benefits/Future ---
+    case 'research':
+    case 'methodology':
+    case 'technical':
+    case 'findings':
+    case 'recommendations':
+    case 'content':
+    case 'concept':
+    case 'impact':
+    case 'benefits':
+    case 'future':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
+          {mediaData && !Array.isArray(mediaData) && fullWidthImageFrame([mediaData])}
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {renderOutcomesTakeaways()}
+        </>
+      );
+    // --- Gallery ---
     case 'gallery':
-      // Full-width gallery section
       return fullWidthBox(
         <>
           {headingElement}
@@ -241,34 +293,47 @@ const ProjectSection = ({
           <ProjectGallery images={mediaData} title={title} />
         </>
       );
+    // --- Video ---
+    case 'video':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {mediaData && mediaData.src && (
+            <Box sx={{ mb: 3 }}>
+              <VideoPlayer src={mediaData.src} containerHeight="100%" containerWidth="100%" controls muted />
+            </Box>
+          )}
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+        </>
+      );
+    // --- Outcomes/Takeaways ---
     case 'outcomes':
     case 'takeaways':
-      // Full-width outcomes/takeaways
       return fullWidthBox(
         <>
           {headingElement}
           {renderOutcomesTakeaways()}
         </>
       );
-    case 'textOnly':
-      // Full-width text section, with optional images
+    // --- Onboarding ---
+    case 'onboarding':
       return fullWidthBox(
         <>
           {headingElement}
           {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
           {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {renderOutcomesTakeaways()}
         </>
       );
+    // --- Prototype ---
     case 'prototype':
-      // Placeholder: Replace with your PrototypeShowcase component if available
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
+      return fullWidthBox(
+        <>
           {headingElement}
-          {/* <PrototypeShowcase ... /> */}
-          <Typography variant="body2">[Prototype embed coming soon]</Typography>
-        </Box>
+          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {/* Optionally embed iframe or use PrototypeShowcase here */}
+        </>
       );
+    // --- Custom ---
     case 'custom':
       return (
         <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
@@ -276,66 +341,100 @@ const ProjectSection = ({
           {children}
         </Box>
       );
-    case 'research':
-      // Full-width research section, two-column if you want, but keep maxWidth and padding
+    // --- Persona ---
+    case 'persona':
       return fullWidthBox(
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={7}>
-            {headingElement}
-            {content && (
-              React.isValidElement(content)
-                ? content
-                : <ProjectContentRenderer content={content} variant="body1" />
-            )}
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <Box sx={{ p: 2, bgcolor: theme.palette.background.paper, borderRadius: 2 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>Highlighted Quotes</Typography>
-              <Typography variant="body2" color="text.secondary">"Empathy quote or persona card here..."</Typography>
+        <>
+          {headingElement}
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="h5" color="primary">Persona Section</Typography>
+            <Typography variant="body2">(Add persona details here)</Typography>
+          </Box>
+        </>
+      );
+    // --- Testimonial ---
+    case 'testimonial':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="h5" color="secondary">Testimonial Section</Typography>
+            <Typography variant="body2">(Add testimonial content here)</Typography>
+          </Box>
+        </>
+      );
+    // --- Timeline ---
+    case 'timeline':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="h5" color="info.main">Timeline Section</Typography>
+            <Typography variant="body2">(Add timeline events here)</Typography>
+          </Box>
+        </>
+      );
+    // --- Research Highlight ---
+    case 'researchHighlight':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="h5" color="success.main">Research Highlight</Typography>
+            <Typography variant="body2">(Add research highlight here)</Typography>
+          </Box>
+        </>
+      );
+    // --- Iteration ---
+    case 'iteration':
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
+          {content && (
+            <Box sx={{ mt: 3 }}>
+              {React.isValidElement(content) ? content : (
+                <ProjectContentRenderer content={content} variant="body1" />
+              )}
             </Box>
-          </Grid>
-        </Grid>
-      );
-    case 'metrics':
-      // Metrics/statistics cards (placeholder)
-      return (
-        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={id}>
-          {title && (
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
-              {title}
-            </Typography>
           )}
-          <Box sx={{ p: 2, bgcolor: theme.palette.success.light, borderRadius: 2, minWidth: 120 }}>
-            <Typography variant="h6">SUS: 75.38</Typography>
-            <Typography variant="caption">Usability Score</Typography>
-          </Box>
-          <Box sx={{ p: 2, bgcolor: theme.palette.info.light, borderRadius: 2, minWidth: 120 }}>
-            <Typography variant="h6">Trust: 5.82</Typography>
-            <Typography variant="caption">Post-Interaction</Typography>
-          </Box>
-        </Box>
-      );
-    case 'figmaEmbed':
-      // Figma iframe embed (placeholder)
-      return (
-        <Box sx={{ ...sx, width: '100%', textAlign: 'center' }} id={id}>
-          {title && (
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
-              {title}
-            </Typography>
+          {takeaways && takeaways.length > 0 && (
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+                Iteration Insights
+              </Typography>
+              <List dense disablePadding>
+                {takeaways.map((item, idx) => (
+                  <ListItem key={idx} disableGutters>
+                    <ListItemIcon sx={{ minWidth: '32px' }}>
+                      <StarBorderIcon fontSize="small" color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary={item} primaryTypographyProps={{ variant: 'body1' }} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           )}
-          <Box sx={{ my: 2 }}>
-            <iframe
-              title="Figma Prototype"
-              src={typeof content === 'string' ? content : (mediaData?.src || '')}
-              width="100%"
-              height="500"
-              style={{ border: 0, borderRadius: 8 }}
-              allowFullScreen
-            />
-          </Box>
-        </Box>
+          {outcomes && outcomes.points && outcomes.points.length > 0 && (
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+                {outcomes.title || 'Iteration Outcomes'}
+              </Typography>
+              <List dense disablePadding>
+                {outcomes.points.map((point, idx) => (
+                  <ListItem key={idx} disableGutters>
+                    <ListItemIcon sx={{ minWidth: '32px' }}>
+                      <CheckCircleOutlineIcon fontSize="small" color="success" />
+                    </ListItemIcon>
+                    <ListItemText primary={point} primaryTypographyProps={{ variant: 'body1' }} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          )}
+        </>
       );
+    // --- Fallback: text/media split layout ---
     default:
       // ...existing code for split layout...
       const textContentElement = (
@@ -464,6 +563,20 @@ const ProjectSection = ({
         </Grid>
       );
   }
+};
+
+// Add validation against section schema
+ProjectSection.propTypes = {
+  ...sectionPropTypes.propTypes,
+  // Additional props specific to ProjectSection component
+  sectionIndex: PropTypes.number,
+  sectionNumber: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  children: PropTypes.node,
+  fallbackContent: PropTypes.node,
+  sx: PropTypes.object
 };
 
 export default ProjectSection;

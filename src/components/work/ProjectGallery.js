@@ -28,29 +28,21 @@ const ProjectGallery = ({ images = [], title = '' }) => {
       // For images, analyze orientation
       let orientation = aspect;
       let thumbnailSrc = src;
-      if (isVideoFile) {
-        orientation = 'landscape';
-      } else if (!aspect) {
-        // Use image analyzer for images if aspect not set
+      
+      if (!isVideoFile && !aspect) {
+        // Only analyze images, not videos
         const analysis = analyzeImage(media);
         orientation = analysis.orientation;
       }
-      // Detect if it's a phone screenshot
-      const isPhone = 
-        orientation === 'portrait' || 
-        src.toLowerCase().includes('phone') ||
-        src.toLowerCase().includes('mobile') ||
-        src.toLowerCase().includes('app');
+
       return {
         id: index,
         original: media,
         src,
         thumbnailSrc,
         isVideo: isVideoFile,
-        orientation,
-        aspect,
-        isPhone,
-        isDesktop: !isPhone
+        orientation: isVideoFile ? 'landscape' : orientation,
+        aspect: isVideoFile ? '16/9' : aspect
       };
     }));
     
@@ -135,34 +127,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     autoplay={false}
                     muted={true}
                     controls={false}
-                  />
-                  {/* Play button indicator */}
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '50px',
-                      height: '50px',
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(0,0,0,0.5)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      zIndex: 2,
-                      '&::before': {
-                        content: '""',
-                        display: 'block',
-                        width: 0,
-                        height: 0,
-                        borderTop: '10px solid transparent',
-                        borderBottom: '10px solid transparent',
-                        borderLeft: '16px solid white',
-                        marginLeft: '4px'
-                      }
-                    }}
+                    showOverlayControls={false}
                   />
                 </Box>
               ) : (
@@ -182,6 +147,37 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     height: '100%',
                     background: theme.palette.grey[100],
                     borderRadius: theme.shape.borderRadius
+                  }}
+                />
+              )}
+              
+              {/* Play button indicator for videos */}
+              {item.isVideo && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    zIndex: 2,
+                    '&::before': {
+                      content: '""',
+                      display: 'block',
+                      width: 0,
+                      height: 0,
+                      borderTop: '10px solid transparent',
+                      borderBottom: '10px solid transparent',
+                      borderLeft: '16px solid white',
+                      marginLeft: '4px'
+                    }
                   }}
                 />
               )}
@@ -259,7 +255,12 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     padding: '64px 16px'
                   }}
                 >
-                  <Box sx={{ maxHeight: '80vh', maxWidth: '90%', position: 'relative', width: selectedImage?.aspect === 'portrait' ? 'auto' : '100%' }}>
+                  <Box sx={{ 
+                    maxHeight: '80vh',
+                    maxWidth: selectedImage.isVideo ? '90%' : (selectedImage.orientation === 'portrait' ? '60vw' : '90%'),
+                    width: selectedImage.isVideo ? '100%' : 'auto',
+                    position: 'relative'
+                  }}>
                     {selectedImage.isVideo ? (
                       <VideoPlayer
                         src={selectedImage.src}
@@ -274,15 +275,15 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                         src={selectedImage.src}
                         alt={`${title} full view`}
                         containerHeight="80vh"
-                        containerWidth={selectedImage.aspect === 'portrait' ? '60vw' : '100%'}
+                        containerWidth={selectedImage.orientation === 'portrait' ? '60vw' : '100%'}
                         aspect={selectedImage.aspect}
-                        objectFit={selectedImage.aspect === 'portrait' ? 'contain' : 'cover'}
+                        objectFit="contain"
                         sx={{
-                          maxWidth: selectedImage.aspect === 'portrait' ? '60vw' : '100%',
+                          maxWidth: '100%',
                           maxHeight: '80vh',
                           display: 'block',
                           margin: '0 auto',
-                          background: theme.palette.grey[100],
+                          background: 'transparent',
                           borderRadius: theme.shape.borderRadius
                         }}
                       />
@@ -326,7 +327,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                 id={`project-gallery-overlay-thumb-${item.id}`}
                 onClick={() => setSelectedImage(item)}
                 sx={{
-                  width: item.isPhone ? 60 : 100,
+                  width: item.isVideo ? 100 : (item.orientation === 'portrait' ? 60 : 100),
                   height: 60,
                   flexShrink: 0,
                   borderRadius: 1,
@@ -334,20 +335,33 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   border: selectedImage && selectedImage.id === item.id ? `2px solid ${theme.palette.primary.main}` : '2px solid transparent',
                   cursor: 'pointer',
                   opacity: selectedImage && selectedImage.id === item.id ? 1 : 0.7,
-                  '&:hover': { opacity: 1 }
+                  '&:hover': { opacity: 1 },
+                  position: 'relative'
                 }}
               >
-                <ContentAwareImage
-                  src={item.thumbnailSrc}
-                  alt={`Thumbnail ${item.id + 1}`}
-                  containerHeight="100%"
-                  containerWidth="100%"
-                  aspect={item.aspect}
-                  objectFit="cover"
-                  sx={{
-                    borderRadius: theme.shape.borderRadius
-                  }}
-                />
+                {item.isVideo ? (
+                  <VideoPlayer
+                    src={item.src}
+                    containerHeight="100%"
+                    containerWidth="100%"
+                    autoplay={false}
+                    muted={true}
+                    controls={false}
+                    showOverlayControls={false}
+                  />
+                ) : (
+                  <ContentAwareImage
+                    src={item.thumbnailSrc}
+                    alt={`Thumbnail ${item.id + 1}`}
+                    containerHeight="100%"
+                    containerWidth="100%"
+                    aspect={item.aspect}
+                    objectFit="cover"
+                    sx={{
+                      borderRadius: theme.shape.borderRadius
+                    }}
+                  />
+                )}
               </Box>
             ))}
           </Box>

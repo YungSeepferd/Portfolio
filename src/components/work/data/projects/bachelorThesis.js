@@ -67,9 +67,10 @@ const bachelorThesis = {
     }
   ],
   sections: [
+    // 1. Overview
     {
       id: 'section-overview',
-      type: 'default',
+      type: 'overview',
       title: 'Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -81,9 +82,10 @@ const bachelorThesis = {
       anchor: 'overview',
       navigable: true
     },
+    // 2. Problem
     {
       id: 'section-problem',
-      type: 'default',
+      type: 'problem',
       title: 'Problem Statement',
       content: (
         <>
@@ -102,9 +104,10 @@ const bachelorThesis = {
       anchor: 'problem',
       navigable: true
     },
+    // 3. Research
     {
       id: 'section-research',
-      type: 'default',
+      type: 'research',
       title: 'Research Questions',
       content: (
         <>
@@ -121,9 +124,10 @@ const bachelorThesis = {
       anchor: 'research',
       navigable: true
     },
+    // 4. Methodology
     {
       id: 'section-methodology',
-      type: 'default',
+      type: 'methodology',
       title: 'Comprehensive Research Methodology',
       content: (
         <>
@@ -166,9 +170,10 @@ const bachelorThesis = {
       anchor: 'methodology',
       navigable: true
     },
+    // 5. Technical
     {
       id: 'section-technical',
-      type: 'video',
+      type: 'technical',
       title: 'Technical Implementation',
       content: (
         <Typography variant="body1" paragraph>
@@ -180,9 +185,10 @@ const bachelorThesis = {
       anchor: 'technical',
       navigable: true
     },
+    // 6. Findings
     {
       id: 'section-findings',
-      type: 'default',
+      type: 'findings',
       title: 'Key Findings & Results',
       content: (
         <>
@@ -223,9 +229,10 @@ const bachelorThesis = {
       anchor: 'findings',
       navigable: true
     },
+    // 7. Recommendations
     {
       id: 'section-recommendations',
-      type: 'default',
+      type: 'recommendations',
       title: 'Recommendations & Future Work',
       content: (
         <>
@@ -260,6 +267,7 @@ const bachelorThesis = {
       anchor: 'recommendations',
       navigable: true
     },
+    // 8. Outcomes (Impact)
     {
       id: 'section-impact',
       type: 'outcomes',

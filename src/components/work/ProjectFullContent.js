@@ -2,10 +2,12 @@ import React from 'react';
 import { Box, Divider, Typography, useTheme, Paper } from '@mui/material';
 import ProjectSections from './ProjectSections';
 import PrototypeShowcase from './PrototypeShowcase';
-import HeroVideo from './HeroVideo';
 import TitleOverlay from './TitleOverlay';
 import ProjectMetaBar from './ProjectMetaBar';
 import projectUtils from '../../utils/projectUtils';
+import ContentAwareImage from '../common/ContentAwareImage';
+import { isVideo } from '../../utils/mediaUtils';
+import VideoPlayer from '../common/VideoPlayer';
 
 /**
  * ProjectFullContent Component
@@ -15,6 +17,7 @@ import projectUtils from '../../utils/projectUtils';
  */
 const ProjectFullContent = ({ project }) => {
   const theme = useTheme();
+  
   if (!project) {
     return (
       <Box sx={{ p: 4, textAlign: 'center' }}>
@@ -35,6 +38,7 @@ const ProjectFullContent = ({ project }) => {
 
   // Use robust utility for hero media
   const heroMedia = projectUtils.getProjectHeroMedia(project);
+  const isHeroVideo = heroMedia && isVideo(heroMedia.src || heroMedia);
 
   return (
     <Box id="project-full-content-root" className="project-full-content" sx={{
@@ -49,18 +53,30 @@ const ProjectFullContent = ({ project }) => {
       {/* Hero Media Section with Title Overlay */}
       <Box sx={{
         width: '100%',
-        height: { xs: '50vh', sm: '40vh', md: '50vh' }, // Reduce hero height on mobile
+        height: { xs: '50vh', sm: '40vh', md: '50vh' },
         position: 'relative',
         boxShadow: theme.shadows[4],
         minHeight: { xs: 120, sm: 180, md: 240 },
+        overflow: 'hidden',
       }}>
-        {heroMedia.type === 'video' ? (
-          <HeroVideo videoSrc={heroMedia.src} />
+        {isHeroVideo ? (
+          <VideoPlayer
+            src={heroMedia.src}
+            containerWidth="100%"
+            containerHeight="100%"
+            autoplay={true}
+            muted={true}
+            controls={false}
+            showOverlayControls={false}
+            loop={true}
+          />
         ) : (
-          <img
+          <ContentAwareImage
             src={heroMedia.src}
             alt={`${title} Preview`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            containerWidth="100%"
+            containerHeight="100%"
+            objectFit="cover"
             onError={e => { e.target.src = '/assets/images/placeholders/project.jpg'; }}
           />
         )}
@@ -71,11 +87,11 @@ const ProjectFullContent = ({ project }) => {
         />
       </Box>
 
-      {/* Add extra top margin for modal header area */}
+      {/* Content Area */}
       <Box sx={{
-        mt: { xs: 8, sm: 10, md: 12 }, // Increased top margin for more space below hero
-        mb: { xs: 2, sm: 3 },        // Added bottom margin for separation from content
-        px: { xs: 1, sm: 2, md: 4 }, // Add horizontal padding for tooltags
+        mt: { xs: 8, sm: 10, md: 12 },
+        mb: { xs: 2, sm: 3 },
+        px: { xs: 1, sm: 2, md: 4 },
         width: '100%',
         boxSizing: 'border-box',
       }}>
@@ -86,7 +102,7 @@ const ProjectFullContent = ({ project }) => {
           variant="full"
           sx={{
             flexWrap: 'wrap',
-            rowGap: { xs: 2.5, sm: 2 }, // More vertical space for tooltags
+            rowGap: { xs: 2.5, sm: 2 },
             columnGap: { xs: 1.5, sm: 2 },
             justifyContent: { xs: 'flex-start', sm: 'flex-start' },
             alignItems: { xs: 'flex-start', sm: 'center' },

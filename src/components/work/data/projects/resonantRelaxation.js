@@ -16,13 +16,26 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
 import UIPrototype from '../../../../assets/images/ProdecualHaptics/UI Prototype.png';
 import PrincipleSketch from '../../../../assets/images/ProdecualHaptics/PrincipleSketch.png';
-import PrincipleVariants from '../../../../assets/images/ProdecualHaptics/PrincipleVariants.png';
-import UIPrototypeSketch from '../../../../assets/images/ProdecualHaptics/UI Prototype Sketch.png';
 import FrequencyTheory from '../../../../assets/images/ProdecualHaptics/FrequencyTheory.png';
 import AIAPIFewshotting from '../../../../assets/images/ProdecualHaptics/AIAPIFewshotting.png';
 import presentationPDF from '../../../../assets/information/Procedually generated haptics/ResonantRelaxation_Presentation.pdf';
 import paperPDF from '../../../../assets/information/Procedually generated haptics/EuroHaptics_2024_Final_WIP_1077.pdf';
 import posterPDF from '../../../../assets/information/Procedually generated haptics/POSTER_Resonant Relaxation - Eurohaptics 24.pdf';
+
+const media = {
+  images: {
+    procedural: ProcedurallyGenHaptic,
+    uiPrototype: UIPrototype,
+    principleSketch: PrincipleSketch,
+    frequencyTheory: FrequencyTheory,
+    aiApi: AIAPIFewshotting
+  },
+  documents: {
+    presentation: presentationPDF,
+    paper: paperPDF,
+    poster: posterPDF
+  }
+};
 
 // Define card variant without direct theme dependency
 const cardVariant = 'secondary';
@@ -38,21 +51,21 @@ const links = [
   },
   {
     label: "View Presentation",
-    url: presentationPDF,
+    url: media.documents.presentation,
     icon: <SlideshowIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "View Paper",
-    url: paperPDF,
+    url: media.documents.paper,
     icon: <ArticleIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "View Poster",
-    url: posterPDF,
+    url: media.documents.poster,
     icon: <ImageIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
@@ -72,26 +85,30 @@ const resonantRelaxation = {
   description: "Exploring procedural generation of haptic feedback for relaxation and mindfulness applications.",
   categories: ["Haptic Design", "AI Integration", "UX Research", "Sound Design"],
   technologies: ["React.js", "RNBO.js", "GPT-4 API", "Tone.js", "Bootstrap"],
-  cardVariant: cardVariant,
-  links: links,
+  cardVariant,
+  links,
+  media, // Add organized media object
   sections: [
+    // 1. Overview
     {
       id: 'section-overview',
-      type: 'default',
+      type: 'overview',
       title: 'Overview',
+      summary: "Resonant Relaxation, presented at EuroHaptics 2024, explored a novel approach to affective state management through procedurally generated audio-haptic feedback.",
       content: (
         <Typography variant="body1" paragraph>
           "Resonant Relaxation," presented at EuroHaptics 2024, explored a novel approach to <strong>affective state management</strong> through <strong>procedurally generated audio-haptic feedback</strong>. Developed collaboratively with Innovobot Labs, the project resulted in a web-based tool designed to help haptic and audio designers create personalized relaxation experiences that modulate emotional states through combined auditory and tactile stimulation.
         </Typography>
       ),
-      media: { type: 'image', src: ProcedurallyGenHaptic },
+      media: { type: 'image', src: media.images.procedural },
       layout: 'textLeft',
       anchor: 'overview',
       navigable: true
     },
+    // 2. Problem
     {
       id: 'section-problem',
-      type: 'default',
+      type: 'problem',
       title: 'Problem Statement',
       content: (
         <>
@@ -111,14 +128,15 @@ const resonantRelaxation = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: FrequencyTheory },
+      media: { type: 'image', src: media.images.frequencyTheory },
       layout: 'textRight',
       anchor: 'problem',
       navigable: true
     },
+    // 3. Research (split out findings if present)
     {
       id: 'section-research',
-      type: 'default',
+      type: 'research',
       title: 'Research Evolution',
       content: (
         <Typography variant="body1" paragraph>
@@ -129,9 +147,10 @@ const resonantRelaxation = {
       anchor: 'research',
       navigable: true
     },
+    // 4. Methodology
     {
       id: 'section-methodology',
-      type: 'default',
+      type: 'methodology',
       title: 'Methodological Approach',
       content: (
         <>
@@ -159,14 +178,15 @@ const resonantRelaxation = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: PrincipleSketch },
+      media: { type: 'image', src: media.images.principleSketch },
       layout: 'textLeft',
       anchor: 'methodology',
       navigable: true
     },
+    // 5. Technical
     {
       id: 'section-technical',
-      type: 'default',
+      type: 'technical',
       title: 'Technical Implementation',
       content: (
         <>
@@ -192,11 +212,12 @@ const resonantRelaxation = {
           </Box>
         </>
       ),
-      media: { type: 'image', src: UIPrototype },
+      media: { type: 'image', src: media.images.uiPrototype },
       layout: 'textRight',
       anchor: 'technical',
       navigable: true
     },
+    // 6. Outcomes (Evaluation)
     {
       id: 'section-evaluation',
       type: 'outcomes',
@@ -206,7 +227,7 @@ const resonantRelaxation = {
           Qualitative evaluations from initial user tests indicated that combined audio-haptic stimulation significantly enhanced perceived relaxation compared to single-modality experiences. Participants specifically favored the multimodal integration, particularly highlighting the effectiveness of varied "sparkle" patterns in maintaining attention and emotional engagement. The project demonstrated a 37% increase in self-reported relaxation scores when using the combined audio-haptic system versus audio-only controls.
         </Typography>
       ),
-      media: { type: 'image', src: AIAPIFewshotting },
+      media: { type: 'image', src: media.images.aiApi },
       layout: 'textLeft',
       anchor: 'evaluation',
       navigable: true,
@@ -226,9 +247,10 @@ const resonantRelaxation = {
         ]
       }
     },
+    // 7. Impact
     {
       id: 'section-impact',
-      type: 'default',
+      type: 'impact',
       title: 'Academic Impact & Future Directions',
       content: (
         <Typography variant="body1" paragraph>
@@ -242,12 +264,37 @@ const resonantRelaxation = {
   ]
 };
 
-// Assign the media field after initialization to avoid ReferenceError
+// Add this crucial media initialization code
 resonantRelaxation.media = (() => {
-  const firstVideo = resonantRelaxation.sections?.find(s => s.media && s.media.type === 'video');
-  if (firstVideo) return firstVideo.media;
-  const firstImage = resonantRelaxation.sections?.find(s => s.media && s.media.type === 'image');
-  if (firstImage) return firstImage.media;
+  const firstVideo = resonantRelaxation.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'video');
+    }
+    return s.media && s.media.type === 'video';
+  });
+  if (firstVideo) {
+    if (Array.isArray(firstVideo.media)) {
+      const video = firstVideo.media.find(m => m.type === 'video');
+      if (video) return video;
+    } else {
+      return firstVideo.media;
+    }
+  }
+  // Otherwise, find first image
+  const firstImage = resonantRelaxation.sections?.find(s => {
+    if (Array.isArray(s.media)) {
+      return s.media.some(m => m.type === 'image');
+    }
+    return s.media && s.media.type === 'image';
+  });
+  if (firstImage) {
+    if (Array.isArray(firstImage.media)) {
+      const image = firstImage.media.find(m => m.type === 'image');
+      if (image) return image;
+    } else {
+      return firstImage.media;
+    }
+  }
   return undefined;
 })();
 

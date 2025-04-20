@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
 import CategoryTagList from '../common/CategoryTagList';
-import projectUtils from '../../utils/projectUtils';
 import VideoPlayer from '../common/VideoPlayer';
+import projectUtils from '../../utils/projectUtils';
+import { isVideo } from '../../utils/mediaUtils';
 
 /**
  * ProjectCard Component
@@ -33,9 +34,9 @@ const ProjectCard = ({ project, onClick }) => {
   const linksArray = Array.isArray(links) ? links : 
                     (links && typeof links === 'object' ? Object.values(links) : []);
 
-  // Use robust utility for card image
-  // Get the full media object (type + src)
+  // Get the primary media and determine if it's a video
   const primaryMedia = project.media || projectUtils.getProjectPrimaryMedia(project);
+  const isVideoMedia = primaryMedia && isVideo(primaryMedia.src || primaryMedia);
   
   // Animation for the card itself
   const cardVariants = {
@@ -55,7 +56,7 @@ const ProjectCard = ({ project, onClick }) => {
       whileHover={!isMobile ? { scale: 1.03, boxShadow: theme.shadows[6] } : {}}
       onMouseEnter={() => { if (!isMobile) setIsHovered(true); }}
       onMouseLeave={() => { if (!isMobile) setIsHovered(false); }}
-      onClick={() => onClick(project)} // Always allow click/tap to open modal
+      onClick={() => onClick(project)}
       sx={{
         cursor: 'pointer',
         width: '100%',
@@ -78,13 +79,13 @@ const ProjectCard = ({ project, onClick }) => {
         })
       }}
     >
-      {/* Image Area with Overlay */}
+      {/* Image/Video Area with Overlay */}
       <Box sx={{ position: 'relative', width: '100%', flex: '0 0 60%', minHeight: 0 }}>
         <Box
           sx={{
             width: '100%',
             height: '100%',
-            background: 'theme.palette.background.default', // Set background to black
+            background: theme.palette.background.default,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -93,7 +94,22 @@ const ProjectCard = ({ project, onClick }) => {
             overflow: 'hidden',
           }}
         >
-          {primaryMedia?.type === 'image' && (
+          {isVideoMedia ? (
+            <VideoPlayer
+              src={primaryMedia.src}
+              containerHeight="100%"
+              containerWidth="100%"
+              autoplay={true}
+              muted={true}
+              controls={false}
+              showOverlayControls={false}
+              loop={true}
+              poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
+              onError={(e) => {
+                console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+              }}
+            />
+          ) : primaryMedia ? (
             <ContentAwareImage
               src={primaryMedia.src}
               alt={`${title} preview`}
@@ -106,24 +122,7 @@ const ProjectCard = ({ project, onClick }) => {
                 e.target.src = '/assets/images/placeholders/project.jpg';
               }}
             />
-          )}
-          {primaryMedia?.type === 'video' && (
-            <VideoPlayer
-              src={primaryMedia.src}
-              containerHeight="100%"
-              containerWidth="100%"
-              autoplay={true}
-              muted={true}
-              controls={false} // Hide overlay controls for project card
-              showOverlayControls={false} // Explicitly hide overlay controls
-              poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
-              onError={(e) => {
-                console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
-              }}
-            />
-          )}
-          {/* fallback if no media */}
-          {!primaryMedia && (
+          ) : (
             <ContentAwareImage
               src={'/assets/images/placeholders/project.jpg'}
               alt={`${title} preview`}
@@ -134,7 +133,7 @@ const ProjectCard = ({ project, onClick }) => {
             />
           )}
         </Box>
-        {/* Hover Overlay using ProjectCardPreview - now only over image */}
+        {/* Hover Preview */}
         {showPreview && (
           <ProjectCardPreview
             isVisible={showPreview}
@@ -146,7 +145,7 @@ const ProjectCard = ({ project, onClick }) => {
       {/* Content */}
       <CardContent
         sx={{
-          flex: '1 1 40%', // 40% of the card height for content
+          flex: '1 1 40%',
           display: 'flex',
           flexDirection: 'column',
           p: { xs: 1.5, md: 2 },

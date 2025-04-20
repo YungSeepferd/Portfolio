@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import DescriptionIcon from '@mui/icons-material/Description';
 
 // Import all project images and videos directly
 import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
@@ -34,7 +33,6 @@ import ConceptOverview6Image from '../../../../assets/images/GreenWallet/concept
 import HighlightReelVideo from '../../../../assets/images/GreenWallet/highlight_reel.mp4';
 import PresentationVideo from '../../../../assets/images/GreenWallet/presentation_video.mp4';
 import presentationPDF from '../../../../assets/information/GreenWallet/GreenWallet_Presentation.pdf';
-import scriptPDF from '../../../../assets/information/GreenWallet/Script.pdf';
 
 // Create a media object to hold all our imported media
 const media = {
@@ -100,9 +98,10 @@ const greenWallet = {
     }
   ],
   sections: [
+    // 1. Overview
     {
       id: 'section-overview',
-      type: 'default',
+      type: 'overview',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -114,9 +113,10 @@ const greenWallet = {
       anchor: 'overview',
       navigable: true
     },
+    // 2. Context
     {
       id: 'section-hackathon',
-      type: 'default',
+      type: 'context',
       title: 'Hackathon Context',
       content: (
         <Typography variant="body1" paragraph>
@@ -128,9 +128,10 @@ const greenWallet = {
       anchor: 'hackathon',
       navigable: true
     },
+    // 3. Problem
     {
       id: 'section-problem',
-      type: 'default',
+      type: 'problem',
       title: 'Problem Statement',
       content: (
         <>
@@ -151,9 +152,10 @@ const greenWallet = {
       anchor: 'problem',
       navigable: true
     },
+    // 4. Concept
     {
       id: 'section-concept',
-      type: 'default',
+      type: 'concept',
       title: 'Innovative Concept: Green Wallet',
       content: (
         <>
@@ -186,9 +188,10 @@ const greenWallet = {
       anchor: 'concept',
       navigable: true
     },
+    // 5. Methodology
     {
       id: 'section-process',
-      type: 'video',
+      type: 'methodology',
       title: 'Research & Development Process',
       content: (
         <>
@@ -224,9 +227,10 @@ const greenWallet = {
       anchor: 'process',
       navigable: true
     },
+    // 6. Technical (User Interfaces)
     {
       id: 'section-user-interfaces',
-      type: 'default',
+      type: 'technical',
       title: 'User Interfaces',
       content: (
         <>
@@ -250,9 +254,10 @@ const greenWallet = {
       anchor: 'user-interfaces',
       navigable: true
     },
+    // 7. Benefits
     {
       id: 'section-benefits',
-      type: 'default',
+      type: 'benefits',
       title: 'Multi-stakeholder Benefits',
       content: (
         <>
@@ -291,9 +296,10 @@ const greenWallet = {
       anchor: 'benefits',
       navigable: true
     },
+    // 8. Outcomes
     {
       id: 'section-outcome',
-      type: 'video',
+      type: 'outcomes',
       title: 'Hackathon Outcome',
       content: (
         <Typography variant="body1" paragraph>
@@ -305,9 +311,10 @@ const greenWallet = {
       anchor: 'outcome',
       navigable: true
     },
+    // 9. Future
     {
       id: 'section-future',
-      type: 'outcomes',
+      type: 'future',
       title: 'Future Directions',
       content: (
         <Typography variant="body1" paragraph>

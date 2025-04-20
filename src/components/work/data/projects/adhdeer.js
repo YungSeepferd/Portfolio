@@ -60,11 +60,11 @@ const media = {
 // Project data object
 const adhdeer = {
   id: 'adhdeer',
-  title: "ADHDeer – ADHD Support App",
-  description: "A mobile app supporting youth with ADHD through empathic UX design and structured daily routines.",
-  categories: ["UI Design", "UX Research", "Mental Health UX", "Prototyping", "Design Thinking"],
-  cardVariant: 'warning',
-  technologies: ["Figma", "Miro", "Adobe Illustrator", "User Testing"],
+  title: "ADHDeer - ADHD Student Support App",
+  description: "A mobile application designed to support university students with ADHD in managing their academic and daily lives.",
+  categories: ["UX Design", "UX Research", "Mobile App"],
+  technologies: ["Figma", "Adobe XD", "User Testing"],
+  cardVariant: 'image',
   links: [
     {
       label: "View Presentation",
@@ -81,11 +81,13 @@ const adhdeer = {
       openInPopup: true
     }
   ],
+  media,
   sections: [
     {
       id: 'section-overview',
-      type: 'default',
-      title: 'Project Overview',
+      type: 'overview',
+      title: 'Overview',
+      summary: "ADHDeer helps university students with ADHD navigate academic challenges through personalized support and community features.",
       content: (
         <>
           <Typography variant="body1" paragraph>
@@ -93,28 +95,28 @@ const adhdeer = {
           </Typography>
         </>
       ),
-      media: { type: 'image', src: media.images.overview, aspect: 'landscape' },
+      media: { type: 'image', src: media.images.overview, aspect: 'landscape', alt: 'ADHDeer app overview screenshot' },
       layout: 'textLeft',
       anchor: 'overview',
       navigable: true
     },
     {
       id: 'section-motivation',
-      type: 'default',
+      type: 'motivation',
       title: 'Motivation and Context',
       content: (
         <Typography variant="body1" paragraph>
           ADHD, characterized by inattentiveness, hyperactivity, and impulsivity, significantly impacts everyday life, academic performance, social interactions, and emotional health. Team members Anica Hummel and Lucia Migacová brought personal and professional ADHD expertise, having first-hand experience with the challenges faced by neurodivergent individuals. The project was motivated by their understanding that young people with ADHD often feel misunderstood, isolated, and lack effective tools to manage their condition proactively.
         </Typography>
       ),
-      media: { type: 'image', src: media.images.coreDimensions, aspect: 'landscape' },
+      media: { type: 'image', src: media.images.coreDimensions, aspect: 'landscape', alt: 'Core dimensions of ADHD visualized' },
       layout: 'textRight',
       anchor: 'motivation',
       navigable: true
     },
     {
       id: 'section-problem',
-      type: 'default',
+      type: 'problem',
       title: 'Defining the Problem',
       content: (
         <>
@@ -128,14 +130,14 @@ const adhdeer = {
           </ul>
         </>
       ),
-      media: { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
+      media: { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait', alt: 'Main menu of ADHDeer app' },
       layout: 'textLeft',
       anchor: 'problem',
       navigable: true
     },
     {
       id: 'section-research',
-      type: 'gallery',
+      type: 'research',
       title: 'Research and Empathy',
       content: (
         <>
@@ -153,9 +155,9 @@ const adhdeer = {
         </>
       ),
       media: [
-        { type: 'image', src: media.images.forumOverview, aspect: 'portrait' },
-        { type: 'image', src: media.images.forumPostStep1, aspect: 'portrait' },
-        { type: 'image', src: media.images.forumPostStep2, aspect: 'portrait' }
+        { type: 'image', src: media.images.forumOverview, aspect: 'portrait', alt: 'Forum overview screenshot' },
+        { type: 'image', src: media.images.forumPostStep1, aspect: 'portrait', alt: 'Forum post step 1 screenshot' },
+        { type: 'image', src: media.images.forumPostStep2, aspect: 'portrait', alt: 'Forum post step 2 screenshot' }
       ],
       layout: 'gallery',
       anchor: 'research',
@@ -163,7 +165,7 @@ const adhdeer = {
     },
     {
       id: 'section-ideation',
-      type: 'gallery',
+      type: 'concept',
       title: 'Ideation and Core Functionalities',
       content: (
         <>
@@ -187,18 +189,18 @@ const adhdeer = {
         </>
       ),
       media: [
-        { type: 'image', src: media.images.diaryStep1, aspect: 'portrait' },
-        { type: 'image', src: media.images.diaryStep2, aspect: 'portrait' },
-        { type: 'image', src: media.images.diaryStep3, aspect: 'portrait' }
+        { type: 'image', src: media.images.diaryStep1, aspect: 'portrait', alt: 'Diary step 1 screenshot' },
+        { type: 'image', src: media.images.diaryStep2, aspect: 'portrait', alt: 'Diary step 2 screenshot' },
+        { type: 'image', src: media.images.diaryStep3, aspect: 'portrait', alt: 'Diary step 3 screenshot' }
       ],
       layout: 'gallery',
       anchor: 'ideation',
       navigable: true
     },
     {
-      id: 'section-prototype',
-      type: 'gallery',
-      title: 'Prototyping and Design Execution',
+      id: 'section-prototype-features',
+      type: 'prototype',
+      title: 'Prototype Features',
       content: (
         <>
           <Typography variant="body1" paragraph>
@@ -211,18 +213,26 @@ const adhdeer = {
           </ul>
         </>
       ),
+      layout: 'textOnly',
+      anchor: 'prototype-features',
+      navigable: true
+    },
+    {
+      id: 'section-prototype-gallery',
+      type: 'gallery',
+      title: 'Prototype Screens Gallery',
       media: [
-        { type: 'image', src: media.images.moodCalendarStep1, aspect: 'portrait' },
-        { type: 'image', src: media.images.moodCalendarStep2, aspect: 'portrait' },
-        { type: 'image', src: media.images.moodCalendarSymptoms, aspect: 'portrait' }
+        { type: 'image', src: media.images.moodCalendarStep1, aspect: 'portrait', alt: 'Mood calendar step 1 screenshot' },
+        { type: 'image', src: media.images.moodCalendarStep2, aspect: 'portrait', alt: 'Mood calendar step 2 screenshot' },
+        { type: 'image', src: media.images.moodCalendarSymptoms, aspect: 'portrait', alt: 'Mood calendar symptoms screenshot' }
       ],
       layout: 'gallery',
-      anchor: 'prototype',
+      anchor: 'prototype-gallery',
       navigable: true
     },
     {
       id: 'section-articles',
-      type: 'gallery',
+      type: 'content',
       title: 'Educational Content',
       content: (
         <Typography variant="body1" paragraph>
@@ -230,8 +240,8 @@ const adhdeer = {
         </Typography>
       ),
       media: [
-        { type: 'image', src: media.images.articlesStep1, aspect: 'portrait' },
-        { type: 'image', src: media.images.articlesStep2, aspect: 'portrait' }
+        { type: 'image', src: media.images.articlesStep1, aspect: 'portrait', alt: 'Educational article step 1 screenshot' },
+        { type: 'image', src: media.images.articlesStep2, aspect: 'portrait', alt: 'Educational article step 2 screenshot' }
       ],
       layout: 'gallery',
       anchor: 'articles',
@@ -239,7 +249,7 @@ const adhdeer = {
     },
     {
       id: 'section-onboarding',
-      type: 'gallery',
+      type: 'onboarding',
       title: 'Onboarding and Registration',
       content: (
         <Typography variant="body1" paragraph>
@@ -247,11 +257,33 @@ const adhdeer = {
         </Typography>
       ),
       media: [
-        { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait' },
-        { type: 'image', src: media.images.registrationDone, aspect: 'portrait' }
+        { type: 'image', src: media.images.mainMenuOverview, aspect: 'portrait', alt: 'Main menu overview screenshot' },
+        { type: 'image', src: media.images.registrationDone, aspect: 'portrait', alt: 'Registration done screenshot' }
       ],
       layout: 'gallery',
       anchor: 'onboarding',
+      navigable: true
+    },
+    {
+      id: 'section-prototype-embed',
+      type: 'prototype',
+      title: 'Interactive Prototype',
+      content: (
+        <Typography variant="body1" paragraph>
+          Try the interactive Figma prototype below or open it in a new tab for a full experience.
+        </Typography>
+      ),
+      actions: [
+        {
+          label: 'Open in Figma',
+          url: 'https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share',
+          contentType: 'iframe',
+          openInPopup: true
+        }
+      ],
+      media: { type: 'iframe', src: 'https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share', aspect: 'landscape', alt: 'Figma prototype embed' },
+      layout: 'textOnly',
+      anchor: 'prototype-embed',
       navigable: true
     },
     {
@@ -263,15 +295,23 @@ const adhdeer = {
           Explore the interactive prototype to experience the app’s core flows and gamified features.
         </Typography>
       ),
-      media: { type: 'video', src: media.videos.prototype, aspect: 'landscape' },
+      media: { type: 'video', src: media.videos.prototype, aspect: 'landscape', alt: 'ADHDeer prototype video' },
       layout: 'textRight',
       anchor: 'video',
       navigable: true
     },
     {
       id: 'section-outcomes',
-      type: 'default',
+      type: 'outcomes',
       title: 'Outcomes and Evaluation',
+      outcomes: {
+        title: 'Key Results',
+        points: [
+          'Positive feedback on intuitive interface and playful aesthetics',
+          'Users reported improved daily structure and emotional awareness',
+          'Potential to boost self-confidence in young ADHD users'
+        ]
+      },
       content: (
         <Typography variant="body1" paragraph>
           The prototype received positive initial feedback from test users, who particularly appreciated the intuitive interface, playful aesthetics, and empathetic tone. Users highlighted the application’s potential to significantly improve daily structure, emotional awareness, and overall self-confidence.
@@ -282,8 +322,26 @@ const adhdeer = {
       navigable: true
     },
     {
+      id: 'section-takeaways',
+      type: 'takeaways',
+      title: 'Key Takeaways',
+      takeaways: [
+        'Empathy-driven design is crucial for neurodiverse audiences',
+        'Gamification and visual clarity increase engagement',
+        'Accessible educational content empowers users and families'
+      ],
+      content: (
+        <Typography variant="body1" paragraph>
+          The project highlighted the importance of empathy, accessibility, and user empowerment in mental health app design.
+        </Typography>
+      ),
+      layout: 'textOnly',
+      anchor: 'takeaways',
+      navigable: true
+    },
+    {
       id: 'section-future',
-      type: 'default',
+      type: 'future',
       title: 'Future Directions',
       content: (
         <>
@@ -303,7 +361,7 @@ const adhdeer = {
     },
     {
       id: 'section-impact',
-      type: 'default',
+      type: 'impact',
       title: 'Impact and Conclusion',
       content: (
         <Typography variant="body1" paragraph>

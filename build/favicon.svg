@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#17191C"/>
+  <g>
+    <!-- "VG" Monogramm, geometrisch, modern -->
+    <text x="12" y="46" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#F2F2F2" letter-spacing="-2">
+      V
+    </text>
+    <text x="31" y="46" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#4E9EE9" letter-spacing="-2">
+      G
+    </text>
+    <!-- Optional: kleiner Akzent für "Audio" -->
+    <circle cx="54" cy="14" r="4" fill="#4E9EE9" opacity="0.7"/>
+  </g>
+</svg>

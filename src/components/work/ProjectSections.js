@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import PropTypes from 'prop-types';
+import sectionPropTypes from './sectionPropTypes';
 import ProjectSection from './ProjectSection';
 
 /**
@@ -41,6 +43,10 @@ const ProjectSections = ({ sections }) => {
       ))}
     </Box>
   );
+};
+
+ProjectSections.propTypes = {
+  sections: PropTypes.arrayOf(sectionPropTypes).isRequired
 };
 
 export default ProjectSections;

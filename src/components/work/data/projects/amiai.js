@@ -47,13 +47,14 @@ const amiai = {
   title: "AMIAI – Critical Visual Campaign",
   description: "A visual campaign exploring AI-generated content credibility and digital literacy.",
   categories: ["Graphic Design", "Visual Communication", "Marketing Campaigns"],
-  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
+  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects"],
   cardVariant: cardVariant,
   links: links,
   sections: [
+    // 1. Overview
     {
       id: 'section-overview',
-      type: 'default',
+      type: 'overview',
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
@@ -65,9 +66,10 @@ const amiai = {
       anchor: 'overview',
       navigable: true
     },
+    // 2. Motivation/Context
     {
       id: 'section-context',
-      type: 'default',
+      type: 'motivation',
       title: 'Context & Motivation',
       content: (
         <Typography variant="body1" paragraph>
@@ -78,9 +80,10 @@ const amiai = {
       anchor: 'context',
       navigable: true
     },
+    // 3. Concept
     {
       id: 'section-pixelation',
-      type: 'default',
+      type: 'concept',
       title: 'Key Design Element: Pixelation Metaphor',
       content: (
         <Typography variant="body1" paragraph>
@@ -92,9 +95,10 @@ const amiai = {
       anchor: 'pixelation',
       navigable: true
     },
+    // 4. Research
     {
       id: 'section-research',
-      type: 'default',
+      type: 'research',
       title: 'Research & Conceptual Development',
       content: (
         <>
@@ -115,9 +119,10 @@ const amiai = {
       anchor: 'research',
       navigable: true
     },
+    // 5. Methodology
     {
       id: 'section-process',
-      type: 'video',
+      type: 'methodology',
       title: 'Design Process & Execution',
       content: (
         <>
@@ -153,9 +158,10 @@ const amiai = {
       anchor: 'process',
       navigable: true
     },
+    // 6. Technical (Components)
     {
       id: 'section-components',
-      type: 'video',
+      type: 'technical',
       title: 'Campaign Components',
       content: (
         <>
@@ -186,6 +192,7 @@ const amiai = {
       anchor: 'components',
       navigable: true
     },
+    // 7. Outcomes (Impact)
     {
       id: 'section-impact',
       type: 'outcomes',
@@ -222,9 +229,10 @@ const amiai = {
         ]
       }
     },
+    // 8. Future
     {
       id: 'section-future',
-      type: 'default',
+      type: 'future',
       title: 'Future Directions',
       content: (
         <Typography variant="body1" paragraph>
