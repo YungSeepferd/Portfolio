@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Portfolio/static/css/main.88a18194.css",
-    "main.js": "/Portfolio/static/js/main.b9e18f9b.js",
+    "main.css": "/Portfolio/static/css/main.13b3b728.css",
+    "main.js": "/Portfolio/static/js/main.27de14b9.js",
     "static/media/AMIAI_Presentation.pdf": "/Portfolio/static/media/AMIAI_Presentation.37a23d3027db3379fa36.pdf",
     "static/media/Vincent_Master_Thesis0225.pdf": "/Portfolio/static/media/Vincent_Master_Thesis0225.7db83f748772553b08cf.pdf",
     "static/media/5samiai.mov": "/Portfolio/static/media/5samiai.8343a7370093eed7be44.mov",
@@ -73,7 +73,6 @@
     "static/media/Introduction.png": "/Portfolio/static/media/Introduction.3503d8a09350098c6152.png",
     "static/media/AIAPIFewshotting.png": "/Portfolio/static/media/AIAPIFewshotting.f4286245d6bbf3bc11c0.png",
     "static/media/ADHDeer_Diary_Step2.png": "/Portfolio/static/media/ADHDeer_Diary_Step2.e65a601def60a230a54a.png",
-    "static/media/Script.pdf": "/Portfolio/static/media/Script.f5af656c0a53e3f4a244.pdf",
     "static/media/concept_overview_3.png": "/Portfolio/static/media/concept_overview_3.25fb46f3adb5f1c84801.png",
     "static/media/ADHDeer_Registration_Done.png": "/Portfolio/static/media/ADHDeer_Registration_Done.edacbe6a7e87834da985.png",
     "static/media/hackathon_team.jpeg": "/Portfolio/static/media/hackathon_team.e2ab2da98632465abebf.jpeg",
@@ -84,17 +83,15 @@
     "static/media/concept_overview_5.png": "/Portfolio/static/media/concept_overview_5.8ff95ec193ff8649fe13.png",
     "static/media/ADHDeer_ForumPost_Step1.png": "/Portfolio/static/media/ADHDeer_ForumPost_Step1.c187453afd7af42c3b12.png",
     "static/media/FrequencyTheory.png": "/Portfolio/static/media/FrequencyTheory.d3d2b2a0330cd218d1bd.png",
-    "static/media/UI Prototype Sketch.png": "/Portfolio/static/media/UI Prototype Sketch.af9933bcd0b4b1ee7ae5.png",
     "static/media/UI Prototype.png": "/Portfolio/static/media/UI Prototype.5f1193b0b38731f3e1b6.png",
     "static/media/PrincipleSketch.png": "/Portfolio/static/media/PrincipleSketch.1b435a5bc9e0d232c666.png",
-    "static/media/PrincipleVariants.png": "/Portfolio/static/media/PrincipleVariants.bcf070353a321cf1f686.png",
     "static/media/green_wallet_logo.png": "/Portfolio/static/media/green_wallet_logo.6a15b61f0e40adeaade2.png",
     "index.html": "/Portfolio/index.html",
-    "main.88a18194.css.map": "/Portfolio/static/css/main.88a18194.css.map",
-    "main.b9e18f9b.js.map": "/Portfolio/static/js/main.b9e18f9b.js.map"
+    "main.13b3b728.css.map": "/Portfolio/static/css/main.13b3b728.css.map",
+    "main.27de14b9.js.map": "/Portfolio/static/js/main.27de14b9.js.map"
   },
   "entrypoints": [
-    "static/css/main.88a18194.css",
-    "static/js/main.b9e18f9b.js"
+    "static/css/main.13b3b728.css",
+    "static/js/main.27de14b9.js"
   ]
 }
