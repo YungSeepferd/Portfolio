@@ -131,7 +131,7 @@ const Header = () => {
                     alignItems: 'center',
                   }}
                 >
-                  Vincent Göke
+                  WORK IN PROGRESS
                 </Box>
               </ScrollLink>
               {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}

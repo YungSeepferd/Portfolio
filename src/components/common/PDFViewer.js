@@ -1,22 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, CircularProgress, Typography, Button, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Typography, Button, useMediaQuery, Stack, Alert } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+// Remove unused icons but keep them commented for future reference
+// import ZoomInIcon from '@mui/icons-material/ZoomIn';
+// import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 /**
  * PDFViewer Component
  * 
  * Displays a PDF document in an iframe with improved handling of both
- * imported PDF files and URL references
+ * imported PDF files and URL references. Provides mobile fallbacks with
+ * Google PDF Viewer for better mobile support.
  */
 const PDFViewer = ({ url, title, onCloseFocusRef }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [useGoogleViewer, setUseGoogleViewer] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const blobUrlRef = useRef(null);
   const downloadBtnRef = useRef(null);
-
+  
   // Generate a proper URL for the PDF, whether it's an imported file or string path
   const pdfUrl = React.useMemo(() => {
     if (typeof url === 'object') {
@@ -26,6 +32,12 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
     }
     return url;
   }, [url]);
+
+  // Generate Google PDF Viewer URL for better mobile compatibility
+  const googleViewerUrl = React.useMemo(() => {
+    if (!pdfUrl) return '';
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+  }, [pdfUrl]);
 
   // Clean up Blob URL on unmount
   useEffect(() => {
@@ -70,33 +82,118 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
       return 'document.pdf';
     }
   };
-  
-  // Debugging: log url and pdfUrl
-  console.log('PDFViewer url prop:', url);
-  console.log('PDFViewer computed pdfUrl:', pdfUrl);
-  console.log('PDFViewer isLoading:', isLoading, 'hasError:', hasError);
 
-  // Mobile fallback: show message and download/open button instead of iframe
+  // Toggle between native PDF and Google Viewer (better for mobile)
+  const toggleViewer = () => {
+    setIsLoading(true);
+    setUseGoogleViewer(prev => !prev);
+  };
+  
+  // For mobile, provide improved PDF viewing options
   if (isMobile) {
     return (
-      <Box sx={{ width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: theme.palette.background.paper, borderRadius: theme.shape.borderRadius, p: 4, textAlign: 'center' }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          PDF Preview Not Supported on Mobile
-        </Typography>
-        <Typography variant="body2" sx={{ mb: 3 }}>
-          Most mobile browsers do not support PDF preview. Please download or open the PDF in a new tab.
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<FileDownloadIcon />}
-          href={pdfUrl}
-          download={getFileName()}
-          target="_blank"
-          rel="noopener noreferrer"
-          ref={downloadBtnRef}
+      <Box 
+        sx={{ 
+          width: '100%', 
+          height: '100%', 
+          display: 'flex', 
+          flexDirection: 'column',
+          bgcolor: theme.palette.background.paper,
+          overflow: 'hidden'
+        }}
+      >
+        {/* Alert about mobile PDF viewing */}
+        <Alert severity="info" variant="outlined" sx={{ m: 2 }}>
+          For best experience, choose one of these options to view the PDF
+        </Alert>
+
+        {/* Show the Google PDF Viewer for better mobile support */}
+        <Box 
+          sx={{
+            width: '100%', 
+            flex: 1,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
         >
-          Download/Open PDF
-        </Button>
+          {isLoading && (
+            <Box 
+              sx={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 4,
+                flex: 1
+              }}
+            >
+              <CircularProgress size={40} />
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                Loading PDF viewer...
+              </Typography>
+            </Box>
+          )}
+
+          <Box 
+            component="iframe"
+            src={useGoogleViewer ? googleViewerUrl : pdfUrl}
+            title={title || "PDF Document"}
+            onLoad={handleLoad}
+            onError={handleError}
+            sx={{
+              width: '100%',
+              flex: 1,
+              border: 'none',
+              display: isLoading ? 'none' : 'block'
+            }}
+          />
+        </Box>
+        
+        {/* Bottom action bar with viewing options */}
+        <Box 
+          sx={{ 
+            p: 2,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1
+          }}
+        >
+          <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
+            <Button
+              variant={useGoogleViewer ? "outlined" : "contained"}
+              color={useGoogleViewer ? "primary" : "secondary"}
+              onClick={toggleViewer}
+              fullWidth
+            >
+              {useGoogleViewer ? "Use Native Viewer" : "Use Google Viewer"}
+            </Button>
+          </Stack>
+
+          <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
+            <Button
+              variant="outlined"
+              startIcon={<FileDownloadIcon />}
+              href={pdfUrl}
+              download={getFileName()}
+              ref={downloadBtnRef}
+              fullWidth
+            >
+              Download
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<OpenInNewIcon />}
+              href={pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer" 
+              fullWidth
+            >
+              Open in New Tab
+            </Button>
+          </Stack>
+        </Box>
       </Box>
     );
   }
@@ -194,7 +291,7 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
       </Box>
       <Box sx={{ 
         display: 'flex', 
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         p: 2,
         borderTop: `1px solid ${theme.palette.divider}`,
         bgcolor: theme.palette.background.paper,
@@ -210,6 +307,16 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
           ref={downloadBtnRef}
         >
           Download PDF
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<OpenInNewIcon />}
+          href={pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          size="small"
+        >
+          Open in New Tab
         </Button>
       </Box>
     </Box>

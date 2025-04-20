@@ -65,7 +65,7 @@ const sectionPropTypes = PropTypes.shape({
   ]),
   media: PropTypes.oneOfType([
     PropTypes.shape({
-      type: PropTypes.oneOf(['image', 'video']),
+      type: PropTypes.oneOf(['image', 'video', 'iframe']),
       src: PropTypes.string.isRequired,
       alt: PropTypes.string,
       aspect: PropTypes.string,
@@ -74,7 +74,7 @@ const sectionPropTypes = PropTypes.shape({
     PropTypes.arrayOf(PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.shape({
-        type: PropTypes.oneOf(['image', 'video']),
+        type: PropTypes.oneOf(['image', 'video', 'iframe']),
         src: PropTypes.string.isRequired,
         alt: PropTypes.string,
         aspect: PropTypes.string,
@@ -89,7 +89,8 @@ const sectionPropTypes = PropTypes.shape({
     'mediaOnly',
     'gallery',
     'sideBySide',
-    'outcomesTakeaways'
+    'outcomesTakeaways',
+    'fullMedia' // Added this layout type
   ]),
   takeaways: PropTypes.arrayOf(PropTypes.string),
   outcomes: PropTypes.shape({

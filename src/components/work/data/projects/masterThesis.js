@@ -108,15 +108,45 @@ const masterThesis = {
       title: 'Motivation & Problem Statement',
       content: (
         <>
-          <Typography variant="body1">
+          <Typography variant="body1" paragraph>
             Despite advancements in affective computing, novice interaction designers frequently encounter significant difficulties in effectively translating abstract emotions into tangible tactile experiences. Key challenges include:
           </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1">Technical complexity of existing haptic prototyping tools</Typography></li>
-            <li><Typography variant="body1">Lack of structured emotional frameworks suitable for tactile interaction design</Typography></li>
-            <li><Typography variant="body1">Limited resources that integrate emotion theory into iterative prototyping practices</Typography></li>
+          <Box component="ul" sx={{ 
+            pl: { xs: 2, sm: 3 },  // Less padding on mobile
+            mb: 2,
+            '& li': {
+              mb: 1  // Add spacing between list items
+            }
+          }}>
+            <li>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },  // Smaller text on mobile
+                lineHeight: { xs: 1.5, sm: 1.6 }  // Improved line height
+              }}>
+                Technical complexity of existing haptic prototyping tools
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                Lack of structured emotional frameworks suitable for tactile interaction design
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                Limited resources that integrate emotion theory into iterative prototyping practices
+              </Typography>
+            </li>
           </Box>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 }
+          }}>
             The thesis aimed explicitly at overcoming these obstacles through an educational, user-centered toolkit that fosters emotional awareness, iterative prototyping, and collaborative learning.
           </Typography>
         </>
@@ -133,27 +163,48 @@ const masterThesis = {
       title: 'Methodological Approach',
       content: (
         <>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 }
+          }}>
             The toolkit was validated through a structured workshop consisting of clearly delineated phases:
           </Typography>
-          <Box component="ol" sx={{ pl: 3, mb: 2 }}>
+          <Box component="ol" sx={{ 
+            pl: { xs: 2, sm: 3 },  // Less padding on mobile
+            mb: 2,
+            '& li': {
+              mb: 1.5  // Add spacing between list items
+            }
+          }}>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Emotional Framework Introduction:</strong> Participants engaged with foundational emotional theories including the Circumplex Model of Affect and Delft's Emotion Typology, establishing a common conceptual basis.
               </Typography>
             </li>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Embodied Metaphor Elicitation and Body Mapping:</strong> Utilizing personal emotional objects and detailed body maps, participants identified emotional hotspots and physical sensations, crucial for actuator placement in haptic designs.
               </Typography>
             </li>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Tandem On-body Prototyping:</strong> Through collaborative and iterative prototyping sessions with the Hapticlabs DevKit, participants created and refined haptic prototypes in real-time, alternating roles between designer and tester.
               </Typography>
             </li>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Reflective Feedback:</strong> Surveys and structured group discussions facilitated critical evaluation of the prototypes' emotional resonance, usability, and overall effectiveness.
               </Typography>
             </li>
@@ -174,19 +225,42 @@ const masterThesis = {
           <Typography variant="body1" paragraph>
             The final methodological toolkit included:
           </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
+          <Box component="ul" sx={{ 
+            pl: { xs: 2, sm: 3 },  // Less padding on mobile
+            mb: 2,
+            '& li': {
+              mb: 1.5  // Add spacing between list items
+            }
+          }}>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' },  // Smaller text on mobile
+                lineHeight: { xs: 1.5, sm: 1.6 }  // Improved line height
+              }}>
                 <strong>Visual Templates:</strong> For embodied metaphor elicitation and emotion categorization
               </Typography>
             </li>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                <strong>Body Maps:</strong> Visual templates facilitating the identification of emotional sensations across the body
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1" sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Physical Prototyping Resources:</strong> The Hapticlabs DevKit with actuators (ERM, LRA, VC) and tactile materials for rapid experimentation
               </Typography>
             </li>
             <li>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
                 <strong>Interactive Digital Workspace (Miro):</strong> Enhancing documentation, remote collaboration, and iterative refinement
               </Typography>
             </li>
@@ -205,33 +279,76 @@ const masterThesis = {
       title: 'Key Outcomes & Contributions',
       content: (
         <>
-          <Typography variant="body1">
+          <Typography variant="body1" sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 }
+          }}>
             This research contributed a practical, accessible framework for novice haptic designers, significantly democratizing affective haptic design within educational and professional contexts. Key findings include:
           </Typography>
-          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
+          <Box component="ul" sx={{ 
+            pl: { xs: 2, sm: 3 },  // Less padding on mobile
+            mb: 2,
+            '& li': {
+              mb: 1  // Add spacing between list items
+            }
+          }}>
             <li>
-              <Typography variant="body1">Participants successfully translated abstract emotional concepts into tangible, emotionally resonant haptic feedback</Typography>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                Participants successfully translated abstract emotional concepts into tangible, emotionally resonant haptic feedback
+              </Typography>
             </li>
             <li>
-              <Typography variant="body1">Tandem prototyping significantly enhanced collaboration and iterative quality, creating richer, more personally meaningful designs</Typography>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                Tandem prototyping significantly enhanced collaboration and iterative quality, creating richer, more personally meaningful designs
+              </Typography>
             </li>
             <li>
-              <Typography variant="body1">Identified technical challenges and subjective emotional interpretations provided critical insights for future toolkit refinement</Typography>
+              <Typography variant="body1" sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                lineHeight: { xs: 1.5, sm: 1.6 }
+              }}>
+                Identified technical challenges and subjective emotional interpretations provided critical insights for future toolkit refinement
+              </Typography>
             </li>
           </Box>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 },
+            mb: 1
+          }}>
             Emotions can be systematically mapped to haptic parameters using the Circumplex Model of Affect.
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 },
+            mb: 1
+          }}>
             Body mapping provides essential context for placing haptic actuators effectively.
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 },
+            mb: 1
+          }}>
             Tandem prototyping creates more engaging and emotionally meaningful experiences.
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 },
+            mb: 1
+          }}>
             Iterative testing revealed the importance of temporal patterns in emotional haptic feedback.
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" paragraph sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            lineHeight: { xs: 1.5, sm: 1.6 }
+          }}>
             Cross-disciplinary collaboration significantly enriches the design process.
           </Typography>
         </>

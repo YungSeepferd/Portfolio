@@ -81,104 +81,71 @@ const ProjectGallery = ({ images = [], title = '' }) => {
   };
 
   // Use the isMobile variable to determine grid size
-  const gridItemSize = isMobile ? 6 : 3;
+  const gridItemSize = isMobile ? 12 : 3; // Use full width on mobile devices
 
   return (
-    <Box id="project-gallery-root" sx={{ mt: 4, mb: 4 }}>
-      {/* Grid of thumbnails */}
-      <Grid container spacing={2} id="project-gallery-grid">
+    <Box sx={{ width: '100%', maxWidth: '100%', overflow: 'hidden', mb: 4 }}>
+      <Typography 
+        variant={isMobile ? "h5" : "h4"} 
+        gutterBottom
+        sx={{
+          mb: 2,
+          fontSize: { xs: '1.35rem', sm: '1.5rem', md: '1.75rem' }, // Smaller on mobile
+        }}
+      >
+        {title}
+      </Typography>
+      <Grid 
+        container 
+        spacing={isMobile ? 1 : 2} // Reduced spacing on mobile
+        sx={{ 
+          maxWidth: '100%', 
+          mx: 'auto'
+        }}
+      >
         {mediaInfo.map((item) => (
-          <Grid item xs={6} sm={4} md={gridItemSize} key={item.id}>
+          <Grid 
+            item 
+            xs={item.isVideo ? 12 : gridItemSize} // Videos always full width
+            sm={item.isVideo ? 12 : 6} // On small screens, 2 per row for images
+            md={item.isVideo ? 12 : 4} // On medium screens, 3 per row for images
+            key={item.id}
+            sx={{ maxWidth: '100%' }} // Ensure grid items don't overflow
+          >
             <Box
-              id={`project-gallery-thumb-${item.id}`}
-              onClick={() => handleImageClick(item)}
               sx={{
                 position: 'relative',
-                width: '100%',
-                aspectRatio: item.aspect === 'portrait' ? 3/4 : item.aspect === 'square' ? 1 : 16/9,
-                overflow: 'hidden',
-                borderRadius: theme.shape.borderRadius,
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                background: theme.palette.grey[100],
+                borderRadius: theme.shape.borderRadius,
+                overflow: 'hidden', // Contain the content within borders
+                aspectRatio: item.isVideo ? '16/9' : (item.aspect === 'portrait' ? '3/4' : '16/9'),
+                height: 'auto', // Auto height based on aspect ratio
+                maxWidth: '100%', // Max width constraint
                 '&:hover': {
                   transform: 'scale(1.02)',
-                  boxShadow: theme.shadows[4]
-                }
+                  boxShadow: theme.shadows[4],
+                },
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               }}
+              onClick={() => handleImageClick(item)}
             >
               {item.isVideo ? (
-                <Box 
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <VideoPlayer
-                    src={item.src}
-                    containerHeight="100%"
-                    containerWidth="100%"
-                    autoplay={false}
-                    muted={true}
-                    controls={false}
-                    showOverlayControls={false}
-                  />
-                </Box>
+                <VideoPlayer
+                  src={item.src}
+                  containerWidth="100%"
+                  containerHeight="100%"
+                  controls={true}
+                  muted={true}
+                  autoplay={false}
+                />
               ) : (
                 <ContentAwareImage
                   src={item.src}
-                  alt={`${title} image ${item.id + 1}`}
+                  alt={item.caption || title}
                   containerHeight="100%"
                   containerWidth="100%"
-                  containerOrientation={item.orientation}
-                  aspect={item.aspect}
-                  objectFit={item.orientation === 'portrait' ? 'contain' : 'cover'}
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    background: theme.palette.grey[100],
-                    borderRadius: theme.shape.borderRadius
-                  }}
-                />
-              )}
-              
-              {/* Play button indicator for videos */}
-              {item.isVideo && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    zIndex: 2,
-                    '&::before': {
-                      content: '""',
-                      display: 'block',
-                      width: 0,
-                      height: 0,
-                      borderTop: '10px solid transparent',
-                      borderBottom: '10px solid transparent',
-                      borderLeft: '16px solid white',
-                      marginLeft: '4px'
-                    }
-                  }}
+                  objectFit={item.aspect === 'portrait' ? 'cover' : 'contain'}
+                  expandOnHover={true}
                 />
               )}
             </Box>
@@ -219,7 +186,15 @@ const ProjectGallery = ({ images = [], title = '' }) => {
           </IconButton>
         </Box>
 
-        <DialogContent id="project-gallery-overlay-content" sx={{ p: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <DialogContent id="project-gallery-overlay-content" sx={{ 
+          p: 0, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          height: '100%',
+          maxHeight: '100vh', 
+          maxWidth: '100vw',
+          overflow: 'hidden' // Prevent overflow
+        }}>
           {/* Image viewer with navigation */}
           <Box sx={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Previous button */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { skillsRow1, skillsRow2 } from './skillsData';
 import SkillTagList from '../common/SkillTagList';
 
@@ -18,6 +18,8 @@ import SkillTagList from '../common/SkillTagList';
  */
 const HeroContent = () => {
   const theme = useTheme();
+  const isLaptopUp = useMediaQuery(theme.breakpoints.up('md'));
+  const isDesktopUp = useMediaQuery(theme.breakpoints.up('lg'));
   
   // Animation variants for staggered appearance
   const containerVariants = {
@@ -64,7 +66,7 @@ const HeroContent = () => {
         animate="visible"
         variants={containerVariants}
         style={{
-          maxWidth: 'min(100%, 340px)', // Smaller on mobile
+          maxWidth: isDesktopUp ? '550px' : (isLaptopUp ? '470px' : 'min(100%, 340px)'),
           textAlign: 'left',
         }}
       >
@@ -76,8 +78,8 @@ const HeroContent = () => {
               fontSize: {
                 xs: '3rem', // Smaller for mobile
                 sm: '2rem',
-                md: '4.5rem',
-                lg: '5rem'
+                md: '4rem',
+                lg: '4.5rem'
               },
               fontWeight: 700,
               lineHeight: 1.2,
@@ -119,7 +121,7 @@ const HeroContent = () => {
               fontSize: {
                 xs: '0.65rem',
                 sm: '0.9rem',
-                md: '1.35rem'
+                md: '1rem'
               },
               lineHeight: 1.7,
               color: theme.palette.text.secondary,
@@ -141,7 +143,7 @@ const HeroContent = () => {
               flexWrap: 'wrap',
               gap: 1,
               mb: 1.5,
-              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
+              justifyContent: isLaptopUp ? 'flex-start' : (window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start'),
             }}
           >
             {skillsRow1.map((skill, index) => (
@@ -159,7 +161,7 @@ const HeroContent = () => {
               display: 'flex', 
               flexWrap: 'wrap',
               gap: 1,
-              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
+              justifyContent: isLaptopUp ? 'flex-start' : (window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start'),
             }}
           >
             {skillsRow2.map((skill, index) => (

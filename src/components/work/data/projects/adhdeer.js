@@ -75,7 +75,8 @@ const adhdeer = {
     },
     {
       label: "Try Prototype",
-      url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
+      // Updated to proper Figma embed URL format with viewer parameter
+      url: "https://embed.figma.com/file/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0%3A1&t=wtBoSBiGM8YGWQoE-1&embed-host=share&viewer=1",
       icon: <DashboardIcon fontSize="small" />,
       contentType: 'iframe',
       openInPopup: true
@@ -262,28 +263,6 @@ const adhdeer = {
       ],
       layout: 'gallery',
       anchor: 'onboarding',
-      navigable: true
-    },
-    {
-      id: 'section-prototype-embed',
-      type: 'prototype',
-      title: 'Interactive Prototype',
-      content: (
-        <Typography variant="body1" paragraph>
-          Try the interactive Figma prototype below or open it in a new tab for a full experience.
-        </Typography>
-      ),
-      actions: [
-        {
-          label: 'Open in Figma',
-          url: 'https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share',
-          contentType: 'iframe',
-          openInPopup: true
-        }
-      ],
-      media: { type: 'iframe', src: 'https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share', aspect: 'landscape', alt: 'Figma prototype embed' },
-      layout: 'textOnly',
-      anchor: 'prototype-embed',
       navigable: true
     },
     {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import VideoPlayer from '../common/VideoPlayer';
@@ -50,10 +50,12 @@ const ProjectSection = ({
   sectionNumber,
   sectionIndex,
   fallbackContent,
-  type, // <-- add type prop
+  type,
   sx = {}
 }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const isReverse = layout === 'textRight';
   const isTextOnly = layout === 'textOnly';
   const isMediaOnly = layout === 'mediaOnly';
@@ -67,10 +69,11 @@ const ProjectSection = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start', // Center horizontally
+        alignItems: 'flex-start', // Left align
         justifyContent: 'center', // Center vertically if needed
-        textAlign: 'left', // Center text
+        textAlign: 'left', 
         width: '100%',
+        mb: { xs: 2.5, md: 3 }, // Increased bottom margin for better spacing
       }}
     >
       {formattedNumber && (
@@ -82,7 +85,7 @@ const ProjectSection = ({
             color: theme.palette.primary.main,
             fontWeight: 600,
             mb: 1,
-            fontSize: '1.1rem',
+            fontSize: { xs: '0.95rem', sm: '1.1rem' }, // Smaller on mobile devices
           }}
         >
           {formattedNumber}
@@ -94,7 +97,16 @@ const ProjectSection = ({
           component="h3"
           id={id}
           tabIndex={-1}
-          sx={{ mb: 2, scrollMarginTop: '80px' }}
+          sx={{ 
+            mb: 2, 
+            scrollMarginTop: '80px',
+            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' }, // Responsive font size
+            lineHeight: { xs: 1.3, sm: 1.4 }, // Tighter line height on mobile
+            overflowWrap: 'break-word', // Allow long words to break
+            wordWrap: 'break-word',
+            hyphens: 'auto',
+            maxWidth: '100%' // Ensure text doesn't overflow container
+          }}
         >
           {title}
         </Typography>
@@ -102,41 +114,104 @@ const ProjectSection = ({
     </Box>
   );
 
-  // Helper: Render outcomes and takeaways side-by-side or stacked
+  // Helper: Render outcomes and takeaways side-by-side or stacked (always stacked on mobile)
   const renderOutcomesTakeaways = () => {
     if (!outcomes && !takeaways) return null;
-    const isSideBySide = layout === 'sideBySide' || layout === 'outcomesTakeaways';
+    const isSideBySide = !isMobile && (layout === 'sideBySide' || layout === 'outcomesTakeaways');
     return (
-      <Grid container spacing={4} sx={{ mt: 3, mb: 2 }} direction={isSideBySide ? 'row' : 'column'}>
+      <Grid container spacing={isMobile ? 2 : 4} sx={{ mt: 2, mb: 2 }} direction={isSideBySide ? 'row' : 'column'}>
         {takeaways && takeaways.length > 0 && (
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+          <Grid item xs={12} md={isSideBySide ? 6 : 12}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                mb: isMobile ? 1 : 2, 
+                color: theme.palette.text.secondary,
+                fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }, // Smaller on mobile
+                fontWeight: 500
+              }}
+            >
               Key Takeaways
             </Typography>
-            <List dense disablePadding>
+            <List dense disablePadding sx={{ 
+              '& .MuiListItem-root': {
+                mb: isMobile ? 0.5 : 1,
+                alignItems: 'flex-start'
+              }
+            }}>
               {takeaways.map((item, idx) => (
                 <ListItem key={idx} disableGutters>
-                  <ListItemIcon sx={{ minWidth: '32px' }}>
-                    <StarBorderIcon fontSize="small" color="primary" />
+                  <ListItemIcon sx={{ 
+                    minWidth: isMobile ? '24px' : '32px', 
+                    mt: isMobile ? '3px' : '1px',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: isMobile ? '1.1rem' : '1.25rem'
+                    }
+                  }}>
+                    <StarBorderIcon fontSize={isMobile ? 'small' : 'medium'} color="primary" />
                   </ListItemIcon>
-                  <ListItemText primary={item} primaryTypographyProps={{ variant: 'body1' }} />
+                  <ListItemText 
+                    primary={item} 
+                    primaryTypographyProps={{ 
+                      variant: 'body1',
+                      sx: { 
+                        fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
+                        lineHeight: { xs: 1.4, sm: 1.6 },
+                        overflowWrap: 'break-word', 
+                        wordWrap: 'break-word',
+                        hyphens: 'auto'
+                      }
+                    }} 
+                  />
                 </ListItem>
               ))}
             </List>
           </Grid>
         )}
+        
         {outcomes && outcomes.points && outcomes.points.length > 0 && (
-          <Grid item xs={12} md={6}>
-            <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+          <Grid item xs={12} md={isSideBySide ? 6 : 12}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                mb: isMobile ? 1 : 2, 
+                color: theme.palette.text.secondary,
+                fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }, // Smaller on mobile
+                fontWeight: 500
+              }}
+            >
               {outcomes.title || 'Project Outcomes'}
             </Typography>
-            <List dense disablePadding>
+            <List dense disablePadding sx={{ 
+              '& .MuiListItem-root': {
+                mb: isMobile ? 0.5 : 1,
+                alignItems: 'flex-start'
+              }
+            }}>
               {outcomes.points.map((point, idx) => (
                 <ListItem key={idx} disableGutters>
-                  <ListItemIcon sx={{ minWidth: '32px' }}>
-                    <CheckCircleOutlineIcon fontSize="small" color="success" />
+                  <ListItemIcon sx={{ 
+                    minWidth: isMobile ? '24px' : '32px', 
+                    mt: isMobile ? '3px' : '1px',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: isMobile ? '1.1rem' : '1.25rem'
+                    }
+                  }}>
+                    <CheckCircleOutlineIcon fontSize={isMobile ? 'small' : 'medium'} color="success" />
                   </ListItemIcon>
-                  <ListItemText primary={point} primaryTypographyProps={{ variant: 'body1' }} />
+                  <ListItemText 
+                    primary={point} 
+                    primaryTypographyProps={{ 
+                      variant: 'body1', 
+                      sx: { 
+                        fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
+                        lineHeight: { xs: 1.4, sm: 1.6 },
+                        overflowWrap: 'break-word', 
+                        wordWrap: 'break-word',
+                        hyphens: 'auto'
+                      }
+                    }} 
+                  />
                 </ListItem>
               ))}
             </List>
@@ -151,19 +226,22 @@ const ProjectSection = ({
     <Box
       id={`project-section-root-${id || sectionIndex}`}
       sx={{
-        maxWidth: '1200px',
+        maxWidth: '100%', // Ensure it never exceeds viewport width
         mx: 'auto',
-        px: { xs: 2, sm: 3, md: 4 },
-        py: { xs: 3, md: 5 },
-        mb: 6,
+        px: { xs: 1, sm: 2, md: 3, lg: 4 }, // Reduced padding on mobile
+        py: { xs: 3, sm: 4, md: 5 },
+        mb: { xs: 4, sm: 5, md: 6 },
         background: theme.palette.background.paper,
         borderRadius: theme.shape.borderRadius,
         boxShadow: theme.shadows[2],
-        minHeight: { xs: 220, sm: 320 }, // Enforce a minimum height for all sections
+        minHeight: { xs: 150, sm: 280, md: 320 }, // Smaller minimum height on mobile
         boxSizing: 'border-box', // Ensure padding is included in height
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
+        overflow: 'hidden', // Prevent content overflow
+        width: '100%', // Take full width of container
+        ...sx
       }}
     >
       {children}
@@ -176,21 +254,39 @@ const ProjectSection = ({
 
     // Handle case where media is direct video/image source
     const mediaObj = typeof media === 'string' ? { src: media } : media;
-    const isVideoContent = isVideo(mediaObj);
+    const isVideoContent = isVideo(mediaObj.src || mediaObj);
+    const isIframeContent = mediaObj.type === 'iframe';
 
     return (
       <Box
         sx={{
           width: '100%',
           aspectRatio,
-          minHeight: { xs: 240, md: 320 },
+          minHeight: { xs: 180, sm: 220, md: 320 }, // Reduced height on mobile
+          maxHeight: isIframeContent ? { xs: 450, sm: 500, md: 600, lg: 700 } : { xs: 400, md: 500, lg: 600 }, // Higher max for iframes
           overflow: 'hidden',
           borderRadius: theme.shape.borderRadius,
           backgroundColor: theme.palette.background.default,
           position: 'relative'
         }}
       >
-        {isVideoContent ? (
+        {isIframeContent ? (
+          <Box 
+            component="iframe"
+            src={mediaObj.src}
+            title={mediaObj.alt || title || "Embedded content"}
+            allowFullScreen={true}
+            frameBorder="0"
+            loading="lazy"
+            sx={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              borderRadius: theme.shape.borderRadius,
+              backgroundColor: theme.palette.background.default
+            }}
+          />
+        ) : isVideoContent ? (
           <VideoPlayer
             src={mediaObj.src}
             poster={mediaObj.poster}
@@ -221,33 +317,90 @@ const ProjectSection = ({
 
     // Single media item
     if (mediaArray.length === 1) {
-      return renderMediaContent(mediaArray[0]);
+      return (
+        <Box 
+          sx={{ 
+            mb: { xs: 2.5, md: 3 },
+            maxWidth: '100%', // Ensure media never exceeds container width
+            overflow: 'hidden' // Hide overflow
+          }}
+        >
+          {renderMediaContent(mediaArray[0])}
+        </Box>
+      );
     }
 
-    // Up to 3 images in a row
+    // Multiple images: dynamic grid that adapts to screen size
+    // Reduce columns on smaller screens
+    const columns = isMobile ? 1 : (isTablet ? 2 : Math.min(mediaArray.length, 3));
+    
     return (
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        {mediaArray.slice(0, 3).map((media, idx) => (
+      <Box 
+        sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          gap: { xs: 1.5, sm: 2, md: 2.5 },
+          mb: { xs: 2.5, md: 3 },
+          width: '100%',
+          maxWidth: '100%', // Prevent overflow
+          overflowX: 'hidden' // Hide horizontal overflow
+        }}
+      >
+        {mediaArray.slice(0, 6).map((media, idx) => (
           <Box
             key={idx}
             sx={{
-              flex: 1,
-              borderRadius: 2,
               overflow: 'hidden',
+              borderRadius: theme.shape.borderRadius,
               boxShadow: theme.shadows[1],
-              aspectRatio: '16/9',
-              background: theme.palette.grey[100],
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+              background: theme.palette.background.default
             }}
           >
-            {renderMediaContent(media)}
+            {renderMediaContent(media, media.aspect === 'portrait' ? 3/4 : 16/9)}
           </Box>
         ))}
       </Box>
     );
   };
+
+  // --- Specialized section layout for iframe or fullMedia content ---
+  if (layout === 'fullMedia') {
+    return fullWidthBox(
+      <>
+        {headingElement}
+        {content && (
+          <Box sx={{ 
+            overflowWrap: 'break-word', 
+            wordWrap: 'break-word',
+            width: '100%',
+            mb: 3
+          }}>
+            {React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />}
+          </Box>
+        )}
+        {mediaData && (
+          <Box 
+            sx={{ 
+              width: '100%', 
+              height: mediaData.type === 'iframe' ? { xs: '50vh', sm: '60vh', md: '70vh' } : 'auto',
+              minHeight: { xs: 300, sm: 400, md: 500 },
+              maxHeight: { xs: 500, sm: 600, md: 700 },
+              borderRadius: theme.shape.borderRadius,
+              overflow: 'hidden',
+              boxShadow: theme.shadows[2]
+            }}
+          >
+            {renderMediaContent(mediaData, mediaData.aspect === 'portrait' ? 4/5 : 16/9)}
+          </Box>
+        )}
+        {children && (
+          <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <ProjectActionButtonsBar actions={children} layout="row" />
+          </Box>
+        )}
+      </>
+    );
+  }
 
   // --- Section type-based rendering ---
   switch (type) {
@@ -261,208 +414,123 @@ const ProjectSection = ({
           {headingElement}
           {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
           {mediaData && !Array.isArray(mediaData) && fullWidthImageFrame([mediaData])}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {content && (
+            <Box sx={{ 
+              overflowWrap: 'break-word', 
+              wordWrap: 'break-word',
+              width: '100%'
+            }}>
+              {React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />}
+            </Box>
+          )}
         </>
       );
-    // --- Research/Methodology/Technical/Findings/Recommendations/Content/Concept/Impact/Benefits/Future ---
-    case 'research':
-    case 'methodology':
-    case 'technical':
-    case 'findings':
-    case 'recommendations':
-    case 'content':
-    case 'concept':
-    case 'impact':
-    case 'benefits':
-    case 'future':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          {mediaData && !Array.isArray(mediaData) && fullWidthImageFrame([mediaData])}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {renderOutcomesTakeaways()}
-        </>
-      );
-    // --- Gallery ---
+      
+    // --- Gallery specific section ---
     case 'gallery':
       return fullWidthBox(
         <>
           {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          <ProjectGallery images={mediaData} title={title} />
-        </>
-      );
-    // --- Video ---
-    case 'video':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {mediaData && mediaData.src && (
-            <Box sx={{ mb: 3 }}>
-              <VideoPlayer src={mediaData.src} containerHeight="100%" containerWidth="100%" controls muted />
+          {content && (
+            <Box sx={{ 
+              overflowWrap: 'break-word', 
+              wordWrap: 'break-word',
+              width: '100%',
+              mb: 2
+            }}>
+              {React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />}
             </Box>
           )}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
+          {Array.isArray(mediaData) && mediaData.length > 0 && (
+            <ProjectGallery 
+              images={mediaData} 
+              title={title || 'Project Gallery'} 
+            />
+          )}
         </>
       );
-    // --- Outcomes/Takeaways ---
-    case 'outcomes':
-    case 'takeaways':
+    
+    // --- Media Gallery showcase ---
+    case 'showcase':
       return fullWidthBox(
         <>
           {headingElement}
+          {Array.isArray(mediaData) && mediaData.length > 1 ? (
+            <ProjectGallery 
+              images={mediaData} 
+              title={title || 'Project Showcase'} 
+            />
+          ) : (
+            <>
+              {Array.isArray(mediaData) && mediaData.length === 1 && fullWidthImageFrame(mediaData)}
+              {mediaData && !Array.isArray(mediaData) && fullWidthImageFrame([mediaData])}
+            </>
+          )}
+          {content && (
+            <Box sx={{ 
+              overflowWrap: 'break-word', 
+              wordWrap: 'break-word',
+              width: '100%',
+              mt: 2
+            }}>
+              {React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />}
+            </Box>
+          )}
+        </>
+      );
+
+    // --- Fallback: text/media split layout ---
+    case 'textLeft':
+    case 'textRight':
+    default:
+      // Define the content element with proper overflow handling
+      const textContentElement = (
+        <Box
+          component={motion.div}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+          id={id}
+          sx={{ 
+            width: '100%',
+            maxWidth: '100%',
+            overflowWrap: 'break-word', 
+            wordWrap: 'break-word',
+            hyphens: 'auto',
+            px: { xs: 0, sm: 0.5, md: 1 } // Reduced padding on mobile to prevent overflow
+          }}
+        >
+          {headingElement}
+          {content && (
+            <Box sx={{ 
+              fontSize: { xs: '0.95rem', sm: '1rem', md: '1rem' },
+              lineHeight: { xs: 1.5, sm: 1.6 },
+              width: '100%'
+            }}>
+              {React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />}
+            </Box>
+          )}
           {renderOutcomesTakeaways()}
-        </>
-      );
-    // --- Onboarding ---
-    case 'onboarding':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-        </>
-      );
-    // --- Prototype ---
-    case 'prototype':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {/* Optionally embed iframe or use PrototypeShowcase here */}
-        </>
-      );
-    // --- Custom ---
-    case 'custom':
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
-          {headingElement}
-          {children}
+          {children && (
+            <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              <ProjectActionButtonsBar actions={children} layout="row" />
+            </Box>
+          )}
         </Box>
       );
-    // --- Persona ---
-    case 'persona':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="h5" color="primary">Persona Section</Typography>
-            <Typography variant="body2">(Add persona details here)</Typography>
-          </Box>
-        </>
-      );
-    // --- Testimonial ---
-    case 'testimonial':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="h5" color="secondary">Testimonial Section</Typography>
-            <Typography variant="body2">(Add testimonial content here)</Typography>
-          </Box>
-        </>
-      );
-    // --- Timeline ---
-    case 'timeline':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="h5" color="info.main">Timeline Section</Typography>
-            <Typography variant="body2">(Add timeline events here)</Typography>
-          </Box>
-        </>
-      );
-    // --- Research Highlight ---
-    case 'researchHighlight':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="h5" color="success.main">Research Highlight</Typography>
-            <Typography variant="body2">(Add research highlight here)</Typography>
-          </Box>
-        </>
-      );
-    // --- Iteration ---
-    case 'iteration':
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          {content && (
-            <Box sx={{ mt: 3 }}>
-              {React.isValidElement(content) ? content : (
-                <ProjectContentRenderer content={content} variant="body1" />
-              )}
-            </Box>
-          )}
-          {takeaways && takeaways.length > 0 && (
-            <Box sx={{ mt: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
-                Iteration Insights
-              </Typography>
-              <List dense disablePadding>
-                {takeaways.map((item, idx) => (
-                  <ListItem key={idx} disableGutters>
-                    <ListItemIcon sx={{ minWidth: '32px' }}>
-                      <StarBorderIcon fontSize="small" color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary={item} primaryTypographyProps={{ variant: 'body1' }} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
-          {outcomes && outcomes.points && outcomes.points.length > 0 && (
-            <Box sx={{ mt: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
-                {outcomes.title || 'Iteration Outcomes'}
-              </Typography>
-              <List dense disablePadding>
-                {outcomes.points.map((point, idx) => (
-                  <ListItem key={idx} disableGutters>
-                    <ListItemIcon sx={{ minWidth: '32px' }}>
-                      <CheckCircleOutlineIcon fontSize="small" color="success" />
-                    </ListItemIcon>
-                    <ListItemText primary={point} primaryTypographyProps={{ variant: 'body1' }} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
-        </>
-      );
-    // --- Fallback: text/media split layout ---
-    default:
-      // ...existing code for split layout...
-      const textContentElement = (
-        <Grid container justifyContent="center">
-          <Box
-            component={motion.div}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-            id={id}
-          >
-            {headingElement}
-            {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-            {renderOutcomesTakeaways()}
-            {children && (
-              <Box sx={{ mt: 3 }}>
-                <ProjectActionButtonsBar actions={children} layout="row" />
-              </Box>
-            )}
-          </Box>
-        </Grid>
-      );
+
       let mediaElement = null;
       if (Array.isArray(mediaData) && mediaData.length > 0) {
         mediaElement = (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {mediaData.slice(0, 1).map((img, idx) => (
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: { xs: 1.5, md: 2 },
+            width: '100%',
+            height: '100%' 
+          }}>
+            {mediaData.slice(0, isMobile ? 1 : 2).map((img, idx) => (
               <ContentAwareImage
                 key={idx}
                 src={img.src || img}
@@ -489,8 +557,8 @@ const ProjectSection = ({
             sx={{
               width: '100%',
               aspectRatio: aspectRatio,
-              minHeight: { xs: 240, md: 320 },
-              maxHeight: { md: 600 },
+              minHeight: { xs: 200, sm: 240, md: 320 },
+              maxHeight: { xs: 350, md: 450, lg: 600 },
               borderRadius: theme.shape.borderRadius,
               overflow: 'hidden',
               boxShadow: theme.shadows[3],
@@ -517,26 +585,40 @@ const ProjectSection = ({
           </Box>
         );
       }
+      
       if (isTextOnly) {
         return fullWidthBox(textContentElement);
       }
+      
       if (isMediaOnly) {
         return fullWidthBox(mediaElement);
       }
+      
+      // On mobile, always stack content with text first, then media
+      if (isMobile) {
+        return fullWidthBox(
+          <>
+            {textContentElement}
+            {mediaElement && <Box sx={{ mt: 3, width: '100%' }}>{mediaElement}</Box>}
+          </>
+        );
+      }
+      
+      // On larger screens, use the grid layout
       return (
         <Grid
           id={`project-section-grid-${id || sectionIndex}`}
           container
-          spacing={{ xs: 4, md: 6 }}
+          spacing={{ xs: 2, sm: 3, md: 4 }} // Reduced spacing on mobile
           sx={{ 
-            mb: 6, 
-            maxWidth: '1200px', 
+            mb: { xs: 4, sm: 5, md: 6 },
+            maxWidth: '100%', // Ensure grid respects container width
             mx: 'auto', 
-            px: { xs: 2, sm: 3, md: 4 },
-            minHeight: { xs: 220, sm: 320 }, // Enforce a minimum height for split layout
+            px: { xs: 1, sm: 2, md: 3 }, // Less padding on mobile
+            minHeight: { xs: 150, sm: 280, md: 320 },
             boxSizing: 'border-box',
             alignItems: 'stretch',
-            display: 'flex',
+            overflow: 'hidden' // Hide overflow
           }}
           alignItems="stretch"
         >
@@ -544,17 +626,29 @@ const ProjectSection = ({
             item
             xs={12}
             md={6}
-            sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'left' }}
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'center',
+              alignItems: { xs: 'center', md: 'flex-start' },
+              p: { xs: 2, sm: 2.5, md: 3 },
+            }}
             order={{ xs: 1, md: isReverse ? 2 : 1 }}
           >
             {textContentElement}
           </Grid>
+          
           {mediaElement && (
             <Grid
               item
               xs={12}
               md={6}
-              sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'center',
+                p: { xs: 2, sm: 2.5, md: 3 },
+              }}
               order={{ xs: 2, md: isReverse ? 1 : 2 }}
             >
               {mediaElement}

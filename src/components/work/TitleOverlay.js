@@ -1,66 +1,142 @@
 import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
-import CategoryTagList from '../common/CategoryTagList';
+import { Box, Typography, Chip, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
 
 /**
  * TitleOverlay Component
  * 
- * Displays title, description, and categories as an overlay on the hero image
- * with a dark gradient background for readability.
+ * Displays a title, description, and categories overlay on top of hero images
+ * with responsive design and animated entrance.
+ * 
+ * @param {string} title - The title to display
+ * @param {string} description - The description text
+ * @param {Array} categories - Array of category strings
+ * @param {boolean} isMobile - Whether the current view is mobile
+ * @param {Object} sx - Additional styles to apply to the root component
  */
-const TitleOverlay = ({ title, description, categories = [] }) => {
+const TitleOverlay = ({ 
+  title, 
+  description, 
+  categories = [], 
+  isMobile = false,
+  sx = {} 
+}) => {
   const theme = useTheme();
+  
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 150,
+        damping: 20
+      }
+    }
+  };
   
   return (
     <Box
+      component={motion.div}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
       sx={{
         position: 'absolute',
-        top: 0,
+        bottom: 0,
         left: 0,
         width: '100%',
-        height: '100%',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.25) 75%, rgba(0,0,0,0) 100%)',
+        color: 'white',
+        p: { xs: 2, sm: 3, md: 4 },
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-        background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)',
-        color: theme.palette.common.white,
-        padding: { xs: 3, sm: 4, md: 5 },
-        boxSizing: 'border-box',
-        mt: { xs: 8, sm: 10 }, // Add extra top margin to move content down
+        minHeight: { xs: '30%', sm: '40%' },
+        ...sx
       }}
     >
-      {/* Project Title */}
+      {/* Categories */}
+      {categories.length > 0 && (
+        <Box 
+          component={motion.div}
+          variants={itemVariants}
+          sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: 1,
+            mb: 1.5
+          }}
+        >
+          {categories.map((category, index) => (
+            <Chip
+              key={`category-${index}`}
+              label={category}
+              size={isMobile ? "small" : "medium"}
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                backdropFilter: 'blur(4px)',
+                fontWeight: 500,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                },
+              }}
+            />
+          ))}
+        </Box>
+      )}
+
+      {/* Title */}
       <Typography
-        variant="h2"
-        component="h1"
+        component={motion.h1}
+        variants={itemVariants}
+        variant={isMobile ? "h4" : "h3"}
+        gutterBottom
         sx={{
           fontWeight: 700,
-          mb: 1,
-          fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-          textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
+          textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+          letterSpacing: '-0.02em',
+          lineHeight: 1.2,
         }}
       >
         {title}
       </Typography>
-      
-      {/* Project Description */}
-      <Typography
-        variant="h5"
-        sx={{
-          mb: 2,
-          maxWidth: '800px',
-          fontWeight: 400,
-          fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-          textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
-        }}
-      >
-        {description}
-      </Typography>
-      
-      {/* Categories */}
-      {categories.length > 0 && (
-        <CategoryTagList tags={categories} sx={{ mt: 1 }} />
+
+      {/* Description - show less text on mobile */}
+      {description && (
+        <Typography
+          component={motion.div}
+          variants={itemVariants}
+          variant="body1"
+          sx={{
+            maxWidth: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: isMobile ? 2 : 3,
+            WebkitBoxOrient: 'vertical',
+            fontWeight: 400,
+            textShadow: '0 1px 2px rgba(0,0,0,0.7)',
+            opacity: 0.9,
+            fontSize: { xs: '0.9rem', sm: '1rem' }
+          }}
+        >
+          {description}
+        </Typography>
       )}
     </Box>
   );

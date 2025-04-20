@@ -13,7 +13,7 @@ export { default as AboutCard } from './AboutCard';
 // Sub-components
 export { default as AboutTabNavigation } from './AboutTabNavigation';
 export { default as AboutTabContent } from './AboutTabContent';
-export { default as AboutSlideshow } from './AboutSlideshow';
+// AboutSlideshow component has been removed
 
 // Data
 export { aboutData, renderSkillChip } from './AboutData';

@@ -12,23 +12,51 @@ const IframeModal = ({ url, title }) => {
   const [hasError, setHasError] = useState(false);
   const [isFigmaEmbed, setIsFigmaEmbed] = useState(false);
   const [isMiroEmbed, setIsMiroEmbed] = useState(false);
+  const [processedUrl, setProcessedUrl] = useState('');
   const theme = useTheme();
   
-  // Check if URL is valid and determine its type
+  // Process and optimize URL for different embed types
   useEffect(() => {
     if (!url) {
       setHasError(true);
       return;
     }
     
-    // Detect Figma embeds
-    if (url.includes('figma.com') && url.includes('embed')) {
+    // Process Figma URLs to ensure proper format for embedding
+    if (url.includes('figma.com')) {
       setIsFigmaEmbed(true);
-    }
-    
-    // Detect Miro embeds
-    if (url.includes('miro.com') && url.includes('embed')) {
+      
+      // For Figma, ensure we're using the proper embed format
+      // Convert any regular Figma URL to the proper embed format
+      let optimizedUrl = url;
+      
+      // If it's not already using the embed subdomain
+      if (!url.includes('embed.figma.com')) {
+        // Replace www.figma.com with embed.figma.com
+        optimizedUrl = url.replace('www.figma.com', 'embed.figma.com');
+      }
+      
+      // Ensure it has the embed-host parameter
+      if (!optimizedUrl.includes('embed-host=')) {
+        optimizedUrl += optimizedUrl.includes('?') 
+          ? '&embed-host=share' 
+          : '?embed-host=share';
+      }
+      
+      // Add proper viewer and file parameters if missing
+      if (!optimizedUrl.includes('viewer=')) {
+        optimizedUrl += '&viewer=1';
+      }
+      
+      setProcessedUrl(optimizedUrl);
+      
+    } else if (url.includes('miro.com')) {
+      // Handle Miro embeds
       setIsMiroEmbed(true);
+      setProcessedUrl(url);
+    } else {
+      // For other URLs, use as is
+      setProcessedUrl(url);
     }
     
     setIsLoading(true);
@@ -50,7 +78,7 @@ const IframeModal = ({ url, title }) => {
   // Create custom iframe attributes for different embed types
   const getIframeAttributes = () => {
     const common = {
-      src: url,
+      src: processedUrl,
       title: title || 'External Content',
       width: '100%',
       height: '100%',
@@ -64,6 +92,7 @@ const IframeModal = ({ url, title }) => {
       return {
         ...common,
         allowFullScreen: true,
+        allow: "fullscreen",
         style: { 
           ...common.style, 
           border: '1px solid rgba(0, 0, 0, 0.1)'
@@ -131,7 +160,9 @@ const IframeModal = ({ url, title }) => {
       {/* Special notice for Figma/Miro embeds */}
       {(isFigmaEmbed || isMiroEmbed) && (
         <Alert severity="info" sx={{ mb: 0 }}>
-          This embed requires sign-in to {isFigmaEmbed ? 'Figma' : 'Miro'} for full interactivity
+          {isFigmaEmbed 
+            ? 'This Figma prototype may require sign-in for full interactivity' 
+            : 'This Miro board requires sign-in for full interactivity'}
         </Alert>
       )}
       
