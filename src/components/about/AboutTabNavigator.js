@@ -181,6 +181,13 @@ const AboutTabNavigator = forwardRef((props, ref) => {
                   fontSize: { xs: '0.9rem', sm: '1rem' },
                   minWidth: 0,
                   px: { xs: 1, sm: 2, md: 3 },
+                  // Apply secondary color to specific tabs if they have titleColor property
+                  ...(tab.titleColor === 'secondary' && {
+                    color: theme.palette.secondary.main,
+                    '&.Mui-selected': {
+                      color: theme.palette.secondary.main,
+                    }
+                  })
                 }} 
               />
             ))}

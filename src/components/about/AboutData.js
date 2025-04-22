@@ -28,16 +28,17 @@ import { createAboutImage } from '../../utils/mediaUtils';
 export const aboutData = [
   // WhoAmI tab (previously About Me)
   {
-    title: "WhoAmI",
+    title: "echo $ME",
     subtitle: "UX Designer & Researcher",
+    titleColor: "secondary", // This will make the tab title yellow
     // Use createAboutImage with directly imported image source
     pictures: [
       createAboutImage(WhoamiImage, "Vincent Göke", 'center bottom 30%')
     ],
     content: (
       <>
-        <Typography variant="h4" component="div" gutterBottom>
-          WhoAmI
+        <Typography variant="h4" component="div" gutterBottom sx={{ color: theme => theme.palette.secondary.main }}>
+          echo $ME
         </Typography>
         <Typography variant="body1" paragraph>
           Hi! I'm Vincent Göke, a Human-Computer Interaction Master's graduate, sound designer, and interaction technologist. My work is centered around designing <strong>emotion-driven experiences </strong> through <strong>affective haptics, UX research, and multi-sensory interaction design</strong>.
@@ -46,10 +47,8 @@ export const aboutData = [
           With a background in media informatics and audio design, I transitioned into <strong>haptic interaction design</strong>—an underexplored but promising field that bridges touch, sound, and technology to create intuitive and immersive user experiences.
         </Typography>
         <Typography variant="body1" paragraph>
-          <strong>Beyond Work</strong>: Producing and mixing music under the aliases <em>Din-Z</em> and <em>Superior Motive</em> since 2015. I occasionally contribute to <strong>HipHop production</strong> and <strong>audio post-production</strong>.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          <strong>Sports</strong>: Passionate about football, former player, and lifelong <strong>FC Schalke 04</strong> supporter.
+          <strong>Beyond Work</strong>: Outside of my professional work, I produce and mix music under the aliases <strong>Din-Z</strong> and <strong>Superior Motive</strong>, with roots in HipHop production and audio post-production since 2015.
+          When I’m not designing interactions or making music, you’ll likely find me on the pitch or in the stands — I’m a lifelong <strong>football fan</strong>, former player, and dedicated FC Schalke 04 supporter.
         </Typography>
       </>
     )
