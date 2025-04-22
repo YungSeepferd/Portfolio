@@ -159,6 +159,17 @@ const AboutTabNavigator = forwardRef((props, ref) => {
               width: '100%',
               '& .MuiTabs-flexContainer': {
                 justifyContent: 'space-between',
+              },
+              '& .MuiTab-root': {
+                color: theme.palette.text.secondary,
+                fontWeight: 500,
+                '&.Mui-selected': {
+                  color: theme.palette.secondary.main,
+                },
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: theme.palette.secondary.main,
+                height: 3,
               }
             }}
           >

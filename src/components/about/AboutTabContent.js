@@ -113,11 +113,28 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
           color: theme.palette.text.primary,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           pl: { md: 3 },
           '& .MuiTypography-root': {
-            mb: 2.5,
+            mb: 2,
           },
+          // Main headings in secondary color
+          '& h4, & h5, & h6': {
+            color: theme.palette.secondary.main,
+            mb: 2,
+          },
+          // Subheadings back to gray tone
+          '& .subheading, & .MuiTypography-subtitle1, & .MuiTypography-subtitle2': {
+            color: theme.palette.text.secondary,
+          },
+          // Set icons to match heading color
+          '& .MuiSvgIcon-root': {
+            color: theme.palette.secondary.main,
+          },
+          // Ensure spacing between grid elements
+          '& .MuiGrid-container': {
+            mb: 3,
+          }
         }}
       >
         {tabData.content}

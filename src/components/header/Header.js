@@ -157,9 +157,11 @@ const Header = () => {
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
+              {/* Restored theme toggle for desktop view */}
+              <Box sx={{ ml: 2 }}>
+                <ThemeToggle mode={mode} onToggle={toggleTheme} />
+              </Box>
             </Box>
-            {/* Remove centered Theme Toggle for all viewports */}
-            {/* <Box sx={{ ... }}><ThemeToggle ... /></Box> */}
 
             <IconButton
               color="inherit"
@@ -209,19 +211,16 @@ const Header = () => {
       >
         <Paper elevation={0} sx={{ background: 'none', boxShadow: 'none', p: 0 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'theme.palette.secondary.main', pl: 1, fontFamily: theme.typography.fontFamily }}>
+            <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: theme.palette.secondary.main, pl: 1, fontFamily: theme.typography.fontFamily }}>
               Menu
             </Box>
             <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
               <CloseIcon />
             </IconButton>
           </Box>
-          {/* Theme toggle for mobile menu */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <ThemeToggle mode={mode} onToggle={toggleTheme} />
-          </Box>
-          {/* Navigation buttons in a List for accessibility */}
+          {/* Theme toggle for mobile menu - using button variant */}
           <List>
+            <ThemeToggle mode={mode} onToggle={toggleTheme} variant="button" />
             {navItems.map((item, idx) => (
               <Button
                 key={item.target}

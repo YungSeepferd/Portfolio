@@ -103,27 +103,65 @@ export const aboutData = [
         </Grid>
 
         <Typography variant="h5" sx={{ mb: 3 }}>Tools & Technologies</Typography>
-        {/* Design tools */}
-        <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTagList label="Figma" />
-          <SkillTagList label="Adobe XD" />
-          <SkillTagList label="Sketch" />
-          <SkillTagList label="Prototyping" />
-        </Stack>
-        {/* Web technologies */}
-        <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTagList label="User Testing" />
-          <SkillTagList label="Javascript" />
-          <SkillTagList label="HTML/CSS" />
-        </Stack>
-        {/* Programming and prototyping skills */}
-        <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
-          <SkillTagList label="Unity" />
-          <SkillTagList label="C" />
-          <SkillTagList label="C#" />
-          <SkillTagList label="C++" />
-          <SkillTagList label="Arduino" />
-        </Stack>
+        
+        {/* Better structured Tools & Technologies section with categories and responsive design */}
+        <Box sx={{ mb: 4 }}>
+          {/* Design Tools Category */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" className="subheading" sx={{ mb: 1, fontWeight: 500 }}>
+              Design Tools
+            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: { xs: 0.5, sm: 0.75 },
+              mx: -0.5, // Offset the margin in SkillTagList
+            }}>
+              <SkillTagList label="Figma" size="responsive" />
+              <SkillTagList label="Adobe XD" size="responsive" />
+              <SkillTagList label="Sketch" size="responsive" />
+              <SkillTagList label="Prototyping" size="responsive" />
+            </Box>
+          </Box>
+          
+          {/* Research Tools Category */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" className="subheading" sx={{ mb: 1, fontWeight: 500 }}>
+              Research Tools
+            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: { xs: 0.5, sm: 0.75 },
+              mx: -0.5, // Offset the margin in SkillTagList
+            }}>
+              <SkillTagList label="User Testing" size="responsive" />
+              <SkillTagList label="Interviews" size="responsive" />
+              <SkillTagList label="Surveys" size="responsive" />
+            </Box>
+          </Box>
+          
+          {/* Development Category */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" className="subheading" sx={{ mb: 1, fontWeight: 500 }}>
+              Development
+            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: { xs: 0.5, sm: 0.75 },
+              mx: -0.5, // Offset the margin in SkillTagList
+            }}>
+              <SkillTagList label="Javascript" size="responsive" />
+              <SkillTagList label="HTML/CSS" size="responsive" />
+              <SkillTagList label="Unity" size="responsive" />
+              <SkillTagList label="C" size="responsive" />
+              <SkillTagList label="C#" size="responsive" />
+              <SkillTagList label="C++" size="responsive" />
+              <SkillTagList label="Arduino" size="responsive" />
+            </Box>
+          </Box>
+        </Box>
       </>
     )
   },
