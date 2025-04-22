@@ -8,9 +8,9 @@ import { motion } from 'framer-motion';
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
-  const mailtoLink = projectContext 
-    ? `mailto:goeke.vincent@gmail.com?subject=Regarding%20your%20${encodeURIComponent(projectContext)}%20project` 
-    : "mailto:goeke.vincent@gmail.com?subject=Contact%20from%20Portfolio";
+  const mailtoLink = projectContext
+  ? `mailto:goeke.vincent@gmail.com?subject=${encodeURIComponent(`Regarding your ${projectContext} project`)}`
+  : `mailto:goeke.vincent@gmail.com?subject=${encodeURIComponent('Contact from Portfolio')}`;
 
   // Generate project-specific message if a project context is provided
   const contactMessage = projectContext 

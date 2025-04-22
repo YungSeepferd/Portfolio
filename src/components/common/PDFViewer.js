@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, CircularProgress, Typography, Button, useMediaQuery, Stack, Alert } from '@mui/material';
+import { Box, CircularProgress, Typography, Button, useMediaQuery, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -11,13 +11,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
  * PDFViewer Component
  * 
  * Displays a PDF document in an iframe with improved handling of both
- * imported PDF files and URL references. Provides mobile fallbacks with
- * Google PDF Viewer for better mobile support.
+ * imported PDF files and URL references. Mobile version optimized for
+ * better user experience with direct viewing options.
  */
 const PDFViewer = ({ url, title, onCloseFocusRef }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [useGoogleViewer, setUseGoogleViewer] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const blobUrlRef = useRef(null);
@@ -32,12 +31,6 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
     }
     return url;
   }, [url]);
-
-  // Generate Google PDF Viewer URL for better mobile compatibility
-  const googleViewerUrl = React.useMemo(() => {
-    if (!pdfUrl) return '';
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
-  }, [pdfUrl]);
 
   // Clean up Blob URL on unmount
   useEffect(() => {
@@ -82,12 +75,6 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
       return 'document.pdf';
     }
   };
-
-  // Toggle between native PDF and Google Viewer (better for mobile)
-  const toggleViewer = () => {
-    setIsLoading(true);
-    setUseGoogleViewer(prev => !prev);
-  };
   
   // For mobile, provide improved PDF viewing options
   if (isMobile) {
@@ -102,19 +89,15 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
           overflow: 'hidden'
         }}
       >
-        {/* Alert about mobile PDF viewing */}
-        <Alert severity="info" variant="outlined" sx={{ m: 2 }}>
-          For best experience, choose one of these options to view the PDF
-        </Alert>
-
-        {/* Show the Google PDF Viewer for better mobile support */}
+        {/* PDF Container - Full-screen iOS-friendly PDF viewer */}
         <Box 
           sx={{
             width: '100%', 
             flex: 1,
             overflow: 'hidden',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            '-webkit-overflow-scrolling': 'touch', // Improve iOS scrolling
           }}
         >
           {isLoading && (
@@ -130,14 +113,15 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
             >
               <CircularProgress size={40} />
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Loading PDF viewer...
+                Loading PDF...
               </Typography>
             </Box>
           )}
 
+          {/* Direct PDF iframe with enhanced mobile settings */}
           <Box 
             component="iframe"
-            src={useGoogleViewer ? googleViewerUrl : pdfUrl}
+            src={pdfUrl}
             title={title || "PDF Document"}
             onLoad={handleLoad}
             onError={handleError}
@@ -145,7 +129,9 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
               width: '100%',
               flex: 1,
               border: 'none',
-              display: isLoading ? 'none' : 'block'
+              display: isLoading ? 'none' : 'block',
+              overflow: 'auto',
+              '-webkit-overflow-scrolling': 'touch', // iOS scroll momentum
             }}
           />
         </Box>
@@ -156,43 +142,28 @@ const PDFViewer = ({ url, title, onCloseFocusRef }) => {
             p: 2,
             borderTop: `1px solid ${theme.palette.divider}`,
             display: 'flex',
-            flexDirection: 'column',
-            gap: 1
+            justifyContent: 'space-between',
           }}
         >
-          <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
-            <Button
-              variant={useGoogleViewer ? "outlined" : "contained"}
-              color={useGoogleViewer ? "primary" : "secondary"}
-              onClick={toggleViewer}
-              fullWidth
-            >
-              {useGoogleViewer ? "Use Native Viewer" : "Use Google Viewer"}
-            </Button>
-          </Stack>
-
-          <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
-            <Button
-              variant="outlined"
-              startIcon={<FileDownloadIcon />}
-              href={pdfUrl}
-              download={getFileName()}
-              ref={downloadBtnRef}
-              fullWidth
-            >
-              Download
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<OpenInNewIcon />}
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer" 
-              fullWidth
-            >
-              Open in New Tab
-            </Button>
-          </Stack>
+          <Button
+            variant="outlined"
+            startIcon={<FileDownloadIcon />}
+            href={pdfUrl}
+            download={getFileName()}
+            ref={downloadBtnRef}
+          >
+            Download
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<OpenInNewIcon />}
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in New Tab
+          </Button>
         </Box>
       </Box>
     );

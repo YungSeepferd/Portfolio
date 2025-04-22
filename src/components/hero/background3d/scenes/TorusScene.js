@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Trail, Detailed, Html } from '@react-three/drei';
+import { Trail, Detailed } from '@react-three/drei'; // Removed Html import as it's no longer needed
 import * as THREE from 'three';
 import { useSceneState } from '../SceneContext';
 import { themeColorToThreeColor, getDynamicColor } from '../utils/sceneThemeUtils';
@@ -9,7 +9,7 @@ import { SHAPE_TYPES } from '../constants';
 import ObjectPool from '../utils/ObjectPool';
 
 /**
- * TorusScene Component - With automatic motion
+ * TorusScene Component - With automatic motion and smoother color transitions
  */
 const TorusScene = ({ 
   color = new THREE.Color(), // Will be overridden by theme colors
@@ -29,27 +29,72 @@ const TorusScene = ({
   // Extract scene colors from theme and use them directly
   const primaryColor = themeColorToThreeColor(activeTheme.palette.primary.main);
   
-  // Create a function to get the proper trail color and use it
+  // Create a function to get the proper trail color with smoother transitions
   const getActiveTrailColor = useCallback(() => {
     if (easterEggActive) {
-      // Rainbow effect for Easter egg mode
+      // Slightly less saturated rainbow effect for Easter egg mode
       return new THREE.Color().setHSL(
-        (clock.getElapsedTime() * 0.1) % 1,
-        0.9,
+        (clock.getElapsedTime() * 0.05) % 1, // Slowed down color change
+        0.7, // Less saturation (was 0.9)
         0.6
       );
     } else if (directionIntensity.current > 0.2 && hasMouseMoved.current) {
-      // Use direction-based color when moving significantly
+      // Use more subtle direction-based color when moving significantly
+      // Blend with the theme color for more consistency
+      const themeHsl = rgbToHsl(
+        primaryColor.r,
+        primaryColor.g, 
+        primaryColor.b
+      );
+      
+      // Blend between direction hue and theme hue for subtler transitions
+      const blendFactor = Math.min(0.3, directionIntensity.current * 0.4); // Max 30% influence from direction
+      const blendedHue = directionHue.current * blendFactor + themeHsl.h * (1 - blendFactor);
+      
       return new THREE.Color().setHSL(
-        directionHue.current,
-        0.8,
+        blendedHue,
+        0.6, // Reduced saturation (was 0.8)
         0.6
       );
     } else {
-      // Theme-derived color from extracted colors
-      return themeColorToThreeColor(activeTheme.palette.secondary.main);
+      // Theme-derived color from extracted colors with slight animation
+      const baseColor = themeColorToThreeColor(activeTheme.palette.secondary.main);
+      const hsl = rgbToHsl(baseColor.r, baseColor.g, baseColor.b);
+      
+      // Add subtle animation to base color
+      const animatedHue = (hsl.h + Math.sin(clock.getElapsedTime() * 0.1) * 0.02) % 1;
+      return new THREE.Color().setHSL(
+        animatedHue,
+        hsl.s,
+        hsl.l
+      );
     }
-  }, [activeTheme.palette.secondary.main, clock, easterEggActive]);
+  }, [activeTheme.palette.secondary.main, activeTheme.palette.primary.main, primaryColor, clock, easterEggActive]);
+  
+  // Helper function to convert RGB to HSL
+  const rgbToHsl = useCallback((r, g, b) => {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+        default: h = 0;
+      }
+      
+      h /= 6;
+    }
+    
+    return { h, s, l };
+  }, []);
   
   // Trail of cursor positions
   const [cursorTrail, setCursorTrail] = useState([]);
@@ -103,7 +148,7 @@ const TorusScene = ({
     pointsPool.release(point);
   }, [pointsPool]);
   
-  // Update cursor direction for hue mapping
+  // Update cursor direction for hue mapping with smoother transitions
   const updateCursorDirection = useCallback((currentPos) => {
     if (!currentPos) return;
     
@@ -118,18 +163,25 @@ const TorusScene = ({
       
       // Map angle (-π to π) to hue (0 to 1)
       // Add 0.5 to the normalized value to create more pleasing colors
-      const hue = ((angle / (Math.PI * 2)) + 0.5) % 1;
+      const rawHue = ((angle / (Math.PI * 2)) + 0.5) % 1;
+      
+      // Smooth transitions by blending with previous value (30% old, 70% new)
+      const smoothedHue = directionHue.current * 0.3 + rawHue * 0.7;
       
       // Store direction data
-      directionHue.current = hue;
-      directionIntensity.current = Math.min(1, Math.sqrt(dx*dx + dy*dy) * 4);
+      directionHue.current = smoothedHue;
+      
+      // Dampen intensity changes for smoother transitions
+      const rawIntensity = Math.min(1, Math.sqrt(dx*dx + dy*dy) * 3); // Reduced from 4
+      directionIntensity.current = directionIntensity.current * 0.4 + rawIntensity * 0.6;
+      
       hasMouseMoved.current = true;
       
       // Store position for next frame
       prevCursorWorldPos.current.copy(currentPos);
     } else {
       // Gradually reduce intensity when not moving
-      directionIntensity.current = Math.max(0, directionIntensity.current - 0.02);
+      directionIntensity.current = Math.max(0, directionIntensity.current - 0.01); // Slower fade (was 0.02)
       if (directionIntensity.current < 0.1) {
         hasMouseMoved.current = false;
       }
@@ -444,44 +496,7 @@ const TorusScene = ({
   
   return (
     <group>
-      {/* Add clearer interaction hint */}
-      {isInteractionEnabled && (
-        <mesh position={[0, 0, 0]} scale={[0.8, 0.8, 0.8]}>
-          <sphereGeometry args={[0.4, 16, 16]} />
-          <meshBasicMaterial
-            color={primaryColor}
-            transparent
-            opacity={0.5 + Math.sin(clock.getElapsedTime() * 2) * 0.3}
-          />
-          <pointLight 
-            intensity={0.8} 
-            distance={5}
-            color={primaryColor}
-          />
-        </mesh>
-      )}
-      
-      {/* Add clear instruction text */}
-      <group position={[0, 3, 0]}>
-        <mesh visible={false}>
-          <boxGeometry args={[0.1, 0.1, 0.1]} />
-          <meshBasicMaterial />
-        </mesh>
-        <Html position={[0, 0, 0]} center style={{ width: '200px', textAlign: 'center', pointerEvents: 'none' }}>
-          <div style={{ 
-            background: 'rgba(0,0,0,0.7)', 
-            color: 'white', 
-            padding: '8px 12px', 
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-            fontFamily: 'sans-serif'
-          }}>
-            Move mouse here to create rings
-          </div>
-        </Html>
-      </group>
+      {/* Central sphere removed - no more interaction hint */}
       
       {/* Add dramatic lighting for Easter egg mode */}
       {easterEggActive && (

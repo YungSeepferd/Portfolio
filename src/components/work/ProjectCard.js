@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
@@ -13,11 +13,14 @@ import { isVideo } from '../../utils/mediaUtils';
  *
  * Displays a preview card for a project in the main grid.
  * Shows TechBar and Links on hover via ProjectCardPreview.
+ * Enhanced with improved touch handling for mobile scrolling.
  */
 const ProjectCard = ({ project, onClick }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [isHovered, setIsHovered] = useState(false);
+  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
+  const isScrollingRef = useRef(false);
 
   if (!project) return null;
 
@@ -47,6 +50,41 @@ const ProjectCard = ({ project, onClick }) => {
   // Only show hover preview on non-mobile
   const showPreview = !isMobile && isHovered;
 
+  // Touch event handlers to differentiate between scrolling and tapping
+  const handleTouchStart = (e) => {
+    if (!isMobile) return;
+    
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    };
+    isScrollingRef.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isMobile) return;
+    
+    const touch = e.touches[0];
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    
+    // If vertical movement is detected, mark as scrolling
+    if (deltaY > 10) {
+      isScrollingRef.current = true;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isMobile) return;
+    
+    // Only trigger click if not scrolling and touch duration is short
+    const touchDuration = Date.now() - touchStartRef.current.time;
+    if (!isScrollingRef.current && touchDuration < 300) {
+      onClick(project);
+    }
+  };
+
   return (
     <Card
       component={motion.div}
@@ -56,7 +94,10 @@ const ProjectCard = ({ project, onClick }) => {
       whileHover={!isMobile ? { scale: 1.03, boxShadow: theme.shadows[6] } : {}}
       onMouseEnter={() => { if (!isMobile) setIsHovered(true); }}
       onMouseLeave={() => { if (!isMobile) setIsHovered(false); }}
-      onClick={() => onClick(project)}
+      onClick={(e) => { if (!isMobile) onClick(project); }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       sx={{
         cursor: 'pointer',
         width: '100%',
@@ -70,6 +111,7 @@ const ProjectCard = ({ project, onClick }) => {
         boxShadow: theme.shadows[2],
         backgroundColor: theme.palette.background.paper,
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        touchAction: 'pan-y', // Allow vertical scrolling on touch devices
         '&:hover': !isMobile ? {
           transform: 'translateY(-5px)',
           boxShadow: theme.shadows[6],

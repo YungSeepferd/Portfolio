@@ -12,8 +12,9 @@ import { SHAPE_TYPES } from '../constants';
  * Displays visual cues to guide users on how to interact with the 3D background.
  * - Shows different instructions for mouse vs touch devices
  * - Provides scene-specific instructions
- * - Fades out after a short period
- * - Can be toggled on/off with a prop
+ * - Only appears on the first visit to the site (uses localStorage)
+ * - Disappears when the user switches scenes
+ * - Can be manually toggled on/off with a prop
  */
 const InteractionGuide = ({ 
   show = true, 
@@ -22,7 +23,7 @@ const InteractionGuide = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const { currentShapeType } = useSceneState();
   
@@ -31,20 +32,44 @@ const InteractionGuide = ({
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
   
-  // Auto-hide after delay
+  // Check localStorage to see if user has visited before
   useEffect(() => {
-    if (!show) {
-      setVisible(false);
-      return;
+    // Only run client-side
+    if (typeof window !== 'undefined') {
+      const hasVisitedBefore = localStorage.getItem('hasSeenInteractionGuide');
+      
+      // Show guide only if the user hasn't seen it before
+      if (!hasVisitedBefore && show) {
+        setVisible(true);
+        // Mark as visited
+        localStorage.setItem('hasSeenInteractionGuide', 'true');
+        
+        // Auto-hide after delay
+        const timer = setTimeout(() => {
+          setVisible(false);
+        }, autoHideDelay);
+        
+        return () => clearTimeout(timer);
+      } else if (show && show === true && localStorage.getItem('manuallyShowGuide') === 'true') {
+        // This allows the guide to be manually shown via the info button
+        setVisible(true);
+        localStorage.removeItem('manuallyShowGuide');
+        
+        const timer = setTimeout(() => {
+          setVisible(false);
+        }, autoHideDelay);
+        
+        return () => clearTimeout(timer);
+      } else {
+        setVisible(false);
+      }
     }
-    
-    setVisible(true);
-    const timer = setTimeout(() => {
-      setVisible(false);
-    }, autoHideDelay);
-    
-    return () => clearTimeout(timer);
   }, [show, autoHideDelay]);
+  
+  // Hide guide when scene changes
+  useEffect(() => {
+    setVisible(false);
+  }, [currentShapeType]);
   
   // Responsive position and style
   const positionStyles = isMobile ? {

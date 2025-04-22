@@ -208,10 +208,10 @@ const Hero = () => {
   // Get scene name based on index
   const getSceneName = useCallback((index) => {
     switch (index) {
-      case SHAPE_TYPES.SPHERE: return 'Sphere';
-      case SHAPE_TYPES.CUBE: return 'Cube';
-      case SHAPE_TYPES.TORUS: return 'Torus';
-      default: return 'Shape';
+      case SHAPE_TYPES.SPHERE: return 'Spheres';
+      case SHAPE_TYPES.BOX: return 'Boxes';
+      case SHAPE_TYPES.TORUS: return 'Drawing';
+      default: return 'Scene';
     }
   }, []);
 
