@@ -15,7 +15,7 @@ const FooterContact = ({ projectContext }) => {
   // Generate project-specific message if a project context is provided
   const contactMessage = projectContext 
     ? `Interested in discussing more about the ${projectContext} project? I'd love to share insights about the process and outcomes!` 
-    : "If you want to chat about UX, haptic design, or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
+    : "If you want to chat about UX, audio design, haptic design or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
 
   return (
     <Box 

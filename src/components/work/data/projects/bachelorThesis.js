@@ -47,6 +47,7 @@ const bachelorThesis = {
   id: 'bachelorThesis',
   title: "Passenger Reroute – Bachelor Thesis",
   description: "Investigating passenger interaction with autonomous vehicle systems for spontaneous route adjustments.",
+  shortDescription: "Study on passenger trust in autonomous vehicle UI for route changes.",
   categories: ["Automotive UX", "UI Design", "Prototyping", "UX Research", "User Testing"],
   technologies: ["Figma", "Adobe After Effects", "Adobe Illustrator", "User Testing"],
   cardVariant: cardVariant,

@@ -62,6 +62,7 @@ const adhdeer = {
   id: 'adhdeer',
   title: "ADHDeer - ADHD Student Support App",
   description: "A mobile application designed to support university students with ADHD in managing their academic and daily lives.",
+  shortDescription: "Mobile app helping students with ADHD through gamified routines and emotion tracking.",
   categories: ["UX Design", "UX Research", "Mobile App"],
   technologies: ["Figma", "Adobe XD", "User Testing"],
   cardVariant: 'image',

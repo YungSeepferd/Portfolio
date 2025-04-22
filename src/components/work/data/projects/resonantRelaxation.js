@@ -83,6 +83,7 @@ const resonantRelaxation = {
   id: 'resonantRelaxation',
   title: "Resonant Relaxation – Procedural Haptics",
   description: "Exploring procedural generation of haptic feedback for relaxation and mindfulness applications.",
+  shortDescription: "AI-powered haptic therapy using personalized patterns for relaxation.",
   categories: ["Haptic Design", "AI Integration", "UX Research", "Sound Design"],
   technologies: ["React.js", "RNBO.js", "GPT-4 API", "Tone.js", "Bootstrap"],
   cardVariant,

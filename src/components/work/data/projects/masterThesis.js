@@ -81,6 +81,7 @@ const masterThesis = {
   id: 'masterThesis',
   title: "Prototyping Emotions – Master Thesis",
   description: "A structured methodology for prototyping emotional haptic feedback using the Circumplex Model of Affect.",
+  shortDescription: "A methodology for prototyping emotional haptic feedback for wearables.",
   categories: ["UX Research", "Interaction Design", "HCI Methodologies", "Haptic Design"],
   technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
   cardVariant: cardVariant,

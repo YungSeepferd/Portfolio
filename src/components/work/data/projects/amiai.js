@@ -46,6 +46,7 @@ const amiai = {
   id: 'amiai',
   title: "AMIAI – Critical Visual Campaign",
   description: "A visual campaign exploring AI-generated content credibility and digital literacy.",
+  shortDescription: "Campaign raising awareness about AI image manipulation and digital literacy.",
   categories: ["Graphic Design", "Visual Communication", "Marketing Campaigns"],
   technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects"],
   cardVariant: cardVariant,

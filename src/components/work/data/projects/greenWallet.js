@@ -71,6 +71,7 @@ const greenWallet = {
   id: 'greenWallet',
   title: "Green Wallet – Sustainable Tourism",
   description: "A gamified cashless payment system for sustainable tourism developed during a hackathon.",
+  shortDescription: "Mobile app promoting eco-tourism through gamified cashless payments.",
   categories: ["UI Design", "UX Research", "Sustainable UX", "Tourism", "Gamification"],
   technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
   cardVariant: cardVariant,
