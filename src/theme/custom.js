@@ -120,6 +120,38 @@ export const createCustomParts = (theme) => {
         video: '/assets/images/placeholders/video-placeholder.jpg',
       },
     },
+
+    // Common overlay and component styling values
+    overlays: {
+      header: {
+        light: 'rgba(248, 250, 252, 0.7)',
+        dark: 'rgba(10, 22, 40, 0.7)',
+      },
+      aboutImage: {
+        default: 'rgba(0,0,0,0.5)',
+        hover: 'rgba(0,0,0,0.7)',
+      },
+      contactCard: {
+        background: 'rgba(255, 255, 255, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+      },
+      socialIcon: {
+        base: alpha(theme.palette.secondary.main, 0.10),
+        hover: alpha(theme.palette.secondary.main, 0.18),
+      }
+    },
+
+    // Component specific layout values
+    header: {
+      burgerMenuOffset: {
+        top: theme.spacing(1),
+        right: {
+          xs: theme.spacing(2.5),
+          sm: theme.spacing(3),
+          md: theme.spacing(1)
+        }
+      }
+    },
     
     // Control z-index values consistently
     zIndex: {

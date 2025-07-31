@@ -167,11 +167,11 @@ const AboutCard = ({
                   position: 'absolute',
                   bottom: 8,
                   right: 8,
-                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  backgroundColor: theme.custom.overlays.aboutImage.default,
                   color: 'white',
                   zIndex: 2,
                   '&:hover': {
-                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    backgroundColor: theme.custom.overlays.aboutImage.hover,
                   },
                 }}
               >

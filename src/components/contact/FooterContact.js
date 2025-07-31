@@ -67,11 +67,11 @@ const FooterContact = ({ projectContext }) => {
               <Grid item xs={12}>
                 <Card 
                   elevation={6}
-                  sx={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                  sx={{
+                    backgroundColor: theme.custom.overlays.contactCard.background,
                     backdropFilter: 'blur(10px)',
                     color: theme.palette.common.white,
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    border: theme.custom.overlays.contactCard.border,
                     height: '100%',
                     maxWidth: '900px', // Add a max-width for better readability
                     mx: 'auto', // Center the card horizontally
@@ -184,7 +184,7 @@ const FooterContact = ({ projectContext }) => {
               sx={{
                 mt: 6,
                 pt: 3,
-                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                borderTop: theme.custom.overlays.contactCard.border,
                 display: 'flex',
                 flexDirection: { xs: 'column', sm: 'row' },
                 justifyContent: 'space-between',
