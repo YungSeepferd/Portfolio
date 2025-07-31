@@ -226,9 +226,9 @@ const ProjectSection = ({
     <Box
       id={`project-section-root-${id || sectionIndex}`}
       sx={{
-        maxWidth: '100%', // Ensure it never exceeds viewport width
+        maxWidth: theme.breakpoints.values.lg,
         mx: 'auto',
-        px: { xs: 1, sm: 2, md: 3, lg: 4 }, // Reduced padding on mobile
+        px: { xs: 2, sm: 3, md: 4 },
         py: { xs: 3, sm: 4, md: 5 },
         mb: { xs: 4, sm: 5, md: 6 },
         background: theme.palette.background.paper,
