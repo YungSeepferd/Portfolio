@@ -3,6 +3,7 @@ import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/materi
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
+import parseProjectContent from '../../utils/projectContentParser';
 import { getProjects } from './data/index'; // UPDATED: Import from the correct location
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
@@ -202,7 +203,7 @@ const Work = () => {
         <ProjectModal
           open={isModalOpen}
           onClose={handleCloseModal}
-          project={selectedProjectIndex !== null ? projects[selectedProjectIndex] : null}
+          project={selectedProjectIndex !== null ? parseProjectContent(projects[selectedProjectIndex]) : null}
           onNextProject={handleNextProject}
           onPreviousProject={handlePrevProject}
         />

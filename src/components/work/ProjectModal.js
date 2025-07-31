@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useState } from 'react';
+import React, { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { Modal, Box, IconButton, useTheme, CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ProjectFullContent from './ProjectFullContent';
 import { useSwipeable } from 'react-swipeable';
+import parseProjectContent from '../../utils/projectContentParser';
 import SwipeRightAltIcon from '@mui/icons-material/SwipeRightAlt';
 import SwipeLeftAltIcon from '@mui/icons-material/SwipeLeftAlt';
 
@@ -31,6 +32,7 @@ const ProjectModal = ({
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const contentRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const parsedProject = useMemo(() => parseProjectContent(project), [project]);
 
   // Enhanced swipe handlers with better sensitivity settings
   const swipeHandlers = useSwipeable({
@@ -481,8 +483,8 @@ const ProjectModal = ({
             }
           }}
         >
-          <ProjectFullContent 
-            project={project} 
+          <ProjectFullContent
+            project={parsedProject}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
           />
