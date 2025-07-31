@@ -6,41 +6,49 @@
  */
 
 // Define and export typography settings directly (do not import tokens here)
+const baseFontStack = [
+  'Roboto',
+  'Helvetica',
+  'Arial',
+  'sans-serif',
+].join(',');
+
+const headingFontStack = ['Montserrat', baseFontStack].join(',');
+
 const typography = {
-  fontFamily: [
-    'Inter',
-    'Roboto',
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'Arial',
-    'sans-serif',
-  ].join(','),
+  fontFamily: baseFontStack,
   h1: {
+    fontFamily: headingFontStack,
     fontWeight: 700,
     fontSize: '3.5rem',
     lineHeight: 1.2,
   },
   h2: {
+    fontFamily: headingFontStack,
     fontWeight: 700,
     fontSize: '2.75rem',
     lineHeight: 1.2,
   },
   h3: {
+    fontFamily: headingFontStack,
     fontWeight: 600,
     fontSize: '2.25rem',
     lineHeight: 1.3,
   },
   h4: {
+    fontFamily: headingFontStack,
     fontWeight: 600,
     fontSize: '1.75rem',
     lineHeight: 1.4,
   },
   h5: {
+    fontFamily: headingFontStack,
     fontWeight: 600,
     fontSize: '1.5rem',
     lineHeight: 1.4,
   },
   h6: {
+    fontFamily: headingFontStack,
     fontWeight: 600,
     fontSize: '1.25rem',
     lineHeight: 1.4,

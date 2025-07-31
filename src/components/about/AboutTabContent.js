@@ -76,6 +76,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
             src={imgSrc}
             alt={`${tabData.title || 'About'} image`}
             objectPosition={imgPosition}
+            objectFit="contain"
             containerHeight="100%"
             containerWidth="100%"
             expandOnHover={true}

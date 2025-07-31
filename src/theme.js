@@ -98,39 +98,43 @@ const createAppTheme = (mode = 'dark') => {
     },
     typography: {
       fontFamily: [
-        'Inter',
         'Roboto',
-        '-apple-system',
-        'BlinkMacSystemFont',
+        'Helvetica',
         'Arial',
         'sans-serif',
       ].join(','),
       h1: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 700,
         fontSize: '3.5rem',
         lineHeight: 1.2,
       },
       h2: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 700,
         fontSize: '2.75rem',
         lineHeight: 1.2,
       },
       h3: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 600,
         fontSize: '2.25rem',
         lineHeight: 1.3,
       },
       h4: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 600,
         fontSize: '1.75rem',
         lineHeight: 1.4,
       },
       h5: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 600,
         fontSize: '1.5rem',
         lineHeight: 1.4,
       },
       h6: {
+        fontFamily: ['Montserrat', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
         fontWeight: 600,
         fontSize: '1.25rem',
         lineHeight: 1.4,
