@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
@@ -7,6 +7,7 @@ import { getProjects } from './data/index'; // UPDATED: Import from the correct 
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import parseProjectContent from '../../utils/projectContentParser';
 
 /**
  * Work Component
@@ -40,14 +41,20 @@ const Work = () => {
     }
   );
 
+  // Parse project content once loaded for consistent structure
+  const parsedProjects = useMemo(
+    () => projects.map((p) => parseProjectContent(p)),
+    [projects]
+  );
+
   // Update filtered projects when projects change
   useEffect(() => {
-    setFilteredProjects(projects);
-  }, [projects]);
+    setFilteredProjects(parsedProjects);
+  }, [parsedProjects]);
 
   // Handle project card click
   const handleCardClick = (project) => {
-    const index = projects.findIndex(p => p.id === project.id);
+    const index = parsedProjects.findIndex(p => p.id === project.id);
     if (index !== -1) {
       setSelectedProjectIndex(index);
       setIsModalOpen(true);
@@ -61,7 +68,7 @@ const Work = () => {
 
   // Handle navigation to next project
   const handleNextProject = () => {
-    if (selectedProjectIndex < projects.length - 1) {
+    if (selectedProjectIndex < parsedProjects.length - 1) {
       setSelectedProjectIndex(selectedProjectIndex + 1);
     } else {
       setSelectedProjectIndex(0); // Loop back to first project
@@ -73,7 +80,7 @@ const Work = () => {
     if (selectedProjectIndex > 0) {
       setSelectedProjectIndex(selectedProjectIndex - 1);
     } else {
-      setSelectedProjectIndex(projects.length - 1); // Loop to last project
+      setSelectedProjectIndex(parsedProjects.length - 1); // Loop to last project
     }
   };
 
@@ -188,9 +195,9 @@ const Work = () => {
               </Box>
             ) : (
               <ErrorBoundary componentName="ProjectGrid">
-                <ProjectGrid 
-                  projects={filteredProjects} 
-                  onCardClick={handleCardClick} 
+                <ProjectGrid
+                  projects={filteredProjects}
+                  onCardClick={handleCardClick}
                 />
               </ErrorBoundary>
             )}
@@ -202,7 +209,9 @@ const Work = () => {
         <ProjectModal
           open={isModalOpen}
           onClose={handleCloseModal}
-          project={selectedProjectIndex !== null ? projects[selectedProjectIndex] : null}
+          project={
+            selectedProjectIndex !== null ? parsedProjects[selectedProjectIndex] : null
+          }
           onNextProject={handleNextProject}
           onPreviousProject={handlePrevProject}
         />
