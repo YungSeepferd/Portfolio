@@ -154,7 +154,7 @@ const GlobalErrorHandler = () => {
                 Error Message:
               </Typography>
               
-              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: 'monospace' }}>
+              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: theme.typography.fontFamily }}>
                 <Box component="pre" sx={{ 
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'break-word',
@@ -172,7 +172,7 @@ const GlobalErrorHandler = () => {
                     Stack Trace:
                   </Typography>
                   
-                  <Typography variant="body2" component="div" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                  <Typography variant="body2" component="div" sx={{ fontFamily: theme.typography.fontFamily, fontSize: '0.75rem' }}>
                     <Box component="pre" sx={{ 
                       whiteSpace: 'pre-wrap', 
                       wordBreak: 'break-word',

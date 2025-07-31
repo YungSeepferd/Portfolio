@@ -192,7 +192,7 @@ const ImageErrorHandler = ({
             variant="caption"
             component="pre"
             sx={{
-              fontFamily: 'monospace',
+              fontFamily: theme.typography.fontFamily,
               fontSize: '0.7rem',
               wordBreak: 'break-all',
               whiteSpace: 'pre-wrap',
