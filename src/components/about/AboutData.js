@@ -16,7 +16,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 // Import images directly
 // Note: filename uses uppercase .JPG extension in repository
 // Import with matching case to avoid module not found errors on Unix systems
-import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
+import WhoamiImage from '../../assets/images/About Me/Whoami.jpg';
 import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
 import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
