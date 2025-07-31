@@ -42,8 +42,12 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
   - `dev/`        : Development-only tools (DesignSystemViewer, ThemeDebugger)
   - `header/`     : Main navigation/header
   - `hero/`       : Hero section, 3D/canvas backgrounds, skills
-  - `work/`       : Portfolio/work section, dynamic project modal, project data pipeline
-    - `data/`     : Project data (per-project files), skill tags, UI config
+  - `work/`       : Portfolio/work section with dynamic cards and modal
+    - `Work.js`              : Loads projects and controls `ProjectModal`
+    - `ProjectGrid.js`       : Animated grid of `ProjectCard` components
+    - `ProjectModal.js`      : Displays full project content with `ProjectNavigation`
+    - `DynamicSection.js`    : Flexible section renderer for modal content
+    - `data/`                : Project data (per-project files), skill tags, UI config
 
 - **src/config/**
   - `mediaConfig.js` : Centralized media asset mapping
@@ -82,12 +86,13 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
 ---
 
 ## Data Flow (Work/Portfolio Section)
-- Project data is defined in `src/components/work/data/projects/` (one file per project)
-- Aggregated in `src/components/work/data/projects/index.js`
-- Standardized and exported in `src/components/work/data/index.js`
-- Loaded in `Work.js` using the `useDataLoader` hook
-- Passed to `ProjectModal` and rendered dynamically in `ProjectFullContent.js` using `projectContentParser.js`
-- Supports text, media, galleries, outcomes, prototypes, and custom sections
+- Project data lives in `src/components/work/data/projects/` (one file per project)
+- Aggregated and normalized in `src/components/work/data/projects/index.js`
+- `src/components/work/data/index.js` exposes a `getProjects()` helper returning the processed array
+- `Work.js` loads this array through the `useDataLoader` hook and sends it to `ProjectGrid`
+- Clicking a card opens `ProjectModal`, which parses sections with `projectContentParser.js`
+- Each section is rendered via `DynamicSection` inside the modal
+- Supports text, media, galleries, outcomes, prototypes, and other custom layouts
 
 ---
 
@@ -120,8 +125,19 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
    ```
 4. Deploy (if configured):
    ```bash
-   npm run deploy
-   ```
+ npm run deploy
+  ```
+
+
+---
+
+## Running Tests
+
+Run the unit tests once without watch mode:
+
+```bash
+npm test -- --watchAll=false
+```
 
 ---
 
