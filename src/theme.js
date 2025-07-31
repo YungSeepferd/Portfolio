@@ -1,5 +1,6 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { tokens } from './theme/design/tokens';
+import { createCustomParts } from './theme/custom';
 
 // Utility to get responsive border radius from theme/tokens
 export const getResponsiveRadius = (theme, bp = 'md') => {
@@ -237,7 +238,10 @@ const createAppTheme = (mode = 'dark') => {
   
   // Make typography responsive
   theme = responsiveFontSizes(theme);
-  
+
+  // Attach custom theme sections for convenient access in components
+  theme.custom = createCustomParts(theme);
+
   return theme;
 };
 

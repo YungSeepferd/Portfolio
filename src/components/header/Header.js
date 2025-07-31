@@ -61,9 +61,9 @@ const Header = () => {
     setMobileOpen(false);
   };
 
-  const transparentBgColor = mode === 'dark' 
-    ? 'rgba(10, 22, 40, 0.7)'  
-    : 'rgba(248, 250, 252, 0.7)';
+  const transparentBgColor = mode === 'dark'
+    ? theme.custom.overlays.header.dark
+    : theme.custom.overlays.header.light;
 
   return (
     <motion.div
@@ -144,8 +144,8 @@ const Header = () => {
                   sx={{
                     ml: 1,
                     color: theme.palette.secondary.dark,
-                    backgroundColor: 'rgba(194,247,80,0.10)',
-                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
+                    backgroundColor: theme.custom.overlays.socialIcon.base,
+                    '&:hover': { backgroundColor: theme.custom.overlays.socialIcon.hover },
                     p: 0.5
                   }}
                   aria-label={link.ariaLabel}
@@ -168,12 +168,12 @@ const Header = () => {
               aria-label="open drawer"
               edge="end"
               onClick={handleMenuOpen}
-              sx={{ 
+              sx={{
                 display: { md: 'none' },
                 ml: 0,
                 position: 'absolute',
-                right: { xs: 20, sm: 24, md: 8 }, // Responsive spacing for burger menu
-                top: 8,
+                right: theme.custom.header.burgerMenuOffset.right,
+                top: theme.custom.header.burgerMenuOffset.top,
                 zIndex: 1201
               }}
             >
