@@ -140,7 +140,7 @@ class ErrorBoundary extends Component {
                 Error Details:
               </Typography>
               
-              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: 'monospace', fontSize: '0.85rem' }}>
+              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: theme.typography.fontFamily, fontSize: '0.85rem' }}>
                 <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {error?.toString() || 'Unknown error'}
                 </Box>
@@ -152,7 +152,7 @@ class ErrorBoundary extends Component {
                 Component Stack:
               </Typography>
               
-              <Typography variant="body2" component="div" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+              <Typography variant="body2" component="div" sx={{ fontFamily: theme.typography.fontFamily, fontSize: '0.75rem' }}>
                 <Box component="pre" sx={{ 
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'break-word',

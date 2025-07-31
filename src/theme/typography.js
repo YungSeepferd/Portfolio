@@ -8,8 +8,8 @@
 // Define and export typography settings directly (do not import tokens here)
 const typography = {
   fontFamily: [
-    'Inter',
-    'Roboto',
+    'Montserrat',
+    'IBM Plex Mono',
     '-apple-system',
     'BlinkMacSystemFont',
     'Arial',

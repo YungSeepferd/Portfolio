@@ -98,8 +98,8 @@ const createAppTheme = (mode = 'dark') => {
     },
     typography: {
       fontFamily: [
-        'Inter',
-        'Roboto',
+        'Montserrat',
+        'IBM Plex Mono',
         '-apple-system',
         'BlinkMacSystemFont',
         'Arial',
