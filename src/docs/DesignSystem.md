@@ -118,6 +118,9 @@ Standardized section layouts:
 - **Buttons** - Primary, secondary, and text variants with consistent sizing
 - **Links** - Standard, emphasize, and subtle variations
 - **Navigation** - Header and section navigation components
+- **ProjectNavigation** - Modal controls for previous and next projects
+- **DynamicSection** - Flexible renderer for modal sections
+- **ProjectActionButtons** - Consistent actions for external links and prototypes
 
 ## Animation Guidelines
 
@@ -200,6 +203,10 @@ function MyComponent() {
 ```
 
 ## Project Section Schema & Modal Structure
+
+Project data is loaded through `getProjects()` and fed into `Work.js` via the
+`useDataLoader` hook. Each project modal uses `DynamicSection` to render sections
+based on the type and layout fields.
 
 ### Section Object Schema
 
