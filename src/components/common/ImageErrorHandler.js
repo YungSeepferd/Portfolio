@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Tooltip, IconButton } from '@mui/material';
+import { Box, Typography, Tooltip, IconButton, useTheme } from '@mui/material';
 import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import InfoIcon from '@mui/icons-material/Info';
@@ -34,6 +34,7 @@ const ImageErrorHandler = ({
 }) => {
   const [isRetrying, setIsRetrying] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const theme = useTheme();
 
   // Format error details for display
   const formattedErrorDetails = errorDetails ? 

@@ -68,11 +68,22 @@ const AboutCard = ({
   // Only apply motion effects for non-transparent cards
   const motionProps = isTransparent ? {} : {
     component: motion.div,
+    initial: {
+      boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 8px 0px"
+    },
     whileHover: {
       y: theme.customEffects?.cardHover?.y || -5,
-      boxShadow: theme.customEffects?.cardHover?.boxShadow || theme.shadows[4],
+      boxShadow: theme.shadows[4] || "rgba(0, 0, 0, 0.2) 0px 8px 16px 0px",
     },
-    transition: { type: "tween", duration: 0.2 }
+    transition: { 
+      type: "tween", 
+      duration: 0.2,
+      boxShadow: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
   };
 
   // Handle image error

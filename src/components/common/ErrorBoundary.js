@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Box, Typography, Button, Paper, Divider } from '@mui/material';
+import { Box, Typography, Button, Paper, Divider, useTheme } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -10,7 +10,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
  * Catches and handles JavaScript errors anywhere in the child component tree.
  * Provides detailed error reporting and recovery options.
  */
-class ErrorBoundary extends Component {
+class ErrorBoundaryBase extends Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -140,7 +140,7 @@ class ErrorBoundary extends Component {
                 Error Details:
               </Typography>
               
-              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: theme.typography.fontFamily, fontSize: '0.85rem' }}>
+              <Typography variant="body2" component="div" sx={{ mb: 2, fontFamily: this.props.theme.typography.fontFamily, fontSize: '0.85rem' }}>
                 <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {error?.toString() || 'Unknown error'}
                 </Box>
@@ -152,7 +152,7 @@ class ErrorBoundary extends Component {
                 Component Stack:
               </Typography>
               
-              <Typography variant="body2" component="div" sx={{ fontFamily: theme.typography.fontFamily, fontSize: '0.75rem' }}>
+              <Typography variant="body2" component="div" sx={{ fontFamily: this.props.theme.typography.fontFamily, fontSize: '0.75rem' }}>
                 <Box component="pre" sx={{ 
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'break-word',
@@ -175,5 +175,11 @@ class ErrorBoundary extends Component {
     return children;
   }
 }
+
+// Wrapper component to provide theme context to ErrorBoundary
+const ErrorBoundary = (props) => {
+  const theme = useTheme();
+  return <ErrorBoundaryBase {...props} theme={theme} />;
+};
 
 export default ErrorBoundary;

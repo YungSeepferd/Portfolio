@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid, Box, Stack, Chip } from '@mui/material';
+import { Typography, Grid, Box, Chip } from '@mui/material';
 import SkillTagList from '../common/SkillTagList';
 // Import Material UI icons for visual enhancement
 import CodeIcon from '@mui/icons-material/Code';

@@ -28,6 +28,31 @@ const TorusScene = ({
   
   // Extract scene colors from theme and use them directly
   const primaryColor = themeColorToThreeColor(activeTheme.palette.primary.main);
+
+  // Helper function to convert RGB to HSL
+  const rgbToHsl = useCallback((r, g, b) => {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+        default: h = 0;
+      }
+      
+      h /= 6;
+    }
+    
+    return { h, s, l };
+  }, []);
   
   // Create a function to get the proper trail color with smoother transitions
   const getActiveTrailColor = useCallback(() => {
@@ -69,33 +94,7 @@ const TorusScene = ({
         hsl.l
       );
     }
-  }, [activeTheme.palette.secondary.main, activeTheme.palette.primary.main, primaryColor, clock, easterEggActive]);
-  
-  // Helper function to convert RGB to HSL
-  const rgbToHsl = useCallback((r, g, b) => {
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h, s, l = (max + min) / 2;
-    
-    if (max === min) {
-      h = s = 0; // achromatic
-    } else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-        default: h = 0;
-      }
-      
-      h /= 6;
-    }
-    
-    return { h, s, l };
-  }, []);
-  
+  }, [activeTheme.palette.secondary.main, primaryColor, clock, easterEggActive, rgbToHsl]);
   // Trail of cursor positions
   const [cursorTrail, setCursorTrail] = useState([]);
   const trailMaxLength = isMobile ? 12 : 20;

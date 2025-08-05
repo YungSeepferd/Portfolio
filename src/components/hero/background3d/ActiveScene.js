@@ -4,7 +4,7 @@ import { useSceneState } from './SceneContext';
 import { extractThemeColors, themeColorToThreeColor } from './utils/sceneThemeUtils';
 import SphereScene from './scenes/SphereScene';
 import BoxScene from './scenes/BoxScene'; 
-import TorusScene from './scenes/TorusScene';
+import AudioVisualScene from './scenes/AudioVisualScene';
 import { SHAPE_TYPES } from './constants';
 
 /**
@@ -113,10 +113,9 @@ const ActiveScene = ({
       )}
       
       {currentShapeType === SHAPE_TYPES.TORUS && (
-        <TorusScene 
+        <AudioVisualScene 
           color={activeColor}
           mousePosition={mousePosition}
-          mouseData={mouseData}
           isTransitioning={isTransitioning}
           easterEggActive={easterEggActive}
           interactionCount={interactionCount}

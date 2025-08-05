@@ -21,9 +21,6 @@ const ProjectMetaBar = ({
   sx = {},
   ...rest
 }) => {
-  // Responsive side paddings for detail view
-  const techPadding = variant === 'full' ? { pl: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
-
   return (
     <Box
       sx={{

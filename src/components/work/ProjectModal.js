@@ -29,7 +29,6 @@ const ProjectModal = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const contentRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const parsedProject = useMemo(() => parseProjectContent(project), [project]);

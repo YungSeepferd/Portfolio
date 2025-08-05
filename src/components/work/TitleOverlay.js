@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Chip, useTheme } from '@mui/material';
+import { Box, Typography, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
 
 /**
@@ -21,7 +21,7 @@ const TitleOverlay = ({
   isMobile = false,
   sx = {} 
 }) => {
-  const theme = useTheme();
+
   
   const containerVariants = {
     hidden: { opacity: 0 },
