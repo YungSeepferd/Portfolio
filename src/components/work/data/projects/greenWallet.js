@@ -33,7 +33,7 @@ import ConceptOverview6Image from '../../../../assets/images/GreenWallet/concept
 import HighlightReelVideo from '../../../../assets/images/GreenWallet/highlight_reel.mp4';
 import PresentationVideo from '../../../../assets/images/GreenWallet/presentation_video.mp4';
 // Directory name in repo uses lowercase 'w' for Greenwallet
-import presentationPDF from '../../../../assets/information/GreenWallet/GreenWallet_Presentation.pdf';
+import presentationPDF from '../../../../assets/information/Greenwallet/GreenWallet_Presentation.pdf';
 
 // Create a media object to hold all our imported media
 const media = {
