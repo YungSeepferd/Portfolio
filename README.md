@@ -1,9 +1,9 @@
 # UX Portfolio Project
 
-_Last updated: 17 April 2025_
+_Last updated: 6 August 2025_
 
 ## Overview
-A modular, maintainable UX portfolio built with React and Material UI, featuring a dynamic project showcase, design system, and robust theme management. All legacy, unused, and redundant files have been removed for clarity and maintainability.
+A portfolio website showcasing UX/UI design and interaction technology projects, featuring interactive 3D scenes, synthesized sound feedback, and comprehensive privacy features. Built with React, Material-UI, Three.js, and Tone.js.
 
 ---
 
