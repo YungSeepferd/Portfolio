@@ -1,13 +1,11 @@
 import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
-import { Box, useTheme, useMediaQuery, IconButton, Tooltip, Fade } from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ScrollIndicator from './ScrollIndicator';
 import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
 import { SceneProvider, useSceneState } from './background3d/SceneContext';
-import InteractionGuide from './background3d/components/InteractionGuide';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 /**
  * HeroBackground Component - Handles the 3D background with proper context integration
@@ -99,37 +97,7 @@ const BackgroundController = memo(({
         performanceMode="medium"
       />
       
-      {/* Information button only - positioned in bottom right */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 20,
-          right: 20,
-          zIndex: 10,
-          display: 'flex',
-          pointerEvents: 'auto',
-        }}
-      >
-        {/* Info/help button to show interaction guide */}
-        <Tooltip title="Show interaction guide">
-          <IconButton 
-            onClick={handleToggleGuide}
-            sx={{
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              color: showGuide ? theme.palette.primary.main : 'rgba(255,255,255,0.7)',
-              '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.3)',
-              }
-            }}
-            aria-label="Show interaction guide"
-          >
-            <InfoOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
-      
-      {/* Interaction guide */}
-      <InteractionGuide show={showGuide || showInteractionHint} position="bottom" />
+      {/* No interaction guide needed */}
     </>
   );
 });

@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Html, Trail, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { themeColorToThreeColor } from '../utils/sceneThemeUtils';
+import { useToneInstrument } from '../../../../hooks/useToneInstrument';
+
+// Musical scale for the scene
+const PENTATONIC_SCALE = ['C4', 'D4', 'F4', 'G4', 'A4', 'C5', 'D5', 'F5'];
 
 // Create particle geometry for effects
 const ParticleEffect = ({ position, color, active }) => {
@@ -34,22 +38,12 @@ const ParticleEffect = ({ position, color, active }) => {
   ) : null;
 };
 
-// Create audio context and sounds
-const createAudioContext = () => {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  return new AudioContext();
-};
+import { useToneInstrument } from '../../../../hooks/useToneInstrument';
 
-// Create a more complex sound with spatial audio and effects
-const createSynth = (audioContext, frequency) => {
-  // Create audio nodes
-  const oscillator1 = audioContext.createOscillator(); // Main oscillator
-  const oscillator2 = audioContext.createOscillator(); // Harmonic
-  const gainNode = audioContext.createGain();
-  const filterNode = audioContext.createBiquadFilter();
-  const pannerNode = audioContext.createPanner(); // Spatial audio
-  const delayNode = audioContext.createDelay(); // Echo effect
-  const reverbNode = audioContext.createConvolver(); // Reverb effect
+// Musical scale for the scene
+const PENTATONIC_SCALE = [
+  'C4', 'D4', 'F4', 'G4', 'A4', 'C5', 'D5', 'F5'
+];
   
   // Create reverb impulse response
   const sampleRate = audioContext.sampleRate;
@@ -121,7 +115,7 @@ const createSynth = (audioContext, frequency) => {
 
 /**
  * AudioVisualScene Component
- * Interactive scene with audio-visual elements that respond to user interaction
+ * Interactive musical scene with Tone.js integration
  */
 const AudioVisualScene = ({
   color = new THREE.Color(),
@@ -136,11 +130,11 @@ const AudioVisualScene = ({
   const { clock } = useThree();
   const [showNextSceneMessage, setShowNextSceneMessage] = useState(false);
   
-  // Audio context and sounds
-  const audioContextRef = useRef(null);
-  const soundsRef = useRef({});
-  const [audioInitialized, setAudioInitialized] = useState(true); // Start as initialized
-  const [showAudioPrompt, setShowAudioPrompt] = useState(false); // Never show prompt
+  // Tone.js instrument
+  const { playNote, playChord, isStarted } = useToneInstrument();
+  
+  // Musical state
+  const [lastNoteIndex, setLastNoteIndex] = useState(0);
   
   // Shapes state
   const [activeShapes, setActiveShapes] = useState([]);
@@ -243,15 +237,18 @@ const AudioVisualScene = ({
     }
   }, [audioInitialized]);
   
-  // Generate a new shape with improved animation parameters
+  // Generate a new musical shape
   const generateShape = useCallback(() => {
-    const notes = [261.63, 329.63, 392.00, 440.00, 523.25];
-    const shapes = ['box', 'sphere', 'cone', 'octahedron', 'tetrahedron'];
+    const shapes = ['sphere', 'octahedron', 'icosahedron', 'dodecahedron'];
     
-    // More dynamic position range
-    const radius = 6 + Math.random() * 4; // Distance from center
-    const angle = Math.random() * Math.PI * 2; // Random angle
-    const height = (Math.random() - 0.5) * 6; // Vertical position
+    // Dynamic position with musical meaning
+    const noteIndex = (lastNoteIndex + 1) % PENTATONIC_SCALE.length;
+    setLastNoteIndex(noteIndex);
+    
+    // Position based on musical scale - higher notes appear higher
+    const radius = 4 + Math.random() * 3; // Closer to center for better interaction
+    const angle = (noteIndex / PENTATONIC_SCALE.length) * Math.PI * 2; // Position around circle based on note
+    const height = (noteIndex / PENTATONIC_SCALE.length) * 4 - 2; // Height based on note
     
     const position = new THREE.Vector3(
       Math.cos(angle) * radius,
@@ -286,47 +283,35 @@ const AudioVisualScene = ({
     };
   }, [clock]);
   
-  // Handle shape click with transition safety
+  // Handle musical shape interaction
   const handleShapeClick = useCallback((shape) => {
-    console.log('🖱️ Shape clicked:', { 
-      shapeId: shape.id, 
-      isClicked: shape.clicked,
-      hasAudioContext: !!audioContextRef.current,
-      shapesCollected: shapesCollectedRef.current
-    });
+    if (shape.clicked) return;
 
-    if (shape.clicked || !audioContextRef.current) {
-      console.log('⚠️ Click ignored:', { 
-        alreadyClicked: shape.clicked, 
-        noAudioContext: !audioContextRef.current 
-      });
-      return;
-    }
-    
+    // Play the shape's note and a supporting chord
+    const note = PENTATONIC_SCALE[shape.noteIndex];
+    const chordNotes = [
+      note,
+      PENTATONIC_SCALE[(shape.noteIndex + 2) % PENTATONIC_SCALE.length],
+      PENTATONIC_SCALE[(shape.noteIndex + 4) % PENTATONIC_SCALE.length]
+    ];
     try {
-      console.log('🎵 Playing sound for shape:', { note: shape.note, position: shape.position });
-      playSound(shape.note, shape.position);
+      // Play note and chord with different timings
+      playNote(note, 0.8);
+      setTimeout(() => playChord(chordNotes, 0.4), 100);
+      
       shapesCollectedRef.current += 1;
-      console.log('✨ Updated shapes collected:', shapesCollectedRef.current);
       
       if (shapesCollectedRef.current >= maxShapes) {
-        console.log('🎯 Max shapes collected, preparing transition');
         setShowNextSceneMessage(true);
         
-        // Clean up audio before transition
-        const cleanupAudio = () => {
-          try {
-            console.log('🧹 Starting audio cleanup');
-            Object.values(soundsRef.current || {}).forEach(synth => {
-              if (synth && typeof synth.stop === 'function') {
-                synth.stop();
-                console.log('✅ Stopped synth successfully');
-              }
-            });
-          } catch (error) {
-            console.error('❌ Error cleaning up audio during transition:', error);
-          }
-        };
+        // Play a final chord progression
+        const playFinale = async () => {
+          const baseNote = PENTATONIC_SCALE[0];
+          const finalChords = [
+            [baseNote, PENTATONIC_SCALE[2], PENTATONIC_SCALE[4]],
+            [PENTATONIC_SCALE[1], PENTATONIC_SCALE[3], PENTATONIC_SCALE[5]],
+            [PENTATONIC_SCALE[2], PENTATONIC_SCALE[4], PENTATONIC_SCALE[6]]
+          ];
         
         // Trigger scene transition after a delay
         console.log('⏱️ Setting up transition timeout');
