@@ -1,6 +1,23 @@
 import { Theme as MuiTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
+  interface ZIndex {
+    heroBackground: number;
+    heroContent: number;
+    scrollIndicator: number;
+  }
+
+  interface Shape {
+    radius: {
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+      default: number;
+    };
+  }
+
   interface Theme extends MuiTheme {
     custom: {
       animations: {
