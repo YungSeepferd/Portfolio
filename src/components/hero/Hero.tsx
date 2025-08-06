@@ -7,7 +7,6 @@ import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
 import { SceneProvider, useSceneState } from './background3d/SceneContext';
 import '../../types/theme.ts';
-import { Theme } from '@mui/material/styles';
 
 interface HeroBackgroundProps {
   onSceneClick: () => void;
@@ -79,14 +78,14 @@ const HeroBackground: React.FC<HeroBackgroundProps> = memo(({ onSceneClick, onTo
  */
 const BackgroundController: React.FC<BackgroundControllerProps> = memo(({ 
   onSceneClick, 
-  onToggleParticles, 
-  showParticles, 
-  showInteractionHint,
-  easterEggActive,
-  interactionCount
+  _onToggleParticles, 
+  _showParticles, 
+  _showInteractionHint,
+  _easterEggActive,
+  _interactionCount
 }) => {
   const theme = useTheme();
-  const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [_showGuide, setShowGuide] = useState<boolean>(false);
   const { switchShapeType } = useSceneState();
   
   // Handle background click with improved logging
@@ -104,7 +103,7 @@ const BackgroundController: React.FC<BackgroundControllerProps> = memo(({
   }, [switchShapeType, onSceneClick]);
   
   // Toggle interaction guide
-  const handleToggleGuide = useCallback(() => {
+    const _handleToggleGuide = () => {
     setShowGuide(prev => !prev);
   }, []);
   
@@ -133,7 +132,7 @@ BackgroundController.displayName = 'BackgroundController';
  */
 const Hero: React.FC = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const _isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [is3DVisible, setIs3DVisible] = useState<boolean>(false);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   const [sceneIndex, setSceneIndex] = useState<number>(0);
