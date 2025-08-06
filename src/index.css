@@ -1,5 +1,8 @@
 /* Global CSS to ensure full viewport width and remove restrictions */
-html, body, #root, .App {
+html,
+body,
+#root,
+.App {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
@@ -10,19 +13,31 @@ html, body, #root, .App {
 }
 
 /* Ensure all content boxes respect container width */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   max-width: 100%;
 }
 
 /* Improve image and media rendering */
-img, video, iframe {
+img,
+video,
+iframe {
   max-width: 100%;
   height: auto;
 }
 
 /* Ensure overflow text wrapping */
-p, h1, h2, h3, h4, h5, h6, span, div {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+div {
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;

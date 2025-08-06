@@ -1,6 +1,6 @@
 /**
  * Web Vitals reporting utility
- * 
+ *
  * This file sets up performance measurement reporting using the web-vitals library.
  * It's used to send Core Web Vitals metrics to analytics services.
  */

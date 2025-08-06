@@ -1,6 +1,6 @@
 /**
  * Skill Tags
- * 
+ *
  * Centralized collection of all skill tags used throughout the application.
  */
 
@@ -13,7 +13,7 @@ export const skillTags = [
   { id: 'Sound Design', label: 'Sound Design' },
   { id: 'Prototyping', label: 'Prototyping' },
   { id: 'Mobile App', label: 'Mobile Apps' },
-  { id: 'Sustainability', label: 'Sustainability' }
+  { id: 'Sustainability', label: 'Sustainability' },
 ];
 
 export default skillTags;

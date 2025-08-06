@@ -6,7 +6,6 @@ import ScrollIndicator from './ScrollIndicator';
 import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
 import { SceneProvider, useSceneState } from './background3d/SceneContext';
-import '../../types/theme.ts';
 
 interface HeroBackgroundProps {
   onSceneClick: () => void;
@@ -16,267 +15,189 @@ interface HeroBackgroundProps {
   interactionCount: number;
 }
 
-interface BackgroundControllerProps extends HeroBackgroundProps {
-  showInteractionHint: boolean;
-}
-
-interface InteractionEvent {
-  type: 'click';
-  time: number;
-}
-
 /**
  * HeroBackground Component - Handles the 3D background with proper context integration
  */
-const HeroBackground: React.FC<HeroBackgroundProps> = memo(({ onSceneClick, onToggleParticles, showParticles, easterEggActive, interactionCount }) => {
-  const [showInteractionHint, setShowInteractionHint] = useState<boolean>(true);
-  
-  // Hide interaction hint after 5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowInteractionHint(false);
-    }, 5000);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  return (
-    <ErrorBoundary 
-      componentName="Background3D"
-      fallback={
-        <Box 
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            opacity: 0.6,
-            background: 'radial-gradient(circle at 30% 30%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 100%)',
-            pointerEvents: 'none',
-          }}
-        />
-      }
-    >
-      {/* Provide SceneContext at this level to control the scene */}
-      <SceneProvider>
-        <BackgroundController
-          onSceneClick={onSceneClick}
-          onToggleParticles={onToggleParticles}
-          showParticles={showParticles}
-          showInteractionHint={showInteractionHint}
-          easterEggActive={easterEggActive}
-          interactionCount={interactionCount}
-        />
-      </SceneProvider>
-    </ErrorBoundary>
-  );
-});
+const HeroBackground = memo<HeroBackgroundProps>(
+  ({ onSceneClick, onToggleParticles, showParticles, easterEggActive, interactionCount }) => {
+    const [showInteractionHint, setShowInteractionHint] = useState(true);
+
+    // Hide interaction hint after 5 seconds
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setShowInteractionHint(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }, []);
+
+    return (
+      <ErrorBoundary componentName="Background3D">
+        {/* Provide SceneContext at this level to control the scene */}
+        <SceneProvider>
+          <BackgroundController
+            onSceneClick={onSceneClick}
+            onToggleParticles={onToggleParticles}
+            showParticles={showParticles}
+            showInteractionHint={showInteractionHint}
+            easterEggActive={easterEggActive}
+            interactionCount={interactionCount}
+          />
+        </SceneProvider>
+      </ErrorBoundary>
+    );
+  }
+);
+
+interface BackgroundControllerProps {
+  onSceneClick: () => void;
+  onToggleParticles: () => void;
+  showParticles: boolean;
+  showInteractionHint: boolean;
+  easterEggActive: boolean;
+  interactionCount: number;
+}
 
 /**
  * BackgroundController - Component with access to scene context
  */
-const BackgroundController: React.FC<BackgroundControllerProps> = memo(({ 
-  onSceneClick, 
-  _onToggleParticles, 
-  _showParticles, 
-  _showInteractionHint,
-  _easterEggActive,
-  _interactionCount
-}) => {
-  const theme = useTheme();
-  const [_showGuide, setShowGuide] = useState<boolean>(false);
-  const { switchShapeType } = useSceneState();
-  
-  // Handle background click with improved logging
-  const handleBackgroundClick = useCallback(() => {
-    console.log("📢 BackgroundController: Scene change button clicked");
-    
-    // Update scene context
-    switchShapeType();
-    
-    // Notify parent component
-    if (onSceneClick) {
-      console.log("📢 BackgroundController: Calling parent onSceneClick handler");
-      onSceneClick();
-    }
-  }, [switchShapeType, onSceneClick]);
-  
-  // Toggle interaction guide
-    const _handleToggleGuide = () => {
-    setShowGuide(prev => !prev);
-  }, []);
-  
-  return (
-    <>
-      <Background3D 
-        theme={theme} 
-        onSceneClick={handleBackgroundClick} 
-        performanceMode="medium"
-      />
-    </>
-  );
-});
+const BackgroundController = memo<BackgroundControllerProps>(
+  ({
+    onSceneClick,
+    onToggleParticles,
+    showParticles,
+    showInteractionHint,
+    easterEggActive,
+    interactionCount,
+  }) => {
+    const theme = useTheme();
+    const [showGuide, setShowGuide] = useState(false);
+    const { switchShapeType } = useSceneState();
 
-// Add displayNames for memo components
-HeroBackground.displayName = 'HeroBackground';
-BackgroundController.displayName = 'BackgroundController';
+    // Handle background click with improved logging
+    const handleBackgroundClick = useCallback(() => {
+      console.log('📢 BackgroundController: Scene change button clicked');
+
+      // Update scene context
+      switchShapeType();
+
+      // Notify parent component
+      if (onSceneClick) {
+        console.log('📢 BackgroundController: Calling parent onSceneClick handler');
+        onSceneClick();
+      }
+    }, [switchShapeType, onSceneClick]);
+
+    // Toggle interaction guide
+    const handleToggleGuide = useCallback(() => {
+      setShowGuide((prev) => !prev);
+    }, []);
+
+    return (
+      <>
+        <Background3D theme={theme} onSceneClick={handleBackgroundClick} performanceMode="medium" />
+      </>
+    );
+  }
+);
 
 /**
- * Hero Component
- * 
- * The main hero section with enhanced 3D background features:
- * - Interactive scene switching (Sphere, Cube, Torus)
- * - Particle system for ambient atmosphere
- * - Mouse-responsive animations
+ * Main Hero Component with TypeScript interfaces
  */
 const Hero: React.FC = () => {
   const theme = useTheme();
-  const _isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [is3DVisible, setIs3DVisible] = useState<boolean>(false);
-  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
-  const [sceneIndex, setSceneIndex] = useState<number>(0);
-  const [showParticles, setShowParticles] = useState<boolean>(true);
-  const [sceneNameVisible, setSceneNameVisible] = useState<boolean>(false);
-  const [currentSceneName, setCurrentSceneName] = useState<string>('Sphere');
-  
-  // New states for enhanced interactions
-  const [easterEggActive, setEasterEggActive] = useState<boolean>(false);
-  const [interactionCount, setInteractionCount] = useState<number>(0);
-  const [lastInteractionTime, setLastInteractionTime] = useState<number>(0);
-  const interactionSequence = useRef<InteractionEvent[]>([]);
-  
-  // Track rapid interactions for combo effects
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [interactionCount, setInteractionCount] = useState(0);
+  const [showParticles, setShowParticles] = useState(true); // Start with particles on like the old version
+  const [easterEggActive, setEasterEggActive] = useState(false);
+  const [sceneIndex, setSceneIndex] = useState(0);
+  const [sceneNameVisible, setSceneNameVisible] = useState(false);
+  const [currentSceneName, setCurrentSceneName] = useState('Spheres');
+  const [lastInteractionTime, setLastInteractionTime] = useState(0);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const interactionSequence = useRef<Array<{ type: string; time: number }>>([]);
+
+  // Get scene name based on index - restored from old version
+  const getSceneName = useCallback((index: number) => {
+    switch (index) {
+      case SHAPE_TYPES.SPHERE:
+        return 'Spheres';
+      case SHAPE_TYPES.BOX:
+        return 'Boxes';
+      case SHAPE_TYPES.TORUS:
+        return 'Drawing';
+      default:
+        return 'Scene';
+    }
+  }, []);
+
+  // Track rapid interactions for combo effects - restored from old version
   const checkForCombo = useCallback(() => {
     const now = Date.now();
     if (now - lastInteractionTime < 1000) {
-      // Increment combo counter for rapid interactions
-      setInteractionCount(prev => {
+      setInteractionCount((prev) => {
         const newCount = prev + 1;
-        // Trigger easter egg on 5 rapid clicks
         if (newCount >= 5 && !easterEggActive) {
           setEasterEggActive(true);
           setTimeout(() => setEasterEggActive(false), 5000);
-          
-          // Analytics tracking
-          if (process.env.NODE_ENV === 'production') {
-            try {
-              window.gtag && window.gtag('event', 'easter_egg_activated', { 
-                interaction_type: 'rapid_clicks'
-              });
-            } catch (err) {
-              console.error('Analytics error:', err);
-            }
-          }
         }
         return newCount;
       });
     } else {
-      // Reset combo if too much time has passed
       setInteractionCount(1);
     }
     setLastInteractionTime(now);
   }, [lastInteractionTime, easterEggActive]);
 
-  // Two-phase initialization for better stability
-  useEffect(() => {
-    setHasInitialized(true);
-    
-    const timer = setTimeout(() => {
-      setIs3DVisible(true);
-    }, 200);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Get scene name based on index
-  const getSceneName = useCallback((index: number): string => {
-    switch (index) {
-      case SHAPE_TYPES.SPHERE: return 'Spheres';
-      case SHAPE_TYPES.BOX: return 'Boxes';
-      case SHAPE_TYPES.TORUS: return 'Drawing';
-      default: return 'Scene';
-    }
-  }, []);
-
-  // Handle scene click to change scene type
+  // Handle scene interactions - enhanced version from old component
   const handleSceneClick = useCallback(() => {
-    console.log("📢 Hero.js: handleSceneClick called - About to change scene");
-    
+    console.log('📢 Hero.tsx: handleSceneClick called - About to change scene');
+
     // Track interaction sequence for pattern detection
     interactionSequence.current.push({
       type: 'click',
-      time: Date.now()
+      time: Date.now(),
     });
-    
+
     // Keep sequence limited to last 10 interactions
     if (interactionSequence.current.length > 10) {
       interactionSequence.current.shift();
     }
-    
+
     // Check for combo effects
     checkForCombo();
-    
+
     // Cycle to next scene
     const newSceneIndex = (sceneIndex + 1) % 3;
     setSceneIndex(newSceneIndex);
-    
+
     // Show scene name indicator
     setCurrentSceneName(getSceneName(newSceneIndex));
     setSceneNameVisible(true);
-    
-    console.log(`📢 Hero.js: Scene changed to ${getSceneName(newSceneIndex)} (index: ${newSceneIndex})`);
-    
+
+    console.log(
+      `📢 Hero.tsx: Scene changed to ${getSceneName(newSceneIndex)} (index: ${newSceneIndex})`
+    );
+
     // Hide scene name after 2 seconds
     setTimeout(() => {
       setSceneNameVisible(false);
     }, 2000);
-    
-    // Analytics tracking
-    if (process.env.NODE_ENV === 'production') {
-      try {
-        window.gtag && window.gtag('event', 'change_scene', { 
-          scene_index: newSceneIndex,
-          scene_type: getSceneName(newSceneIndex)
-        });
-      } catch (err) {
-        console.error('Analytics error:', err);
-      }
-    }
   }, [sceneIndex, getSceneName, checkForCombo]);
 
-  // Handle particle toggle
+  // Handle particle toggle - restored functionality
   const handleToggleParticles = useCallback(() => {
-    setShowParticles(prev => !prev);
-    
-    // Analytics tracking
-    if (process.env.NODE_ENV === 'production') {
-      try {
-        window.gtag && window.gtag('event', 'toggle_particles', { 
-          show_particles: !showParticles
-        });
-      } catch (err) {
-        console.error('Analytics error:', err);
-      }
-    }
-  }, [showParticles]);
+    setShowParticles((prev) => !prev);
+  }, []);
 
-  // Define z-index values
-  const zIndexes = {
-    background: theme.zIndex?.heroBackground || 5,
-    content: theme.zIndex?.heroContent || 10,
-    scrollIndicator: theme.zIndex?.scrollIndicator || 10
-  };
-
-  const [showScrollIndicator, setShowScrollIndicator] = useState<boolean>(true);
-  const heroRef = useRef<HTMLDivElement>(null);
-
+  // Scroll indicator logic - restored from old version
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;
       const rect = heroRef.current.getBoundingClientRect();
-      // Show indicator if hero section is at least 40% visible
-      const isVisible = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.2;
+      const isVisible =
+        rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.2;
       setShowScrollIndicator(isVisible);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -292,9 +213,9 @@ const Hero: React.FC = () => {
       aria-label="Hero section"
       sx={{
         width: '100%',
-        minHeight: { 
+        minHeight: {
           xs: 'calc(100vh - 56px)',
-          sm: 'calc(100vh - 64px)'
+          sm: 'calc(100vh - 64px)',
         },
         display: 'flex',
         flexDirection: 'column',
@@ -305,17 +226,14 @@ const Hero: React.FC = () => {
         isolation: 'isolate',
       }}
     >
-      {/* Background Layer with enhanced interaction */}
-      {hasInitialized && is3DVisible && (
-        <HeroBackground 
-          onSceneClick={handleSceneClick}
-          onToggleParticles={handleToggleParticles}
-          showParticles={showParticles}
-          easterEggActive={easterEggActive}
-          interactionCount={interactionCount}
-        />
-      )}
-      
+      <HeroBackground
+        onSceneClick={handleSceneClick}
+        onToggleParticles={handleToggleParticles}
+        showParticles={showParticles}
+        easterEggActive={easterEggActive}
+        interactionCount={interactionCount}
+      />
+
       {/* Scene name indicator - visible when changing scenes */}
       <Fade in={sceneNameVisible} timeout={{ enter: 400, exit: 800 }}>
         <Box
@@ -326,19 +244,21 @@ const Hero: React.FC = () => {
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'rgba(0,0,0,0.7)',
             color: 'white',
-            padding: '8px 16px',
-            borderRadius: theme.shape.radius.lg,
+            padding: { xs: '6px 12px', sm: '8px 16px' },
+            borderRadius: { xs: 1.5, sm: 2 },
             zIndex: 30,
             pointerEvents: 'none',
-            fontSize: '16px',
+            fontSize: { xs: '14px', sm: '16px', md: '18px' },
             fontWeight: 500,
+            backdropFilter: 'blur(4px)',
+            border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
           {currentSceneName}
         </Box>
       </Fade>
-      
-      {/* Content Overlay Layer */}
+
+      {/* Content Overlay Layer - Restored left alignment */}
       <Box
         sx={{
           width: '100%',
@@ -346,19 +266,30 @@ const Hero: React.FC = () => {
           minHeight: { xs: '80vh', md: '100vh' }, // Less height on mobile to move content higher
           display: 'flex',
           alignItems: { xs: 'flex-start', md: 'center' }, // Top on mobile, center on desktop
-          justifyContent: 'flex-start',
+          justifyContent: 'flex-start', // Left alignment restored
           position: 'relative',
-          zIndex: zIndexes.content,
+          zIndex: 2,
           pointerEvents: 'none', // Allow clicks to pass through to background
           pt: { xs: 0, md: 0 }, // Remove extra padding top
         }}
       >
         <HeroContent />
       </Box>
-      
-      {/* Scroll Indicator - Desktop Only */}
+
+      {/* Scroll Indicator - Enhanced from old version */}
       <Fade in={showScrollIndicator} timeout={{ enter: 600, exit: 400 }}>
-        <Box sx={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 20, pointerEvents: 'none', display: { xs: 'flex', sm: 'flex', md: 'none' }, justifyContent: 'center' }}>
+        <Box
+          sx={{
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 20,
+            pointerEvents: 'none',
+            display: { xs: 'flex', sm: 'flex', md: 'none' },
+            justifyContent: 'center',
+          }}
+        >
           <Box sx={{ pointerEvents: 'auto' }}>
             <ScrollIndicator />
           </Box>
@@ -367,5 +298,9 @@ const Hero: React.FC = () => {
     </Box>
   );
 };
+
+Hero.displayName = 'Hero';
+HeroBackground.displayName = 'HeroBackground';
+BackgroundController.displayName = 'BackgroundController';
 
 export default Hero;

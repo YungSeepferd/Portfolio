@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
 
-export const useCookieConsent = () => {
-  const [cookieConsent, setCookieConsent] = useState(() => {
+interface CookieConsentHook {
+  cookieConsent: boolean;
+  setCookieConsent: (consent: boolean) => void;
+}
+
+export const useCookieConsent = (): CookieConsentHook => {
+  const [cookieConsent, setInternalCookieConsent] = useState<boolean>(() => {
     return localStorage.getItem('cookieConsent') === 'accepted';
   });
+
+  const setCookieConsent = (consent: boolean): void => {
+    setInternalCookieConsent(consent);
+    localStorage.setItem('cookieConsent', consent ? 'accepted' : 'declined');
+  };
 
   useEffect(() => {
     const handleConsentAccepted = () => {
@@ -23,10 +33,22 @@ export const useCookieConsent = () => {
     };
   }, []);
 
-  return cookieConsent;
+  return {
+    cookieConsent,
+    setCookieConsent
+  };
 };
 
-export const sendAnalytics = (eventName, eventData = {}) => {
+interface AnalyticsEventData {
+  [key: string]: any;
+  email?: string;
+  errorStack?: string;
+  userId?: string;
+  sessionId?: string;
+  error?: Error | { message: string };
+}
+
+export const sendAnalytics = (eventName: string, eventData: AnalyticsEventData = {}): void => {
   const hasConsent = localStorage.getItem('cookieConsent') === 'accepted';
   
   if (hasConsent && window.gtag) {
@@ -41,7 +63,7 @@ export const sendAnalytics = (eventName, eventData = {}) => {
     
     // If there's an error message, only keep the message without the stack trace
     if (sanitizedData.error && typeof sanitizedData.error === 'object') {
-      sanitizedData.errorMessage = sanitizedData.error.message;
+      sanitizedData.errorMessage = 'error' in sanitizedData.error ? sanitizedData.error.message : String(sanitizedData.error);
       delete sanitizedData.error;
     }
 

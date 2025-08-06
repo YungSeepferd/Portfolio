@@ -16,7 +16,7 @@ export const useToneSound = (autoStart = false) => {
     };
 
     initSound();
-    
+
     // Cleanup on unmount
     return () => {
       mounted = false;
@@ -61,6 +61,6 @@ export const useToneSound = (autoStart = false) => {
     toggleAmbient,
     playSuccess,
     isEnabled,
-    isPlaying
+    isPlaying,
   };
 };

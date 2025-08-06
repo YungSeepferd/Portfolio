@@ -25,7 +25,7 @@ You can access any theme value directly in the `sx` prop:
 </Box>
 
 // Using colors
-<Box sx={{ 
+<Box sx={{
   bgcolor: 'primary.light',
   color: 'text.secondary',
   borderColor: 'divider'
@@ -34,12 +34,12 @@ You can access any theme value directly in the `sx` prop:
 </Box>
 
 // Using breakpoints
-<Box sx={{ 
-  width: { 
-    xs: '100%', 
-    sm: '80%', 
-    md: '60%' 
-  } 
+<Box sx={{
+  width: {
+    xs: '100%',
+    sm: '80%',
+    md: '60%'
+  }
 }}>
   Responsive Box
 </Box>
@@ -51,7 +51,7 @@ You can access the custom properties we added to the theme:
 
 ```jsx
 // Using design constants
-<Box sx={{ 
+<Box sx={{
   transition: theme => theme.designConstants.transitions.standard,
   height: theme => theme.designConstants.sizes.avatar.md
 }}>
@@ -59,7 +59,7 @@ You can access the custom properties we added to the theme:
 </Box>
 
 // Using custom transitions
-<Box sx={{ 
+<Box sx={{
   transition: theme => theme.transitions.custom.fade
 }}>
   Animated Box
@@ -83,7 +83,7 @@ import { Box } from '@mui/material';
 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
   <ChildComponent />
   <ChildComponent />
-</Box>
+</Box>;
 ```
 
 ### Container
@@ -95,7 +95,7 @@ import { Container } from '@mui/material';
 
 <Container maxWidth="lg" sx={{ py: 4 }}>
   <Content />
-</Container>
+</Container>;
 ```
 
 ### Grid
@@ -112,7 +112,7 @@ import { Grid } from '@mui/material';
   <Grid item xs={12} md={6}>
     <Content />
   </Grid>
-</Grid>
+</Grid>;
 ```
 
 ## Benefits Over Styled Components

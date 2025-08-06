@@ -14,7 +14,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ onToggle, mode, variant = 'ic
   const theme: Theme = useTheme();
   const label = mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
   const icon = mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />;
-  
+
   if (variant === 'button') {
     return (
       <Button
@@ -43,7 +43,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ onToggle, mode, variant = 'ic
       </Button>
     );
   }
-  
+
   return (
     <Tooltip title={label}>
       <IconButton
@@ -54,11 +54,13 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ onToggle, mode, variant = 'ic
           p: 1,
           borderRadius: '50%',
           color: theme.palette.text.primary,
-          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+          backgroundColor:
+            theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
           transition: 'all 0.3s ease',
           '&:hover': {
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)',
-          }
+            backgroundColor:
+              theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)',
+          },
         }}
       >
         {icon}

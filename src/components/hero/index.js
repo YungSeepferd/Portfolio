@@ -1,6 +1,6 @@
 /**
  * Hero Section Components Export
- * 
+ *
  * This file exports all components related to the Hero section
  * for easier imports throughout the application.
  */
@@ -17,5 +17,5 @@ export { default as ScrollIndicator } from './ScrollIndicator';
 export * from './skillsData';
 
 // Background Components
-export { default as CanvasBackground } from './CanvasBackground';  // Simple 2D canvas background
-export { default as ThreeJSBackground } from './background3d/Background3D';  // 3D Three.js background
+export { default as CanvasBackground } from './CanvasBackground'; // Simple 2D canvas background
+export { default as ThreeJSBackground } from './background3d/Background3D'; // 3D Three.js background

@@ -1,6 +1,6 @@
 /**
  * About Section Components Export
- * 
+ *
  * This file exports all components related to the About section
  * for easier imports throughout the application.
  */

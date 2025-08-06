@@ -2,10 +2,10 @@ import { alpha } from '@mui/material/styles';
 
 /**
  * Custom Theme Extensions
- * 
+ *
  * This file contains custom theme properties that extend
  * the standard Material UI theme object.
- * 
+ *
  * @param {Object} theme - The base theme object
  * @returns {Object} Custom theme extensions
  */
@@ -31,22 +31,20 @@ export const createCustomParts = (theme) => {
       transitions: {
         create: (props = ['all'], options = {}) => {
           const { duration = 'standard', easing = 'easeInOut', delay = 0 } = options;
-          
-          const durationValue = typeof duration === 'string' 
-            ? theme.animations.durations[duration] 
-            : duration;
-            
-          const easingValue = typeof easing === 'string'
-            ? theme.animations.easings[easing]
-            : easing;
-            
+
+          const durationValue =
+            typeof duration === 'string' ? theme.animations.durations[duration] : duration;
+
+          const easingValue =
+            typeof easing === 'string' ? theme.animations.easings[easing] : easing;
+
           return (Array.isArray(props) ? props : [props])
-            .map(prop => `${prop} ${durationValue}ms ${easingValue} ${delay}ms`)
+            .map((prop) => `${prop} ${durationValue}ms ${easingValue} ${delay}ms`)
             .join(',');
         },
       },
     },
-    
+
     // Section layout configurations
     sections: {
       layout: {
@@ -71,7 +69,7 @@ export const createCustomParts = (theme) => {
         },
       },
     },
-    
+
     // Project card styling configurations
     projectCard: {
       height: '400px',
@@ -103,7 +101,7 @@ export const createCustomParts = (theme) => {
         },
       },
     },
-    
+
     // Media styling configurations
     media: {
       ratios: {
@@ -136,9 +134,9 @@ export const createCustomParts = (theme) => {
         border: '1px solid rgba(255, 255, 255, 0.2)',
       },
       socialIcon: {
-        base: alpha(theme.palette.secondary.main, 0.10),
+        base: alpha(theme.palette.secondary.main, 0.1),
         hover: alpha(theme.palette.secondary.main, 0.18),
-      }
+      },
     },
 
     // Component specific layout values
@@ -148,11 +146,11 @@ export const createCustomParts = (theme) => {
         right: {
           xs: theme.spacing(2.5),
           sm: theme.spacing(3),
-          md: theme.spacing(1)
-        }
-      }
+          md: theme.spacing(1),
+        },
+      },
     },
-    
+
     // Control z-index values consistently
     zIndex: {
       // Beyond Material UI's built-in z-index values

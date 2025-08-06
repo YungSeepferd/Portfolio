@@ -10,7 +10,7 @@ interface IframeModalProps {
 
 /**
  * IframeModal Component
- * 
+ *
  * Displays external content in an iframe with improved handling of
  * Figma embeds and other external content
  */
@@ -19,39 +19,37 @@ const IframeModal: React.FC<IframeModalProps> = ({ url, title, isMobile }) => {
   const [hasError, setHasError] = useState(false);
   const [processedUrl, setProcessedUrl] = useState('');
   const theme = useTheme();
-  
+
   // Process and optimize URL for different embed types
   useEffect(() => {
     if (!url) {
       setHasError(true);
       return;
     }
-    
+
     try {
       // Process Figma URLs to ensure proper format for embedding
       if (url.includes('figma.com')) {
         // For Figma, ensure we're using the proper embed format
         // Convert any regular Figma URL to the proper embed format
         let optimizedUrl = url;
-        
+
         // If it's not already using the embed subdomain
         if (!url.includes('embed.figma.com')) {
           // Replace www.figma.com with embed.figma.com
           optimizedUrl = url.replace('www.figma.com', 'embed.figma.com');
         }
-        
+
         // Ensure it has the embed-host parameter
         if (!optimizedUrl.includes('embed-host=')) {
-          optimizedUrl += optimizedUrl.includes('?') 
-            ? '&embed-host=share' 
-            : '?embed-host=share';
+          optimizedUrl += optimizedUrl.includes('?') ? '&embed-host=share' : '?embed-host=share';
         }
-        
+
         // Add proper viewer and file parameters if missing
         if (!optimizedUrl.includes('viewer=')) {
           optimizedUrl += '&viewer=1';
         }
-        
+
         setProcessedUrl(optimizedUrl);
       }
       // Process Miro URLs
@@ -74,7 +72,7 @@ const IframeModal: React.FC<IframeModalProps> = ({ url, title, isMobile }) => {
   }, [url]);
 
   return (
-    <Box 
+    <Box
       sx={{
         height: isMobile ? '100vh' : '80vh',
         display: 'flex',
@@ -84,12 +82,13 @@ const IframeModal: React.FC<IframeModalProps> = ({ url, title, isMobile }) => {
     >
       {hasError ? (
         <Alert severity="error" sx={{ m: 2 }}>
-          There was an error loading the content. Please try refreshing the page or opening the content in a new tab.
+          There was an error loading the content. Please try refreshing the page or opening the
+          content in a new tab.
         </Alert>
       ) : (
         <>
           {isLoading && (
-            <Box 
+            <Box
               sx={{
                 position: 'absolute',
                 top: '50%',
@@ -101,7 +100,7 @@ const IframeModal: React.FC<IframeModalProps> = ({ url, title, isMobile }) => {
               <CircularProgress />
             </Box>
           )}
-          
+
           <Box
             component="iframe"
             src={processedUrl}

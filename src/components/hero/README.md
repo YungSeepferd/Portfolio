@@ -12,6 +12,7 @@ The Hero section includes two different background implementations:
 ## Active Components
 
 The Hero component currently uses:
+
 - `Hero.js` - Main container component
 - `HeroContent.js` - Text content and skills display
 - `ScrollIndicator.js` - Bottom scroll indicator

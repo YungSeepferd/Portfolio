@@ -1,6 +1,6 @@
 /**
  * Theme Components
- * 
+ *
  * This file provides component customizations for the theme.
  * It exports a function that receives the theme and returns component overrides.
  */
@@ -14,9 +14,9 @@ const components = (theme) => ({
         MozOsxFontSmoothing: 'grayscale',
         fontSmooth: 'always',
         // Prevent content jumping when scrollbar appears
-        scrollbarGutter: 'stable'
-      }
-    }
+        scrollbarGutter: 'stable',
+      },
+    },
   },
   MuiButton: {
     styleOverrides: {
@@ -24,13 +24,13 @@ const components = (theme) => ({
         textTransform: 'none',
         borderRadius: theme.shape.borderRadius,
         fontWeight: 500,
-        padding: theme.spacing(1, 2)
+        padding: theme.spacing(1, 2),
       },
       containedPrimary: {
         '&:hover': {
-          boxShadow: theme.shadows[4]
-        }
-      }
+          boxShadow: theme.shadows[4],
+        },
+      },
     },
     variants: [
       {
@@ -55,10 +55,10 @@ const components = (theme) => ({
         overflow: 'hidden',
         transition: theme.transitions.create(['transform', 'box-shadow']),
         '&:hover': {
-          boxShadow: theme.shadows[4]
-        }
-      }
-    }
+          boxShadow: theme.shadows[4],
+        },
+      },
+    },
   },
   MuiChip: {
     styleOverrides: {
@@ -72,12 +72,12 @@ const components = (theme) => ({
       {
         props: { variant: 'category' },
         style: {
-          backgroundColor: theme.palette.mode === 'dark'
-            ? theme.palette.grey[900]
-            : theme.palette.grey[100],
-          color: theme.palette.mode === 'dark'
-            ? theme.palette.secondary.light
-            : theme.palette.secondary.dark,
+          backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[100],
+          color:
+            theme.palette.mode === 'dark'
+              ? theme.palette.secondary.light
+              : theme.palette.secondary.dark,
           border: `1px solid ${theme.palette.secondary.main}`,
           fontWeight: 400,
           letterSpacing: 0.2,

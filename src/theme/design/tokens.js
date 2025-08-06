@@ -1,10 +1,10 @@
 /**
  * Design Tokens
- * 
+ *
  * A centralized system for design tokens that can be exported to both
  * design tools and code. This creates a single source of truth for
  * design values throughout the application.
- * 
+ *
  * These tokens can be exported to JSON for use in design tools like Figma
  * or used directly in the theme creation.
  */

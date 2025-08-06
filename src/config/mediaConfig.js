@@ -1,6 +1,6 @@
 /**
  * Project Media Configuration
- * 
+ *
  * This file centralizes all project media references to ensure consistency
  * and avoid undefined references.
  */
@@ -37,9 +37,9 @@ export const projectMedia = {
       `${basePaths.masterThesis}/overview.jpg`,
       `${basePaths.masterThesis}/process.jpg`,
       `${basePaths.masterThesis}/toolkit.jpg`,
-    ]
+    ],
   },
-  
+
   resonantRelaxation: {
     images: {
       main: `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
@@ -48,17 +48,17 @@ export const projectMedia = {
       principleVariants: `${basePaths.resonantRelaxation}/PrincipleVariants.png`,
       uiPrototypeSketch: `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`,
       frequencyTheory: `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
-      aiAPIFewshotting: `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
+      aiAPIFewshotting: `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`,
     },
     featuredImages: {
       overview: `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
       problem: `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
       solution: `${basePaths.resonantRelaxation}/UI Prototype.png`,
       prototypeShowcase: [
-        `${basePaths.resonantRelaxation}/PrincipleVariants.png`, 
-        `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`, 
-        `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
-      ]
+        `${basePaths.resonantRelaxation}/PrincipleVariants.png`,
+        `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`,
+        `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`,
+      ],
     },
     allImages: [
       `${basePaths.resonantRelaxation}/ProceduallyGenHaptic.png`,
@@ -67,10 +67,10 @@ export const projectMedia = {
       `${basePaths.resonantRelaxation}/PrincipleVariants.png`,
       `${basePaths.resonantRelaxation}/UI Prototype Sketch.png`,
       `${basePaths.resonantRelaxation}/FrequencyTheory.png`,
-      `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`
-    ]
+      `${basePaths.resonantRelaxation}/AIAPIFewshotting.png`,
+    ],
   },
-  
+
   adhdeer: {
     images: {
       main: `${basePaths.adhdeer}/hero.jpg`,
@@ -87,10 +87,10 @@ export const projectMedia = {
       `${basePaths.adhdeer}/hero.jpg`,
       `${basePaths.adhdeer}/process.jpg`,
       `${basePaths.adhdeer}/research.jpg`,
-      `${basePaths.adhdeer}/wireframes.jpg`
-    ]
+      `${basePaths.adhdeer}/wireframes.jpg`,
+    ],
   },
-  
+
   amiai: {
     images: {
       main: `${basePaths.amiai}/AMIAI.svg`,
@@ -98,19 +98,19 @@ export const projectMedia = {
     },
     videos: {
       scene: `${basePaths.amiai}/Scene.mp4`,
-      samiai: `${basePaths.amiai}/5samiai.mov`
+      samiai: `${basePaths.amiai}/5samiai.mov`,
     },
     featuredImages: {
       overview: `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
       problem: `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
-      solution: `${basePaths.amiai}/AMIAI.svg`
+      solution: `${basePaths.amiai}/AMIAI.svg`,
     },
     allImages: [
       `${basePaths.amiai}/AMIAI.svg`,
-      `${basePaths.amiai}/Final Presentation amiai/Introduction.png`
-    ]
+      `${basePaths.amiai}/Final Presentation amiai/Introduction.png`,
+    ],
   },
-  
+
   greenWallet: {
     images: {
       main: `${basePaths.greenWallet}/hero.jpg`,
@@ -120,7 +120,7 @@ export const projectMedia = {
     },
     videos: {
       highlightreel: `${basePaths.greenWallet}/Highlightreel.mp4`,
-      presentation: `${basePaths.greenWallet}/Presentation.mp4`
+      presentation: `${basePaths.greenWallet}/Presentation.mp4`,
     },
     featuredImages: {
       overview: `${basePaths.greenWallet}/hero.jpg`,
@@ -131,10 +131,10 @@ export const projectMedia = {
       `${basePaths.greenWallet}/hero.jpg`,
       `${basePaths.greenWallet}/screens.jpg`,
       `${basePaths.greenWallet}/wireframes.jpg`,
-      `${basePaths.greenWallet}/process.jpg`
-    ]
+      `${basePaths.greenWallet}/process.jpg`,
+    ],
   },
-  
+
   bachelorThesis: {
     images: {
       main: `${basePaths.bachelorThesis}/FT Level 2 GIF.gif`,
@@ -148,7 +148,7 @@ export const projectMedia = {
       routenuebersicht: `${basePaths.bachelorThesis}/Routenuebersicht.PNG`,
     },
     videos: {
-      reroutingProcess: `${basePaths.bachelorThesis}/VideoPrototype_ST3.mp4`
+      reroutingProcess: `${basePaths.bachelorThesis}/VideoPrototype_ST3.mp4`,
     },
     featuredImages: {
       overview: `${basePaths.bachelorThesis}/3_prototype_flows_Figmabboard.png`,
@@ -164,9 +164,9 @@ export const projectMedia = {
       `${basePaths.bachelorThesis}/Level 2 ST UI.png`,
       `${basePaths.bachelorThesis}/Level 3 ST UI.png`,
       `${basePaths.bachelorThesis}/Endscreen.png`,
-      `${basePaths.bachelorThesis}/Routenuebersicht.PNG`
-    ]
-  }
+      `${basePaths.bachelorThesis}/Routenuebersicht.PNG`,
+    ],
+  },
 };
 
 // Helper functions to get media paths
@@ -175,21 +175,21 @@ export const getProjectMediaPath = (projectId, mediaType = 'images', mediaItem =
     console.warn(`Project media not found for: ${projectId}`);
     return DEFAULT_PLACEHOLDER;
   }
-  
+
   if (!projectMedia[projectId][mediaType]) {
     console.warn(`Media type "${mediaType}" not found for project: ${projectId}`);
     return DEFAULT_PLACEHOLDER;
   }
-  
+
   if (typeof projectMedia[projectId][mediaType] === 'string') {
     return projectMedia[projectId][mediaType];
   }
-  
+
   if (!projectMedia[projectId][mediaType][mediaItem]) {
     console.warn(`Media item "${mediaItem}" not found in ${mediaType} for project: ${projectId}`);
     return DEFAULT_PLACEHOLDER;
   }
-  
+
   return projectMedia[projectId][mediaType][mediaItem];
 };
 
@@ -199,7 +199,7 @@ export const getProjectImages = (projectId) => {
     console.warn(`Project images not found for: ${projectId}`);
     return [DEFAULT_PLACEHOLDER];
   }
-  
+
   return projectMedia[projectId].allImages;
 };
 
@@ -207,13 +207,13 @@ export const getProjectImages = (projectId) => {
 export const getProjectFeaturedImages = (projectId) => {
   if (!projectMedia[projectId] || !projectMedia[projectId].featuredImages) {
     console.warn(`Featured images not found for: ${projectId}`);
-    return { 
+    return {
       overview: DEFAULT_PLACEHOLDER,
       problem: DEFAULT_PLACEHOLDER,
-      solution: DEFAULT_PLACEHOLDER
+      solution: DEFAULT_PLACEHOLDER,
     };
   }
-  
+
   return projectMedia[projectId].featuredImages;
 };
 

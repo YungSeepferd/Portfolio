@@ -1,6 +1,6 @@
 /**
  * Projects Collection
- * 
+ *
  * This file imports all individual project files, combines them,
  * and processes them for use throughout the application.
  */
@@ -20,7 +20,7 @@ export const projectsData = [
   amiai,
   greenWallet,
   adhdeer,
-  bachelorThesis
+  bachelorThesis,
 ];
 
 // Add required exports for the files that import them
@@ -29,13 +29,6 @@ export const allProjects = projectsData;
 export const projects = projectsData;
 
 // Also export individual projects for direct access
-export {
-  greenWallet,
-  amiai,
-  bachelorThesis,
-  adhdeer,
-  masterThesis,
-  resonantRelaxation
-};
+export { greenWallet, amiai, bachelorThesis, adhdeer, masterThesis, resonantRelaxation };
 
 export default projectsData;

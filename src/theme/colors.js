@@ -1,6 +1,6 @@
 /**
  * Theme Colors
- * 
+ *
  * This file provides a wrapper around tokens.colors to ensure consistent
  * color usage throughout the application. It defines and exports the color
  * palette directly to avoid circular dependencies.

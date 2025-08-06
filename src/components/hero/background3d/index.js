@@ -1,6 +1,6 @@
 /**
  * Three.js 3D Background Components
- * 
+ *
  * This module exports the Three.js-based 3D background system.
  * Note: This is different from the simple Canvas-based background (CanvasBackground.js)
  */

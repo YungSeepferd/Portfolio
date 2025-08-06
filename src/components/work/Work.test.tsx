@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ProjectData } from '../../types/project';
+import type { ProjectData } from '../../types/project';
 import useDataLoader from '../../hooks/useDataLoader';
 import Work from './Work';
-import { ThemeProvider } from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/ThemeContext';
+import { ThemeProvider } from '@mui/material/styles';
+import { lightTheme, darkTheme } from '../../theme';
 
 // Mock the useDataLoader hook
 vi.mock('../../hooks/useDataLoader');
@@ -31,9 +33,15 @@ describe('Work Component', () => {
 
   it('renders project cards from loaded data', () => {
     render(
-      <ThemeProvider>
+      <ThemeContext.Provider
+        value={{
+          mode: 'dark',
+          toggleTheme: vi.fn(),
+          theme: darkTheme,
+        }}
+      >
         <Work />
-      </ThemeProvider>
+      </ThemeContext.Provider>
     );
 
     expect(screen.getByText('Sample Project')).toBeInTheDocument();
@@ -48,9 +56,15 @@ describe('Work Component', () => {
     });
 
     render(
-      <ThemeProvider>
+      <ThemeContext.Provider
+        value={{
+          mode: 'dark',
+          toggleTheme: vi.fn(),
+          theme: darkTheme,
+        }}
+      >
         <Work />
-      </ThemeProvider>
+      </ThemeContext.Provider>
     );
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
@@ -66,7 +80,7 @@ describe('Work Component', () => {
     });
 
     render(
-      <ThemeProvider>
+      <ThemeProvider theme={lightTheme}>
         <Work />
       </ThemeProvider>
     );

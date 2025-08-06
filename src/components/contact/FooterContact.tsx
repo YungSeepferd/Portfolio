@@ -1,5 +1,15 @@
 import React from 'react';
-import { Box, Typography, IconButton, Button, useTheme, Paper, Grid, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  useTheme,
+  Paper,
+  Grid,
+  Card,
+  CardContent,
+} from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -16,15 +26,15 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
     : `mailto:goeke.vincent@gmail.com?subject=${encodeURIComponent('Contact from Portfolio')}`;
 
   // Generate project-specific message if a project context is provided
-  const contactMessage = projectContext 
-    ? `Interested in discussing more about the ${projectContext} project? I'd love to share insights about the process and outcomes!` 
+  const contactMessage = projectContext
+    ? `Interested in discussing more about the ${projectContext} project? I'd love to share insights about the process and outcomes!`
     : "If you want to chat about UX, audio design, haptic design or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
 
   return (
-    <Box 
-      component="footer" 
-      id="footer-contact" 
-      sx={{ 
+    <Box
+      component="footer"
+      id="footer-contact"
+      sx={{
         width: '100vw', // Ensure full viewport width
         maxWidth: '100vw',
         padding: 0,
@@ -39,7 +49,7 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
         viewport={{ once: true }}
         style={{ width: '100%' }}
       >
-        <Paper 
+        <Paper
           id="contact"
           elevation={3}
           square
@@ -54,7 +64,7 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
           <Box
             sx={{
               width: '100%',
-              px: { 
+              px: {
                 xs: '20px',
                 sm: '30px',
                 md: '40px',
@@ -67,7 +77,7 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
           >
             <Grid container spacing={4} justifyContent="center">
               <Grid item xs={12}>
-                <Card 
+                <Card
                   elevation={6}
                   sx={{
                     backgroundColor: theme.custom.overlays.contactCard.background,
@@ -80,10 +90,10 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
                   }}
                 >
                   <CardContent sx={{ p: 4 }}>
-                    <Typography 
-                      variant="h3" 
-                      gutterBottom 
-                      sx={{ 
+                    <Typography
+                      variant="h3"
+                      gutterBottom
+                      sx={{
                         color: theme.palette.common.white,
                         fontWeight: 'bold',
                         mb: 3,
@@ -91,11 +101,11 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
                     >
                       Let's Connect!
                     </Typography>
-                    
-                    <Typography 
-                      variant="body1" 
-                      sx={{ 
-                        color: theme.palette.common.white, 
+
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: theme.palette.common.white,
                         mb: 3,
                         opacity: 0.9,
                         maxWidth: '700px',
@@ -119,7 +129,7 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
                       >
                         Email Me
                       </Button>
-                      
+
                       <IconButton
                         component="a"
                         href="https://www.linkedin.com/in/vincent-goeke/"
@@ -129,12 +139,12 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
                           color: theme.palette.common.white,
                           '&:hover': {
                             color: theme.palette.secondary.main,
-                          }
+                          },
                         }}
                       >
                         <LinkedInIcon fontSize="large" />
                       </IconButton>
-                      
+
                       <IconButton
                         component="a"
                         href="https://github.com/YungSeepferd"
@@ -144,7 +154,7 @@ const FooterContact: React.FC<FooterContactProps> = ({ projectContext }) => {
                           color: theme.palette.common.white,
                           '&:hover': {
                             color: theme.palette.secondary.main,
-                          }
+                          },
                         }}
                       >
                         <GitHubIcon fontSize="large" />

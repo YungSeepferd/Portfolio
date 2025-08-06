@@ -28,11 +28,7 @@ const NavLinks: React.FC<NavLinksProps> = ({ navItems, variant = 'desktop', onCl
     return (
       <>
         {navItems.map((item) => (
-          <ListItem 
-            key={item.name} 
-            disablePadding
-            sx={{ justifyContent: 'center', mb: 1 }}
-          >
+          <ListItem key={item.name} disablePadding sx={{ justifyContent: 'center', mb: 1 }}>
             <Button
               variant={item.isCallToAction ? 'contained' : 'text'}
               color={item.isCallToAction ? 'secondary' : 'inherit'}

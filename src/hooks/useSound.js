@@ -5,7 +5,7 @@ import { useThree } from '@react-three/fiber';
 export const useSound = (url, distance = 1) => {
   const sound = useRef();
   const { camera } = useThree();
-  
+
   useEffect(() => {
     // Create an audio listener and add it to the camera
     const listener = new THREE.AudioListener();

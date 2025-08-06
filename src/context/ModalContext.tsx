@@ -3,31 +3,26 @@ import { Modal, Box, Dialog, AppBar, Toolbar, IconButton, Typography, useMediaQu
 import CloseIcon from '@mui/icons-material/Close';
 import PDFViewer from '../components/common/PDFViewer';
 import IframeModal from '../components/common/IframeModal';
-import { TransitionProps } from '@mui/material/transitions';
 
-interface ModalContextType {
-  openPdf: (url: string, title?: string) => void;
-  openIframe: (url: string, title?: string) => void;
-  openExternalContent: (url: string, title?: string) => void;
-  openProjectModal: (content: React.ReactNode) => void;
-  closeModal: () => void;
-}
-
-interface ModalProviderProps {
-  children: React.ReactNode;
-}
-
-// Create context
-const ModalContext = createContext<ModalContextType | null>(null);
+// Create context with proper type interface
+export const ModalContext = createContext({
+  openPdf: (url: string, title?: string) => {},
+  openIframe: (url: string, title?: string) => {},
+  openExternalContent: (url: string, title?: string) => {},
+  openProjectModal: (content: React.ReactNode) => {},
+  closeModal: () => {},
+  projectContent: null as React.ReactNode,
+  projectOpen: false,
+});
 
 // Modal style for consistent appearance - updated to be almost fullscreen
 const modalStyle = {
-  position: 'absolute' as const,
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '95vw',
-  height: '95vh',
+  width: '95vw', // Increased to 95% of viewport width
+  height: '95vh', // Increased to 95% of viewport height
   maxWidth: '95vw',
   maxHeight: '95vh',
   bgcolor: 'background.paper',
@@ -35,24 +30,14 @@ const modalStyle = {
   borderRadius: 1,
   overflow: 'hidden',
   display: 'flex',
-  flexDirection: 'column' as const,
+  flexDirection: 'column',
 };
 
-// Transition for Dialog
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 // Provider component
-export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
+export const ModalProvider = ({ children }) => {
   // State for different modal types
   const [pdfOpen, setPdfOpen] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
   
   const [iframeOpen, setIframeOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState('');
@@ -63,13 +48,14 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [externalTitle, setExternalTitle] = useState('');
 
   const [projectOpen, setProjectOpen] = useState(false);
-  const [projectContent, setProjectContent] = useState<React.ReactNode>(null);
+  const [projectContent, setProjectContent] = useState(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Open PDF modal
-  const openPdf = useCallback((url: string, title = '') => {
+  const openPdf = useCallback((url, title = '') => {
+    // Check if url is a string path or an imported file
     setPdfUrl(url);
     setPdfOpen(true);
     // Close other modals
@@ -79,7 +65,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }, []);
   
   // Open iframe modal
-  const openIframe = useCallback((url: string, title = 'External Content') => {
+  const openIframe = useCallback((url, title = 'External Content') => {
     setIframeUrl(url);
     setIframeTitle(title);
     setIframeOpen(true);
@@ -90,7 +76,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }, []);
   
   // Open external content modal
-  const openExternalContent = useCallback((url: string, title = 'External Website') => {
+  const openExternalContent = useCallback((url, title = 'External Website') => {
     setExternalUrl(url);
     setExternalTitle(title);
     setExternalOpen(true);
@@ -101,7 +87,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }, []);
   
   // Open project modal
-  const openProjectModal = useCallback((content: React.ReactNode) => {
+  const openProjectModal = useCallback((content) => {
     setProjectContent(content);
     setProjectOpen(true);
     // Close other modals
@@ -126,106 +112,128 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
         openExternalContent,
         openProjectModal,
         closeModal,
+        projectContent,
+        projectOpen,
       }}
     >
       {children}
-
-      {/* PDF Modal */}
-      <Modal
+      {/* PDF Modal - Responsive Dialog for all devices */}
+      <Dialog
         open={pdfOpen}
         onClose={closeModal}
+        fullScreen={false}
+        maxWidth={false}
+        fullWidth={false}
+        TransitionComponent={Slide}
         aria-labelledby="pdf-modal-title"
+        aria-describedby="pdf-modal-description"
+        PaperProps={{
+          sx: {
+            m: 0,
+            borderRadius: 2,
+            width: '95vw',
+            height: '80vh',
+            maxWidth: '95vw',
+            maxHeight: '80vh',
+            display: 'flex',
+            flexDirection: 'column',
+          }
+        }}
       >
-        <Box sx={modalStyle}>
-          <AppBar position="relative">
-            <Toolbar>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={closeModal}
-                aria-label="close"
-              >
-                <CloseIcon />
-              </IconButton>
-              <Typography id="pdf-modal-title" variant="h6" component="h2" sx={{ ml: 2, flex: 1 }}>
-                Document Viewer
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Box sx={{ flex: 1, overflow: 'hidden' }}>
-            {pdfUrl && <PDFViewer url={pdfUrl} />}
-          </Box>
-        </Box>
-      </Modal>
-
-      {/* Iframe Modal */}
-      <Dialog
-        fullScreen={isMobile}
-        maxWidth="xl"
-        open={iframeOpen}
-        onClose={closeModal}
-        TransitionComponent={Transition}
-      >
-        <IframeModal
-          url={iframeUrl}
-          title={iframeTitle}
-          onClose={closeModal}
-          isMobile={isMobile}
-        />
-      </Dialog>
-
-      {/* External Content Modal */}
-      <Dialog
-        fullScreen={isMobile}
-        maxWidth="xl"
-        open={externalOpen}
-        onClose={closeModal}
-        TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={closeModal}
-              aria-label="close"
-            >
+        <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+          <Toolbar sx={{ minHeight: 56, px: 1 }}>
+            <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+              PDF Document
+            </Typography>
+            <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close PDF" size="large">
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {externalTitle}
-            </Typography>
           </Toolbar>
         </AppBar>
-        <Box sx={{ height: isMobile ? '100vh' : '80vh', width: '100%' }}>
-          <iframe
-            src={externalUrl}
-            title={externalTitle}
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none',
-            }}
-          />
+        <Box sx={{ flex: 1, width: '100vw', height: '100%', minHeight: 0, p: 0, display: 'flex', flexDirection: 'column' }}>
+          <PDFViewer url={pdfUrl} title="PDF Document" />
         </Box>
       </Dialog>
-
-      {/* Project Modal */}
+      {/* Iframe Modal - Responsive Dialog for mobile */}
       <Dialog
-        fullScreen
-        open={projectOpen}
+        open={iframeOpen}
         onClose={closeModal}
-        TransitionComponent={Transition}
+        fullScreen={isMobile}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Slide}
+        aria-labelledby="iframe-modal-title"
+        aria-describedby="iframe-modal-description"
+        PaperProps={{
+          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
+        }}
       >
-        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-          {projectContent}
+        {isMobile && (
+          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+            <Toolbar sx={{ minHeight: 56, px: 1 }}>
+              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+                {iframeTitle || 'External Content'}
+              </Typography>
+              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close content" size="large">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        )}
+        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
+          <IframeModal url={iframeUrl} title={iframeTitle} />
         </Box>
       </Dialog>
+      {/* External Content Modal - Responsive Dialog for mobile */}
+      <Dialog
+        open={externalOpen}
+        onClose={closeModal}
+        fullScreen={isMobile}
+        maxWidth="md"
+        fullWidth
+        TransitionComponent={Slide}
+        aria-labelledby="external-modal-title"
+        aria-describedby="external-modal-description"
+        PaperProps={{
+          sx: isMobile ? { m: 0, borderRadius: 0, height: '100vh' } : { borderRadius: 2 }
+        }}
+      >
+        {isMobile && (
+          <AppBar position="sticky" color="default" elevation={1} sx={{ borderRadius: 0 }}>
+            <Toolbar sx={{ minHeight: 56, px: 1 }}>
+              <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600 }}>
+                {externalTitle || 'External Website'}
+              </Typography>
+              <IconButton edge="end" color="inherit" onClick={closeModal} aria-label="Close external" size="large">
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        )}
+        <Box sx={{ flex: 1, height: isMobile ? 'calc(100vh - 56px)' : '80vh', p: 0, display: 'flex', flexDirection: 'column' }}>
+          <IframeModal url={externalUrl} title={externalTitle} />
+        </Box>
+      </Dialog>
+      {/* Project Modal is rendered by the ProjectModal component */}
+      {/* Purpose: Custom Modal for future use (e.g., onboarding, announcements, or special overlays) */}
+      {/* This Modal is not shown by default, but is ready for future use and uses modalStyle for responsive design. */}
+      <Modal open={false} onClose={() => {}}>
+        <Box sx={modalStyle}>
+          {/* Future: Place onboarding, announcement, or custom overlay content here */}
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Special Announcement
+          </Typography>
+          <Typography variant="body1">
+            This is a placeholder for a custom modal overlay. You can use this for onboarding, announcements, or any special content that should appear above the main app. The modalStyle ensures it is responsive and visually consistent.
+          </Typography>
+        </Box>
+      </Modal>
     </ModalContext.Provider>
   );
 };
 
-// Custom hook to use modal context
+// Custom hook to use the modal context
+// Main hook export for consumer use
 export const useModal = () => {
   const context = useContext(ModalContext);
   if (!context) {
@@ -233,5 +241,8 @@ export const useModal = () => {
   }
   return context;
 };
+
+// Legacy hook for backward compatibility
+export const useModalContext = useModal;
 
 export default ModalContext;

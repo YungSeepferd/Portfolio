@@ -13,7 +13,7 @@ import { tokens } from '../design/tokens';
  */
 export const responsivePadding = (theme, options = {}) => {
   const { xs = 2, sm, md, lg, xl } = options;
-  
+
   return {
     px: {
       xs: theme.spacing(xs),
@@ -21,7 +21,7 @@ export const responsivePadding = (theme, options = {}) => {
       ...(md && { md: theme.spacing(md) }),
       ...(lg && { lg: theme.spacing(lg) }),
       ...(xl && { xl: theme.spacing(xl) }),
-    }
+    },
   };
 };
 
@@ -42,16 +42,17 @@ export const getElevation = (theme, level = 1) => {
  * @returns {Object} Animation settings object for framer-motion
  */
 export const getAnimation = (theme, variant = 'fadeIn') => {
-  return theme.animationSettings?.variants?.[variant] || 
-         theme.animationSettings?.variants?.fadeIn || 
-         {
-           initial: { opacity: 0 },
-           animate: { opacity: 1 },
-           transition: { 
-             duration: 0.5,
-             ease: [0.4, 0, 0.2, 1]
-           }
-         };
+  return (
+    theme.animationSettings?.variants?.[variant] ||
+    theme.animationSettings?.variants?.fadeIn || {
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      transition: {
+        duration: 0.5,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    }
+  );
 };
 
 /**
@@ -63,17 +64,15 @@ export const getAnimation = (theme, variant = 'fadeIn') => {
  * @returns {string} CSS transition value
  */
 export const createTransition = (
-  theme, 
-  properties = ['all'], 
-  duration = 'medium', 
+  theme,
+  properties = ['all'],
+  duration = 'medium',
   easing = 'standard'
 ) => {
   const durationValue = theme.animations?.durations?.[duration] || '300ms';
   const easingValue = theme.animations?.easings?.css?.[easing] || 'cubic-bezier(0.4, 0, 0.2, 1)';
-  
-  return properties
-    .map(prop => `${prop} ${durationValue} ${easingValue}`)
-    .join(', ');
+
+  return properties.map((prop) => `${prop} ${durationValue} ${easingValue}`).join(', ');
 };
 
 /**
@@ -84,9 +83,9 @@ export const createTransition = (
  */
 export const responsiveMargin = (theme, options = {}) => {
   const { top, right, bottom, left, x, y } = options;
-  
+
   const result = {};
-  
+
   if (top !== undefined) result.mt = top;
   if (right !== undefined) result.mr = right;
   if (bottom !== undefined) result.mb = bottom;
@@ -101,7 +100,7 @@ export const responsiveMargin = (theme, options = {}) => {
   } else if (top !== undefined && bottom !== undefined) {
     result.my = { xs: top.xs, sm: top.sm, md: top.md, lg: top.lg, xl: top.xl };
   }
-  
+
   return result;
 };
 
@@ -114,7 +113,7 @@ export const responsiveMargin = (theme, options = {}) => {
  */
 export const getTypographyStyles = (theme, variant = 'body1', options = {}) => {
   const baseStyles = theme.typography[variant];
-  
+
   return {
     ...baseStyles,
     ...options,
@@ -131,28 +130,28 @@ export const getTypographyStyles = (theme, variant = 'body1', options = {}) => {
 export const getColorWithAlpha = (theme, colorPath, alpha = 0.5) => {
   // Split path into parts
   const parts = colorPath.split('.');
-  
+
   // Get base color by traversing theme object
   let baseColor = theme;
   for (const part of parts) {
     baseColor = baseColor?.[part];
     if (!baseColor) break;
   }
-  
+
   // If we couldn't find the color, return a fallback
   if (!baseColor) return `rgba(0, 0, 0, ${alpha})`;
-  
+
   // Handle if color is already rgba
   if (baseColor.startsWith('rgba')) {
     // Replace the alpha in the existing rgba
     return baseColor.replace(/rgba\((.+?),\s*[\d.]+\)/, `rgba($1, ${alpha})`);
   }
-  
+
   // Handle if color is rgb
   if (baseColor.startsWith('rgb')) {
     return baseColor.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
   }
-  
+
   // Handle hex colors
   if (baseColor.startsWith('#')) {
     const hex = baseColor.replace('#', '');
@@ -161,7 +160,7 @@ export const getColorWithAlpha = (theme, colorPath, alpha = 0.5) => {
     const b = parseInt(hex.substring(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  
+
   // Fallback
   return `rgba(0, 0, 0, ${alpha})`;
 };
@@ -174,7 +173,7 @@ export const getColorWithAlpha = (theme, colorPath, alpha = 0.5) => {
  */
 export const responsiveStyles = (theme, styles) => {
   const { xs, sm, md, lg, xl, ...rest } = styles;
-  
+
   return {
     ...rest,
     [theme.breakpoints.up('xs')]: xs,
@@ -199,17 +198,17 @@ export const getShadow = (theme, intensity = 'medium') => {
 
 /**
  * Get project accent color based on project cardVariant or id
- * 
+ *
  * @param {Object} project - The project object
  * @param {Object} theme - The theme object
  * @returns {string} - The accent color for the project
  */
 export const getProjectAccentColor = (project, theme) => {
   if (!project) return theme.palette.primary.main;
-  
+
   // If project has a specific accent color defined, use it
   if (project.accentColor) return project.accentColor;
-  
+
   // Otherwise determine color from cardVariant
   switch (project.cardVariant) {
     case 'primary':
@@ -232,10 +231,10 @@ export const getProjectAccentColor = (project, theme) => {
         theme.palette.success.main,
         theme.palette.info.main,
         theme.palette.warning.main,
-        theme.palette.error.main
+        theme.palette.error.main,
       ];
-      
-      return project.id 
+
+      return project.id
         ? colorOptions[(project.id - 1) % colorOptions.length]
         : theme.palette.primary.main;
   }
@@ -243,7 +242,7 @@ export const getProjectAccentColor = (project, theme) => {
 
 /**
  * Get text color that contrasts with the project accent color
- * 
+ *
  * @param {string} accentColor - The accent color
  * @param {Object} theme - The theme object
  * @returns {string} - A contrasting text color
@@ -251,23 +250,23 @@ export const getProjectAccentColor = (project, theme) => {
 export const getContrastTextColor = (accentColor, theme) => {
   // If no accent color is provided, return the main text color
   if (!accentColor) return theme.palette.text.primary;
-  
+
   // Check if the accent color is one of the theme's palette colors
   let contrastText = null;
-  
+
   Object.entries(theme.palette).forEach(([key, value]) => {
     if (typeof value === 'object' && value.main === accentColor && value.contrastText) {
       contrastText = value.contrastText;
     }
   });
-  
+
   // If contrast text was found, return it
   if (contrastText) return contrastText;
-  
+
   // Otherwise determine contrast based on brightness
   // Convert hex to RGB if it's a hex color
   let r, g, b;
-  
+
   if (accentColor.startsWith('#')) {
     const hex = accentColor.slice(1);
     const bigint = parseInt(hex, 16);
@@ -280,51 +279,51 @@ export const getContrastTextColor = (accentColor, theme) => {
       [r, g, b] = matches.map(Number);
     }
   }
-  
+
   if (r !== undefined && g !== undefined && b !== undefined) {
     // Calculate brightness using the luminance formula
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
     return brightness > 128 ? '#000000' : '#FFFFFF';
   }
-  
+
   // Default fallback
   return theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000';
 };
 
 /**
  * Create background gradient based on project accent color
- * 
+ *
  * @param {string} accentColor - The accent color
  * @returns {string} - CSS gradient string
  */
 export const createProjectGradient = (accentColor) => {
   if (!accentColor) return 'none';
-  
+
   const transparent = alpha(accentColor, 0);
   const subtle = alpha(accentColor, 0.05);
   const light = alpha(accentColor, 0.1);
-  
+
   return `radial-gradient(circle at top right, ${light} 0%, ${subtle} 30%, ${transparent} 70%)`;
 };
 
 /**
  * Get consistent project card style based on project cardVariant
- * 
- * @param {Object} project - The project object 
+ *
+ * @param {Object} project - The project object
  * @param {Object} theme - The theme object
  * @returns {Object} - Style object for the card
  */
 export const getProjectCardStyle = (project, theme) => {
   if (!project) return {};
-  
+
   const accentColor = getProjectAccentColor(project, theme);
-  
+
   return {
     borderLeft: `4px solid ${accentColor}`,
     boxShadow: `0 3px 10px ${alpha(accentColor, 0.15)}`,
     '&:hover': {
       boxShadow: `0 8px 20px ${alpha(accentColor, 0.25)}`,
-    }
+    },
   };
 };
 
@@ -341,15 +340,15 @@ export const getStatusColor = (status, variant = 'main') => {
     warning: tokens.colors.orange,
     info: tokens.colors.teal,
     primary: tokens.colors.blue,
-    secondary: tokens.colors.pink
+    secondary: tokens.colors.pink,
   };
-  
+
   const variantMap = {
     light: 300,
     main: 500,
-    dark: 700
+    dark: 700,
   };
-  
+
   const colorToken = colorMap[status] || colorMap.primary;
   return colorToken[variantMap[variant] || variantMap.main];
 };
@@ -362,22 +361,22 @@ export const getStatusColor = (status, variant = 'main') => {
 export const isLightColor = (hexColor) => {
   // Remove the hash
   const hex = hexColor.replace('#', '');
-  
+
   // Convert to RGB
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  
+
   // Calculate luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
   // Return true if light, false if dark
   return luminance > 0.5;
 };
 
 const themeUtils = {
   getStatusColor,
-  isLightColor
+  isLightColor,
 };
 
 export default themeUtils;

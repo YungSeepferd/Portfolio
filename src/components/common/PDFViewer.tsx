@@ -33,13 +33,16 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
     return url;
   }, [url]);
 
-  useEffect(() => () => {
-    if (blobUrl) URL.revokeObjectURL(blobUrl);
-  }, [blobUrl]);
+  useEffect(
+    () => () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    },
+    [blobUrl]
+  );
 
   useEffect(() => {
-    if (onCloseFocusRef?.current && downloadBtnRef.current) {
-      onCloseFocusRef.current = downloadBtnRef.current;
+    if (onCloseFocusRef?.current && downloadBtnRef.current && onCloseFocusRef.current !== downloadBtnRef.current) {
+      (onCloseFocusRef as any).current = downloadBtnRef.current;
     }
   }, [onCloseFocusRef]);
 
@@ -73,20 +76,24 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
   };
 
   return (
-    <Box sx={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      backgroundColor: theme.palette.background.paper,
-    }}>
-      <Box sx={{
+    <Box
+      sx={{
+        height: '100%',
         display: 'flex',
-        gap: 1,
-        p: 1,
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}>
+        flexDirection: 'column',
+        overflow: 'hidden',
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 1,
+          p: 1,
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      >
         <Button
           ref={downloadBtnRef}
           startIcon={<FileDownloadIcon />}
@@ -108,14 +115,16 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
         </Button>
       </Box>
 
-      <Box sx={{
-        flex: 1,
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        py: 2,
-      }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          py: 2,
+        }}
+      >
         <Document
           file={pdfUrl}
           onLoadSuccess={onDocumentLoadSuccess}

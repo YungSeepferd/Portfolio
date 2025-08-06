@@ -41,27 +41,30 @@ const Header: React.FC = () => {
 
   const isFirstMount = React.useRef<boolean>(true);
 
-  const headerAnimation = useMemo<HeaderAnimationState>(() => ({
-    initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
-    animate: { y: 0, opacity: 1 },
-    transition: { 
-      duration: 0.5, 
-      ease: "easeOut",
-      delay: 0.2
-    }
-  }), []);
+  const headerAnimation = useMemo<HeaderAnimationState>(
+    () => ({
+      initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
+      animate: { y: 0, opacity: 1 },
+      transition: {
+        duration: 0.5,
+        ease: 'easeOut',
+        delay: 0.2,
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
     }
-    
+
     const handleScroll = (): void => {
       setIsScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     handleScroll();
 
     return () => {
@@ -79,9 +82,8 @@ const Header: React.FC = () => {
     setMobileOpen(false);
   };
 
-  const transparentBgColor = mode === 'dark'
-    ? theme.custom.overlays.header.dark
-    : theme.custom.overlays.header.light;
+  const transparentBgColor =
+    mode === 'dark' ? theme.custom.overlays.header.dark : theme.custom.overlays.header.light;
 
   return (
     <motion.div
@@ -90,21 +92,16 @@ const Header: React.FC = () => {
       transition={headerAnimation.transition}
       key="header-animation"
     >
-      <AppBar 
-        position="fixed" 
+      <AppBar
+        position="fixed"
         elevation={isScrolled ? 4 : 0}
         sx={{
-          backgroundColor: isScrolled 
-            ? theme.palette.background.paper
-            : transparentBgColor,
-          transition: theme.transitions.create(
-            ['background-color', 'box-shadow'],
-            { duration: 0.3 }
-          ),
+          backgroundColor: isScrolled ? theme.palette.background.paper : transparentBgColor,
+          transition: theme.transitions.create(['background-color', 'box-shadow'], {
+            duration: 0.3,
+          }),
           backdropFilter: 'blur(10px)',
-          borderBottom: isScrolled 
-            ? `1px solid ${theme.palette.divider}`
-            : 'none',
+          borderBottom: isScrolled ? `1px solid ${theme.palette.divider}` : 'none',
           color: theme.palette.text.primary,
           width: '100vw',
           maxWidth: '100vw',
@@ -121,22 +118,18 @@ const Header: React.FC = () => {
             mx: 0,
           }}
         >
-          <Toolbar sx={{
-            minHeight: { xs: 56, sm: 64 },
-            px: 0,
-            justifyContent: 'space-between'
-          }}>
+          <Toolbar
+            sx={{
+              minHeight: { xs: 56, sm: 64 },
+              px: 0,
+              justifyContent: 'space-between',
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <ScrollLink
-                to="hero"
-                spy={true}
-                smooth={true}
-                offset={-70}
-                duration={500}
-              >
-                <Box 
-                  component="div" 
-                  sx={{ 
+              <ScrollLink to="hero" spy={true} smooth={true} offset={-70} duration={500}>
+                <Box
+                  component="div"
+                  sx={{
                     cursor: 'pointer',
                     fontWeight: 700,
                     fontSize: '1.5rem',
@@ -153,24 +146,27 @@ const Header: React.FC = () => {
                 </Box>
               </ScrollLink>
               {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}
-              {socialLinks.map(link => link.icon === 'LinkedIn' && (
-                <IconButton
-                  key={link.name}
-                  href={link.url}
-                  target="_blank"
-                  size="small"
-                  sx={{
-                    ml: 1,
-                    color: theme.palette.secondary.dark,
-                    backgroundColor: theme.custom.overlays.socialIcon.base,
-                    '&:hover': { backgroundColor: theme.custom.overlays.socialIcon.hover },
-                    p: 0.5
-                  }}
-                  aria-label={link.ariaLabel}
-                >
-                  <LinkedInIcon fontSize="small" />
-                </IconButton>
-              ))}
+              {socialLinks.map(
+                (link) =>
+                  link.icon === 'LinkedIn' && (
+                    <IconButton
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      size="small"
+                      sx={{
+                        ml: 1,
+                        color: theme.palette.secondary.dark,
+                        backgroundColor: theme.custom.overlays.socialIcon.base,
+                        '&:hover': { backgroundColor: theme.custom.overlays.socialIcon.hover },
+                        p: 0.5,
+                      }}
+                      aria-label={link.ariaLabel}
+                    >
+                      <LinkedInIcon fontSize="small" />
+                    </IconButton>
+                  )
+              )}
             </Box>
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
@@ -192,7 +188,7 @@ const Header: React.FC = () => {
                 position: 'absolute',
                 right: theme.custom.header.burgerMenuOffset.right,
                 top: theme.custom.header.burgerMenuOffset.top,
-                zIndex: 1201
+                zIndex: 1201,
               }}
             >
               <MenuIcon />
@@ -217,22 +213,37 @@ const Header: React.FC = () => {
             minWidth: 180,
             maxWidth: '90vw',
             p: 2,
-            background: theme => theme.palette.background.paper,
+            background: (theme) => theme.palette.background.paper,
             display: { xs: 'flex', md: 'none' },
             flexDirection: 'column',
             alignItems: 'stretch',
             gap: 1.5,
             position: 'relative',
-          }
+          },
         }}
         disableScrollLock
       >
         <Paper elevation={0} sx={{ background: 'none', boxShadow: 'none', p: 0 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Box sx={{ fontWeight: 700, fontSize: '1.1rem', color: theme.palette.secondary.main, pl: 1, fontFamily: theme.typography.fontFamily }}>
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}
+          >
+            <Box
+              sx={{
+                fontWeight: 700,
+                fontSize: '1.1rem',
+                color: theme.palette.secondary.main,
+                pl: 1,
+                fontFamily: theme.typography.fontFamily,
+              }}
+            >
               Menu
             </Box>
-            <IconButton size="small" onClick={handleMenuClose} sx={{ ml: 1 }} aria-label="Close menu">
+            <IconButton
+              size="small"
+              onClick={handleMenuClose}
+              sx={{ ml: 1 }}
+              aria-label="Close menu"
+            >
               <CloseIcon />
             </IconButton>
           </Box>
@@ -257,7 +268,9 @@ const Header: React.FC = () => {
                 }}
                 onClick={() => {
                   handleMenuClose();
-                  document.getElementById(item.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  document
+                    .getElementById(item.target)
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
               >
                 {item.name}

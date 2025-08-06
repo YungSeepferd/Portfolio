@@ -36,6 +36,6 @@ export const useSynthSound = () => {
     playAmbient,
     playSuccess,
     isEnabled,
-    setIsEnabled
+    setIsEnabled,
   };
 };

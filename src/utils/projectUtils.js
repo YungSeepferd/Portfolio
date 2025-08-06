@@ -10,9 +10,7 @@ import { resolveMediaPath } from './MediaPathResolver';
  */
 export const filterProjectsByCategory = (projects, category) => {
   if (!category) return projects;
-  return projects.filter(project => 
-    project.categories && project.categories.includes(category)
-  );
+  return projects.filter((project) => project.categories && project.categories.includes(category));
 };
 
 /**
@@ -21,12 +19,21 @@ export const filterProjectsByCategory = (projects, category) => {
 export const searchProjects = (projects, searchTerm) => {
   if (!searchTerm) return projects;
   const term = searchTerm.toLowerCase();
-  return projects.filter(project => {
+  return projects.filter((project) => {
     const title = project.title ? project.title.toLowerCase() : '';
     const description = project.description ? project.description.toLowerCase() : '';
-    const categories = project.categories ? project.categories.map(cat => cat.toLowerCase()).join(' ') : '';
-    const technologies = project.technologies ? project.technologies.map(t => t.toLowerCase()).join(' ') : '';
-    return title.includes(term) || description.includes(term) || categories.includes(term) || technologies.includes(term);
+    const categories = project.categories
+      ? project.categories.map((cat) => cat.toLowerCase()).join(' ')
+      : '';
+    const technologies = project.technologies
+      ? project.technologies.map((t) => t.toLowerCase()).join(' ')
+      : '';
+    return (
+      title.includes(term) ||
+      description.includes(term) ||
+      categories.includes(term) ||
+      technologies.includes(term)
+    );
   });
 };
 
@@ -35,9 +42,9 @@ export const searchProjects = (projects, searchTerm) => {
  */
 export const getUniqueCategories = (projects) => {
   const categoriesSet = new Set();
-  projects.forEach(project => {
+  projects.forEach((project) => {
     if (project.categories && Array.isArray(project.categories)) {
-      project.categories.forEach(category => categoriesSet.add(category));
+      project.categories.forEach((category) => categoriesSet.add(category));
     }
   });
   return Array.from(categoriesSet).sort();
@@ -48,9 +55,9 @@ export const getUniqueCategories = (projects) => {
  */
 export const getUniqueTechnologies = (projects) => {
   const techSet = new Set();
-  projects.forEach(project => {
+  projects.forEach((project) => {
     if (project.technologies && Array.isArray(project.technologies)) {
-      project.technologies.forEach(tech => techSet.add(tech));
+      project.technologies.forEach((tech) => techSet.add(tech));
     }
   });
   return Array.from(techSet).sort();
@@ -60,23 +67,26 @@ export const getUniqueTechnologies = (projects) => {
  * Organize projects into display matrix
  */
 export const organizeProjectsMatrix = (projects, options = {}) => {
-  const { 
-    primaryCount = 4, 
+  const {
+    primaryCount = 4,
     secondaryCount = 4,
-    sortFn = (a, b) => a.id < b.id ? -1 : 1
+    sortFn = (a, b) => (a.id < b.id ? -1 : 1),
   } = options;
   const sortedProjects = [...projects].sort(sortFn);
   return {
     primary: sortedProjects.slice(0, primaryCount),
     secondary: sortedProjects.slice(primaryCount, primaryCount + secondaryCount),
-    additional: sortedProjects.slice(primaryCount + secondaryCount)
+    additional: sortedProjects.slice(primaryCount + secondaryCount),
   };
 };
 
 /**
  * Get the primary media for a project (for cards, headers, etc.)
  */
-export const getProjectPrimaryMedia = (project, defaultPath = '/assets/images/placeholders/project.jpg') => {
+export const getProjectPrimaryMedia = (
+  project,
+  defaultPath = '/assets/images/placeholders/project.jpg'
+) => {
   if (!project) return defaultPath;
   // Try normalized media field first
   if (project.media) {
@@ -92,14 +102,17 @@ export const getProjectPrimaryMedia = (project, defaultPath = '/assets/images/pl
     if (typeof project.featuredImages.overview === 'string') {
       return resolveMediaPath(project.featuredImages.overview);
     }
-    if (typeof project.featuredImages.overview === 'object' && project.featuredImages.overview.src) {
+    if (
+      typeof project.featuredImages.overview === 'object' &&
+      project.featuredImages.overview.src
+    ) {
       return resolveMediaPath(project.featuredImages.overview.src);
     }
   }
   // Fallback: first gallery image
   if (project.galleryImages && project.galleryImages.length > 0) {
-    const firstImage = project.galleryImages.find(img =>
-      typeof img === 'string' || (img && img.type !== 'video')
+    const firstImage = project.galleryImages.find(
+      (img) => typeof img === 'string' || (img && img.type !== 'video')
     );
     if (firstImage) {
       if (typeof firstImage === 'string') {
@@ -126,14 +139,19 @@ export const getProjectHeroMedia = (project) => {
   }
   // Try videos from galleryImages
   if (project.galleryImages && project.galleryImages.length > 0) {
-    const videoItem = project.galleryImages.find(item =>
-      (typeof item === 'object' && item.type === 'video') ||
-      (typeof item === 'string' && (item.endsWith('.mp4') || item.endsWith('.webm') || item.endsWith('.mov')))
+    const videoItem = project.galleryImages.find(
+      (item) =>
+        (typeof item === 'object' && item.type === 'video') ||
+        (typeof item === 'string' &&
+          (item.endsWith('.mp4') || item.endsWith('.webm') || item.endsWith('.mov')))
     );
     if (videoItem) {
       return {
         type: 'video',
-        src: typeof videoItem === 'object' ? resolveMediaPath(videoItem.src) : resolveMediaPath(videoItem)
+        src:
+          typeof videoItem === 'object'
+            ? resolveMediaPath(videoItem.src)
+            : resolveMediaPath(videoItem),
       };
     }
   }
@@ -194,7 +212,7 @@ const projectUtils = {
   organizeProjectsMatrix,
   getProjectPrimaryMedia,
   getProjectHeroMedia,
-  getProjectLinks
+  getProjectLinks,
 };
 
 export default projectUtils;

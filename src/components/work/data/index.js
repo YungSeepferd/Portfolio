@@ -13,13 +13,7 @@ import uiConfig from './uiConfig';
 export const getProjects = () => projectsData;
 
 // Export all data as-is
-export {
-  projects,
-  allProjects,
-  projectsData,
-  skillTags,
-  uiConfig
-};
+export { projects, allProjects, projectsData, skillTags, uiConfig };
 
 // Default export is the projects array
 export default projects;

@@ -54,6 +54,7 @@ export const darkColors = { ... };
 ```
 
 To use them in your theme:
+
 ```js
 import { createLightPalette, createDarkPalette } from './design/tokens';
 const lightPalette = createLightPalette();
@@ -61,6 +62,7 @@ const darkPalette = createDarkPalette();
 ```
 
 ### Semantic Color Usage
+
 - Use `theme.palette.<role>.<shade>` in your components and sx props.
 - Add new semantic roles to the palette files as needed.
 
@@ -82,8 +84,12 @@ const typography = {
     lineHeight: 1.2,
     letterSpacing: '-0.02em',
   },
-  h2: { /* ... */ },
-  h3: { /* ... */ },
+  h2: {
+    /* ... */
+  },
+  h3: {
+    /* ... */
+  },
   // ...additional type styles
 };
 ```
@@ -101,6 +107,7 @@ const spacing = (factor) => `${8 * factor}px`;
 ### Cards
 
 Three primary card variants:
+
 - **Standard** - Default card with border and shadow
 - **Project** - Enhanced card for project displays with image section
 - **Feature** - Highlighted card with accent border
@@ -108,6 +115,7 @@ Three primary card variants:
 ### Sections
 
 Standardized section layouts:
+
 - **Hero** - Full-width introduction with media
 - **Content** - Standard text and media layouts
 - **Gallery** - Image/video collection with lightbox
@@ -130,14 +138,14 @@ Animation principles based on Material Motion:
 const animations = {
   durations: {
     short: 200,
-    medium: 300, 
-    long: 500
+    medium: 300,
+    long: 500,
   },
   easings: {
     standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
     decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',
-    accelerate: 'cubic-bezier(0.4, 0.0, 1, 1)'
-  }
+    accelerate: 'cubic-bezier(0.4, 0.0, 1, 1)',
+  },
 };
 ```
 
@@ -148,19 +156,35 @@ Beyond standard Material UI theme properties:
 ```jsx
 const customExtensions = {
   customSections: {
-    about: { /* ... */ },
-    work: { /* ... */ },
-    contact: { /* ... */ }
+    about: {
+      /* ... */
+    },
+    work: {
+      /* ... */
+    },
+    contact: {
+      /* ... */
+    },
   },
   customComponents: {
-    projectCard: { /* ... */ },
-    heroVideo: { /* ... */ },
-    parallax: { /* ... */ }
+    projectCard: {
+      /* ... */
+    },
+    heroVideo: {
+      /* ... */
+    },
+    parallax: {
+      /* ... */
+    },
   },
   customEffects: {
-    cardHover: { /* ... */ },
-    buttonFocus: { /* ... */ }
-  }
+    cardHover: {
+      /* ... */
+    },
+    buttonFocus: {
+      /* ... */
+    },
+  },
 };
 ```
 
@@ -171,7 +195,9 @@ A development-only component (`src/components/dev/ThemeDebugger.js`) is availabl
 ```js
 import ThemeDebugger from './components/dev/ThemeDebugger';
 // ...
-{process.env.NODE_ENV === 'development' && <ThemeDebugger />}
+{
+  process.env.NODE_ENV === 'development' && <ThemeDebugger />;
+}
 ```
 
 ## Usage Guidelines
@@ -189,13 +215,15 @@ import { useTheme } from '@mui/material';
 function MyComponent() {
   const theme = useTheme();
   return (
-    <Box sx={{
-      bgcolor: 'background.paper',
-      color: 'text.primary',
-      p: theme.spacing(3),
-      borderRadius: theme.shape.borderRadius,
-      boxShadow: theme.shadows[2],
-    }}>
+    <Box
+      sx={{
+        bgcolor: 'background.paper',
+        color: 'text.primary',
+        p: theme.spacing(3),
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+      }}
+    >
       Themed content
     </Box>
   );
@@ -232,14 +260,14 @@ Each project section should follow this schema:
 
 ### Section Types & Rendering
 
-| type         | Rendered By           | Description                                  |
-|--------------|----------------------|----------------------------------------------|
-| default      | ProjectSection       | Standard text/media layout                   |
-| gallery      | ProjectGallery       | Image/video gallery with lightbox            |
-| outcomes     | OutcomesList         | List of project outcomes/metrics             |
-| takeaways    | TakeawaysList        | List of key takeaways                        |
-| prototype    | PrototypeShowcase    | Interactive prototype/iframe/modal           |
-| custom       | customComponent      | Custom React component for advanced cases    |
+| type      | Rendered By       | Description                               |
+| --------- | ----------------- | ----------------------------------------- |
+| default   | ProjectSection    | Standard text/media layout                |
+| gallery   | ProjectGallery    | Image/video gallery with lightbox         |
+| outcomes  | OutcomesList      | List of project outcomes/metrics          |
+| takeaways | TakeawaysList     | List of key takeaways                     |
+| prototype | PrototypeShowcase | Interactive prototype/iframe/modal        |
+| custom    | customComponent   | Custom React component for advanced cases |
 
 ### Example Section Array
 
@@ -275,7 +303,7 @@ const sections = [
     id: 'section-custom',
     type: 'custom',
     title: 'Interactive Demo',
-    customComponent: <MyCustomDemoComponent />, 
+    customComponent: <MyCustomDemoComponent />,
     anchor: 'demo',
     navigable: false // Not shown in navigation
   }
@@ -283,14 +311,17 @@ const sections = [
 ```
 
 ### Deep-Linking & Navigation
+
 - Use the `anchor` property for section deep-linking (e.g. `#overview`).
 - Use `navigable: false` for sections that should not appear in navigation.
 
 ### Accessibility
+
 - All sections should use semantic HTML and ARIA roles where appropriate.
 - Media must have descriptive alt text.
 - Navigation should be keyboard accessible.
 
 ### Notes
+
 - This schema enables flexible, future-proof project modals.
 - Update all project data and rendering logic to follow this structure.

@@ -1,6 +1,6 @@
 /**
  * Typography System
- * 
+ *
  * This file defines all typography settings used throughout the application.
  * It includes font families, sizes, weights, and variants.
  */

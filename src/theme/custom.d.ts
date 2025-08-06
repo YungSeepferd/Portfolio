@@ -5,7 +5,10 @@ export interface CustomParts {
     durations: Record<string, number>;
     easings: Record<string, string>;
     transitions: {
-      create: (props?: string | string[], options?: { duration?: string | number; easing?: string | any; delay?: number }) => string;
+      create: (
+        props?: string | string[],
+        options?: { duration?: string | number; easing?: string | any; delay?: number }
+      ) => string;
     };
   };
   sections: {
@@ -28,6 +31,7 @@ export interface CustomParts {
     header: { light: string; dark: string };
     aboutImage: { default: string; hover: string };
     contactCard: { background: string; border: string };
+    socialIcon: { base: string; hover: string };
   };
   header: {
     burgerMenuOffset: {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
  * A hook for loading data with proper loading and error states
- * 
+ *
  * @param {Function|any} dataFetcher - Function that returns data (sync or async) or direct data
  * @param {Object} options - Configuration options
  * @param {any} options.defaultData - Default data to use before loading completes
@@ -24,23 +24,23 @@ const useDataLoader = (dataFetcher, options = {}) => {
   const [data, setData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Use refs to track component mounted state and avoid memory leaks
   const isMountedRef = useRef(true);
   const dataFetcherRef = useRef(dataFetcher);
   const initialLoadCompleteRef = useRef(false);
   // Add loading state ref to avoid dependency issues
   const isLoadingRef = useRef(true);
-  
+
   // Update ref whenever isLoading changes
   useEffect(() => {
     isLoadingRef.current = isLoading;
   }, [isLoading]);
-  
+
   // Manual reload function
   const reload = useCallback(() => {
     if (!isMountedRef.current) return;
-    
+
     setIsLoading(true);
     setError(null);
     // Update the ref
@@ -53,24 +53,24 @@ const useDataLoader = (dataFetcher, options = {}) => {
   useEffect(() => {
     // Skip if we've already completed the initial load
     if (initialLoadCompleteRef.current) return;
-    
+
     let timeoutId = null;
-    
+
     // Update the ref to the latest dataFetcher
     dataFetcherRef.current = dataFetcher;
-    
+
     // Function to fetch data
     const fetchData = async () => {
       try {
         // Special handling for non-function data (direct data)
         if (typeof dataFetcherRef.current !== 'function') {
           const directData = dataFetcherRef.current;
-          
+
           // Validate the data
           if (!directData || !validateData(directData)) {
             throw new Error('Data validation failed for direct data');
           }
-          
+
           // Update state if still mounted
           if (isMountedRef.current) {
             setData(directData);
@@ -80,16 +80,16 @@ const useDataLoader = (dataFetcher, options = {}) => {
           }
           return;
         }
-        
+
         // Handle both synchronous functions and promise-returning functions
         const result = dataFetcherRef.current();
-        
+
         // If result is already the data (not a promise), handle it directly
         if (!(result instanceof Promise)) {
           if (!validateData(result)) {
             throw new Error('Data validation failed for synchronous result');
           }
-          
+
           if (isMountedRef.current) {
             setData(result);
             setIsLoading(false);
@@ -98,15 +98,15 @@ const useDataLoader = (dataFetcher, options = {}) => {
           }
           return;
         }
-        
+
         // Handle promise as before
         const resolvedData = await result;
-        
+
         // Validate the data
         if (!resolvedData || !validateData(resolvedData)) {
           throw new Error('Data validation failed');
         }
-        
+
         // Only update state if component is still mounted
         if (isMountedRef.current) {
           setData(resolvedData);
@@ -122,7 +122,7 @@ const useDataLoader = (dataFetcher, options = {}) => {
         }
       }
     };
-    
+
     // Set timeout to prevent infinite loading
     timeoutId = setTimeout(() => {
       if (isMountedRef.current && isLoadingRef.current) {
@@ -131,15 +131,15 @@ const useDataLoader = (dataFetcher, options = {}) => {
         onError(new Error('Loading timed out after ' + timeout + 'ms'));
       }
     }, timeout);
-    
+
     // Start fetching data
     fetchData();
-    
+
     // Cleanup
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-    
+
     // Include dataFetcher in the dependency array or add a comment explaining why it's excluded
   }, [validateData, timeout, onSuccess, onError, dataFetcher]); // Added dataFetcher to dependencies
 
