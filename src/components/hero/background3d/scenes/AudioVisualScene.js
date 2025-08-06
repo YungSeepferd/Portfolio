@@ -139,8 +139,8 @@ const AudioVisualScene = ({
   // Audio context and sounds
   const audioContextRef = useRef(null);
   const soundsRef = useRef({});
-  const [audioInitialized, setAudioInitialized] = useState(false);
-  const [showAudioPrompt, setShowAudioPrompt] = useState(true);
+  const [audioInitialized, setAudioInitialized] = useState(true); // Start as initialized
+  const [showAudioPrompt, setShowAudioPrompt] = useState(false); // Never show prompt
   
   // Shapes state
   const [activeShapes, setActiveShapes] = useState([]);
