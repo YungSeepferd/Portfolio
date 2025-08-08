@@ -31,6 +31,16 @@ vi.mock('three', () => ({
 
 // Mock Tone.js for tests with required classes used by hooks
 vi.mock('tone', () => ({
+  Gain: vi.fn(() => ({
+    toDestination: vi.fn().mockReturnThis(),
+    connect: vi.fn().mockReturnThis(),
+    gain: {
+      setValueAtTime: vi.fn(),
+      linearRampToValueAtTime: vi.fn(),
+      cancelScheduledValues: vi.fn(),
+    },
+    dispose: vi.fn(),
+  })),
   PolySynth: vi.fn(() => ({
     toDestination: vi.fn().mockReturnThis(),
     connect: vi.fn().mockReturnThis(),
@@ -55,6 +65,13 @@ vi.mock('tone', () => ({
     stop: vi.fn(),
     pause: vi.fn(),
   },
+}));
+
+// Mock react-pdf to avoid requiring pdfjs-dist during tests
+vi.mock('react-pdf', () => ({
+  Document: ({ children: _children }: { children?: unknown }) => null,
+  Page: () => null,
+  pdfjs: { GlobalWorkerOptions: { workerSrc: '' }, version: '' },
 }));
 
 // Mock localStorage

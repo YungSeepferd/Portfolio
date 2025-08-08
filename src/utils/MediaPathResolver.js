@@ -8,11 +8,10 @@ if (
   process.env &&
   process.env.NODE_ENV !== 'production'
 ) {
-  // eslint-disable-next-line no-console
   console.warn(
     '[deprecated] src/utils/MediaPathResolver.js is deprecated. Import from ./MediaPathResolver instead.'
   );
 }
 
-export * from './MediaPathResolver';
-export { default as default } from './MediaPathResolver';
+// Important: explicitly point to the TypeScript file to avoid resolving this JS shim again
+export * from './MediaPathResolver.ts';

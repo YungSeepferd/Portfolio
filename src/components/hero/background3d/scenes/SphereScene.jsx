@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useToneInstrument } from '../../../../hooks/useToneInstrument';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -11,14 +12,21 @@ import { getDynamicColor, themeColorToThreeColor } from '../utils/sceneThemeUtil
  * SphereScene Component - Enhanced with camera-aware mouse following
  */
 const SphereScene = ({
-  color = new THREE.Color(), // Will be overridden by theme-derived colors
+  color: _color = new THREE.Color(), // Will be overridden by theme-derived colors
   mousePosition,
   mouseData,
   isTransitioning,
   easterEggActive = false,
-  interactionCount = 0,
+  interactionCount: _interactionCount = 0,
 }) => {
   const theme = useTheme();
+  // Ambient soundscape and hover tones
+  const { startAmbient, stopAmbient, playNote } = useToneInstrument();
+  useEffect(() => {
+    // Sphere: D minor 9 pad
+    startAmbient(['D4', 'F4', 'A4', 'E4'], -28);
+    return () => stopAmbient();
+  }, [startAmbient, stopAmbient]);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { isInteractionEnabled } = useSceneState();
 
@@ -607,6 +615,11 @@ const SphereScene = ({
             position={shape.position}
             onPointerOver={() => {
               shape.hovered = true;
+              try {
+                playNote('D5', 0.12);
+              } catch (e) {
+                // noop
+              }
             }}
             onPointerOut={() => {
               shape.hovered = false;

@@ -15,14 +15,14 @@ export { palette as darkPalette } from './palette/dark';
 export { default as shadows } from './shadows';
 export { default as shape } from './shape';
 
-// Import components if available
-let components = {};
+// Import components if available (ESM-safe)
+export let components = {};
 try {
-  components = require('./components').default;
+  const mod = await import('./components').catch(() => null);
+  if (mod && mod.default) components = mod.default;
 } catch (error) {
-  console.info('No components found in theme/components.js');
+  // noop: optional
 }
-export { components };
 
 // Import from theme.js and re-export
 import createAppTheme, { lightTheme, darkTheme, designConstants } from '../theme';

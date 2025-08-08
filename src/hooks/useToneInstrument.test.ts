@@ -4,6 +4,22 @@ import { useToneInstrument } from './useToneInstrument';
 
 // Mock Tone.js with named exports to match import * as Tone
 vi.mock('tone', () => ({
+  Gain: vi.fn().mockImplementation(() => ({
+    toDestination: vi.fn().mockReturnThis(),
+    connect: vi.fn().mockReturnThis(),
+    gain: {
+      setValueAtTime: vi.fn(),
+      linearRampToValueAtTime: vi.fn(),
+      cancelScheduledValues: vi.fn(),
+    },
+    dispose: vi.fn(),
+  })),
+  LFO: vi.fn().mockImplementation(() => ({
+    connect: vi.fn().mockReturnThis(),
+    start: vi.fn(),
+    stop: vi.fn(),
+    disconnect: vi.fn(),
+  })),
   PolySynth: vi.fn().mockImplementation(() => ({
     toDestination: vi.fn().mockReturnThis(),
     connect: vi.fn().mockReturnThis(),

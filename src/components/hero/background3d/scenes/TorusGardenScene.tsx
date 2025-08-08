@@ -42,7 +42,7 @@ const TorusGardenScene: React.FC<TorusGardenSceneProps> = ({ isTransitioning }) 
   const visibleCountRef = useRef(0);
   const maxShapes = 5;
 
-  const { playChord, isStarted } = useToneInstrument();
+  const { playChord, playNote, startAmbient, stopAmbient, isStarted } = useToneInstrument();
 
   // Pre-create shapes data once
   const shapesRef = useRef<ShapeData[]>([]);
@@ -82,6 +82,15 @@ const TorusGardenScene: React.FC<TorusGardenSceneProps> = ({ isTransitioning }) 
     // Provide a no-op statement to satisfy no-empty lint rule.
     void isStarted;
   }, [isStarted]);
+  useEffect(() => {
+    // Initialize a calm ambient chord for this scene
+    // Torus: C major add9 feel
+    const ambient = ['C4', 'E4', 'G4', 'D4'];
+    startAmbient(ambient, -26);
+    return () => {
+      stopAmbient();
+    };
+  }, [startAmbient, stopAmbient]);
 
   const handleShapeClick = useCallback(
     (shape: ShapeData) => {
@@ -202,6 +211,15 @@ const TorusGardenScene: React.FC<TorusGardenSceneProps> = ({ isTransitioning }) 
               e.stopPropagation();
               handleShapeClick(shape);
             }}
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              // Soft hover blip from the pentatonic set
+              try {
+                playNote(shape.note, 0.2);
+              } catch (err) {
+                // noop
+              }
+            }}
           >
             <primitive object={geometry} attach="geometry" />
             <meshStandardMaterial
@@ -227,49 +245,32 @@ const TorusGardenScene: React.FC<TorusGardenSceneProps> = ({ isTransitioning }) 
         </group>
       ))}
 
-      {/* UI */}
+      {/* UI - compact, consistent tooltip panel */}
       <Html center position={[0, -5, 0]}>
         <div
           style={{
             color: theme.palette.text.primary,
             textAlign: 'center',
-            padding: '1rem 1.5rem',
-            background: 'rgba(0,0,0,0.6)',
-            borderRadius: 12,
-            maxWidth: 320,
-            backdropFilter: 'blur(10px)',
+            padding: '0.75rem 1rem',
+            background: 'rgba(0,0,0,0.5)',
+            borderRadius: 10,
+            maxWidth: 340,
+            backdropFilter: 'blur(6px)',
+            border: `1px solid ${theme.palette.divider}`,
+            lineHeight: 1.2,
           }}
         >
-          <p style={{ margin: '0 0 0.5rem 0', fontSize: '1.05rem', fontWeight: 600 }}>
+          <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 6 }}>
             Musical Torus Garden
-          </p>
-          <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>
-            Tap the rings to create harmonies
-          </p>
-          <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.8rem', opacity: 0.7 }}>
+          </div>
+          <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+            Tap a ring to harmonize • Hover for a soft tone
+          </div>
+          <div style={{ fontSize: '0.78rem', opacity: 0.75, marginTop: 6 }}>
             Progress: {shapesCollectedRef.current} / {maxShapes}
-          </p>
+          </div>
         </div>
       </Html>
-
-      {showCompletionMessage && (
-        <Html center position={[0, 3, 0]}>
-          <div
-            style={{
-              color: theme.palette.primary.main,
-              textAlign: 'center',
-              padding: '1.2rem 1.6rem',
-              background: 'rgba(0,0,0,0.75)',
-              borderRadius: 14,
-              border: `2px solid ${theme.palette.primary.main}`,
-              boxShadow: `0 0 18px ${theme.palette.primary.main}40`,
-            }}
-          >
-            <strong>Harmonic Resonance!</strong>
-            <div style={{ fontSize: '0.95rem', opacity: 0.9 }}>You created a musical pattern.</div>
-          </div>
-        </Html>
-      )}
     </group>
   );
 };

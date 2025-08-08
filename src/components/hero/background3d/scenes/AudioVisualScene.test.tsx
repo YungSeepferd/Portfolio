@@ -10,6 +10,9 @@ import TorusGardenScene from './TorusGardenScene';
 vi.mock('../../../../hooks/useToneInstrument', () => ({
   useToneInstrument: () => ({
     playChord: vi.fn(),
+    playNote: vi.fn(),
+    startAmbient: vi.fn(),
+    stopAmbient: vi.fn(),
     isStarted: true,
   }),
 }));

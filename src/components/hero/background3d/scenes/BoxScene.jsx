@@ -1,4 +1,5 @@
 import React, { useRef, useMemo, useEffect } from 'react';
+import { useToneInstrument } from '../../../../hooks/useToneInstrument';
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -15,7 +16,7 @@ import { SHAPE_TYPES } from '../constants';
  * - Changes colors based on energy/activation levels
  */
 const BoxScene = ({
-  color = new THREE.Color(0x6366f1), // Default fallback, but we'll use theme-derived colors
+  color: _color = new THREE.Color(0x6366f1), // Default fallback, but we'll use theme-derived colors
   mousePosition,
   mouseData,
   isTransitioning,
@@ -23,6 +24,13 @@ const BoxScene = ({
   interactionCount = 0,
 }) => {
   const theme = useTheme();
+  // Ambient soundscape and hover tones
+  const { startAmbient, stopAmbient, playNote } = useToneInstrument();
+  useEffect(() => {
+    // Box: A sus2 pad
+    startAmbient(['A3', 'E4', 'B4'], -28);
+    return () => stopAmbient();
+  }, [startAmbient, stopAmbient]);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { clock } = useThree();
   const { isInteractionEnabled, hasInteraction } = useSceneState();
@@ -353,7 +361,19 @@ const BoxScene = ({
         const emissiveColor = themeColorToThreeColor(theme.palette.secondary.light);
 
         return (
-          <mesh key={i} ref={cubeRefs.current[i]} position={[cube.position.x, 0, cube.position.z]}>
+          <mesh
+            key={i}
+            ref={cubeRefs.current[i]}
+            position={[cube.position.x, 0, cube.position.z]}
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              try {
+                playNote('A4', 0.1);
+              } catch (err) {
+                // noop
+              }
+            }}
+          >
             <boxGeometry args={[0.5, 0.5, 0.5]} />
             <meshStandardMaterial
               color={baseColor}

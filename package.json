@@ -14,11 +14,11 @@
     "@react-three/drei": "^9.99.5",
     "@react-three/fiber": "^8.15.16",
     "framer-motion": "^11.0.8",
-    "pdfjs-dist": "^4.0.379",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-pdf": "^7.7.1",
+  "react-pdf": "^7.7.1",
+  "pdfjs-dist": "^4.4.168",
     "react-router-dom": "^6.22.2",
     "react-scroll": "^1.9.0",
     "react-swipeable": "^7.0.1",
@@ -27,6 +27,11 @@
     "tone": "^15.1.22",
     "zod": "^4.0.15",
     "zustand": "^4.5.2"
+  },
+  "overrides": {
+    "react-pdf": {
+      "pdfjs-dist": ">=4.2.0"
+    }
   },
   "scripts": {
     "dev": "vite",
@@ -38,8 +43,8 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint . --ext ts,tsx,js,jsx --fix",
+  "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives",
+  "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",

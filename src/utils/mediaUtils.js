@@ -6,7 +6,7 @@
  * and error handling.
  */
 
-import { MediaPathResolver } from './MediaPathResolver';
+import { mediaResolver } from './MediaPathResolver';
 
 /**
  * Analyzes an image to determine optimal display settings
@@ -15,7 +15,7 @@ import { MediaPathResolver } from './MediaPathResolver';
  * @param {Object} options - Optional configuration
  * @returns {Object} Image analysis data
  */
-export const analyzeImage = (src, options = {}) => {
+export const analyzeImage = (src, _options = {}) => {
   // Extract the source URL if src is an object
   const imgSrc = typeof src === 'object' && src !== null ? src.src : src;
 
@@ -30,8 +30,8 @@ export const analyzeImage = (src, options = {}) => {
   }
 
   // Create a dummy image to get dimensions (client-side only)
-  if (typeof window !== 'undefined') {
-    const img = new Image();
+  if (typeof window !== 'undefined' && typeof window.Image !== 'undefined') {
+    const img = new window.Image();
     img.src = imgSrc;
 
     // For already loaded images, we can get dimensions immediately
@@ -242,8 +242,7 @@ export const normalizeSectionType = (type) => {
  * @returns {string} The media type ('image', 'video', or null)
  */
 export const getMediaType = (src) => {
-  const resolver = new MediaPathResolver();
-  return resolver.detectMediaType(src);
+  return mediaResolver.getMediaType(typeof src === 'object' && src?.src ? src.src : src);
 };
 
 // Export all utilities as named exports

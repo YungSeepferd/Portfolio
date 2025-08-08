@@ -19,10 +19,8 @@ const ActiveScene = ({
   easterEggActive = false,
   interactionCount = 0,
 }) => {
-  // eslint-disable-next-line no-unused-vars
   const { size: _size } = useThree();
   const { currentShapeType, switchShapeType, isTransitioning } = useSceneState();
-  // eslint-disable-next-line no-unused-vars
   const [_transitionProgress, setTransitionProgress] = useState(0);
 
   // Extract theme colors and use them to determine active color

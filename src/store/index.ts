@@ -97,9 +97,11 @@ interface UIState {
   sidebarOpen: boolean;
   isDarkMode: boolean;
   soundEnabled: boolean;
+  soundVolume: number; // 0..1
   setSidebarOpen: (open: boolean) => void;
   setDarkMode: (dark: boolean) => void;
   setSoundEnabled: (enabled: boolean) => void;
+  setSoundVolume: (vol: number) => void;
   toggleSidebar: () => void;
   toggleDarkMode: () => void;
   toggleSound: () => void;
@@ -111,10 +113,13 @@ export const useUIStore = create<UIState>()(
       sidebarOpen: false,
       isDarkMode: false,
       soundEnabled: true,
+      soundVolume: 0.2,
 
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       setDarkMode: (dark) => set({ isDarkMode: dark }),
       setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
+      setSoundVolume: (vol) =>
+        set({ soundVolume: Math.max(0, Math.min(1, Number.isFinite(vol) ? vol : 0)) }),
 
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
       toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),

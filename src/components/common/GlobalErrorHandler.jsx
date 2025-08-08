@@ -144,7 +144,7 @@ const GlobalErrorHandler = () => {
               <Typography
                 variant="body2"
                 component="div"
-                sx={{ mb: 2, fontFamily: theme.typography.fontFamily }}
+                sx={(t) => ({ mb: 2, fontFamily: t.typography.fontFamily })}
               >
                 <Box
                   component="pre"
@@ -169,7 +169,7 @@ const GlobalErrorHandler = () => {
                   <Typography
                     variant="body2"
                     component="div"
-                    sx={{ fontFamily: theme.typography.fontFamily, fontSize: '0.75rem' }}
+                    sx={(t) => ({ fontFamily: t.typography.fontFamily, fontSize: '0.75rem' })}
                   >
                     <Box
                       component="pre"

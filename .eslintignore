@@ -1,0 +1,12 @@
+node_modules/
+build/
+dist/
+public/
+scripts/
+coverage/
+*.config.js
+*.config.ts
+vite.config.js
+vitest.config.ts
+vitest.config.js
+.eslintrc.js
