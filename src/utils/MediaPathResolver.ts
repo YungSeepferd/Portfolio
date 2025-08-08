@@ -88,3 +88,6 @@ export class MediaPathResolver {
 
 // Export a singleton instance
 export const mediaResolver = new MediaPathResolver();
+
+// New: helper function for convenience and cross-file compatibility
+export const resolveMediaPath = (path: string): string => mediaResolver.resolveMediaPath(path);

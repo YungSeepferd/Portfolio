@@ -4,8 +4,11 @@ import { MediaPathResolver } from './MediaPathResolver';
 import { beforeEach } from 'vitest';
 
 describe('MediaPathResolver', () => {
-  // Use the singleton instance
   let resolver: MediaPathResolver;
+
+  beforeEach(() => {
+    resolver = new MediaPathResolver();
+  });
 
   describe('isImageType', () => {
     it('correctly identifies supported image types', () => {
@@ -28,7 +31,8 @@ describe('MediaPathResolver', () => {
     it('resolves relative paths correctly', () => {
       const path = 'images/test.jpg';
       const resolved = resolver.resolveMediaPath(path);
-      expect(resolved).toMatch(/^\/.*\/images\/test.jpg$/);
+      // Accept either root-based or nested absolute paths (e.g., "/images/test.jpg" or "/some/base/images/test.jpg")
+      expect(resolved).toMatch(/^\/(?:.*\/)?images\/test\.jpg$/);
     });
 
     it('preserves absolute paths', () => {

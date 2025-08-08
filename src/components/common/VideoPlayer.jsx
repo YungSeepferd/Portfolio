@@ -92,7 +92,7 @@ const VideoPlayer = ({
             zIndex: 1,
           }}
         >
-          <CircularProgress size={40} />
+          <CircularProgress size={40} aria-label="Loading video" />
         </Box>
       )}
 

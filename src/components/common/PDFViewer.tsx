@@ -25,23 +25,36 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
   const downloadBtnRef = useRef<HTMLButtonElement>(null);
 
   const pdfUrl = React.useMemo(() => {
-    if (url instanceof Blob) {
-      const blob = URL.createObjectURL(url);
-      setBlobUrl(blob);
-      return blob;
+    try {
+      const hasURL = typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function';
+      if (typeof Blob !== 'undefined' && url instanceof Blob && hasURL) {
+        const blob = URL.createObjectURL(url);
+        setBlobUrl(blob);
+        return blob;
+      }
+    } catch (e) {
+      // noop
     }
-    return url;
+    return url as string;
   }, [url]);
 
   useEffect(
     () => () => {
-      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      try {
+        if (blobUrl && typeof URL !== 'undefined') URL.revokeObjectURL(blobUrl);
+      } catch (e) {
+        // noop
+      }
     },
     [blobUrl]
   );
 
   useEffect(() => {
-    if (onCloseFocusRef?.current && downloadBtnRef.current && onCloseFocusRef.current !== downloadBtnRef.current) {
+    if (
+      onCloseFocusRef?.current &&
+      downloadBtnRef.current &&
+      onCloseFocusRef.current !== downloadBtnRef.current
+    ) {
       (onCloseFocusRef as any).current = downloadBtnRef.current;
     }
   }, [onCloseFocusRef]);
@@ -64,7 +77,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
 
   const handleDownload = (): void => {
     const link = document.createElement('a');
-    link.href = pdfUrl;
+    link.href = pdfUrl as string;
     link.download = getFileName();
     document.body.appendChild(link);
     link.click();
@@ -128,7 +141,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, title, onCloseFocusRef }) =>
         <Document
           file={pdfUrl}
           onLoadSuccess={onDocumentLoadSuccess}
-          loading={<CircularProgress />}
+          loading={<CircularProgress aria-label="Loading PDF document" />}
           error={<div>Error loading PDF. Please try downloading it instead.</div>}
         >
           {Array.from(new Array(numPages), (_, index) => (

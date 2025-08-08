@@ -71,7 +71,7 @@ describe('Work Component', () => {
   });
 
   it('shows error message when loading fails', () => {
-    const errorMessage = 'Failed to load projects';
+    const errorMessage = 'Network down';
     (useDataLoader as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       data: [],
       isLoading: false,
@@ -85,6 +85,9 @@ describe('Work Component', () => {
       </ThemeProvider>
     );
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    // Title of the error panel
+    expect(screen.getByText('Error Loading Projects')).toBeInTheDocument();
+    // The detailed error message is shown inside the panel
+    expect(screen.getByText(new RegExp(errorMessage))).toBeInTheDocument();
   });
 });

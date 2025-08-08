@@ -32,12 +32,38 @@ jobs:
       
       - name: Lint
         run: npm run lint
+        
+      - name: Security audit
+        run: npm audit --audit-level moderate
       
       - name: Format check
         run: npm run format:check
+        
+      - name: Bundle size check
+        run: |
+          npm run build
+          npx bundlewatch --config bundlewatch.config.json
+        continue-on-error: true
       
       - name: Run tests with coverage
         run: npm run test:coverage
+
+      - name: Validate project schema
+        run: npm run test -- src/test/projects.validation.test.ts --run
+
+      - name: Check media assets exist
+        run: |
+          node -e "const { getProjects } = require('./dist/components/work/data'); const { normalizeProjects } = require('./dist/utils/normalizeProject.js'); const fs = require('fs'); const projects = getProjects(); const norm = normalizeProjects(projects); const missing=[]; norm.forEach(p=>{const media = Array.isArray(p.media)?p.media:[]; media.forEach(m=>{if(m.src && m.src.startsWith('/') && !fs.existsSync('.'+m.src)){missing.push(m.src);}}); p.sections.forEach(s=>{const arr = Array.isArray(s.media)?s.media:[]; arr.forEach(m=>{if(m.src && m.src.startsWith('/') && !fs.existsSync('.'+m.src)){missing.push(m.src);}});});}); if(missing.length){console.error('Missing media files:', missing); process.exit(1);}"
+        continue-on-error: true
+      
+      - name: Coverage threshold check
+        run: |
+          COVERAGE=$(npm run test:coverage:json | grep -o '"total":{\"lines\":{\"pct\":[0-9.]*' | grep -o '[0-9.]*$')
+          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below threshold of 70%"
+            exit 1
+          fi
+        continue-on-error: true
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

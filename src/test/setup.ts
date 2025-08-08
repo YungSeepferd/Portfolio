@@ -25,16 +25,31 @@ vi.mock('three', () => ({
   TextureLoader: vi.fn(() => ({
     load: vi.fn(),
   })),
+  Euler: vi.fn(() => ({ set: vi.fn() })),
+  TorusGeometry: vi.fn(() => ({ dispose: vi.fn() })),
 }));
 
-// Mock Tone.js for tests
+// Mock Tone.js for tests with required classes used by hooks
 vi.mock('tone', () => ({
-  Synth: vi.fn(() => ({
-    toDestination: vi.fn(),
+  PolySynth: vi.fn(() => ({
+    toDestination: vi.fn().mockReturnThis(),
+    connect: vi.fn().mockReturnThis(),
     triggerAttackRelease: vi.fn(),
+    set: vi.fn(),
     dispose: vi.fn(),
   })),
-  start: vi.fn(),
+  Synth: vi.fn(() => ({})),
+  Filter: vi.fn(() => ({
+    connect: vi.fn().mockReturnThis(),
+    frequency: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() },
+    dispose: vi.fn(),
+  })),
+  Reverb: vi.fn(() => ({ connect: vi.fn().mockReturnThis(), dispose: vi.fn() })),
+  FeedbackDelay: vi.fn(() => ({ connect: vi.fn().mockReturnThis(), dispose: vi.fn() })),
+  Destination: {},
+  now: () => 0,
+  start: vi.fn().mockResolvedValue(undefined),
+  context: { state: 'suspended' },
   Transport: {
     start: vi.fn(),
     stop: vi.fn(),

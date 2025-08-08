@@ -27,6 +27,7 @@ const LoadingFallback = () => {
       }}
     >
       <CircularProgress
+        aria-label="Loading 3D environment"
         size={40}
         thickness={4}
         sx={{

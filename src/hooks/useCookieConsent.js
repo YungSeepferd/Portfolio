@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 
-interface CookieConsentHook {
-  cookieConsent: boolean;
-  setCookieConsent: (consent: boolean) => void;
-}
-
-export const useCookieConsent = (): CookieConsentHook => {
-  const [cookieConsent, setInternalCookieConsent] = useState<boolean>(() => {
-    return localStorage.getItem('cookieConsent') === 'accepted';
+export const useCookieConsent = () => {
+  const [cookieConsent, setInternalCookieConsent] = useState(() => {
+    try {
+      return (
+        typeof window !== 'undefined' && window.localStorage.getItem('cookieConsent') === 'accepted'
+      );
+    } catch {
+      return false;
+    }
   });
 
-  const setCookieConsent = (consent: boolean): void => {
+  const setCookieConsent = (consent) => {
     setInternalCookieConsent(consent);
-    localStorage.setItem('cookieConsent', consent ? 'accepted' : 'declined');
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('cookieConsent', consent ? 'accepted' : 'declined');
+      }
+    } catch (e) {
+      // noop
+    }
   };
 
   useEffect(() => {
@@ -24,46 +31,49 @@ export const useCookieConsent = (): CookieConsentHook => {
       setCookieConsent(false);
     };
 
-    window.addEventListener('cookieConsentAccepted', handleConsentAccepted);
-    window.addEventListener('cookieConsentDeclined', handleConsentDeclined);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('cookieConsentAccepted', handleConsentAccepted);
+      window.addEventListener('cookieConsentDeclined', handleConsentDeclined);
+    }
 
     return () => {
-      window.removeEventListener('cookieConsentAccepted', handleConsentAccepted);
-      window.removeEventListener('cookieConsentDeclined', handleConsentDeclined);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('cookieConsentAccepted', handleConsentAccepted);
+        window.removeEventListener('cookieConsentDeclined', handleConsentDeclined);
+      }
     };
   }, []);
 
   return {
     cookieConsent,
-    setCookieConsent
+    setCookieConsent,
   };
 };
 
-interface AnalyticsEventData {
-  [key: string]: any;
-  email?: string;
-  errorStack?: string;
-  userId?: string;
-  sessionId?: string;
-  error?: Error | { message: string };
-}
+export const sendAnalytics = (eventName, eventData = {}) => {
+  const hasConsent = (() => {
+    try {
+      return (
+        typeof window !== 'undefined' && window.localStorage.getItem('cookieConsent') === 'accepted'
+      );
+    } catch {
+      return false;
+    }
+  })();
 
-export const sendAnalytics = (eventName: string, eventData: AnalyticsEventData = {}): void => {
-  const hasConsent = localStorage.getItem('cookieConsent') === 'accepted';
-  
   if (hasConsent && window.gtag) {
     // Sanitize the data to remove potential sensitive information
     const sanitizedData = { ...eventData };
-    
+
     // Remove potentially sensitive fields
     delete sanitizedData.email;
     delete sanitizedData.errorStack;
     delete sanitizedData.userId;
     delete sanitizedData.sessionId;
-    
+
     // If there's an error message, only keep the message without the stack trace
     if (sanitizedData.error && typeof sanitizedData.error === 'object') {
-      sanitizedData.errorMessage = 'error' in sanitizedData.error ? sanitizedData.error.message : String(sanitizedData.error);
+      sanitizedData.errorMessage = sanitizedData.error.message || String(sanitizedData.error);
       delete sanitizedData.error;
     }
 

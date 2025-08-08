@@ -106,7 +106,9 @@ const Background3D = () => {
     const animate = () => {
       drawParticles();
       connectParticles();
-      animationFrameId = requestAnimationFrame(animate);
+      if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+        animationFrameId = window.requestAnimationFrame(animate);
+      }
     };
 
     // Set background color
@@ -122,7 +124,9 @@ const Background3D = () => {
     // Cleanup
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
+      if (typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [theme]);
 

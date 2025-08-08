@@ -2,11 +2,19 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useCookieConsent, sendAnalytics } from './useCookieConsent';
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 describe('useCookieConsent', () => {
   const mockStorage: { [key: string]: string } = {};
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure a clean slate between tests
+    Object.keys(mockStorage).forEach((key) => delete mockStorage[key]);
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: (key: string): string | null => mockStorage[key] || null,

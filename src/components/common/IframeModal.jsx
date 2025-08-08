@@ -186,7 +186,7 @@ const IframeModal = ({ url, title }) => {
             zIndex: 1,
           }}
         >
-          <CircularProgress size={40} />
+          <CircularProgress size={40} aria-label="Loading embedded content" />
           <Typography variant="body2" sx={{ mt: 2 }}>
             Loading content...
           </Typography>

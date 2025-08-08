@@ -5,8 +5,9 @@ import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
 import CategoryTagList from '../common/CategoryTagList';
 import VideoPlayer from '../common/VideoPlayer';
-import projectUtils from '../../utils/projectUtils';
+// import projectUtils from '../../utils/projectUtils';
 import { isVideo } from '../../utils/mediaUtils';
+import { getPrimaryMediaItem } from '../../utils/normalizeProject';
 
 /**
  * ProjectCard Component
@@ -42,8 +43,11 @@ const ProjectCard = ({ project, onClick }) => {
       : [];
 
   // Get the primary media and determine if it's a video
-  const primaryMedia = project.media || projectUtils.getProjectPrimaryMedia(project);
-  const isVideoMedia = primaryMedia && isVideo(primaryMedia.src || primaryMedia);
+  const primaryMedia = getPrimaryMediaItem(project) || {
+    type: 'image',
+    src: '/assets/images/placeholders/project.jpg',
+  };
+  const isVideoMedia = primaryMedia.type === 'video' || isVideo(primaryMedia.src);
 
   // Animation for the card itself
   const cardVariants = {
@@ -65,10 +69,10 @@ const ProjectCard = ({ project, onClick }) => {
   const displayDescription = isMobile && shortDescription ? shortDescription : description;
 
   // Touch event handlers to differentiate between scrolling and tapping
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (_e) => {
     if (!isMobile) return;
 
-    const touch = e.touches[0];
+    const touch = _e.touches[0];
     touchStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
@@ -77,10 +81,10 @@ const ProjectCard = ({ project, onClick }) => {
     isScrollingRef.current = false;
   };
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (_e) => {
     if (!isMobile) return;
 
-    const touch = e.touches[0];
+    const touch = _e.touches[0];
     const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
 
     // If vertical movement is detected, mark as scrolling
@@ -89,7 +93,7 @@ const ProjectCard = ({ project, onClick }) => {
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = (_e) => {
     if (!isMobile) return;
 
     // Only trigger click if not scrolling and touch duration is short
@@ -112,8 +116,8 @@ const ProjectCard = ({ project, onClick }) => {
       onMouseLeave={() => {
         if (!isMobile) setIsHovered(false);
       }}
-      onClick={(e) => {
-        if (!isMobile) onClick(project);
+      onClick={(_e) => {
+        if (!isMobile && onClick) onClick(project);
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -173,17 +177,17 @@ const ProjectCard = ({ project, onClick }) => {
               src={primaryMedia.src}
               containerHeight="100%"
               containerWidth="100%"
-              autoplay={true}
+              autoplay={false}
               muted={true}
               controls={false}
               showOverlayControls={false}
-              loop={true}
+              loop={false}
               poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
-              onError={(e) => {
-                console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+              onError={(_e) => {
+                console.error(`Failed to load video for ${title}: ${primaryMedia.src}`);
               }}
             />
-          ) : primaryMedia ? (
+          ) : (
             <ContentAwareImage
               src={primaryMedia.src}
               alt={`${title} preview`}
@@ -192,18 +196,12 @@ const ProjectCard = ({ project, onClick }) => {
               objectFit="cover"
               style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
               onError={(e) => {
-                console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
-                e.target.src = '/assets/images/placeholders/project.jpg';
+                console.error(`Failed to load image for ${title}: ${primaryMedia.src}`);
+                if (e && e.target) {
+                  // @ts-ignore - JS file
+                  e.target.src = '/assets/images/placeholders/project.jpg';
+                }
               }}
-            />
-          ) : (
-            <ContentAwareImage
-              src={'/assets/images/placeholders/project.jpg'}
-              alt={`${title} preview`}
-              containerHeight="100%"
-              containerWidth="100%"
-              objectFit="cover"
-              style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
             />
           )}
         </Box>

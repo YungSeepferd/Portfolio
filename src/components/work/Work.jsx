@@ -3,7 +3,6 @@ import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/materi
 import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import parseProjectContent from '../../utils/projectContentParser';
 import { getProjects } from './data/index'; // UPDATED: Import from the correct location
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
@@ -134,6 +133,7 @@ const Work = () => {
               </Typography>
               <Typography
                 variant="subtitle1"
+                component="p"
                 sx={{
                   maxWidth: '800px',
                   mx: 'auto',
@@ -155,7 +155,7 @@ const Work = () => {
                   minHeight: '300px',
                 }}
               >
-                <CircularProgress color="primary" />
+                <CircularProgress color="primary" aria-label="Loading projects" />
               </Box>
             ) : error ? (
               <Box
@@ -201,13 +201,11 @@ const Work = () => {
         <ProjectModal
           open={isModalOpen}
           onClose={handleCloseModal}
-          project={
-            selectedProjectIndex !== null
-              ? parseProjectContent(projects[selectedProjectIndex])
-              : null
-          }
+          project={selectedProjectIndex !== null ? projects[selectedProjectIndex] : null}
           onNextProject={handleNextProject}
           onPreviousProject={handlePrevProject}
+          projectIndex={selectedProjectIndex ?? undefined}
+          projectTotal={projects?.length ?? undefined}
         />
       </ErrorBoundary>
     </ErrorBoundary>

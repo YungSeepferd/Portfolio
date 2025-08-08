@@ -32,6 +32,8 @@ const ProjectModal = ({
   const contentRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const parsedProject = useMemo(() => parseProjectContent(project), [project]);
+  const safeIndex = typeof projectIndex === 'number' ? projectIndex : 0;
+  const safeTotal = typeof projectTotal === 'number' ? projectTotal : 0;
 
   // Enhanced swipe handlers with better sensitivity settings
   const swipeHandlers = useSwipeable({
@@ -253,7 +255,7 @@ const ProjectModal = ({
       >
         {typeof projectIndex === 'number' && typeof projectTotal === 'number' && (
           <Box className="project-counter">
-            {projectIndex + 1} / {projectTotal}
+            {safeIndex + 1} / {safeTotal}
           </Box>
         )}
 
@@ -420,7 +422,11 @@ const ProjectModal = ({
           backdropFilter: 'blur(4px)',
         }}
       >
-        <CircularProgress color="primary" size={isMobile ? 40 : 50} />
+        <CircularProgress
+          color="primary"
+          size={isMobile ? 40 : 50}
+          aria-label="Loading project content"
+        />
       </Box>
     );
 
@@ -428,7 +434,7 @@ const ProjectModal = ({
     <Modal
       open={open}
       onClose={onClose}
-      aria-labelledby={`project-modal-${project.id}-title`}
+      aria-labelledby={`project-modal-${project?.id ?? 'unknown'}-title`}
       sx={{
         display: 'flex',
         alignItems: 'center',

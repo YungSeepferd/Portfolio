@@ -1,34 +1,38 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { vi, beforeEach, describe, it, expect } from 'vitest';
 import useDataLoader from '../../hooks/useDataLoader';
 import Work from './Work';
-import ThemeProvider from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/ThemeContext';
+import { darkTheme } from '../../theme';
 
-jest.mock('../../hooks/useDataLoader');
+vi.mock('../../hooks/useDataLoader');
 
-beforeEach(() => {
-  useDataLoader.mockReturnValue({
-    data: [
-      {
-        id: 'proj1',
-        title: 'Sample Project',
-        description: 'desc',
-        categories: [],
-        technologies: [],
-      },
-    ],
-    isLoading: false,
-    error: null,
-    reload: jest.fn(),
+describe('Work Component (legacy test)', () => {
+  beforeEach(() => {
+    vi.mocked(useDataLoader).mockReturnValue({
+      data: [
+        {
+          id: 'proj1',
+          title: 'Sample Project',
+          description: 'desc',
+          categories: [],
+          technologies: [],
+        },
+      ],
+      isLoading: false,
+      error: null,
+      reload: vi.fn(),
+    });
   });
-});
 
-test('renders project cards from loaded data', () => {
-  render(
-    <ThemeProvider>
-      <Work />
-    </ThemeProvider>
-  );
+  it('renders project cards from loaded data', () => {
+    render(
+      <ThemeContext.Provider value={{ mode: 'dark', toggleTheme: vi.fn(), theme: darkTheme }}>
+        <Work />
+      </ThemeContext.Provider>
+    );
 
-  expect(screen.getByText('Sample Project')).toBeInTheDocument();
+    expect(screen.getByText('Sample Project')).toBeInTheDocument();
+  });
 });

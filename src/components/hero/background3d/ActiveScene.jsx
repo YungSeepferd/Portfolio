@@ -4,7 +4,7 @@ import { useSceneState } from './SceneContext';
 import { extractThemeColors, themeColorToThreeColor } from './utils/sceneThemeUtils';
 import SphereScene from './scenes/SphereScene';
 import BoxScene from './scenes/BoxScene';
-import AudioVisualScene from './scenes/AudioVisualScene';
+import TorusGardenScene from './scenes/TorusGardenScene';
 import { SHAPE_TYPES } from './constants';
 
 /**
@@ -20,10 +20,10 @@ const ActiveScene = ({
   interactionCount = 0,
 }) => {
   // eslint-disable-next-line no-unused-vars
-  const { size } = useThree();
+  const { size: _size } = useThree();
   const { currentShapeType, switchShapeType, isTransitioning } = useSceneState();
   // eslint-disable-next-line no-unused-vars
-  const [transitionProgress, setTransitionProgress] = useState(0);
+  const [_transitionProgress, setTransitionProgress] = useState(0);
 
   // Extract theme colors and use them to determine active color
   useMemo(() => {
@@ -43,11 +43,15 @@ const ActiveScene = ({
         setTransitionProgress(progress);
 
         if (progress < 1) {
-          requestAnimationFrame(updateTransition);
+          if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+            window.requestAnimationFrame(updateTransition);
+          }
         }
       };
 
-      requestAnimationFrame(updateTransition);
+      if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+        window.requestAnimationFrame(updateTransition);
+      }
     }
   }, [isTransitioning]);
 
@@ -113,7 +117,7 @@ const ActiveScene = ({
       )}
 
       {currentShapeType === SHAPE_TYPES.TORUS && (
-        <AudioVisualScene
+        <TorusGardenScene
           color={activeColor}
           mousePosition={mousePosition}
           isTransitioning={isTransitioning}

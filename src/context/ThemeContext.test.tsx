@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { act } from '@testing-library/react';
 import { ThemeContext, ThemeProvider } from './ThemeContext';
-import { darkTheme } from '../theme';
 import { useContext } from 'react';
 
 // Mock component to test theme context
@@ -21,13 +20,24 @@ describe('ThemeContext', () => {
     // Reset any mocks
     vi.clearAllMocks();
 
-    // Mock localStorage
+    // Mock localStorage with an in-memory store
+    const store: Record<string, string> = {};
     vi.stubGlobal('localStorage', {
-      getItem: vi.fn(),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-    });
+      getItem: vi.fn((key: string) => (key in store ? store[key] : null)),
+      setItem: vi.fn((key: string, value: string) => {
+        store[key] = String(value);
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete store[key];
+      }),
+      clear: vi.fn(() => {
+        for (const k of Object.keys(store)) delete store[k];
+      }),
+      key: vi.fn(),
+      length: 0,
+    } as any);
+    // Reset localStorage before each test
+    (globalThis as any).localStorage.clear();
   });
 
   it('provides default dark theme', () => {
@@ -46,7 +56,6 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     );
-
     const toggleButton = screen.getByText('Toggle Theme');
 
     // Initial state
@@ -79,12 +88,12 @@ describe('ThemeContext', () => {
       fireEvent.click(toggleButton);
     });
 
-    expect(localStorage.getItem('themeMode')).toBe('light');
+    expect((globalThis as any).localStorage.getItem('themeMode')).toBe('light');
   });
 
   it('loads persisted theme mode from localStorage', () => {
     // Pre-set localStorage
-    localStorage.setItem('themeMode', 'light');
+    (globalThis as any).localStorage.setItem('themeMode', 'light');
 
     render(
       <ThemeProvider>

@@ -6,11 +6,12 @@
 import { projects, allProjects, projectsData } from './projects/index';
 import { skillTags } from './skillTags';
 import uiConfig from './uiConfig';
+import { normalizeProjects } from '../../../utils/normalizeProject';
 
 /**
- * Get projects data (already normalized)
+ * Get projects data (normalized)
  */
-export const getProjects = () => projectsData;
+export const getProjects = () => normalizeProjects(projectsData);
 
 // Export all data as-is
 export { projects, allProjects, projectsData, skillTags, uiConfig };

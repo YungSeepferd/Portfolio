@@ -25,6 +25,8 @@ vi.mock('three', () => ({
   TextureLoader: vi.fn(() => ({
     load: vi.fn(),
   })),
+  Euler: vi.fn(() => ({ set: vi.fn() })),
+  TorusGeometry: vi.fn(() => ({ dispose: vi.fn() })),
 }));
 
 // Mock Tone.js for tests
@@ -78,10 +80,10 @@ mockIntersectionObserver.mockReturnValue({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 });
-global.IntersectionObserver = mockIntersectionObserver;
+(globalThis as any).IntersectionObserver = mockIntersectionObserver;
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
