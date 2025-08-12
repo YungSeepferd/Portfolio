@@ -22,7 +22,7 @@ import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
 
 // Import utility for creating image objects with positioning
-import { createAboutImage } from '../../utils/mediaUtils';
+import { resolveMediaPath as createAboutImage } from '../../services/ImageService';
 
 /**
  * Contains data for the About section tabs including content and images

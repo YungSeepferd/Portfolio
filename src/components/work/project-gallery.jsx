@@ -13,9 +13,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CloseIcon from '@mui/icons-material/Close';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import ContentAwareImage from '../common/ContentAwareImage';
+import { ResponsiveImage } from '../common/ResponsiveImage';
 import VideoPlayer from '../common/VideoPlayer';
-import { analyzeImage, isVideo } from '../../utils/mediaUtils';
+import { analyzeImage, isVideo } from '../../services/ImageService';
 
 const ProjectGallery = ({ images = [], title = '' }) => {
   const theme = useTheme();
@@ -150,13 +150,15 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   autoplay={false}
                 />
               ) : (
-                <ContentAwareImage
+                <ResponsiveImage
                   src={item.src}
                   alt={item.caption || title}
                   containerHeight="100%"
                   containerWidth="100%"
-                  objectFit={item.aspect === 'portrait' ? 'cover' : 'contain'}
+                  aspectRatio={item.aspect === 'portrait' ? 3/4 : 16/9}
+                  objectFit="cover"
                   expandOnHover={true}
+                  fallbackSrc="/assets/images/placeholders/project.jpg"
                 />
               )}
             </Box>
@@ -274,21 +276,14 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                         controls={true}
                       />
                     ) : (
-                      <ContentAwareImage
+                      <ResponsiveImage
                         src={selectedImage.src}
                         alt={`${title} full view`}
                         containerHeight="80vh"
                         containerWidth={selectedImage.orientation === 'portrait' ? '60vw' : '100%'}
-                        aspect={selectedImage.aspect}
+                        aspectRatio={selectedImage.aspect === 'portrait' ? 3/4 : 16/9}
                         objectFit="contain"
-                        sx={{
-                          maxWidth: '100%',
-                          maxHeight: '80vh',
-                          display: 'block',
-                          margin: '0 auto',
-                          background: 'transparent',
-                          borderRadius: theme.shape.borderRadius,
-                        }}
+                        fallbackSrc="/assets/images/placeholders/project.jpg"
                       />
                     )}
                   </Box>
@@ -356,16 +351,14 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                     showOverlayControls={false}
                   />
                 ) : (
-                  <ContentAwareImage
+                  <ResponsiveImage
                     src={item.thumbnailSrc}
                     alt={`Thumbnail ${item.id + 1}`}
                     containerHeight="100%"
                     containerWidth="100%"
-                    aspect={item.aspect}
+                    aspectRatio={item.aspect === 'portrait' ? 3/4 : 16/9}
                     objectFit="cover"
-                    sx={{
-                      borderRadius: theme.shape.borderRadius,
-                    }}
+                    fallbackSrc="/assets/images/placeholders/project.jpg"
                   />
                 )}
               </Box>

@@ -439,14 +439,26 @@ const ProjectModal = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 1300, // Ensure modal is above other content
         '& .MuiBackdrop-root': {
           backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          zIndex: -1, // Ensure backdrop is behind modal content
         },
-        // Prevent any overflow on the modal itself
+        // Ensure modal portal is properly positioned
         '& .MuiModal-root': {
-          overflow: 'hidden',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1300,
         },
       }}
+      disableScrollLock={false} // Enable scroll lock to prevent background scrolling
+      disableEnforceFocus={false} // Ensure focus is trapped within modal
+      disableAutoFocus={false} // Ensure auto-focus works
+      disableEscapeKeyDown={false} // Allow closing with escape key
+      disablePortal={false} // Use portal for proper stacking context
     >
       <Box
         id="project-modal-container"
@@ -462,8 +474,15 @@ const ProjectModal = ({
           position: 'relative',
           opacity: 1,
           transition: 'opacity 0.3s ease-in-out',
+          zIndex: 1400, // Ensure modal content is above backdrop
+          display: 'flex',
+          flexDirection: 'column',
+          outline: 'none', // Remove focus outline as we handle it with the close button
         }}
         {...swipeHandlers} // Apply swipe handlers to the entire modal
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`project-modal-${project?.id ?? 'unknown'}-title`}
       >
         <LoadingOverlay />
         <CloseBtn />

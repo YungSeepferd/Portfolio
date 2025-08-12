@@ -3,7 +3,7 @@
  * Only uses normalized fields: sections, media, links, technologies, etc.
  */
 
-import { resolveMediaPath } from './MediaPathResolver';
+import { resolveMediaPath } from '../services/ImageService';
 
 /**
  * Filter projects by category

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@mui/material'; // Added Stack for better spacing and alignment
 import ActionButton from './ActionButton';
-import { resolveMediaPath } from '../../utils/MediaPathResolver';
+import { resolveMediaPath } from '../../services/ImageService';
 
 // Import MUI icons
 import SlideshowIcon from '@mui/icons-material/Slideshow';

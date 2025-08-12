@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import ContentAwareImage from '../common/ContentAwareImage';
+import { ResponsiveImage } from '../common/ResponsiveImage';
 
 /**
  * AboutTabContent Component
@@ -74,14 +74,16 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         }}
       >
         {imgSrc ? (
-          <ContentAwareImage
+          <ResponsiveImage
             src={imgSrc}
             alt={`${tabData.title || 'About'} image`}
             objectPosition={imgPosition}
             containerHeight="100%"
             containerWidth="100%"
             expandOnHover={true}
-            imageData={typeof imageData === 'object' ? imageData : null}
+            aspectRatio={imageData?.aspectRatio || 16/9}
+            objectFit="cover"
+            fallbackSrc="/assets/images/placeholders/project.jpg"
           />
         ) : (
           <Box

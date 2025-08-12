@@ -76,14 +76,14 @@ const GlobalErrorHandler = () => {
   if (!error) return null;
 
   return (
-    <Box
+  <Box
       sx={{
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: (theme) => theme.palette.background.default,
+    backgroundColor: (_t) => _t.palette.background.default,
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
@@ -141,11 +141,11 @@ const GlobalErrorHandler = () => {
                 Error Message:
               </Typography>
 
-              <Typography
-                variant="body2"
-                component="div"
-                sx={(t) => ({ mb: 2, fontFamily: t.typography.fontFamily })}
-              >
+                  <Typography
+                    variant="body2"
+                    component="div"
+                    sx={(_t) => ({ mb: 2, fontFamily: _t.typography.fontFamily })}
+                  >
                 <Box
                   component="pre"
                   sx={{
@@ -169,7 +169,7 @@ const GlobalErrorHandler = () => {
                   <Typography
                     variant="body2"
                     component="div"
-                    sx={(t) => ({ fontFamily: t.typography.fontFamily, fontSize: '0.75rem' })}
+                    sx={(_t) => ({ fontFamily: _t.typography.fontFamily, fontSize: '0.75rem' })}
                   >
                     <Box
                       component="pre"

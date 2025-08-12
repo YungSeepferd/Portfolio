@@ -1,6 +1,5 @@
 import { ProjectSchema, MediaItemSchema, type Project, type MediaItem } from '../schemas/project';
-import { resolveMediaPath } from './MediaPathResolver';
-import { isVideo } from './mediaUtils';
+import { resolveMediaPath, isVideo } from '../services/ImageService';
 
 // Ensure media item has defaults and resolved paths
 export const normalizeMediaItem = (item: any): MediaItem => {

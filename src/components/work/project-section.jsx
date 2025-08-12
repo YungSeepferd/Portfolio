@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
+import { ResponsiveImage } from '../common/ResponsiveImage';
 import VideoPlayer from '../common/VideoPlayer';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -20,7 +20,7 @@ import ProjectGallery from './ProjectGallery';
 import { ProjectActionButtonsBar } from './ProjectMetaBar';
 import PropTypes from 'prop-types';
 import sectionPropTypes from './sectionPropTypes';
-import { isVideo } from '../../utils/mediaUtils';
+import { isVideo } from '../../services/ImageService';
 
 /**
  * Helper function to format section numbers
@@ -330,13 +330,14 @@ const ProjectSection = ({
             showOverlayControls={true}
           />
         ) : (
-          <ContentAwareImage
+          <ResponsiveImage
             src={mediaObj.src}
             alt={mediaObj.alt || title}
             containerHeight="100%"
             containerWidth="100%"
-            aspect={mediaObj.aspect || 'landscape'}
-            sx={{ borderRadius: theme.shape.borderRadius }}
+            aspectRatio={mediaObj.aspect === 'portrait' ? 3/4 : mediaObj.aspect === 'square' ? 1 : 16/9}
+            objectFit="cover"
+            fallbackSrc="/assets/images/placeholders/project.jpg"
           />
         )}
       </Box>
@@ -592,14 +593,15 @@ const ProjectSection = ({
             }}
           >
             {mediaData.slice(0, isMobile ? 1 : 2).map((img, idx) => (
-              <ContentAwareImage
+              <ResponsiveImage
                 key={idx}
                 src={img.src || img}
                 alt={img.alt || title || 'Project media'}
                 containerHeight="100%"
                 containerWidth="100%"
-                aspect={img.aspect || 'landscape'}
-                sx={{ borderRadius: theme.shape.borderRadius }}
+                aspectRatio={img.aspect === 'portrait' ? 3/4 : img.aspect === 'square' ? 1 : 16/9}
+                objectFit="cover"
+                fallbackSrc="/assets/images/placeholders/project.jpg"
               />
             ))}
           </Box>
@@ -637,13 +639,14 @@ const ProjectSection = ({
                 muted={true}
               />
             ) : (
-              <ContentAwareImage
+              <ResponsiveImage
                 src={mediaData.src}
                 alt={mediaData.alt || title || 'Project media'}
                 containerHeight="100%"
                 containerWidth="100%"
-                aspect={aspect}
-                sx={{ borderRadius: theme.shape.borderRadius }}
+                aspectRatio={aspect === 'portrait' ? 3/4 : aspect === 'square' ? 1 : 16/9}
+                objectFit="cover"
+                fallbackSrc="/assets/images/placeholders/project.jpg"
               />
             )}
           </Box>

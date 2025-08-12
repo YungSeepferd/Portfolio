@@ -16,7 +16,9 @@ const basePaths = {
 };
 
 // Default placeholder image if specific one isn't available
-const DEFAULT_PLACEHOLDER = '/assets/images/placeholders/project.jpg';
+import { resolveMediaPath } from '../services/ImageService';
+
+const DEFAULT_PLACEHOLDER = resolveMediaPath('/assets/images/placeholders/project.jpg');
 
 // Project-specific image paths
 export const projectMedia = {

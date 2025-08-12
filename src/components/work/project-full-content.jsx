@@ -5,8 +5,8 @@ import PrototypeShowcase from './PrototypeShowcase';
 import TitleOverlay from './TitleOverlay';
 import ProjectMetaBar from './ProjectMetaBar';
 import projectUtils from '../../utils/projectUtils';
-import ContentAwareImage from '../common/ContentAwareImage';
-import { isVideo } from '../../utils/mediaUtils';
+import { ResponsiveImage } from '../common/ResponsiveImage';
+import { isVideo } from '../../services/ImageService';
 import VideoPlayer from '../common/VideoPlayer';
 import { motion } from 'framer-motion';
 
@@ -172,20 +172,15 @@ const ProjectFullContent = ({ project, isLoading, setIsLoading }) => {
             }}
           />
         ) : (
-          <ContentAwareImage
+                    <ResponsiveImage
             src={heroMedia.src}
-            alt={`${title} Preview`}
-            containerWidth="100%"
+            alt={title}
             containerHeight="100%"
+            containerWidth="100%"
+            aspectRatio={16/9}
+            expandOnHover
             objectFit="cover"
-            loading="eager" // Prioritize image loading
-            onError={(e) => {
-              e.target.src = '/assets/images/placeholders/project.jpg';
-            }}
-            sx={{
-              opacity: isLoading ? 0.3 : 1,
-              transition: 'opacity 0.3s ease',
-            }}
+            fallbackSrc="/assets/images/placeholders/project.jpg"
           />
         )}
         <TitleOverlay

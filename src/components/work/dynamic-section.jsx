@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
+import { ResponsiveImage } from '../common/ResponsiveImage';
 import VideoPlayer from '../common/VideoPlayer';
 import MediaGallery from './MediaGallery';
-import { isVideo } from '../../utils/mediaUtils';
+import { isVideo } from '../../services/ImageService';
 
 const DynamicSection = ({ section, ...props }) => {
   // Create a debug string (not displayed) to make explicit use of variables for ESLint
@@ -79,10 +79,12 @@ const DynamicSection = ({ section, ...props }) => {
     // If it's an image
     return (
       <Box sx={mediaWrapperStyles}>
-        <ContentAwareImage
+        <ResponsiveImage
           src={mediaItem}
           alt={title || 'Project image'}
           expandOnHover={type !== 'hero' && type !== 'overview'} // Don't expand hero images on hover
+          objectFit="cover"
+          fallbackSrc="/assets/images/placeholders/project.jpg"
         />
       </Box>
     );

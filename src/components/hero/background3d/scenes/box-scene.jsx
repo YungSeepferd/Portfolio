@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useEffect } from 'react';
-import { useToneInstrument } from '../../../../hooks/useToneInstrument';
+// Removed Tone.js dependency for better performance and stability
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -25,12 +25,8 @@ const BoxScene = ({
 }) => {
   const theme = useTheme();
   // Ambient soundscape and hover tones
-  const { startAmbient, stopAmbient, playNote } = useToneInstrument();
-  useEffect(() => {
-    // Box: A sus2 pad
-    startAmbient(['A3', 'E4', 'B4'], -28);
-    return () => stopAmbient();
-  }, [startAmbient, stopAmbient]);
+  // Audio functionality removed for better performance and stability
+  // Audio ambient effects removed for better performance
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { clock } = useThree();
   const { isInteractionEnabled, hasInteraction } = useSceneState();
@@ -368,7 +364,7 @@ const BoxScene = ({
             onPointerOver={(e) => {
               e.stopPropagation();
               try {
-                playNote('A4', 0.1);
+                // Audio feedback removed for better performance
               } catch (err) {
                 // noop
               }

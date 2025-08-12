@@ -1,4 +1,4 @@
-import { isVideo, getMediaType } from './mediaUtils';
+import { isVideo, getMediaType } from '../services/ImageService';
 
 /**
  * Helper to extract media from a section and properly categorize media types

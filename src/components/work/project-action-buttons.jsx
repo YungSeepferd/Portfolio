@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Stack, useTheme } from '@mui/material';
 import { useModalContext } from '../../context/ModalContext';
-import { resolveMediaPath } from '../../utils/MediaPathResolver';
+import { resolveMediaPath } from '../../services/ImageService';
 
 const ActionButton = ({
   label,

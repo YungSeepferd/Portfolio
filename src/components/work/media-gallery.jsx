@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon, NavigateBefore, NavigateNext } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
+import { ResponsiveImage } from '../common/ResponsiveImage';
 import VideoPlayer from '../common/VideoPlayer';
-import { isVideo } from '../../utils/mediaUtils';
+import { isVideo } from '../../services/ImageService';
 
 const MediaGallery = ({ media, title }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
@@ -49,7 +49,11 @@ const MediaGallery = ({ media, title }) => {
     return isVideo(mediaProps.src) ? (
       <VideoPlayer {...mediaProps} controls />
     ) : (
-      <ContentAwareImage {...mediaProps} />
+      <ResponsiveImage
+        {...mediaProps}
+        objectFit="contain"
+        fallbackSrc="/assets/images/placeholders/project.jpg"
+      />
     );
   };
 

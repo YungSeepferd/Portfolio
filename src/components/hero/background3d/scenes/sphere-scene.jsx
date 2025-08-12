@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { useToneInstrument } from '../../../../hooks/useToneInstrument';
+// Removed Tone.js dependency for better performance and stability
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -20,13 +20,7 @@ const SphereScene = ({
   interactionCount: _interactionCount = 0,
 }) => {
   const theme = useTheme();
-  // Ambient soundscape and hover tones
-  const { startAmbient, stopAmbient, playNote } = useToneInstrument();
-  useEffect(() => {
-    // Sphere: D minor 9 pad
-    startAmbient(['D4', 'F4', 'A4', 'E4'], -28);
-    return () => stopAmbient();
-  }, [startAmbient, stopAmbient]);
+  // Audio functionality removed for better performance and stability
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { isInteractionEnabled } = useSceneState();
 
@@ -616,7 +610,7 @@ const SphereScene = ({
             onPointerOver={() => {
               shape.hovered = true;
               try {
-                playNote('D5', 0.12);
+                // Audio feedback removed for better performance
               } catch (e) {
                 // noop
               }
