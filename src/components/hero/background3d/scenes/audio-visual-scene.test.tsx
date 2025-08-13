@@ -4,10 +4,10 @@ import { render, screen } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material';
-import TorusGardenScene from './TorusGardenScene';
+import TorusGardenScene from './torus-garden-scene';
 
 // Mock the tone instrument hook
-vi.mock('../../../../hooks/useToneInstrument', () => ({
+vi.mock('../../../../hooks/use-tone-instrument', () => ({
   useToneInstrument: () => ({
     playChord: vi.fn(),
     playNote: vi.fn(),

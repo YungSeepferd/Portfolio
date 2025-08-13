@@ -9,7 +9,7 @@ import React, {
 import { Box, Fade, useTheme, useMediaQuery, Tabs, Tab } from '@mui/material'; // Removed unused Container
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
-import useDebounce from '../../hooks/useDebounce';
+import useDebounce from '../../hooks/use-debounce';
 
 // Constants for timeout durations
 const SCROLL_TIMEOUT = 350; // Increased from 200 for smoother transitions

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
-import { useToneSound } from '../../hooks/useToneSound';
+import { useToneSound } from '../../hooks/use-tone-sound';
 
 export function CassettePlayerWithSound(props) {
   const group = useRef();

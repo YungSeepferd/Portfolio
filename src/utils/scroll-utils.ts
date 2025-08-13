@@ -10,7 +10,7 @@
  * @param {Object} options - Optional scroll configuration
  * @param {number} options.offset - Offset from the top in pixels
  */
-export const scrollToSection = (sectionId, options = {}) => {
+export const scrollToSection = (sectionId: string, options: { offset?: number } = {}) => {
   // Default options
   const { offset = -70 } = options;
   // Remove unused duration parameter
@@ -48,7 +48,7 @@ export const scrollToSection = (sectionId, options = {}) => {
  * @param {number} offset - Optional offset to consider
  * @returns {boolean} - Whether the element is in viewport
  */
-export const isInViewport = (element, offset = 0) => {
+export const isInViewport = (element: HTMLElement | null, offset = 0): boolean => {
   if (!element) return false;
 
   const rect = element.getBoundingClientRect();

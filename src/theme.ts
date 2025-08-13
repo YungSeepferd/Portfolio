@@ -249,7 +249,7 @@ const createAppTheme = (mode = 'dark') => {
 export const lightTheme = createAppTheme('light');
 export const darkTheme = createAppTheme('dark');
 
-// Export design constants that are used in MediaPathResolver.js
+// Export design constants that are used in media-path-resolver.ts
 export const designConstants = {
   breakpoints: {
     xs: 0,

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import type { ProjectData } from '../../types/project';
-import useDataLoader from '../../hooks/useDataLoader';
+import useDataLoader from '../../hooks/use-data-loader';
 import Work from './Work';
-import { ThemeContext } from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/theme-context';
 import { ThemeProvider } from '@mui/material/styles';
 import { lightTheme, darkTheme } from '../../theme';
 

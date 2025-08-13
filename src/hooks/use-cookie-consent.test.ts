@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useCookieConsent, sendAnalytics } from './useCookieConsent';
+import { useCookieConsent, sendAnalytics } from './use-cookie-consent';
 
 declare global {
   interface Window {

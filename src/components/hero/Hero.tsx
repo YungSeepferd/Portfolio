@@ -1,11 +1,11 @@
 import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
 import { Box, useTheme, useMediaQuery, Fade } from '@mui/material';
-import HeroContent from './HeroContent';
-import ErrorBoundary from '../common/ErrorBoundary';
-import ScrollIndicator from './ScrollIndicator';
+import HeroContent from './hero-content';
+import ErrorBoundary from '../common/error-boundary';
+import ScrollIndicator from './scroll-indicator';
 import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
-import { SceneProvider, useSceneState } from './background3d/SceneContext';
+import { SceneProvider, useSceneState } from './background3d/scene-context';
 
 interface HeroBackgroundProps {
   onSceneClick: () => void;

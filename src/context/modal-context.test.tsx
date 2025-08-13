@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ModalProvider } from './ModalContext';
-import { useModal } from './ModalContext';
+import { ModalProvider } from './modal-context';
+import { useModal } from './modal-context';
 import { useContext } from 'react';
 
 const TestContent = () => <div>Test Modal Content</div>;

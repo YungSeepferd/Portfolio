@@ -1,32 +1,34 @@
+/* eslint-disable no-undef */
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-/**
- * Custom hook for tracking when an element enters or exits the viewport
- *
- * @param {Object} options
- * @param {number} options.threshold - Value between 0 and 1 indicating visibility percentage
- * @param {string} options.root - Element that is used as viewport for checking visibility
- * @param {string} options.rootMargin - Margin around the root element
- * @param {boolean} options.freezeOnceVisible - Stop observing after element becomes visible
- * @returns {Array} [ref, isVisible, entry] - Ref to attach, visibility state, and IntersectionObserverEntry
- */
+interface IntersectionObserverOptions {
+  threshold?: number | number[];
+  root?: Element | null;
+  rootMargin?: string;
+  freezeOnceVisible?: boolean;
+}
+
 function useIntersectionObserver({
   threshold = 0,
   root = null,
   rootMargin = '0px',
   freezeOnceVisible = false,
-} = {}) {
-  const [entry, setEntry] = useState();
+}: IntersectionObserverOptions = {}): [
+  (node: Element | null) => void,
+  boolean,
+  IntersectionObserverEntry | undefined,
+] {
+  const [entry, setEntry] = useState<IntersectionObserverEntry | undefined>();
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const [node, setNode] = useState(null);
+  const [node, setNode] = useState<Element | null>(null);
 
   // Use useRef to keep track of the observer instance for proper cleanup
-  const observerRef = useRef(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const frozen = isIntersecting && freezeOnceVisible;
 
   // Memoize the updateEntry function to ensure consistent reference
-  const updateEntry = useCallback(([entry]) => {
+  const updateEntry = useCallback(([entry]: IntersectionObserverEntry[]) => {
     setIsIntersecting(entry.isIntersecting);
     setEntry(entry);
   }, []);
@@ -63,7 +65,7 @@ function useIntersectionObserver({
   }, [node, threshold, root, rootMargin, frozen, updateEntry]);
 
   // Function to obtain the ref
-  const ref = useCallback((node) => {
+  const ref = useCallback((node: Element | null) => {
     if (node) setNode(node);
   }, []);
 

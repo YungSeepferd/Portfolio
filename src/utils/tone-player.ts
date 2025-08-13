@@ -1,6 +1,12 @@
 import * as Tone from 'tone';
 
 class TonePlayer {
+  private initialized: boolean;
+  private synth: any;
+  private ambientSynth: any;
+  private clickSynth: any;
+  private filter: any;
+
   constructor() {
     this.initialized = false;
     this.synth = null;

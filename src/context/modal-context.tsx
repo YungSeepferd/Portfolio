@@ -12,8 +12,8 @@ import {
   Slide,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import PDFViewer from '../components/common/PDFViewer';
-import IframeModal from '../components/common/IframeModal';
+import PDFViewer from '../components/common/pdf-viewer';
+import IframeModal from '../components/common/iframe-modal';
 
 // Create context with proper type interface
 export const ModalContext = createContext({

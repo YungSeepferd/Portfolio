@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MediaPathResolver } from './MediaPathResolver';
+import { MediaPathResolver } from './media-path-resolver';
 
 import { beforeEach } from 'vitest';
 

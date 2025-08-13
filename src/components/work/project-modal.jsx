@@ -7,7 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ProjectFullContent from './ProjectFullContent';
 import { useSwipeable } from 'react-swipeable';
-import parseProjectContent from '../../utils/projectContentParser';
+import parseProjectContent from '../../utils/project-content-parser';
 import SwipeRightAltIcon from '@mui/icons-material/SwipeRightAlt';
 import SwipeLeftAltIcon from '@mui/icons-material/SwipeLeftAlt';
 

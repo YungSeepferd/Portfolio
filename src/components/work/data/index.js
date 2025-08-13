@@ -4,9 +4,9 @@
 
 // Import project collections
 import { projects, allProjects, projectsData } from './projects/index';
-import { skillTags } from './skillTags';
+import { skillTags } from './skill-tags';
 import uiConfig from './uiConfig';
-import { normalizeProjects } from '../../../utils/normalizeProject';
+import { normalizeProjects } from '../../../utils/normalize-project';
 
 /**
  * Get projects data (normalized)
