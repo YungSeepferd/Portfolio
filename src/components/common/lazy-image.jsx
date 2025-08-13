@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../hooks/use-intersection-observer';
 
 /**
  * LazyImage component that loads images only when they're in viewport

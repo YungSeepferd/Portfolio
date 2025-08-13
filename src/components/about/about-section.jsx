@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/materi
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { motion } from 'framer-motion';
 import AboutTabNavigator from './AboutTabNavigator';
-import ErrorBoundary from '../common/ErrorBoundary';
+import ErrorBoundary from '../common/error-boundary';
 import { aboutData } from './AboutData'; // Import directly for immediate use
 
 /**

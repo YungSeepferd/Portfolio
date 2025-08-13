@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 
 /**
  * Custom debounce hook to limit the frequency of function calls
- * @param {any} value - The value to be debounced
- * @param {number} delay - Delay in milliseconds
- * @returns {any} - Debounced value
  */
-function useDebounce(value, delay = 300) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+function useDebounce<T>(value: T, delay = 300): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useToneInstrument } from './useToneInstrument';
+import { useToneInstrument } from './use-tone-instrument';
 
 // Mock Tone.js with named exports to match import * as Tone
 vi.mock('tone', () => ({

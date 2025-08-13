@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Box, TextField, Button, Alert, CircularProgress, Stack } from '@mui/material';
 import emailjs from '@emailjs/browser';
-import { sendAnalytics } from '../../hooks/useCookieConsent';
+import { sendAnalytics } from '../../hooks/use-cookie-consent';
 
 const ContactForm = () => {
   const [status, setStatus] = useState('idle');

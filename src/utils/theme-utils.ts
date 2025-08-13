@@ -3,7 +3,7 @@
  */
 
 import { alpha } from '@mui/material/styles';
-import { tokens } from '../design/tokens';
+import { tokens } from 'theme/design/tokens';
 
 /**
  * Creates responsive padding based on theme spacing

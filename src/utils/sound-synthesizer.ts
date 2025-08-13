@@ -1,11 +1,14 @@
+/* eslint-disable no-undef */
 class SoundSynthesizer {
+  private audioContext: AudioContext | null;
+
   constructor() {
     this.audioContext = null;
   }
 
-  initAudioContext() {
+  initAudioContext(): AudioContext {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       // Resume context if it's not running (needed for some browsers)
       if (this.audioContext.state === 'suspended') {
         this.audioContext.resume();

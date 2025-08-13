@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { soundSynth } from '../utils/soundSynthesizer';
+import { soundSynth } from '../utils/sound-synthesizer';
 
 export const useSynthSound = () => {
   const [isEnabled, setIsEnabled] = useState(true);

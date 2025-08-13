@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
 import { getProjects } from './data/index'; // UPDATED: Import from the correct location
-import ErrorBoundary from '../common/ErrorBoundary';
-import useDataLoader from '../../hooks/useDataLoader';
+import ErrorBoundary from '../common/error-boundary';
+import useDataLoader from '../../hooks/use-data-loader';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 /**

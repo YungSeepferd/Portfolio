@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Container, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import DynamicSection from './DynamicSection';
-import { processProjectContent } from '../../utils/projectContentParser';
+import { processProjectContent } from '../../utils/project-content-parser';
 
 const ProjectContentRenderer = ({ project }) => {
   const theme = useTheme();

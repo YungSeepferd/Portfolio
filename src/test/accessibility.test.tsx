@@ -5,8 +5,8 @@ import { axe, toHaveNoViolations } from 'jest-axe';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material';
-import { ModalProvider } from '../context/ModalContext';
-import { ThemeContext } from '../context/ThemeContext';
+import { ModalProvider } from '../context/modal-context';
+import { ThemeContext } from '../context/theme-context';
 import Hero from '../components/hero/Hero';
 import WorkSection from '../components/work/Work';
 

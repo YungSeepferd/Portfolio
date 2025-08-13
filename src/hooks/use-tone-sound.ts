@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { tonePlayer } from '../utils/tonePlayer';
+import { tonePlayer } from '../utils/tone-player';
 
 export const useToneSound = (autoStart = false) => {
   const [isEnabled] = useState(true); // Sound always enabled

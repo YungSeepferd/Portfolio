@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, useTheme, Skeleton } from '@mui/material';
-import { analyzeImage, getOptimalObjectFit } from '../../utils/mediaUtils';
+import { analyzeImage, getOptimalObjectFit } from '../../utils/media-utils';
 import ImageErrorHandler from './ImageErrorHandler';
 
 /**

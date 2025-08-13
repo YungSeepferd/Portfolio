@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Paper, useTheme } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
-import IframeModal from '../common/IframeModal';
+import IframeModal from '../common/iframe-modal';
 import { motion } from 'framer-motion';
 
 /**

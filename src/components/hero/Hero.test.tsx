@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ThemeContext } from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/theme-context';
 import { lightTheme } from '../../theme';
 import Hero from './Hero';
 

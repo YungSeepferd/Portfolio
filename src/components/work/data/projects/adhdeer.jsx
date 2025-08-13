@@ -27,7 +27,7 @@ import ADHDeerPrototypeVideo from '../../../../assets/images/ADHDeer/ADHDeer_Vid
 import presentationPDF from '../../../../assets/information/ADHDeer/ADHDeerPresentation.pdf';
 
 // Import utility for asset paths (only for documents)
-import { getAssetPath } from '../../../../utils/mediaUtils';
+import { getAssetPath } from '../../../../utils/media-utils';
 
 // Create a media object to hold all our imported media
 const media = {

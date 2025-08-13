@@ -6,7 +6,7 @@
  * and error handling.
  */
 
-import { mediaResolver } from './MediaPathResolver';
+import { mediaResolver } from './media-path-resolver';
 
 /**
  * Analyzes an image to determine optimal display settings

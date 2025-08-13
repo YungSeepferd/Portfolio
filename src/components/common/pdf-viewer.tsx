@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Document, Page, pdfjs } from 'react-pdf';
-import './PDFViewer.css';
+import './pdf-viewer.css';
 
 // Set up PDF.js worker
 if (typeof window !== 'undefined' && 'Worker' in window) {

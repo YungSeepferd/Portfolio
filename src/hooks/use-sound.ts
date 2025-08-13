@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
 
-export const useSound = (url, distance = 1) => {
-  const sound = useRef();
+export const useSound = (url: string, distance = 1) => {
+  const sound = useRef<THREE.PositionalAudio | null>(null);
   const { camera } = useThree();
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import ProjectSections from './ProjectSections';
 import PrototypeShowcase from './PrototypeShowcase';
 import TitleOverlay from './TitleOverlay';
 import ProjectMetaBar from './ProjectMetaBar';
-import projectUtils from '../../utils/projectUtils';
+import projectUtils from '../../utils/project-utils';
 import { ResponsiveImage } from '../common/ResponsiveImage';
 import { isVideo } from '../../services/ImageService';
 import VideoPlayer from '../common/VideoPlayer';
@@ -172,12 +172,12 @@ const ProjectFullContent = ({ project, isLoading, setIsLoading }) => {
             }}
           />
         ) : (
-                    <ResponsiveImage
+          <ResponsiveImage
             src={heroMedia.src}
             alt={title}
             containerHeight="100%"
             containerWidth="100%"
-            aspectRatio={16/9}
+            aspectRatio={16 / 9}
             expandOnHover
             objectFit="cover"
             fallbackSrc="/assets/images/placeholders/project.jpg"

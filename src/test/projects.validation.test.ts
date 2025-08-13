@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ProjectSchema } from '../schemas/project';
 import { getProjects } from '../components/work/data';
-import { normalizeProjects } from '../utils/normalizeProject';
+import { normalizeProjects } from '../utils/normalize-project';
 
 describe('Projects Schema Validation', () => {
   it('all projects conform to the schema after normalization', () => {

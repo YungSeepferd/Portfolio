@@ -10,20 +10,39 @@ import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { useThemeMode } from '../../context/ThemeContext';
-import ThemeToggle from '../common/ThemeToggle';
+import ThemeToggle from '../common/theme-toggle';
+import VolumeControl from '../audio/volume-control';
 import { navItems, socialLinks } from '../../config/uiConfig';
-import NavLinks from './NavLinks';
+import NavLinks from './nav-links';
+import '../../types/theme.ts';
+import type { Theme } from '@mui/material/styles';
 
-const Header = () => {
-  const theme = useTheme();
+type HeaderAnimationState = {
+  initial: {
+    y: number;
+    opacity: number;
+  };
+  animate: {
+    y: number;
+    opacity: number;
+  };
+  transition: {
+    duration: number;
+    ease: string;
+    delay: number;
+  };
+};
+
+const Header: React.FC = () => {
+  const theme: Theme = useTheme();
   const { mode, toggleTheme } = useThemeMode();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const isFirstMount = React.useRef(true);
+  const isFirstMount = React.useRef<boolean>(true);
 
-  const headerAnimation = useMemo(
+  const headerAnimation = useMemo<HeaderAnimationState>(
     () => ({
       initial: isFirstMount.current ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 },
       animate: { y: 0, opacity: 1 },
@@ -41,7 +60,7 @@ const Header = () => {
       isFirstMount.current = false;
     }
 
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       setIsScrolled(window.scrollY > 20);
     };
 
@@ -54,12 +73,12 @@ const Header = () => {
     };
   }, []);
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setMobileOpen(true);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (): void => {
     setAnchorEl(null);
     setMobileOpen(false);
   };
@@ -85,8 +104,8 @@ const Header = () => {
           backdropFilter: 'blur(10px)',
           borderBottom: isScrolled ? `1px solid ${theme.palette.divider}` : 'none',
           color: theme.palette.text.primary,
-          width: '100vw', // Ensure full viewport width
-          maxWidth: '100vw', // Prevent any maxWidth restriction
+          width: '100vw',
+          maxWidth: '100vw',
           left: 0,
         }}
       >
@@ -94,7 +113,7 @@ const Header = () => {
           maxWidth={false}
           disableGutters={true}
           sx={{
-            px: 0, // Remove all horizontal padding at the top level
+            px: 0,
             width: '100vw',
             maxWidth: '100vw',
             mx: 0,
@@ -102,7 +121,7 @@ const Header = () => {
         >
           <Toolbar
             sx={{
-              minHeight: { xs: 56, sm: 64 }, // 56px for mobile, 64px for tablet/desktop
+              minHeight: { xs: 56, sm: 64 },
               px: 0,
               justifyContent: 'space-between',
             }}
@@ -151,11 +170,19 @@ const Header = () => {
               )}
             </Box>
 
+            {/* Always-visible volume control on mobile */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+              <VolumeControl />
+            </Box>
+
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
-              {/* Restored theme toggle for desktop view */}
               <Box sx={{ ml: 2 }}>
-                <ThemeToggle mode={mode} onToggle={toggleTheme} />
+                <VolumeControl />
+              </Box>
+              {/* Restored theme toggle for desktop view */}
+              <Box sx={{ ml: 1 }}>
+                <ThemeToggle mode={mode} onToggle={toggleTheme} variant="icon" />
               </Box>
             </Box>
 
@@ -231,6 +258,9 @@ const Header = () => {
           </Box>
           {/* Theme toggle for mobile menu - using button variant */}
           <List>
+            <Box sx={{ px: 1, py: 1 }}>
+              <VolumeControl />
+            </Box>
             <ThemeToggle mode={mode} onToggle={toggleTheme} variant="button" />
             {navItems.map((item, idx) => (
               <Button

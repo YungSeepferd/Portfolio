@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
-import { ModalProvider } from './context/ModalContext';
-import Header from './components/header/Header';
-import FooterContact from './components/contact/FooterContact';
-import ErrorBoundary from './components/common/ErrorBoundary';
+import { ThemeProvider as CustomThemeProvider } from './context/theme-context';
+import { ModalProvider } from './context/modal-context';
+import Header from './components/header/header';
+import FooterContact from './components/contact/footer-contact';
+import ErrorBoundary from './components/common/error-boundary';
 
 // Import components directly to fix lazy loading issues
 import Hero from './components/hero/Hero';
 import Work from './components/work/Work';
-import AboutSection from './components/about/AboutSection';
+import AboutSection from './components/about/about-section';
 import ThemeDebugger from './components/dev/ThemeDebugger';
 
 /**
