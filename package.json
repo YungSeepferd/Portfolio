@@ -49,20 +49,14 @@
     "test:visual:verify": "playwright test e2e/visual.spec.ts",
     "test:perf": "vitest --config vitest.perf.config.ts",
     "test:mutation": "stryker run",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint --config eslint.config.js \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives",
+    "lint:fix": "eslint --config eslint.config.js \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky install"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -78,7 +72,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
+      "eslint --config eslint.config.js --fix",
       "prettier --write"
     ],
     "src/**/*.{json,md,yml,css,html}": [
