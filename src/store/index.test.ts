@@ -77,19 +77,14 @@ describe('Zustand Store Integration', () => {
       const mockStore = {
         sidebarOpen: false,
         isDarkMode: true,
-        soundEnabled: true,
         setSidebarOpen: vi.fn(),
         toggleDarkMode: vi.fn(),
-        toggleSound: vi.fn(),
       };
 
       (useUIStore as any).mockReturnValue(mockStore);
 
       mockStore.toggleDarkMode();
       expect(mockStore.toggleDarkMode).toHaveBeenCalled();
-
-      mockStore.toggleSound();
-      expect(mockStore.toggleSound).toHaveBeenCalled();
 
       mockStore.setSidebarOpen(true);
       expect(mockStore.setSidebarOpen).toHaveBeenCalledWith(true);

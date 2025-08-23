@@ -1,46 +1,235 @@
 # Project Analysis and Next Steps
 
-_Last updated: 6 August 2025_
+## Last Updated
+
+August 16, 2025
 
 ## Recent Implementations
 
-1. Interactive Sound System
-   - Implemented Tone.js for synthesized audio
-   - Added interactive click sounds
-   - Created ambient sound generation
-   - Integrated with 3D scenes
+1. **3D Scene Interactivity**
+   - Implemented dynamic 3D backgrounds
+   - Added interactive scene switching
+   - Created responsive visualization
+   - Integrated with UI elements
 
-2. Privacy & Security Updates
+2. **Privacy & Security Updates**
    - Added Content Security Policy
    - Implemented cookie consent
    - Self-hosted fonts
    - Secure contact form
    - Privacy policy
 
+3. **Code Restructuring (In Progress)**
+   - Created comprehensive project documentation (CODE_STYLE.md, TESTING.md, ROADMAP.md, ARCHITECTURE.md)
+   - Implemented new file hierarchy organization
+   - Created dedicated visualization module with SceneContext
+   - Consolidated media utility functions
+   - Improved component organization with feature-based structure
+   - Added accessibility context for preference management
+   - Created detailed recommendations for next project structure (NEXT_PROJECT_STRUCTURE.md)
+
 ## Next Steps
 
-1. Sound System Enhancements
-   - Fine-tune sound parameters
-   - Add more interactive sound patterns
-   - Implement volume controls
-   - Add mute toggle
+### 1. Project Structure Implementation
 
-2. Performance Optimization
-   - Optimize 3D scene rendering
-   - Implement lazy loading for projects
-   - Enhance image loading strategy
+Based on our recent analysis (see `docs/NEXT_PROJECT_STRUCTURE.md`), we will implement the following structure:
 
-3. User Experience
-   - Add loading animations
-   - Improve mobile touch interactions
-   - Enhanced accessibility features
+1. **Feature-First Organization**
+   - [x] Create structure recommendations document
+   - [ ] Migrate common components to `src/components/ui/` directory with component folder structure
+   - [ ] Reorganize feature components into `src/features/` directory
+   - [ ] Move 3D visualization into `src/features/visualization/`
+   - [ ] Implement barrel exports with index.ts files
+   - [ ] Update imports throughout the codebase
+   - [ ] Co-locate tests with implementation files
 
-4. Content Updates
-   - Add new projects
-   - Update project descriptions
-   - Add case studies
+2. **Component Structure Standardization**
+   - [ ] Convert each component to use standard folder structure:
+
+     ```plaintext
+     ComponentName/
+     ├── ComponentName.tsx
+     ├── ComponentName.test.tsx
+     ├── ComponentName.styles.ts  (if applicable)
+     └── index.ts
+     ```
+   - [ ] Implement consistent props interface definitions
+   - [ ] Extract component logic to custom hooks when appropriate
+   - [ ] Ensure consistent export patterns via index files
+
+3. **Shared Utilities Organization**
+   - [ ] Organize shared hooks into logical categories
+   - [ ] Create clear interfaces for all hook returns
+   - [ ] Consolidate utility functions by domain (formatting, validation, animation)
+   - [ ] Implement strong typing for all utility functions
+
+4. **Context Provider Architecture**
+   - [ ] Move context providers to dedicated folders
+   - [ ] Implement consistent context access pattern with custom hooks
+   - [ ] Add proper typing for context values and actions
+   - [ ] Create unified provider composition in app root
+
+### 2. File Restructuring Completion
+
+- [ ] Complete migration of components to new directory structure
+- [ ] Move remaining header components to layout directory
+- [ ] Move 3D visualization components to visualization directory
+- [ ] Update all imports throughout the codebase
+- [ ] Run thorough tests to ensure functionality
+
+### 3. 3D Visualization Enhancements
+
+- [ ] Integrate the new SceneContext with existing visualization components
+- [ ] Implement performance controls using the new architecture
+- [ ] Add accessibility options leveraging AccessibilityContext
+- [ ] Fine-tune animation parameters
+- [ ] Add more interactive patterns
+
+### 4. Utility Consolidation
+
+- [ ] Complete migration of media utilities to unified API
+- [ ] Move audio utilities to dedicated directory
+- [ ] Create proper hooks for media resource handling
+- [ ] Ensure consistent utility usage across components
+
+### 5. Performance Optimization
+
+- [ ] Optimize 3D scene rendering with the new SceneContext
+- [ ] Implement lazy loading for projects
+- [ ] Enhance image loading strategy with new media utilities
+- [ ] Add performance monitoring
+
+### 6. User Experience
+
+- [ ] Add loading animations
+- [ ] Improve mobile touch interactions
+- [ ] Integrate enhanced accessibility features
+- [ ] Implement reduced motion options
+
+### 7. Content Updates
+
+- [ ] Add new projects
+- [ ] Update project descriptions
+- [ ] Add case studies
 
 The primary goal is to review the current state of the portfolio project, identify unused, redundant, or underutilized code and components, and create a structured plan to refactor, clean up, and reintegrate valuable features, particularly within the "Work" section, to restore full functionality and improve maintainability and performance.
+
+## 1. 3D Visualization Architecture Review & Refactor Plan
+
+### Current Implementation Analysis
+
+- **Three.js Integration Approaches:**
+  - React Three Fiber for declarative 3D scene management
+  - Dynamic scene switching with transition effects
+  - Responsive adaptations for different screen sizes
+  
+- **Key Components:**
+  - Scene controller for managing active scenes
+  - Interactive background elements 
+  - Performance-optimized rendering
+  - Theme-integrated visuals
+
+### 3D Architecture Refactoring Plan
+
+1. **Create Scene Provider & Context:** ✓
+   - Implement a unified `SceneContext` component that:
+     - Manages scene state and transitions
+     - Provides dynamic scene controls
+     - Handles performance optimizations
+     - Adapts to device capabilities
+
+2. **Consolidate Utility Classes:** (In Progress)
+   - Create a modular architecture with:
+     - `BaseScene`: Core functionality and shared methods (✓)
+     - Interactive components: User interaction handling
+     - Performance controls: Adaptive performance management
+     - ThemeEngine: Visual theme integration
+
+3. **Unified Hook API:** (Planned)
+   - Create scene-related hooks with:
+     - Consistent method names across all scene types
+     - Configurable rendering parameters
+     - Performance controls
+     - Common interaction patterns
+
+4. **Configuration System:** (Planned)
+   - Enhance scene configuration to include:
+     - Visual mappings for different themes
+     - Default parameters for all scene types
+     - User preferences storage
+     - Accessibility options
+
+5. **Performance Optimizations:** (Planned)
+   - Asset preloading system
+   - Dynamic LOD (Level of Detail) based on device
+   - Cleanup of unused resources
+   - Frame rate management
+
+### Implementation Steps
+
+1. Create the new architecture structure without modifying existing code ✓
+2. Implement the SceneContext provider and core functionality ✓
+3. Gradually migrate each visualization feature to the new system (In Progress)
+4. Add tests for the new implementation
+5. Remove deprecated implementations once migration is complete
+
+## 2. Accessibility & User Experience Improvements
+
+### Current Accessibility Analysis
+
+- **Interactive Elements:**
+  - Need better keyboard navigation for 3D scenes
+  - Focus indicators could be improved for interactive elements
+  - Some clickable areas need larger touch targets for mobile
+  
+- **User Experience Gaps:**
+  - Loading indicators needed for content transitions
+  - Better responsive design for smaller devices
+  - Improved error handling for failed image loads
+  - Alternative content for users with reduced motion preferences
+
+### Accessibility & UX Improvement Plan
+
+1. **Create Accessibility Provider & Context:** ✓
+   - Implement a unified `AccessibilityContext` component that:
+     - Tracks user preferences (reduced motion, high contrast) ✓
+     - Provides centralized focus management
+     - Manages keyboard navigation patterns
+     - Handles screen reader announcements
+
+2. **Enhance User Controls:** (Planned)
+   - Create a comprehensive preferences panel with:
+     - Contrast adjustment options
+     - Animation speed/disable controls
+     - Text size adjustments
+     - Keyboard shortcuts information
+
+3. **Unified Hook API:** (In Progress)
+   - Use the `useAccessibility()` hook with:
+     - Focus management utilities
+     - Keyboard navigation helpers
+     - Screen reader announcement functions
+     - Motion preference detection ✓
+
+4. **Content Improvements:** (Planned)
+   - Add detailed alt text for all images
+   - Provide text alternatives for visual interactions
+   - Implement proper heading hierarchy
+   - Ensure appropriate ARIA attributes throughout
+
+5. **Performance Enhancements for Accessibility:** (Planned)
+   - Optimized rendering for assistive technologies
+   - Reduced motion versions of animations
+   - Simplified UI option for cognitive accessibility
+   - Proper loading states and error handling
+
+### Accessibility Implementation Progress
+
+1. Conduct a full accessibility audit using automated and manual testing
+2. Implement the AccessibilityContext provider and core functionality ✓
+3. Gradually enhance each component with accessibility improvements (In Progress)
+4. Add tests for accessibility features
+5. Conduct user testing with assistive technologies
 
 ## 2. File Usage Analysis & Potential Issues
 
@@ -88,8 +277,8 @@ The primary goal is to review the current state of the portfolio project, identi
 
 Goal: Restore full, dynamic project display functionality within the modal.
 
-1.  **Data Flow:** Confirm `Work.js` correctly passes the selected project's data (`project`) to `ProjectModal`.
-2.  **Modal Content (`ProjectFullContent.js`):**
+1. **Data Flow:** Confirm `Work.js` correctly passes the selected project's data (`project`) to `ProjectModal`.
+2. **Modal Content (`ProjectFullContent.js`):**
     - **Dynamic Rendering:** Modify this component to dynamically render sections based on the data present in the `project` object. Use conditional rendering (`project.heroVideo && <HeroVideo ... />`, `project.galleryImages && <ProjectGallery ... />`, etc.).
     - **Integrate Sub-Components:** Ensure the following components are correctly imported and rendered when corresponding data exists:
       - `ProjectHeader` (Title, Description, Categories)
@@ -167,10 +356,46 @@ Goal: Restore full, dynamic project display functionality within the modal.
 - Test theme toggling.
 - Consider adding basic smoke tests or component rendering tests using React Testing Library if time permits.
 
-# Next Steps (as of 16 April 2025)
+## 9. Project Roadmap (as of August 16, 2025)
 
-- All previously marked unused files (utilities, hooks, context) have been deleted.
-- Media/image utilities are consolidated in `mediaUtils.js` and used by all relevant components.
-- Layout and spacing are handled with MUI's Box and sx prop; no redundant layout components remain.
-- Dependency cleanup is complete and the app builds successfully.
-- The codebase is clean, modular, and ready for further development or optimization.
+### Phase 1: Code Organization (August 2025) - In Progress
+
+- Implement the unified 3D Visualization Architecture described in section 1 (✓ Started)
+- Consolidate media/image utilities into `mediaUtils.js` and use them consistently (✓ Started)
+- Implement feature-based file organization (✓ Started)
+- Create proper context providers for visualization and accessibility (✓ Complete)
+- Fix all linting and type errors (Ongoing)
+
+### Phase 2: File Migration (August 2025)
+
+- Complete migration of all files to their new locations
+- Update all imports throughout the codebase
+- Ensure all components work properly in their new locations
+- Implement proper index exports for all modules
+- Remove redundant or unused files
+
+### Phase 3: Feature Implementation (September 2025)
+
+- Add performance controls to the visualization system
+- Complete accessibility implementation with UI toggles
+- Create additional interactive patterns for the 3D scenes
+- Enhance the Work section with proper project navigation and filtering
+- Implement loading animations for better user feedback
+
+### Phase 4: Performance Optimization (September-October 2025)
+
+- Optimize 3D scene rendering with proper LOD (Level of Detail)
+- Add lazy loading for project content and media
+- Implement code splitting for better initial load times
+- Optimize animations and interactions for mobile devices
+- Add service worker for offline functionality and caching
+
+### Phase 5: Content & Polish (October 2025)
+
+- Add new projects to the portfolio
+- Enhance project descriptions and media
+- Create case studies for key projects
+- Improve accessibility across the site
+- Final performance and UX testing
+
+The goal is to produce a portfolio that is not only visually impressive but also technically sound, with clean architecture, optimal performance, and a great user experience.

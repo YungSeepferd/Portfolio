@@ -11,15 +11,13 @@ interface HeroBackgroundProps {
   onSceneClick: () => void;
   onToggleParticles: () => void;
   showParticles: boolean;
-  easterEggActive: boolean;
-  interactionCount: number;
 }
 
 /**
  * HeroBackground Component - Handles the 3D background with proper context integration
  */
 const HeroBackground = memo<HeroBackgroundProps>(
-  ({ onSceneClick, onToggleParticles, showParticles, easterEggActive, interactionCount }) => {
+  ({ onSceneClick, onToggleParticles, showParticles }) => {
     const [showInteractionHint, setShowInteractionHint] = useState(true);
 
     // Hide interaction hint after 5 seconds
@@ -40,8 +38,6 @@ const HeroBackground = memo<HeroBackgroundProps>(
             onToggleParticles={onToggleParticles}
             showParticles={showParticles}
             showInteractionHint={showInteractionHint}
-            easterEggActive={easterEggActive}
-            interactionCount={interactionCount}
           />
         </SceneProvider>
       </ErrorBoundary>
@@ -54,8 +50,6 @@ interface BackgroundControllerProps {
   onToggleParticles: () => void;
   showParticles: boolean;
   showInteractionHint: boolean;
-  easterEggActive: boolean;
-  interactionCount: number;
 }
 
 /**
@@ -67,11 +61,8 @@ const BackgroundController = memo<BackgroundControllerProps>(
     onToggleParticles,
     showParticles,
     showInteractionHint,
-    easterEggActive,
-    interactionCount,
   }) => {
     const theme = useTheme();
-    const [showGuide, setShowGuide] = useState(false);
     const { switchShapeType } = useSceneState();
 
     // Handle background click with improved logging
@@ -88,11 +79,6 @@ const BackgroundController = memo<BackgroundControllerProps>(
       }
     }, [switchShapeType, onSceneClick]);
 
-    // Toggle interaction guide
-    const handleToggleGuide = useCallback(() => {
-      setShowGuide((prev) => !prev);
-    }, []);
-
     return (
       <>
         <Background3D theme={theme} onSceneClick={handleBackgroundClick} performanceMode="medium" />
@@ -106,19 +92,15 @@ const BackgroundController = memo<BackgroundControllerProps>(
  */
 const Hero: React.FC = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [interactionCount, setInteractionCount] = useState(0);
-  const [showParticles, setShowParticles] = useState(true); // Start with particles on like the old version
-  const [easterEggActive, setEasterEggActive] = useState(false);
+  const _isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [showParticles, setShowParticles] = useState(true); // Start with particles on
   const [sceneIndex, setSceneIndex] = useState(0);
   const [sceneNameVisible, setSceneNameVisible] = useState(false);
   const [currentSceneName, setCurrentSceneName] = useState('Spheres');
-  const [lastInteractionTime, setLastInteractionTime] = useState(0);
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const heroRef = useRef<HTMLDivElement>(null);
-  const interactionSequence = useRef<Array<{ type: string; time: number }>>([]);
 
-  // Get scene name based on index - restored from old version
+  // Get scene name based on index
   const getSceneName = useCallback((index: number) => {
     switch (index) {
       case SHAPE_TYPES.SPHERE:
@@ -132,41 +114,9 @@ const Hero: React.FC = () => {
     }
   }, []);
 
-  // Track rapid interactions for combo effects - restored from old version
-  const checkForCombo = useCallback(() => {
-    const now = Date.now();
-    if (now - lastInteractionTime < 1000) {
-      setInteractionCount((prev) => {
-        const newCount = prev + 1;
-        if (newCount >= 5 && !easterEggActive) {
-          setEasterEggActive(true);
-          setTimeout(() => setEasterEggActive(false), 5000);
-        }
-        return newCount;
-      });
-    } else {
-      setInteractionCount(1);
-    }
-    setLastInteractionTime(now);
-  }, [lastInteractionTime, easterEggActive]);
-
-  // Handle scene interactions - enhanced version from old component
+  // Handle scene interactions
   const handleSceneClick = useCallback(() => {
     console.log('📢 Hero.tsx: handleSceneClick called - About to change scene');
-
-    // Track interaction sequence for pattern detection
-    interactionSequence.current.push({
-      type: 'click',
-      time: Date.now(),
-    });
-
-    // Keep sequence limited to last 10 interactions
-    if (interactionSequence.current.length > 10) {
-      interactionSequence.current.shift();
-    }
-
-    // Check for combo effects
-    checkForCombo();
 
     // Cycle to next scene
     const newSceneIndex = (sceneIndex + 1) % 3;
@@ -184,7 +134,7 @@ const Hero: React.FC = () => {
     setTimeout(() => {
       setSceneNameVisible(false);
     }, 2000);
-  }, [sceneIndex, getSceneName, checkForCombo]);
+  }, [sceneIndex, getSceneName]);
 
   // Handle particle toggle - restored functionality
   const handleToggleParticles = useCallback(() => {
@@ -230,8 +180,6 @@ const Hero: React.FC = () => {
         onSceneClick={handleSceneClick}
         onToggleParticles={handleToggleParticles}
         showParticles={showParticles}
-        easterEggActive={easterEggActive}
-        interactionCount={interactionCount}
       />
 
       {/* Scene name indicator - visible when changing scenes */}

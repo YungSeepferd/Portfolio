@@ -16,8 +16,6 @@ const ActiveScene = ({
   onClick,
   isDragging,
   theme,
-  easterEggActive = false,
-  interactionCount = 0,
 }) => {
   const { size: _size } = useThree();
   const { currentShapeType, switchShapeType, isTransitioning } = useSceneState();
@@ -97,8 +95,6 @@ const ActiveScene = ({
           mousePosition={mousePosition}
           mouseData={mouseData}
           isTransitioning={isTransitioning}
-          easterEggActive={easterEggActive}
-          interactionCount={interactionCount}
           theme={theme}
         />
       )}
@@ -109,8 +105,6 @@ const ActiveScene = ({
           mousePosition={mousePosition}
           mouseData={mouseData}
           isTransitioning={isTransitioning}
-          easterEggActive={easterEggActive}
-          interactionCount={interactionCount}
         />
       )}
 
@@ -119,8 +113,6 @@ const ActiveScene = ({
           color={activeColor}
           mousePosition={mousePosition}
           isTransitioning={isTransitioning}
-          easterEggActive={easterEggActive}
-          interactionCount={interactionCount}
         />
       )}
     </group>

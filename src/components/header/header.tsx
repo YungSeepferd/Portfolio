@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { useThemeMode } from '../../context/ThemeContext';
 import ThemeToggle from '../common/theme-toggle';
-import VolumeControl from '../audio/volume-control';
+// Volume control removed
 import { navItems, socialLinks } from '../../config/uiConfig';
 import NavLinks from './nav-links';
 import '../../types/theme.ts';
@@ -170,16 +170,11 @@ const Header: React.FC = () => {
               )}
             </Box>
 
-            {/* Always-visible volume control on mobile */}
-            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
-              <VolumeControl />
-            </Box>
+            {/* Volume control removed */}
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
-              <Box sx={{ ml: 2 }}>
-                <VolumeControl />
-              </Box>
+              {/* Volume control removed */}
               {/* Restored theme toggle for desktop view */}
               <Box sx={{ ml: 1 }}>
                 <ThemeToggle mode={mode} onToggle={toggleTheme} variant="icon" />
@@ -258,9 +253,7 @@ const Header: React.FC = () => {
           </Box>
           {/* Theme toggle for mobile menu - using button variant */}
           <List>
-            <Box sx={{ px: 1, py: 1 }}>
-              <VolumeControl />
-            </Box>
+            {/* Volume control removed */}
             <ThemeToggle mode={mode} onToggle={toggleTheme} variant="button" />
             {navItems.map((item, idx) => (
               <Button
