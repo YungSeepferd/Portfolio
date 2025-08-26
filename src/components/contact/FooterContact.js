@@ -34,7 +34,7 @@ const FooterContact = ({ projectContext }) => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         viewport={{ once: true }}
-        style={{ width: '100%' }}
+        sx={{ width: '100%' }}
       >
         <Paper 
           id="contact"
@@ -122,7 +122,11 @@ const FooterContact = ({ projectContext }) => {
                         mb: 3 
                       }}
                     >
-                      <a href={mailtoLink} style={{ textDecoration: 'none' }}>
+                      <Box 
+                        component="a" 
+                        href={mailtoLink} 
+                        sx={{ textDecoration: 'none' }}
+                      >
                         <IconButton 
                           sx={{ 
                             color: theme.palette.common.white,
@@ -132,7 +136,7 @@ const FooterContact = ({ projectContext }) => {
                         >
                           <EmailIcon />
                         </IconButton>
-                      </a>
+                      </Box>
                       
                       <IconButton 
                         href="https://www.linkedin.com/in/vincent-g-193124194/"

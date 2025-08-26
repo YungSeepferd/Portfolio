@@ -53,6 +53,7 @@ const ProjectCard = ({ project, onClick }) => {
     >
       <Card
         onClick={() => onClick(project)}
+        elevation={1}
         sx={{
           cursor: 'pointer',
           width: '100%',
@@ -62,16 +63,15 @@ const ProjectCard = ({ project, onClick }) => {
           flexDirection: 'column',
           position: 'relative',
           overflow: 'hidden',
-          borderRadius: theme.shape.borderRadius,
-          boxShadow: theme.shadows[2],
-          backgroundColor: theme.palette.background.paper,
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          borderRadius: theme.shape.cornerSize?.lg || theme.shape.borderRadius,
+          backgroundColor: theme.palette.surface?.main || theme.palette.background.paper,
+          transition: 'all 0.3s ease',
           '&:hover': {
             transform: 'translateY(-5px)',
-            boxShadow: theme.shadows[6],
+            boxShadow: theme.elevation?.[3] || theme.shadows[6],
           },
           ...(cardVariant && cardVariant !== 'default' && {
-            borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
+            borderLeft: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
           })
         }}
       >

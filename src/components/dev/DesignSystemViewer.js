@@ -53,8 +53,8 @@ const DesignSystemViewer = () => {
                       p: 2
                     }}
                   >
-                    <Typography sx={{ color: '#fff' }}>{shade}</Typography>
-                    <Typography sx={{ color: '#fff' }}>{theme.palette[color][shade]}</Typography>
+                    <Typography sx={{ color: theme.palette.common.white }}>{shade}</Typography>
+                    <Typography sx={{ color: theme.palette.common.white }}>{theme.palette[color][shade]}</Typography>
                   </Box>
                 </Grid>
               ))}

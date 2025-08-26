@@ -5,12 +5,12 @@ import { useModalContext } from '../../context/ModalContext';
 
 /**
  * ActionButton - A consistent button component for project actions
+ * Updated for Material Design 3 styling
  * 
  * @param {Object} props - Component props
  * @param {string} props.label - Button text
- * @param {string} props.href - URL to navigate to
  * @param {React.ReactNode} props.icon - Icon to display
- * @param {string} props.variant - Button variant (contained, outlined)
+ * @param {string} props.variant - Button variant (filled, outlined, text, tonal)
  * @param {string} props.color - Button color
  * @param {string} props.size - Button size
  * @param {Object} props.sx - Additional styles
@@ -22,7 +22,7 @@ const ActionButton = ({
   label, 
   href, 
   icon, 
-  variant = 'contained', // changed from 'projectAction' to 'contained'
+  variant = 'contained', // We'll map this to M3 variants below
   color = 'primary',
   size = 'small',
   onClick,
@@ -32,7 +32,7 @@ const ActionButton = ({
   forceColor, // new prop
   ...props 
 }) => {
-  const theme = useTheme();
+  const theme = useTheme(); // Get theme for M3 tokens
   const { openPdf, openIframe, openExternalContent } = useModalContext();
   
   // Determine color based on label content, unless forceColor is set
@@ -79,19 +79,38 @@ const ActionButton = ({
     // If not opening in popup, the default link behavior will happen
   };
   
+  // Map MUI variants to Material Design 3 variants
+  const mapVariantToM3 = (oldVariant) => {
+    switch (oldVariant) {
+      case 'contained': return 'filled';
+      case 'outlined': return 'outlined';
+      case 'text': return 'text';
+      default: return 'filled'; // Default to 'filled' in M3
+    }
+  };
+
+  // Use the mapped variant
+  const m3Variant = mapVariantToM3(variant);
+  
   return (
     <Button
       id={`action-button-${label ? label.toLowerCase().replace(/\s+/g, '-') : 'unnamed'}`}
-      variant={variant}
+      variant={m3Variant}
       size={size}
       color={buttonColor}
       href={href}
       onClick={handleClick}
       startIcon={icon}
+      disableElevation
       sx={{
         minWidth: 'auto',
-        fontWeight: 'medium',
+        fontWeight: 500,
         fontSize: size === 'large' ? '0.875rem' : '0.75rem',
+        borderRadius: theme.shape.cornerSize?.md || '20px', // Use M3 cornerSize if available
+        textTransform: 'none', // M3 doesn't use uppercase text
+        px: 2, // Padding for M3 buttons
+        py: 0.75,
+        transition: 'all 0.2s ease',
         ...sx
       }}
       {...props}
@@ -105,7 +124,8 @@ ActionButton.propTypes = {
   label: PropTypes.string.isRequired,
   href: PropTypes.string,
   icon: PropTypes.node,
-  variant: PropTypes.oneOf(['contained', 'outlined', 'text']),
+  // Support both M3 variants and legacy variants for backward compatibility
+  variant: PropTypes.oneOf(['contained', 'outlined', 'text', 'filled', 'tonal']),
   color: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   onClick: PropTypes.func,

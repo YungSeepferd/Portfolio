@@ -129,8 +129,8 @@ const Header = () => {
                   sx={{
                     ml: 1,
                     color: theme.palette.secondary.dark,
-                    backgroundColor: 'rgba(194,247,80,0.10)',
-                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
+                    backgroundColor: theme.palette.secondary.light + '20', // 20 is hex for opacity 0.12
+                    '&:hover': { backgroundColor: theme.palette.secondary.light + '30' }, // 30 is hex for opacity 0.18
                     p: 0.5
                   }}
                   aria-label={link.ariaLabel}

@@ -14,7 +14,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 // Import images directly
-import WhoamiImage from '../../assets/images/About Me/Whoami.jpg';
+import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
 import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
@@ -295,7 +295,7 @@ export const aboutData = [
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                 <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2015 - 2017</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2017 - 2019</Typography>
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mt: 1.5 }}>

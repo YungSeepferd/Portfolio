@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import DescriptionIcon from '@mui/icons-material/Description';
 
 // Import all project images and videos directly
 import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
@@ -33,8 +32,7 @@ import ConceptOverview5Image from '../../../../assets/images/GreenWallet/concept
 import ConceptOverview6Image from '../../../../assets/images/GreenWallet/concept_overview_6.png';
 import HighlightReelVideo from '../../../../assets/images/GreenWallet/highlight_reel.mp4';
 import PresentationVideo from '../../../../assets/images/GreenWallet/presentation_video.mp4';
-import presentationPDF from '../../../../assets/information/GreenWallet/GreenWallet_Presentation.pdf';
-import scriptPDF from '../../../../assets/information/GreenWallet/Script.pdf';
+import presentationPDF from '../../../../assets/information/Greenwallet/GreenWallet_Presentation.pdf';
 
 // Create a media object to hold all our imported media
 const media = {

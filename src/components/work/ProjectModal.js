@@ -131,7 +131,7 @@ const ProjectModal = ({
                 }}
               >
                 <KeyboardArrowLeftIcon fontSize="medium" sx={{ mr: 1 }} />
-                <span style={{ fontSize: '1rem', fontWeight: 500 }}>Previous Project</span>
+                <Box component="span" sx={{ fontSize: '1rem', fontWeight: 500 }}>Previous Project</Box>
               </IconButton>
             </Tooltip>
           )}
@@ -160,7 +160,7 @@ const ProjectModal = ({
                   transition: 'all 0.2s ease-in-out',
                 }}
               >
-                <span style={{ fontSize: '1rem', fontWeight: 500, marginRight: 8 }}>Next Project</span>
+                <Box component="span" sx={{ fontSize: '1rem', fontWeight: 500, mr: 1 }}>Next Project</Box>
                 <KeyboardArrowRightIcon fontSize="medium" />
               </IconButton>
             </Tooltip>

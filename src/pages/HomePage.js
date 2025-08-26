@@ -11,8 +11,8 @@ const HomePage = () => {
       <Header />
       <main>
         <Hero />
-        <AboutSection />
         <Work />
+        <AboutSection />
       </main>
       <FooterContact />
     </>
