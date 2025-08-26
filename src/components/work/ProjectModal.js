@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef } from 'react';
-import { Modal, Box, IconButton, useTheme } from '@mui/material';
+import { Modal, Box, IconButton, useTheme, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -81,30 +81,41 @@ const ProjectModal = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // Backdrop styling
         '& .MuiBackdrop-root': {
-          backgroundColor: 'rgba(0, 0, 0, 0.85)', // Darker background
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
         }
       }}
     >
       <Box
         sx={{
-          // Increased to almost full screen
-          width: '95vw',
-          height: '95vh',
-          maxWidth: '95vw', 
-          maxHeight: '95vh',
-          bgcolor: 'background.default',
-          borderRadius: 1,
-          boxShadow: 24,
+          width: { xs: '100%', sm: '95vw' },
+          height: { xs: '100%', sm: '95vh' },
+          maxWidth: { sm: '95vw' }, 
+          maxHeight: { sm: '95vh' },
+          bgcolor: 'background.paper',
+          borderRadius: { xs: 0, sm: theme.shape.borderRadius * 1.5 },
+          boxShadow: theme.shadows[24],
           overflow: 'hidden',
           position: 'relative',
           opacity: 1,
-          transition: 'opacity 0.3s ease-in-out',
+          transition: theme.transitions.create(['opacity', 'transform'], {
+            duration: theme.transitions.duration.enteringScreen,
+            easing: theme.transitions.easing.easeInOut,
+          }),
         }}
       >
         {/* Navigation Buttons - Both Top Left, Accent Color */}
-        <Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 30, display: 'flex', gap: 2 }}>
+        <Box sx={{ 
+          position: 'absolute', 
+          top: { xs: 8, sm: 16 }, 
+          left: { xs: 8, sm: 16 }, 
+          zIndex: theme.zIndex.modal + 1, 
+          display: 'flex', 
+          gap: { xs: 1, sm: 2 },
+          flexWrap: 'wrap',
+        }}>
           {onPreviousProject && (
             <Tooltip title="Previous Project">
               <IconButton
@@ -115,23 +126,29 @@ const ProjectModal = ({
                   if (contentRef.current) contentRef.current.scrollTop = 0;
                 }}
                 sx={{
-                  color: theme.palette.accent.main,
-                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  color: 'primary.contrastText',
+                  backgroundColor: 'primary.main',
                   boxShadow: theme.shadows[2],
                   borderRadius: theme.shape.borderRadius,
                   display: 'flex',
                   alignItems: 'center',
                   px: 2,
+                  py: 1,
                   '&:hover': {
-                    backgroundColor: theme.palette.warning.main,
-                    color: theme.palette.success.dark,
-                    transform: 'scale(1.1)',
+                    backgroundColor: 'primary.dark',
+                    transform: 'translateY(-2px)',
+                    boxShadow: theme.shadows[4],
                   },
-                  transition: 'all 0.2s ease-in-out',
+                  transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+                    duration: theme.transitions.duration.short,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
                 }}
               >
                 <KeyboardArrowLeftIcon fontSize="medium" sx={{ mr: 1 }} />
-                <span style={{ fontSize: '1rem', fontWeight: 500 }}>Previous Project</span>
+                <Typography variant="button" sx={{ fontSize: '1rem', fontWeight: 500 }}>
+                  Previous Project
+                </Typography>
               </IconButton>
             </Tooltip>
           )}
@@ -145,22 +162,28 @@ const ProjectModal = ({
                   if (contentRef.current) contentRef.current.scrollTop = 0;
                 }}
                 sx={{
-                  color: theme.palette.accent.dark,
-                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  color: 'primary.contrastText',
+                  backgroundColor: 'primary.main',
                   boxShadow: theme.shadows[2],
                   borderRadius: theme.shape.borderRadius,
                   display: 'flex',
                   alignItems: 'center',
                   px: 2,
+                  py: 1,
                   '&:hover': {
-                    backgroundColor: theme.palette.warning.main,
-                    color: theme.palette.success.dark,
-                    transform: 'scale(1.1)',
+                    backgroundColor: 'primary.dark',
+                    transform: 'translateY(-2px)',
+                    boxShadow: theme.shadows[4],
                   },
-                  transition: 'all 0.2s ease-in-out',
+                  transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+                    duration: theme.transitions.duration.short,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
                 }}
               >
-                <span style={{ fontSize: '1rem', fontWeight: 500, marginRight: 8 }}>Next Project</span>
+                <Typography variant="button" sx={{ fontSize: '1rem', fontWeight: 500, mr: 1 }}>
+                  Next Project
+                </Typography>
                 <KeyboardArrowRightIcon fontSize="medium" />
               </IconButton>
             </Tooltip>
@@ -175,20 +198,24 @@ const ProjectModal = ({
             size="large"
             sx={{
               position: 'absolute',
-              mr: 5,
-              top: 16,
-              right: 16,
-              zIndex: 20,
-              color: theme.palette.grey[900],
-              backgroundColor: theme.palette.primary.main,
+              top: { xs: 8, sm: 16 },
+              right: { xs: 8, sm: 16 },
+              zIndex: theme.zIndex.modal + 1,
+              color: 'text.primary',
+              backgroundColor: 'background.paper',
               boxShadow: theme.shadows[2],
-              borderRadius: theme.shape.borderRadius,
+              border: `1px solid`,
+              borderColor: 'divider',
               '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-                color: theme.palette.grey[800],
-                transform: 'scale(1.1)',
+                backgroundColor: 'action.hover',
+                color: 'text.primary',
+                transform: 'rotate(90deg)',
+                boxShadow: theme.shadows[4],
               },
-              transition: 'all 0.2s ease-in-out',
+              transition: theme.transitions.create(['transform', 'background-color', 'box-shadow'], {
+                duration: theme.transitions.duration.shorter,
+                easing: theme.transitions.easing.easeInOut,
+              }),
             }}
           >
             <CloseIcon fontSize="large" />
@@ -198,11 +225,25 @@ const ProjectModal = ({
         {/* Scrollable Content Area with ref */}
         <Box 
           ref={contentRef}
-          sx={{ 
-            width: '100%', 
+          sx={{
+            width: '100%',
             height: '100%',
             overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowX: 'hidden',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: theme.palette.action.disabledBackground,
+              },
+            },
           }}
         >
           <ProjectFullContent project={project} />

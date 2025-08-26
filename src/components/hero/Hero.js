@@ -346,8 +346,8 @@ const Hero = () => {
       sx={{
         width: '100%',
         minHeight: { 
-          xs: 'calc(100vh - 56px)',
-          sm: 'calc(100vh - 64px)'
+          xs: 'calc(100vh - 56px)', // 56px is the height of the mobile app bar
+          sm: 'calc(100vh - 64px)'  // 64px is the height of the desktop app bar
         },
         display: 'flex',
         flexDirection: 'column',
@@ -356,6 +356,10 @@ const Hero = () => {
         background: `linear-gradient(145deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
         py: { xs: theme.spacing(4), md: theme.spacing(0) },
         isolation: 'isolate',
+        // Smooth transition for theme changes
+        transition: theme.transitions.create(['background', 'color'], {
+          duration: theme.transitions.duration.standard,
+        }),
       }}
     >
       {/* Background Layer with enhanced interaction */}
@@ -377,14 +381,23 @@ const Hero = () => {
             top: '30%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: 'rgba(0,0,0,0.7)',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: theme.shape.borderRadius.lg,
-            zIndex: 30,
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            color: theme.palette.common.white,
+            padding: theme.spacing(1, 2),
+            borderRadius: theme.shape.borderRadius,
+            zIndex: theme.zIndex.tooltip,
             pointerEvents: 'none',
-            fontSize: '16px',
-            fontWeight: 500,
+            typography: 'body1',
+            fontWeight: theme.typography.fontWeightMedium,
+            boxShadow: theme.shadows[4],
+            border: `1px solid ${theme.palette.divider}`,
+            transition: theme.transitions.create(['opacity', 'transform', 'background-color'], {
+              duration: theme.transitions.duration.shorter,
+            }),
+            '&:hover': {
+              backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.8)',
+            },
           }}
         >
           {currentSceneName}
@@ -398,10 +411,10 @@ const Hero = () => {
           height: '100%',
           minHeight: '100vh',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
           position: 'relative',
           zIndex: zIndexes.content,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
           pointerEvents: 'none', // Allow clicks to pass through to background
           pt: { xs: 8, md: 0 },
         }}

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Box, Typography, useTheme, Button } from '@mui/material';
 import ProjectGrid from './ProjectGrid';
 import ProjectModal from './ProjectModal';
-import { getProjects } from './data/index'; // UPDATED: Import from the correct location
+import { getProjects } from './data/index';
 import ErrorBoundary from '../common/ErrorBoundary';
 import useDataLoader from '../../hooks/useDataLoader';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -77,127 +76,161 @@ const Work = () => {
     }
   };
 
-  // Animation variants
-  const sectionAnimation = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-        staggerChildren: 0.2
-      }
-    }
-  };
-
   return (
-    <ErrorBoundary componentName="WorkSection">
-      <Box
-        id="work"
-        component="section"
-        sx={{
-          width: '100%',
-          py: { xs: 8, md: 12 },
-          backgroundColor: theme.palette.background.default,
-        }}
-      >
+    <Box>
+      <ErrorBoundary componentName="WorkSection">
         <Box
+          id="work"
+          component="section"
           sx={{
-            width: '100%',
-            px: {
-              xs: '20px',
-              sm: '30px',
-              md: '40px',
-              lg: '50px',
-            },
-            boxSizing: 'border-box',
+            py: { xs: 6, md: 10 },
+            px: { xs: 2, sm: 4, md: 6, lg: 8 },
+            backgroundColor: 'background.paper',
+            position: 'relative',
+            zIndex: 'section',
+            transition: theme.transitions.create(['background-color', 'color'], {
+              duration: theme.transitions.duration.standard,
+              easing: theme.transitions.easing.easeInOut,
+            }),
           }}
         >
-          <motion.div
-            variants={sectionAnimation}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+          <Box
+            sx={{
+              maxWidth: '1200px',
+              mx: 'auto',
+              textAlign: 'center',
+              mb: 6,
+            }}
           >
-            <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-              <Typography
-                variant="h2"
-                component="h2"
-                sx={{
-                  mb: 2,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                Work
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  maxWidth: '800px',
-                  mx: 'auto',
-                  color: theme.palette.text.secondary
-                }}
-              >
-                Explore a selection of my projects, showcasing skills in UX research, design, and implementation.
-              </Typography>
-            </Box>
-
-            {/* Render different content based on loading/error state */}
-            {isLoading ? (
-              <Box 
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center',
-                  minHeight: '300px'
-                }}
-              >
-                <CircularProgress color="primary" />
-              </Box>
-            ) : error ? (
+            <Typography
+              variant="h2"
+              component="h2"
+              sx={{
+                mb: 2,
+                fontWeight: 'bold',
+                background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block',
+                ...theme.typography.h2,
+              }}
+            >
+              My Work
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: theme.palette.text.secondary,
+                maxWidth: '700px',
+                mx: 'auto',
+                mb: 4,
+                fontSize: { xs: '1rem', md: '1.1rem' },
+                lineHeight: 1.6,
+              }}
+            >
+              A selection of my recent projects and case studies. Click on a project to learn more.
+            </Typography>
+          </Box>
+          <Box sx={{ minHeight: '300px' }}>
+            {error ? (
               <Box 
                 sx={{ 
                   textAlign: 'center', 
-                  p: 4, 
-                  color: 'error.main', 
-                  minHeight: '300px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center'
+                  py: 6,
+                  backgroundColor: theme.palette.background.paper,
+                  borderRadius: theme.shape.borderRadius,
+                  boxShadow: theme.shadows[1],
+                  p: 4,
                 }}
               >
-                <Typography variant="h5" color="error" gutterBottom>
-                  Error Loading Projects
+                <Typography 
+                  variant="h6" 
+                  color="error" 
+                  gutterBottom
+                  sx={{ mb: 2 }}
+                >
+                  Failed to load projects
                 </Typography>
-                <Typography variant="body1">
-                  There was a problem loading the projects. Please try refreshing.
+                <Typography 
+                  variant="body1" 
+                  color="text.secondary"
+                  sx={{ mb: 3 }}
+                >
+                  We couldn't load the projects. Please check your connection and try again.
                 </Typography>
-                <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary', mb: 3 }}>
-                  Error details: {error.message || 'Unknown error'}
-                </Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  startIcon={<RefreshIcon />} 
+                <Button
+                  variant="contained"
+                  color="primary"
                   onClick={reload}
+                  startIcon={<RefreshIcon />}
+                  sx={{ 
+                    mt: 1,
+                    px: 4,
+                    py: 1.5,
+                    textTransform: 'none',
+                    fontWeight: theme.typography.fontWeightMedium,
+                    borderRadius: theme.shape.borderRadius,
+                    transition: theme.transitions.create(['background-color', 'box-shadow'], {
+                      duration: theme.transitions.duration.shorter,
+                    }),
+                    '&:hover': {
+                      boxShadow: theme.shadows[4],
+                    },
+                  }}
                 >
                   Try Again
+                </Button>
+              </Box>
+            ) : isLoading ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  minHeight: '300px',
+                  justifyContent: 'center',
+                  p: 4,
+                  borderRadius: theme.shape.borderRadius,
+                  backgroundColor: 'background.subtle',
+                  boxShadow: theme.shadows[1],
+                  transition: theme.transitions.create(['background-color', 'box-shadow'], {
+                    duration: theme.transitions.duration.shorter,
+                  }),
+                }}
+              >
+                <Typography color="text.secondary" variant="body1" sx={{ mb: 3 }}>
+                  No projects found matching your criteria.
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={reload}
+                  startIcon={<RefreshIcon />}
+                  sx={{
+                    borderRadius: theme.shape.buttonRadius,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    px: 3,
+                    py: 1,
+                    mt: 2
+                  }}
+                >
+                  Loading projects...
                 </Button>
               </Box>
             ) : (
               <ErrorBoundary componentName="ProjectGrid">
                 <ProjectGrid 
                   projects={filteredProjects} 
-                  onCardClick={handleCardClick} 
+                  onCardClick={handleCardClick}
                 />
               </ErrorBoundary>
             )}
-          </motion.div>
+          </Box>
         </Box>
-      </Box>
-
+      </ErrorBoundary>
+      
+      {/* Project Modal - Rendered in a portal */}
       <ErrorBoundary componentName="ProjectModal">
         <ProjectModal
           open={isModalOpen}
@@ -207,7 +240,7 @@ const Work = () => {
           onPreviousProject={handlePrevProject}
         />
       </ErrorBoundary>
-    </ErrorBoundary>
+    </Box>
   );
 };
 

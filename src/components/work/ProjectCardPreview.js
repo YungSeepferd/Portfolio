@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Fade } from '@mui/material';
+import { Box, Fade, useTheme } from '@mui/material';
 import TechnologyTags from './TechnologyTags';
 import ProjectActionButtons from './ProjectActionButtons';
 
@@ -9,11 +9,12 @@ import ProjectActionButtons from './ProjectActionButtons';
  * Displays technology tags (top) and action buttons (bottom) in a hover overlay.
  */
 const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
+  const theme = useTheme();
   const hasContent = (technologies.length > 0 || links.length > 0);
   if (!hasContent) return null;
-
+  
   return (
-    <Fade in={isVisible} timeout={300}>
+    <Fade in={isVisible} timeout={theme.transitions.duration.enteringScreen}>
       <Box
         sx={{
           position: 'absolute',
@@ -21,7 +22,7 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
           left: 0,
           width: '100%',
           height: '100%',
-          zIndex: 2,
+          zIndex: theme.zIndex.speedDial,
           pointerEvents: 'none',
         }}
       >
@@ -39,19 +40,25 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
               pt: { xs: 2, sm: 3 },
               pb: 0,
               pointerEvents: 'auto',
-              zIndex: 3,
+              zIndex: theme.zIndex.speedDial + 1,
             }}
           >
             <Box
               sx={{
-                background: 'rgba(0,0,0,0.55)',
-                borderRadius: 2,
+                backgroundColor: 'background.paper',
+                opacity: 0.95,
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: theme.shape.borderRadius * 2,
                 px: 2,
                 py: 0.5,
                 maxWidth: '90%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                boxShadow: theme.shadows[4],
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
               }}
             >
               <TechnologyTags technologies={technologies} variant="hover" size="small" />
@@ -72,19 +79,25 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
               alignItems: 'flex-end',
               pb: { xs: 2, sm: 3 },
               pointerEvents: 'auto',
-              zIndex: 3,
+              zIndex: theme.zIndex.speedDial + 1,
             }}
           >
             <Box
               sx={{
-                background: 'rgba(0,0,0,0.55)',
-                borderRadius: 2,
+                backgroundColor: 'background.paper',
+                opacity: 0.95,
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: theme.shape.borderRadius * 2,
                 px: 2,
                 py: 1,
                 maxWidth: '95%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                boxShadow: theme.shadows[4],
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
               }}
             >
               <ProjectActionButtons actions={links} layout="row" maxButtons={4} size="small" />

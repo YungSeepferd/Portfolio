@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { SceneProvider, useSceneState } from './SceneContext';
@@ -8,11 +8,13 @@ import { CANVAS_SETTINGS } from './constants';
 import InteractiveCamera from './InteractiveCamera';
 import useMouseTracking from './hooks/useMouseTracking';
 import WorldMouseListener from './components/WorldMouseListener';
+import { useTheme } from '@mui/material/styles';
 
 /**
  * Background3DInner Component - Inner component with access to SceneContext
  */
-const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mouseData }) => {
+const Background3DInner = ({ onSceneClick, performanceMode = 'medium', mouseData }) => {
+  const theme = useTheme();
   const { switchShapeType, updateDragging } = useSceneState();
   const [isDragging, setIsDragging] = useState(false);
   
@@ -21,10 +23,8 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
     updateDragging(isDragging);
   }, [isDragging, updateDragging]);
   
-  // Handle ActiveScene click
+  // Handle ActiveScene click with performance optimization
   const handleSceneClick = useCallback(() => {
-    console.log("🎯 Background3DInner: ActiveScene click detected");
-    
     // Only trigger if not dragging
     if (!isDragging) {
       // Invoke context method to change shape
@@ -32,7 +32,6 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
       
       // Also call parent handler if provided
       if (onSceneClick) {
-        console.log("🎯 Background3DInner: Calling parent onSceneClick handler");
         onSceneClick();
       }
     }
@@ -46,15 +45,20 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
       {/* Advanced Camera with auto-rotation and interaction */}
       <InteractiveCamera enableAutoRotate={true} rotateSpeed={0.3} />
       
-      {/* Lights */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <spotLight 
-        position={[0, 10, 0]} 
-        angle={0.3} 
-        penumbra={1} 
-        intensity={1.5} 
-        castShadow 
+      {/* Lights - using theme colors */}
+      <ambientLight 
+        intensity={theme.palette.mode === 'dark' ? 0.4 : 0.6} 
+        color={theme.palette.primary.contrastText}
+      />
+      <pointLight 
+        position={[10, 10, 10]} 
+        intensity={theme.palette.mode === 'dark' ? 0.7 : 0.9}
+        color={theme.palette.primary.light}
+      />
+      <pointLight 
+        position={[-10, -10, -10]} 
+        intensity={0.4}
+        color={theme.palette.secondary.light}
       />
       
       {/* Add OrbitControls to enable dragging/rotation */}
@@ -74,6 +78,8 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
       <ActiveScene 
         mousePosition={mouseData ? mouseData.normalized : null} 
         onClick={handleSceneClick} 
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={() => setIsDragging(false)}
         isDragging={isDragging}
         theme={theme}
         performanceMode={performanceMode}
@@ -85,9 +91,10 @@ const Background3DInner = ({ onSceneClick, theme, performanceMode = 'medium', mo
 /**
  * Background3D Component - Enhanced interactive 3D background for the hero section
  */
-const Background3D = ({ theme, onSceneClick, performanceMode = 'medium' }) => {
+const Background3D = ({ onSceneClick, performanceMode = 'medium' }) => {
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const theme = useTheme();
   
   // Use mouse tracking without Three.js dependencies
   const mouseData = useMouseTracking({
@@ -100,22 +107,23 @@ const Background3D = ({ theme, onSceneClick, performanceMode = 'medium' }) => {
     console.log("🎨 Background3D: Canvas loaded successfully");
   }, []);
 
+  // Memoize canvas style to prevent unnecessary re-renders
+  const canvasStyle = useMemo(() => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    zIndex: 0,
+    backgroundColor: theme.palette.background.default,
+    transition: theme.transitions.create('background-color', {
+      duration: theme.transitions.duration.standard,
+    }),
+  }), [theme]);
+
   return (
-    <div 
-      ref={containerRef} 
-      style={{ 
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
-        width: '100%', 
-        height: '100%', 
-        zIndex: 0,
-        cursor: mouseData.isDragging ? 'grabbing' : 'pointer',
-        overflow: 'hidden',
-        pointerEvents: 'auto',
-        userSelect: 'none' 
-      }}
-    >
+    <div style={canvasStyle}>
       {isLoading && <LoadingFallback />}
       
       <SceneProvider>

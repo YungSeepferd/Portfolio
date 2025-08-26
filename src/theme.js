@@ -51,8 +51,11 @@ const createAppTheme = (mode = 'dark') => {
   const accentLight = hslToHex(accentHue, 70, accentLightness + 10);
   const accentDark = hslToHex(accentHue, 80, accentLightness - 10);
   
-  // Define theme with consistent color relationships
-  let theme = createTheme({
+  // Create base theme first to ensure all MUI defaults are included
+  const baseTheme = createTheme({ palette: { mode } });
+  
+  // Define theme with consistent color relationships, extending the base theme
+  let theme = createTheme(baseTheme, {
     palette: {
       mode,
       primary: {
@@ -73,18 +76,58 @@ const createAppTheme = (mode = 'dark') => {
         dark: accentDark,
         contrastText: '#ffffff',
       },
+      // Status colors
+      success: {
+        main: isDark ? '#66bb6a' : '#2e7d32',
+        light: isDark ? '#81c784' : '#4caf50',
+        dark: isDark ? '#388e3c' : '#1b5e20',
+        contrastText: '#ffffff',
+      },
+      error: {
+        main: isDark ? '#f44336' : '#d32f2f',
+        light: isDark ? '#e57373' : '#ef5350',
+        dark: isDark ? '#d32f2f' : '#c62828',
+        contrastText: '#ffffff',
+      },
+      warning: {
+        main: isDark ? '#ffa726' : '#ed6c02',
+        light: isDark ? '#ffb74d' : '#ff9800',
+        dark: isDark ? '#f57c00' : '#e65100',
+        contrastText: 'rgba(0, 0, 0, 0.87)',
+      },
       info: {
         main: accentMain,
+        light: accentLight,
+        dark: accentDark,
+        contrastText: '#ffffff',
       },
+      // Background colors
       background: {
         default: isDark ? '#121212' : '#f7f9fc',
         paper: isDark ? '#1e1e1e' : '#ffffff',
         subtle: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+        overlay: isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
       },
+      // Text colors
       text: {
         primary: isDark ? '#ffffff' : '#111111',
         secondary: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
         disabled: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.38)',
+        hint: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.38)',
+        icon: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.54)',
+      },
+      // Common colors
+      common: {
+        black: '#000000',
+        white: '#ffffff',
+      },
+      // Action colors
+      action: {
+        active: isDark ? '#ffffff' : 'rgba(0, 0, 0, 0.54)',
+        hover: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+        selected: isDark ? 'rgba(255, 255, 255, 0.16)' : 'rgba(0, 0, 0, 0.08)',
+        disabled: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.26)',
+        disabledBackground: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
       },
       divider: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
       // Color values specifically for the 3D scenes
@@ -94,6 +137,7 @@ const createAppTheme = (mode = 'dark') => {
         torus: accentMain,
         particleColor: isDark ? '#ffffff' : primaryMain,
         emissive: isDark ? secondaryLight : secondaryMain,
+        background: isDark ? '#121212' : '#f7f9fc',
       }
     },
     typography: {
@@ -102,13 +146,26 @@ const createAppTheme = (mode = 'dark') => {
         'Roboto',
         '-apple-system',
         'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
         'Arial',
         'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
       ].join(','),
       h1: {
         fontWeight: 700,
         fontSize: '3.5rem',
         lineHeight: 1.2,
+        letterSpacing: '-0.02em',
+        '@media (max-width:900px)': {
+          fontSize: '2.5rem',
+        },
+        '@media (max-width:600px)': {
+          fontSize: '2rem',
+        },
       },
       h2: {
         fontWeight: 700,
@@ -168,30 +225,64 @@ const createAppTheme = (mode = 'dark') => {
       },
     },
     shape: {
-      borderRadius: tokens.shape.radius?.default || 8, // number for MUI
-      radius: tokens.shape.radius || { xs: 2, sm: 4, md: 8, lg: 12, xl: 16, default: 8 }, // object for custom use
+      borderRadius: 8,
+      borderRadiusSm: 4,
+      borderRadiusMd: 8,
+      borderRadiusLg: 16,
+      borderRadiusXl: 24,
+      // For custom components
+      cardRadius: 16,
+      buttonRadius: 8,
+      inputRadius: 8,
+      // For 3D scene controls
+      controlRadius: 4,
     },
     spacing: 8,
     shadows: [
       'none',
-      '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      '0px 4px 8px rgba(0, 0, 0, 0.08)',
-      '0px 6px 12px rgba(0, 0, 0, 0.12)',
-      '0px 8px 16px rgba(0, 0, 0, 0.15)',
-      '0px 10px 20px rgba(0, 0, 0, 0.18)',
-      ...Array(19).fill('none'), // Fill remaining slots with none
+      '0px 2px 1px -1px rgba(0,0,0,0.1),0px 1px 1px 0px rgba(0,0,0,0.07),0px 1px 3px 0px rgba(0,0,0,0.06)',
+      '0px 3px 1px -2px rgba(0,0,0,0.1),0px 2px 2px 0px rgba(0,0,0,0.07),0px 1px 5px 0px rgba(0,0,0,0.06)',
+      '0px 3px 3px -2px rgba(0,0,0,0.1),0px 3px 4px 0px rgba(0,0,0,0.07),0px 1px 8px 0px rgba(0,0,0,0.06)',
+      '0px 2px 4px -1px rgba(0,0,0,0.1),0px 4px 5px 0px rgba(0,0,0,0.07),0px 1px 10px 0px rgba(0,0,0,0.06)',
+      '0px 3px 5px -1px rgba(0,0,0,0.1),0px 5px 8px 0px rgba(0,0,0,0.07),0px 1px 14px 0px rgba(0,0,0,0.06)',
+      '0px 3px 5px -1px rgba(0,0,0,0.1),0px 6px 10px 0px rgba(0,0,0,0.07),0px 1px 18px 0px rgba(0,0,0,0.06)',
+      '0px 4px 5px -2px rgba(0,0,0,0.1),0px 7px 10px 1px rgba(0,0,0,0.07),0px 2px 16px 1px rgba(0,0,0,0.06)',
+      '0px 5px 5px -3px rgba(0,0,0,0.1),0px 8px 10px 1px rgba(0,0,0,0.07),0px 3px 14px 2px rgba(0,0,0,0.06)',
+      '0px 5px 6px -3px rgba(0,0,0,0.1),0px 9px 12px 1px rgba(0,0,0,0.07),0px 3px 16px 2px rgba(0,0,0,0.06)',
+      '0px 6px 6px -3px rgba(0,0,0,0.1),0px 10px 14px 1px rgba(0,0,0,0.07),0px 4px 18px 3px rgba(0,0,0,0.06)',
+      '0px 6px 7px -4px rgba(0,0,0,0.1),0px 11px 15px 1px rgba(0,0,0,0.07),0px 4px 20px 3px rgba(0,0,0,0.06)',
+      '0px 7px 8px -4px rgba(0,0,0,0.1),0px 12px 17px 2px rgba(0,0,0,0.07),0px 5px 22px 4px rgba(0,0,0,0.06)',
+      '0px 7px 8px -4px rgba(0,0,0,0.1),0px 13px 19px 2px rgba(0,0,0,0.07),0px 5px 24px 4px rgba(0,0,0,0.06)',
+      '0px 7px 9px -4px rgba(0,0,0,0.1),0px 14px 21px 2px rgba(0,0,0,0.07),0px 5px 26px 4px rgba(0,0,0,0.06)',
+      '0px 8px 9px -5px rgba(0,0,0,0.1),0px 15px 22px 2px rgba(0,0,0,0.07),0px 6px 28px 5px rgba(0,0,0,0.06)',
+      '0px 8px 10px -5px rgba(0,0,0,0.1),0px 16px 24px 2px rgba(0,0,0,0.07),0px 6px 30px 5px rgba(0,0,0,0.06)',
+      '0px 8px 11px -5px rgba(0,0,0,0.1),0px 17px 26px 2px rgba(0,0,0,0.07),0px 6px 32px 5px rgba(0,0,0,0.06)',
+      '0px 9px 11px -5px rgba(0,0,0,0.1),0px 18px 28px 2px rgba(0,0,0,0.07),0px 7px 34px 6px rgba(0,0,0,0.06)',
+      '0px 9px 12px -6px rgba(0,0,0,0.1),0px 19px 29px 2px rgba(0,0,0,0.07),0px 7px 36px 6px rgba(0,0,0,0.06)',
+      '0px 10px 13px -6px rgba(0,0,0,0.1),0px 20px 31px 3px rgba(0,0,0,0.07),0px 8px 38px 7px rgba(0,0,0,0.06)',
+      '0px 10px 13px -6px rgba(0,0,0,0.1),0px 21px 33px 3px rgba(0,0,0,0.07),0px 8px 40px 7px rgba(0,0,0,0.06)',
+      '0px 10px 14px -6px rgba(0,0,0,0.1),0px 22px 35px 3px rgba(0,0,0,0.07),0px 8px 42px 7px rgba(0,0,0,0.06)',
+      '0px 11px 14px -7px rgba(0,0,0,0.1),0px 23px 36px 3px rgba(0,0,0,0.07),0px 9px 44px 8px rgba(0,0,0,0.06)',
+      '0px 11px 15px -7px rgba(0,0,0,0.1),0px 24px 38px 3px rgba(0,0,0,0.07),0px 9px 46px 8px rgba(0,0,0,0.06)',
     ],
     zIndex: {
+      mobileStepper: 1000,
+      speedDial: 1050,
       appBar: 1100,
       drawer: 1200,
       modal: 1300,
       snackbar: 1400,
       tooltip: 1500,
       // Custom z-indexes for portfolio components
-      heroBackground: 5,
+      heroBackground: 0,
       heroContent: 10,
-      scrollIndicator: 15,
-      sectionNavigation: 20,
+      section: 2,
+      header: 1100,
+      footer: 1100,
+      modalOverlay: 1299,
+      // 3D scene specific
+      sceneControls: 5,
+      sceneContent: 2,
     },
     components: {
       MuiButton: {
@@ -238,7 +329,46 @@ const createAppTheme = (mode = 'dark') => {
   // Make typography responsive
   theme = responsiveFontSizes(theme);
   
-  return theme;
+  // Define transitions configuration
+  const transitionsConfig = {
+    // Standard transitions
+    easing: {
+      // This is the most common easing curve.
+      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      // Objects enter the screen at full velocity from off-screen and
+      // slowly decelerate to a resting point.
+      easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+      // Objects leave the screen at full velocity. They do not decelerate when off-screen.
+      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+      // The sharp curve is used by objects that may return to the screen at any time.
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    },
+    // Common durations in ms
+    duration: {
+      shortest: 150,
+      shorter: 200,
+      short: 250,
+      // Most basic recommended timing
+      standard: 300,
+      // This is to be used in complex animations
+      complex: 375,
+      // Recommended when something is entering screen
+      enteringScreen: 225,
+      // Recommended when something is leaving screen
+      leavingScreen: 195,
+    },
+  };
+  
+  // Update theme with custom transitions while preserving the create function
+  const themeWithTransitions = createTheme(theme, {
+    transitions: {
+      easing: transitionsConfig.easing,
+      duration: transitionsConfig.duration,
+    },
+  });
+  
+  // Make typography responsive and return the final theme
+  return responsiveFontSizes(themeWithTransitions);
 };
 
 // Create the light and dark themes once

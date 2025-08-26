@@ -1,7 +1,6 @@
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
-import { useTheme, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { useThree, useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 import { useSceneState } from '../SceneContext';
@@ -37,8 +36,7 @@ const TorusScene = ({
   interactionCount = 0
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { size, viewport, camera } = useThree();
+  const { camera, gl } = useThree();
   const { isInteractionEnabled, switchShapeType } = useSceneState();
   
   // Refs for torus meshes and animation state
@@ -50,7 +48,7 @@ const TorusScene = ({
   const timeRef = useRef(0);
   
   // Responsive torus count
-  const actualTorusCount = isMobile ? Math.floor(TORUS_COUNT * 0.6) : TORUS_COUNT;
+  const actualTorusCount = TORUS_COUNT;
 
   // Initialize torus data
   const torusData = useMemo(() => {
@@ -75,17 +73,22 @@ const TorusScene = ({
 
   // Mouse position tracking
   const updateMousePosition = useCallback((event) => {
-    mouse.current.set(
-      (event.clientX / size.width) * 2 - 1,
-      -(event.clientY / size.height) * 2 + 1
-    );
+    // Get canvas from the WebGL renderer
+    const canvas = gl.domElement;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    mouse.current.set(x, y);
     
     // Update world position for interaction
     raycaster.setFromCamera(mouse.current, camera);
     const intersectPoint = new THREE.Vector3();
     raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), intersectPoint);
     mouseWorldPos.current.copy(intersectPoint);
-  }, [camera, raycaster, size.width, size.height]);
+  }, [camera, raycaster, gl]);
 
   // Create torus geometry and materials
   const torusGeometry = useMemo(() => {
@@ -245,22 +248,6 @@ const TorusScene = ({
 
   return (
     <group>
-      {/* Interaction hint */}
-      {isInteractionEnabled && !isTransitioning && (
-        <Html center transform sprite style={{ pointerEvents: 'none' }}>
-          <div style={{
-            fontSize: isMobile ? 10 : 12,
-            opacity: 0.6,
-            userSelect: 'none',
-            padding: '4px 8px',
-            borderRadius: 8,
-            background: 'rgba(0,0,0,0.2)',
-            backdropFilter: 'blur(2px)',
-          }}>
-            Hover and click torus rings. Double-click to cycle scenes.
-          </div>
-        </Html>
-      )}
 
       {/* Main torus group with interactions */}
       <group

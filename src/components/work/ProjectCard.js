@@ -55,23 +55,31 @@ const ProjectCard = ({ project, onClick }) => {
         onClick={() => onClick(project)}
         sx={{
           cursor: 'pointer',
+          position: 'relative',
           width: '100%',
           aspectRatio: '1 / 1',
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          position: 'relative',
           overflow: 'hidden',
-          borderRadius: theme.shape.borderRadius,
+          borderRadius: theme.shape.cardRadius || theme.shape.borderRadius,
           boxShadow: theme.shadows[2],
-          backgroundColor: theme.palette.background.paper,
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          backgroundColor: theme.palette.background.default,
+          transition: theme.transitions.create(['transform', 'box-shadow', 'border-color'], {
+            duration: theme.transitions.duration.standard,
+            easing: theme.transitions.easing.easeInOut,
+          }),
           '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: theme.shadows[6],
+            transform: 'translateY(-4px)',
+            boxShadow: `0 8px 20px 0 ${theme.palette.secondary.main}33`,
+            borderColor: 'secondary.main',
+            '&::after': {
+              opacity: 1,
+              borderColor: 'secondary.main',
+            },
           },
           ...(cardVariant && cardVariant !== 'default' && {
-            borderTop: `4px solid ${theme.palette[cardVariant]?.main || theme.palette.primary.main}`
+            borderTop: `4px solid ${theme.palette[cardVariant]?.main || 'primary.main'}`
           })
         }}
       >
@@ -81,12 +89,13 @@ const ProjectCard = ({ project, onClick }) => {
             sx={{
               width: '100%',
               height: '100%',
-              background: 'theme.palette.background.default', // Set background to black
+              backgroundColor: 'background.default',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              borderBottom: `1px solid ${theme.palette.divider}`,
-              borderRadius: theme.shape.borderRadius,
+              borderBottom: 1,
+              borderColor: 'divider',
+              borderRadius: (theme) => `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
               overflow: 'hidden',
             }}
           >
@@ -97,7 +106,7 @@ const ProjectCard = ({ project, onClick }) => {
                 containerHeight="100%"
                 containerWidth="100%"
                 objectFit="cover"
-                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+sx={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
                 onError={(e) => {
                   console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
                   e.target.src = '/assets/images/placeholders/project.jpg';
@@ -126,7 +135,7 @@ const ProjectCard = ({ project, onClick }) => {
                 containerHeight="100%"
                 containerWidth="100%"
                 objectFit="cover"
-                style={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
+sx={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
               />
             )}
           </Box>
@@ -140,33 +149,53 @@ const ProjectCard = ({ project, onClick }) => {
         {/* Content */}
         <CardContent
           sx={{
-            flex: '1 1 40%', // 40% of the card height for content
+            flex: '1 1 40%',
             display: 'flex',
             flexDirection: 'column',
             p: { xs: 1.5, md: 2 },
             minHeight: 0,
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: 'background.paper',
             justifyContent: 'flex-start',
             overflow: 'hidden',
+            '&:last-child': {
+              pb: { xs: 1.5, md: 2 },
+            },
           }}
         >
           <Typography
             variant="h6"
             component="h3"
             gutterBottom
-            sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: { xs: '1rem', md: '1.1rem' } }}
+            sx={{ 
+              fontWeight: 600, 
+              color: 'text.primary', 
+              fontSize: { xs: '1rem', md: '1.1rem' },
+              lineHeight: 1.3,
+              mb: 1,
+            }}
           >
             {title}
           </Typography>
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ mb: 1, flexGrow: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: { xs: '0.95rem', md: '1rem' } }}
+            sx={{ 
+              mb: 1, 
+              flexGrow: 1,
+              display: '-webkit-box', 
+              WebkitLineClamp: 3, 
+              WebkitBoxOrient: 'vertical', 
+              overflow: 'hidden', 
+              fontSize: { xs: '0.875rem', md: '0.9375rem' },
+              lineHeight: 1.5,
+            }}
           >
             {description}
           </Typography>
           {categories && categories.length > 0 && (
-            <CategoryTagList tags={categories} />
+            <Box sx={{ mt: 'auto', pt: 1 }}>
+              <CategoryTagList tags={categories} />
+            </Box>
           )}
         </CardContent>
       </Card>
