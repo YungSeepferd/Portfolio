@@ -9,7 +9,7 @@ import { getDynamicColor } from '../utils/sceneThemeUtils';
 import { SHAPE_TYPES } from '../constants';
 
 /**
- * FlowFieldScene — “light-painting ribbons”
+ * TorusScene Component - Flow field "light painting" ribbons
  *
  * Interaction
  * - Move mouse: injects a subtle directional wind + color bias
@@ -20,7 +20,7 @@ import { SHAPE_TYPES } from '../constants';
  * - Hundreds of short ribbons (polylines) advected by curl noise
  * - Theme-driven colors (getDynamicColor) + emissive boost with excitement
  * - Direction-based hue nudge (like your other scenes)
- * - Idle: slow flowing field; Active: expressive “painting”
+ * - Idle: slow flowing field; Active: expressive "painting"
  */
 
 const VORTEX_LIFETIME = 1.2;           // seconds
@@ -38,17 +38,16 @@ const TorusScene = ({
   mouseData,
   isTransitioning,
   easterEggActive = false,
-  interactionCount = 0,
-  onCycle
+  interactionCount = 0
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { size, viewport } = useThree();
-  const { clock } = useThree();
-  const { isInteractionEnabled } = useSceneState();
+  const { isInteractionEnabled, switchShapeType } = useSceneState();
   
   // Direction intensity for color modulation (similar to other scenes)
   const directionIntensityRef = useRef(0);
+  const cursorDirection = useRef({ angle: 0, hue: 0, intensity: 0 });
 
   // Responsive ribbon count
   const RIBBON_COUNT = isMobile ? 80 : 160;
@@ -85,6 +84,26 @@ const TorusScene = ({
     const hit = new THREE.Vector3();
     raycaster.ray.intersectPlane(plane, hit);
     mouseWorld.current.copy(hit);
+    
+    // Update cursor direction for hue mapping (similar to other scenes)
+    if (lastPointer.current.x !== 0 || lastPointer.current.y !== 0) {
+      const dx = event.clientX - lastPointer.current.x;
+      const dy = event.clientY - lastPointer.current.y;
+      
+      // Only update if there's significant movement
+      if (dx*dx + dy*dy > 0.001) {
+        // Convert direction to angle using atan2
+        const angle = Math.atan2(dy, dx);
+        
+        // Map angle (-π to π) to hue (0 to 1)
+        const hue = ((angle / (Math.PI * 2)) + 0.5) % 1;
+        
+        // Store direction data with intensity based on velocity magnitude
+        const intensity = Math.min(1, Math.sqrt(dx*dx + dy*dy) * 0.01);
+        cursorDirection.current = { angle, hue, intensity };
+        directionIntensityRef.current = intensity;
+      }
+    }
   }, [plane, raycaster, size.width, size.height]);
 
   // Simple curl-ish noise (cheap pseudo curl using finite differences)
@@ -140,19 +159,19 @@ const TorusScene = ({
 
   // Pointer handlers (attach to the R3F root via onPointer* props on <group>)
   const onPointerMove = useCallback((e) => {
-    if (!isInteractionEnabled) return;
+    if (!isInteractionEnabled || isTransitioning) return;
     pointerToWorld(e);
-    // Track velocity in NDC for direction intensity nudging (already handled in state)
+    // Track velocity in NDC for direction intensity nudging
     const nx = e.uv?.x ?? e.pointer.x;
     const ny = e.uv?.y ?? e.pointer.y;
     if (lastPointer.current.x !== 0 || lastPointer.current.y !== 0) {
       pointerVel.current.set(nx - lastPointer.current.x, ny - lastPointer.current.y);
     }
     lastPointer.current.set(nx, ny);
-  }, [isInteractionEnabled, pointerToWorld]);
+  }, [isInteractionEnabled, isTransitioning, pointerToWorld]);
 
   const onPointerDown = useCallback((e) => {
-    if (!isInteractionEnabled) return;
+    if (!isInteractionEnabled || isTransitioning) return;
     isPointerDown.current = true;
     pointerToWorld(e);
     // Spawn a vortex at mouse world position
@@ -161,16 +180,17 @@ const TorusScene = ({
       strength: shiftKey.current ? -VORTEX_STRENGTH : VORTEX_STRENGTH,
       age: 0,
     });
-  }, [isInteractionEnabled, pointerToWorld]);
+  }, [isInteractionEnabled, isTransitioning, pointerToWorld]);
 
   const onPointerUp = useCallback(() => {
     isPointerDown.current = false;
   }, []);
 
+  // Handle keyboard for Shift key and Enter to cycle
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.key === 'Shift') shiftKey.current = true;
-      if (e.key === 'Enter' && typeof onCycle === 'function') onCycle();
+      if (e.key === 'Enter' && switchShapeType) switchShapeType();
     };
     const onKeyUp = (e) => {
       if (e.key === 'Shift') shiftKey.current = false;
@@ -181,11 +201,13 @@ const TorusScene = ({
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
     };
-  }, [onCycle]);
+  }, [switchShapeType]);
 
   // Main animation loop
   const timeRef = useRef(0);
   useFrame((_, dt) => {
+    if (isTransitioning) return;
+    
     timeRef.current += dt;
     const t = timeRef.current;
 
@@ -202,6 +224,11 @@ const TorusScene = ({
     const dirIntensity = directionIntensityRef.current || 0;
     const hasPointer = !Number.isNaN(mouseWorld.current.x);
 
+    // Gradually decay direction intensity if not moving
+    if (dirIntensity > 0) {
+      directionIntensityRef.current = Math.max(0, directionIntensityRef.current - 0.01);
+    }
+
     ribbons.current.forEach((r) => {
       const head = r.points[0];
 
@@ -209,7 +236,7 @@ const TorusScene = ({
       const curl = curlAt(head, t);
 
       // Pointer wind (weak, directional)
-      if (hasPointer) {
+      if (hasPointer && isInteractionEnabled) {
         const toMouse = mouseWorld.current.clone().sub(head);
         const dist = toMouse.length() + 1e-5;
         const pull = toMouse.multiplyScalar(0.15 / Math.max(dist, 0.35));
@@ -248,7 +275,7 @@ const TorusScene = ({
       const nearMouse = hasPointer ? head.distanceTo(mouseWorld.current) < NEAR_MOUSE_BOOST_RADIUS : false;
       const targetEnergy = Math.min(
         1.0,
-        (nearMouse ? 0.85 : 0.25) + dirIntensity * 0.6 + (isPointerDown.current ? 0.2 : 0)
+        (nearMouse ? 0.85 : 0.25) + dirIntensity * 0.6 + (isPointerDown.current ? 0.2 : 0) + (easterEggActive ? 0.3 : 0)
       );
       r.energy += (targetEnergy - r.energy) * 0.08;
 
@@ -258,36 +285,33 @@ const TorusScene = ({
     });
   });
 
-  // Render
+  // For theme-consistent rendering
   const clockRef = useRef(new THREE.Clock());
 
   return (
-    <group
-      onPointerMove={onPointerMove}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-      onDoubleClick={() => typeof onCycle === 'function' && onCycle()}
-    >
-      {/* Subtle hint */}
-      <Html center transform sprite style={{ pointerEvents: 'none' }}>
-        <div style={{
-          fontSize: isMobile ? 10 : 12,
-          opacity: 0.6,
-          userSelect: 'none',
-          padding: '4px 8px',
-          borderRadius: 8,
-          background: 'rgba(0,0,0,0.2)',
-          backdropFilter: 'blur(2px)',
-        }}>
-          Drag to paint. Shift = repel. Double-click to next scene.
-        </div>
-      </Html>
+    <group>
+      {/* Subtle hint - only show if interaction is enabled */}
+      {isInteractionEnabled && !isTransitioning && (
+        <Html center transform sprite style={{ pointerEvents: 'none' }}>
+          <div style={{
+            fontSize: isMobile ? 10 : 12,
+            opacity: 0.6,
+            userSelect: 'none',
+            padding: '4px 8px',
+            borderRadius: 8,
+            background: 'rgba(0,0,0,0.2)',
+            backdropFilter: 'blur(2px)',
+          }}>
+            Drag to paint. Shift = repel. Double-click to cycle scenes.
+          </div>
+        </Html>
+      )}
 
       {/* Pointer comet trail */}
-      {isInteractionEnabled && (
+      {isInteractionEnabled && !isTransitioning && (
         <Trail
           width={isMobile ? 3 : 5}
-          color={'white'}
+          color={new THREE.Color().setHSL(cursorDirection.current.hue, 0.8, 0.6)}
           length={14}
           decay={0.4}
           attenuation={(w) => w * 0.75}
@@ -296,55 +320,70 @@ const TorusScene = ({
         </Trail>
       )}
 
-      {/* Ribbons */}
-      {ribbons.current.map((r, i) => {
-        // Theme-driven dynamic colors (match other scenes)
-        const dynamic = getDynamicColor(
-          theme,
-          clockRef.current.getElapsedTime() + i * 0.05,
-          r.energy,
-          SHAPE_TYPES.TORUS, // use one of your existing shape keys for consistent palette
-          false
-        );
-        const colorMain = colorsCache.current.main.copy(dynamic.main);
-        const colorEm = colorsCache.current.emissive.copy(dynamic.emissive);
+      {/* Event handlers on containing group */}
+      <group
+        onPointerMove={onPointerMove}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onDoubleClick={() => switchShapeType && switchShapeType()}
+      >
+        {/* Ribbons */}
+        {ribbons.current.map((r, i) => {
+          // Theme-driven dynamic colors (match other scenes)
+          const dynamic = getDynamicColor(
+            theme,
+            clockRef.current.getElapsedTime() + i * 0.05,
+            r.energy,
+            SHAPE_TYPES.TORUS, // use one of your existing shape keys for consistent palette
+            r.hovered
+          );
+          const colorMain = colorsCache.current.main.copy(dynamic.main);
+          const colorEm = colorsCache.current.emissive.copy(dynamic.emissive);
 
-        // Direction-based hue/emissive nudge (cohesion with other scenes)
-        const dir = directionIntensityRef.current || 0;
-        if (dir > 0.05) {
-          const hueShift = (0.6 * dir) % 1.0;
-          const nudged = new THREE.Color().setHSL(hueShift, 0.8, 0.55);
-          colorMain.lerp(nudged, dir * 0.35);
-          colorEm.lerp(nudged, dir * 0.25);
-        }
+          // Direction-based hue/emissive nudge (cohesion with other scenes)
+          const dir = directionIntensityRef.current || 0;
+          if (dir > 0.05) {
+            const hueShift = cursorDirection.current.hue;
+            const nudged = new THREE.Color().setHSL(hueShift, 0.8, 0.55);
+            colorMain.lerp(nudged, dir * 0.35);
+            colorEm.lerp(nudged, dir * 0.25);
+          }
 
-        return (
-          <Line
-            key={i}
-            points={r.points}
-            color={colorMain}
-            lineWidth={r.width}
-            transparent
-            opacity={0.9}
-            depthWrite={false}
-            dashed={false}
-            onPointerOver={() => (r.hovered = true)}
-            onPointerOut={() => (r.hovered = false)}
-          >
-            {/* Extra emissive “glow” pass */}
-            <meshStandardMaterial
+          // Easter egg color treatment
+          if (easterEggActive) {
+            const hue = ((clockRef.current.getElapsedTime() * 0.2) + (i * 0.01)) % 1.0;
+            colorMain.setHSL(hue, 0.8, 0.5);
+            colorEm.setHSL((hue + 0.1) % 1.0, 0.9, 0.3);
+          }
+
+          return (
+            <Line
+              key={i}
+              points={r.points}
+              color={colorMain}
+              lineWidth={r.width * (easterEggActive ? 1.5 : 1.0)}
               transparent
-              opacity={0.25 + r.energy * 0.25}
-              emissive={colorEm}
-              emissiveIntensity={0.2 + r.energy * (DIRECTION_EMISSIVE_BOOST + (easterEggActive ? 0.3 : 0))}
-              metalness={0.1}
-              roughness={0.7}
-            />
-          </Line>
-        );
-      })}
+              opacity={0.9}
+              depthWrite={false}
+              dashed={false}
+              onPointerOver={() => (r.hovered = true)}
+              onPointerOut={() => (r.hovered = false)}
+            >
+              {/* Extra emissive "glow" pass */}
+              <meshStandardMaterial
+                transparent
+                opacity={0.25 + r.energy * 0.25}
+                emissive={colorEm}
+                emissiveIntensity={0.2 + r.energy * (DIRECTION_EMISSIVE_BOOST + (easterEggActive ? 0.3 : 0))}
+                metalness={0.1}
+                roughness={0.7}
+              />
+            </Line>
+          );
+        })}
+      </group>
     </group>
   );
-}
+};
 
 export default TorusScene;
