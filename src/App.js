@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
 import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
-import Hero from './components/hero/Hero';
-import AboutSection from './components/about/AboutSection';
-import Work from './components/work/Work';
 import FooterContact from './components/contact/FooterContact';
-import ThemeDebugger from './components/dev/ThemeDebugger';
+import LoadingFallback from './components/common/LoadingFallback';
+
+// Lazy load heavy components for better performance
+const Hero = lazy(() => import('./components/hero/Hero'));
+const AboutSection = lazy(() => import('./components/about/AboutSection'));
+const Work = lazy(() => import('./components/work/Work'));
+const ThemeDebugger = lazy(() => import('./components/dev/ThemeDebugger'));
 
 /**
  * Main App Component
@@ -14,20 +18,28 @@ import ThemeDebugger from './components/dev/ThemeDebugger';
  */
 function App() {
   return (
-    <CustomThemeProvider>
-      <ModalProvider>
-        <div className="App">
-          <Header />
-          <main>
-            <Hero />
-            <AboutSection />
-            <Work />
-          </main>
-          <FooterContact />
-          {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
-        </div>
-      </ModalProvider>
-    </CustomThemeProvider>
+    <BrowserRouter>
+      <CustomThemeProvider>
+        <ModalProvider>
+          <div className="App">
+            <Header />
+            <main>
+              <Suspense fallback={<LoadingFallback />}>
+                <Hero />
+                <AboutSection />
+                <Work />
+              </Suspense>
+            </main>
+            <FooterContact />
+            {process.env.NODE_ENV === 'development' && (
+              <Suspense fallback={null}>
+                <ThemeDebugger />
+              </Suspense>
+            )}
+          </div>
+        </ModalProvider>
+      </CustomThemeProvider>
+    </BrowserRouter>
   );
 }
 

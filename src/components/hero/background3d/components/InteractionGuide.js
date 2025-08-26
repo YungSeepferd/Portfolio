@@ -3,8 +3,6 @@ import { Box, Typography, Fade, useTheme } from '@mui/material';
 import MouseIcon from '@mui/icons-material/Mouse';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
-import { useSceneState } from '../SceneContext';
-import { SHAPE_TYPES } from '../constants';
 
 /**
  * InteractionGuide Component
@@ -17,13 +15,12 @@ import { SHAPE_TYPES } from '../constants';
  */
 const InteractionGuide = ({ 
   show = true, 
-  autoHideDelay = 5000,
+  autoHideDelay = 2000, // Reduced from 5000ms to 2000ms
   position = 'bottom'
 }) => {
   const theme = useTheme();
   const [visible, setVisible] = useState(true);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const { currentShapeType } = useSceneState();
   
   // Detect touch device
   useEffect(() => {
@@ -64,46 +61,16 @@ const InteractionGuide = ({
     }
   };
 
-  // Get scene-specific instructions
+  // Get minimal, non-prescriptive instructions
   const getInstructions = () => {
-    switch(currentShapeType) {
-      case SHAPE_TYPES.SPHERE:
-        return {
-          action: isTouchDevice 
-            ? "Tap on a sphere to switch to Cube scene" 
-            : "Click on a sphere to switch to Cube scene",
-          secondary: isTouchDevice
-            ? "Touch and drag to move spheres and rotate view"
-            : "Move cursor to attract spheres. Drag to rotate view"
-        };
-      case SHAPE_TYPES.BOX:
-        return {
-          action: isTouchDevice 
-            ? "Tap on a cube to switch to Torus scene" 
-            : "Click on a cube to switch to Torus scene",
-          secondary: isTouchDevice
-            ? "Touch and drag to create ripples and rotate view"
-            : "Move cursor to create ripples. Drag to rotate view"
-        };
-      case SHAPE_TYPES.TORUS:
-        return {
-          action: isTouchDevice 
-            ? "Tap on a torus ring to switch to Sphere scene" 
-            : "Click on a torus ring to switch to Sphere scene",
-          secondary: isTouchDevice
-            ? "Touch and move to create torus rings"
-            : "Move cursor to create torus rings in different directions"
-        };
-      default:
-        return {
-          action: isTouchDevice 
-            ? "Tap to change scene" 
-            : "Click to change scene",
-          secondary: isTouchDevice
-            ? "Touch and drag to rotate view"
-            : "Drag to rotate view"
-        };
-    }
+    return {
+      action: isTouchDevice 
+        ? "Touch to interact" 
+        : "Click to interact",
+      secondary: isTouchDevice
+        ? "Drag to explore"
+        : "Move and drag to explore"
+    };
   };
 
   const instructions = getInstructions();
@@ -127,7 +94,7 @@ const InteractionGuide = ({
           flexDirection: 'column',
           alignItems: 'center',
           gap: 1,
-          maxWidth: '280px',
+          maxWidth: '200px',
         }}
       >
         {isTouchDevice ? (

@@ -140,8 +140,14 @@ const useDataLoader = (dataFetcher, options = {}) => {
       if (timeoutId) clearTimeout(timeoutId);
     };
     
-    // Include dataFetcher in the dependency array or add a comment explaining why it's excluded
-  }, [validateData, timeout, onSuccess, onError, dataFetcher]); // Added dataFetcher to dependencies
+    // dataFetcher is handled via ref to avoid unnecessary re-runs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [validateData, timeout, onSuccess, onError]);
+
+  // Update dataFetcher ref when it changes
+  useEffect(() => {
+    dataFetcherRef.current = dataFetcher;
+  }, [dataFetcher]);
 
   // Set isMounted to false on unmount
   useEffect(() => {

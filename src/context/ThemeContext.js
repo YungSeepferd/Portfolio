@@ -93,10 +93,14 @@ export const ThemeProvider = ({ children }) => {
     return mode === 'dark' ? darkTheme : lightTheme;
   }, [mode]);
   
-  // Context value
-  const contextValue = useMemo(() => {
-    return { mode, toggleTheme, theme };
-  }, [mode, toggleTheme, theme]);
+  // Context value with additional computed properties
+  const contextValue = useMemo(() => ({
+    mode, 
+    toggleTheme, 
+    theme,
+    isDarkMode: mode === 'dark',
+    isLightMode: mode === 'light'
+  }), [mode, toggleTheme, theme]);
   
   return (
     <ThemeContext.Provider value={contextValue}>

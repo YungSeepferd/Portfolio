@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, memo, useCallback, useRef, useReducer } from 'react';
 import { Box, useTheme, useMediaQuery, IconButton, Tooltip, Fade } from '@mui/material';
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
@@ -13,13 +13,15 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
  * HeroBackground Component - Handles the 3D background with proper context integration
  */
 const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles, easterEggActive, interactionCount }) => {
-  const [showInteractionHint, setShowInteractionHint] = useState(true);
+  const [showInteractionHint, setShowInteractionHint] = useState(false); // Changed to false - no auto-show
   
-  // Hide interaction hint after 5 seconds
+  // Only show hint briefly on first load, then let users discover naturally
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowInteractionHint(false);
-    }, 5000);
+      setShowInteractionHint(true);
+      // Hide after just 1.5 seconds
+      setTimeout(() => setShowInteractionHint(false), 1500);
+    }, 1000); // Show after 1 second delay
     
     return () => clearTimeout(timer);
   }, []);
@@ -99,19 +101,19 @@ const BackgroundController = memo(({
         performanceMode="medium"
       />
       
-      {/* Information button only - positioned in bottom right */}
+      {/* Information button only - positioned in top right */}
       <Box
         sx={{
           position: 'absolute',
-          bottom: 20,
-          right: 20,
+          top: 90,
+          right: 30,
           zIndex: 10,
           display: 'flex',
           pointerEvents: 'auto',
         }}
       >
         {/* Info/help button to show interaction guide */}
-        <Tooltip title="Show interaction guide">
+        <Tooltip title="Help">
           <IconButton 
             onClick={handleToggleGuide}
             sx={{
@@ -121,7 +123,7 @@ const BackgroundController = memo(({
                 backgroundColor: 'rgba(0,0,0,0.3)',
               }
             }}
-            aria-label="Show interaction guide"
+            aria-label="Help"
           >
             <InfoOutlinedIcon />
           </IconButton>
@@ -138,6 +140,51 @@ const BackgroundController = memo(({
 HeroBackground.displayName = 'HeroBackground';
 BackgroundController.displayName = 'BackgroundController';
 
+// Hero state management with useReducer
+const initialHeroState = {
+  is3DVisible: false,
+  hasInitialized: false,
+  sceneIndex: 0,
+  showParticles: true,
+  sceneNameVisible: false,
+  currentSceneName: 'Sphere',
+  easterEggActive: false,
+  interactionCount: 0,
+  lastInteractionTime: 0
+};
+
+const heroReducer = (state, action) => {
+  switch (action.type) {
+    case 'INITIALIZE':
+      return { ...state, hasInitialized: true };
+    case 'SHOW_3D':
+      return { ...state, is3DVisible: true };
+    case 'CHANGE_SCENE':
+      return {
+        ...state,
+        sceneIndex: action.payload.newIndex,
+        currentSceneName: action.payload.sceneName,
+        sceneNameVisible: true
+      };
+    case 'HIDE_SCENE_NAME':
+      return { ...state, sceneNameVisible: false };
+    case 'TOGGLE_PARTICLES':
+      return { ...state, showParticles: !state.showParticles };
+    case 'UPDATE_INTERACTION':
+      return {
+        ...state,
+        interactionCount: action.payload.count,
+        lastInteractionTime: action.payload.time
+      };
+    case 'ACTIVATE_EASTER_EGG':
+      return { ...state, easterEggActive: true };
+    case 'DEACTIVATE_EASTER_EGG':
+      return { ...state, easterEggActive: false };
+    default:
+      return state;
+  }
+};
+
 /**
  * Hero Component
  * 
@@ -149,57 +196,63 @@ BackgroundController.displayName = 'BackgroundController';
 const Hero = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [is3DVisible, setIs3DVisible] = useState(false);
-  const [hasInitialized, setHasInitialized] = useState(false);
-  const [sceneIndex, setSceneIndex] = useState(0);
-  const [showParticles, setShowParticles] = useState(true);
-  const [sceneNameVisible, setSceneNameVisible] = useState(false);
-  const [currentSceneName, setCurrentSceneName] = useState('Sphere');
-  
-  // New states for enhanced interactions
-  const [easterEggActive, setEasterEggActive] = useState(false);
-  const [interactionCount, setInteractionCount] = useState(0);
-  const [lastInteractionTime, setLastInteractionTime] = useState(0);
+  const [state, dispatch] = useReducer(heroReducer, initialHeroState);
   const interactionSequence = useRef([]);
+  
+  // Destructure state for easier access
+  const {
+    is3DVisible,
+    hasInitialized,
+    sceneIndex,
+    showParticles,
+    sceneNameVisible,
+    currentSceneName,
+    easterEggActive,
+    interactionCount,
+    lastInteractionTime
+  } = state;
   
   // Track rapid interactions for combo effects
   const checkForCombo = useCallback(() => {
     const now = Date.now();
     if (now - lastInteractionTime < 1000) {
       // Increment combo counter for rapid interactions
-      setInteractionCount(prev => {
-        const newCount = prev + 1;
-        // Trigger easter egg on 5 rapid clicks
-        if (newCount >= 5 && !easterEggActive) {
-          setEasterEggActive(true);
-          setTimeout(() => setEasterEggActive(false), 5000);
-          
-          // Analytics tracking
-          if (process.env.NODE_ENV === 'production') {
-            try {
-              window.gtag && window.gtag('event', 'easter_egg_activated', { 
-                interaction_type: 'rapid_clicks'
-              });
-            } catch (err) {
-              console.error('Analytics error:', err);
-            }
+      const newCount = interactionCount + 1;
+      // Trigger easter egg on 5 rapid clicks
+      if (newCount >= 5 && !easterEggActive) {
+        dispatch({ type: 'ACTIVATE_EASTER_EGG' });
+        setTimeout(() => dispatch({ type: 'DEACTIVATE_EASTER_EGG' }), 5000);
+        
+        // Analytics tracking
+        if (process.env.NODE_ENV === 'production') {
+          try {
+            window.gtag && window.gtag('event', 'easter_egg_activated', { 
+              interaction_type: 'rapid_clicks'
+            });
+          } catch (err) {
+            console.error('Analytics error:', err);
           }
         }
-        return newCount;
+      }
+      dispatch({ 
+        type: 'UPDATE_INTERACTION', 
+        payload: { count: newCount, time: now }
       });
     } else {
       // Reset combo if too much time has passed
-      setInteractionCount(1);
+      dispatch({ 
+        type: 'UPDATE_INTERACTION', 
+        payload: { count: 1, time: now }
+      });
     }
-    setLastInteractionTime(now);
-  }, [lastInteractionTime, easterEggActive]);
+  }, [lastInteractionTime, easterEggActive, interactionCount]);
 
   // Two-phase initialization for better stability
   useEffect(() => {
-    setHasInitialized(true);
+    dispatch({ type: 'INITIALIZE' });
     
     const timer = setTimeout(() => {
-      setIs3DVisible(true);
+      dispatch({ type: 'SHOW_3D' });
     }, 200);
     
     return () => clearTimeout(timer);
@@ -235,17 +288,18 @@ const Hero = () => {
     
     // Cycle to next scene
     const newSceneIndex = (sceneIndex + 1) % 3;
-    setSceneIndex(newSceneIndex);
+    const sceneName = getSceneName(newSceneIndex);
     
-    // Show scene name indicator
-    setCurrentSceneName(getSceneName(newSceneIndex));
-    setSceneNameVisible(true);
+    dispatch({ 
+      type: 'CHANGE_SCENE', 
+      payload: { newIndex: newSceneIndex, sceneName }
+    });
     
-    console.log(`📢 Hero.js: Scene changed to ${getSceneName(newSceneIndex)} (index: ${newSceneIndex})`);
+    console.log(`📢 Hero.js: Scene changed to ${sceneName} (index: ${newSceneIndex})`);
     
     // Hide scene name after 2 seconds
     setTimeout(() => {
-      setSceneNameVisible(false);
+      dispatch({ type: 'HIDE_SCENE_NAME' });
     }, 2000);
     
     // Analytics tracking
@@ -263,7 +317,7 @@ const Hero = () => {
 
   // Handle particle toggle
   const handleToggleParticles = useCallback(() => {
-    setShowParticles(prev => !prev);
+    dispatch({ type: 'TOGGLE_PARTICLES' });
     
     // Analytics tracking
     if (process.env.NODE_ENV === 'production') {

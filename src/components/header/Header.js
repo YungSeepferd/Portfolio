@@ -51,9 +51,11 @@ const Header = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const transparentBgColor = mode === 'dark' 
-    ? 'rgba(10, 22, 40, 0.7)'  
-    : 'rgba(248, 250, 252, 0.7)';
+  const transparentBgColor = useMemo(() => 
+    mode === 'dark' 
+      ? 'rgba(10, 22, 40, 0.7)'  
+      : 'rgba(248, 250, 252, 0.7)'
+  , [mode]);
 
   return (
     <motion.div
@@ -116,7 +118,7 @@ const Header = () => {
                     alignItems: 'center',
                   }}
                 >
-                  WIP
+                  VG
                 </Box>
               </ScrollLink>
               {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}
