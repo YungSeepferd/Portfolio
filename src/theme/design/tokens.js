@@ -12,7 +12,7 @@
 // Decentralized Design Tokens
 import colors from '../colors';
 import breakpoints from '../breakpoints';
-import spacing, { createSpacing, getSpacing } from '../spacing';
+import spacing from '../spacing';
 import typography from '../typography';
 import shadows from '../shadows';
 import animations from '../animations';

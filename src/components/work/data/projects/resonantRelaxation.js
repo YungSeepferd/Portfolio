@@ -16,8 +16,6 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
 import UIPrototype from '../../../../assets/images/ProdecualHaptics/UI Prototype.png';
 import PrincipleSketch from '../../../../assets/images/ProdecualHaptics/PrincipleSketch.png';
-import PrincipleVariants from '../../../../assets/images/ProdecualHaptics/PrincipleVariants.png';
-import UIPrototypeSketch from '../../../../assets/images/ProdecualHaptics/UI Prototype Sketch.png';
 import FrequencyTheory from '../../../../assets/images/ProdecualHaptics/FrequencyTheory.png';
 import AIAPIFewshotting from '../../../../assets/images/ProdecualHaptics/AIAPIFewshotting.png';
 import presentationPDF from '../../../../assets/information/Procedually generated haptics/ResonantRelaxation_Presentation.pdf';

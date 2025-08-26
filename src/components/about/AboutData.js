@@ -14,7 +14,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 // Import images directly
-import WhoamiImage from '../../assets/images/About Me/Whoami.jpg';
+import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
 import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
@@ -107,7 +107,7 @@ export const aboutData = [
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
           <SkillTagList label="Figma" />
           <SkillTagList label="Adobe XD" />
-          <SkillTagList label="Sketch" />
+          <SkillTagList label="Miro" />
           <SkillTagList label="Prototyping" />
         </Stack>
         {/* Web technologies */}
@@ -115,6 +115,7 @@ export const aboutData = [
           <SkillTagList label="User Testing" />
           <SkillTagList label="Javascript" />
           <SkillTagList label="HTML/CSS" />
+          <SkillTagList label="React" />
         </Stack>
         {/* Programming and prototyping skills */}
         <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 3 }}>
@@ -122,6 +123,8 @@ export const aboutData = [
           <SkillTagList label="C" />
           <SkillTagList label="C#" />
           <SkillTagList label="C++" />
+          <SkillTagList label="Python" />
+          <SkillTagList label="Golang" />
           <SkillTagList label="Arduino" />
         </Stack>
       </>
@@ -209,7 +212,7 @@ export const aboutData = [
                 <HeadsetMicIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
                 <Box sx={{ lineHeight: 1 }}>
                   <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>Freelance Audio Producer / Sound Designer</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>Self-employed | Since 2015</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>Freelancer | Since 2015</Typography>
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mt: 0, mb: 0, fontSize: '0.85rem', lineHeight: 1.1 }}>
@@ -249,7 +252,7 @@ export const aboutData = [
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                 <SchoolIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>M.Sc. Human-Computer Interaction</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>FH Salzburg & PLUS Salzburg | 2022 - 2024</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>FH Salzburg & PLUS Salzburg | 2022 - 2025</Typography>
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mt: 1.5 }}>
@@ -272,11 +275,11 @@ export const aboutData = [
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                 <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>B.Sc. Media Informatics</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>LMU Munich | 2017 - 2021</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>LMU Munich | 2018 - 2021</Typography>
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mt: 1.5 }}>
-                Focused on user interface design, web technologies, and interactive systems. Bachelor's thesis on trust in autonomous vehicle interfaces.
+                Focused on HMI design, web technologies, and interactive systems. Bachelor's thesis on trust in autonomous vehicle interfaces.
               </Typography>
             </Box>
           </Grid>
@@ -295,7 +298,7 @@ export const aboutData = [
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                 <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
                   <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
-                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2015 - 2017</Typography>
+                  <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2017 - 2019</Typography>
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mt: 1.5 }}>

@@ -1,4 +1,4 @@
-import { designConstants } from '../theme';
+// import { designConstants } from '../theme';
 
 /**
  * MediaPathResolver
@@ -9,22 +9,22 @@ import { designConstants } from '../theme';
  */
 
 // Default paths if designConstants is not available
-const DEFAULT_PATHS = {
-  documents: '/assets/documents',
-  images: '/assets/images',
-  videos: '/assets/videos',
-};
+// const DEFAULT_PATHS = {
+//   documents: '/assets/documents',
+//   images: '/assets/images',
+//   videos: '/assets/videos',
+// };
 
 // Default file formats if designConstants is not available
-const DEFAULT_FILE_FORMATS = {
-  documents: ['.pdf', '.doc', '.docx', '.ppt', '.pptx'],
-  images: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'],
-  videos: ['.mp4', '.webm', '.mov', '.avi']
-};
+// const DEFAULT_FILE_FORMATS = {
+//   documents: ['.pdf', '.doc', '.docx', '.ppt', '.pptx'],
+//   images: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'],
+//   videos: ['.mp4', '.webm', '.mov', '.avi']
+// };
 
-// Get media paths from designConstants or use defaults
-const mediaPaths = designConstants?.media?.paths || DEFAULT_PATHS;
-const fileFormats = designConstants?.media?.fileFormats || DEFAULT_FILE_FORMATS;
+// Defined for potential future use
+// const mediaPaths = designConstants?.media?.paths || DEFAULT_PATHS;
+// const fileFormats = designConstants?.media?.fileFormats || DEFAULT_FILE_FORMATS;
 
 /**
  * Resolves image/video paths for both imported assets and public/static paths

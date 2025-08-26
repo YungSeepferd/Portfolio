@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, List, ListItem, ListItemText, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import LazyImage from '../common/LazyImage';
 import VideoPlayer from '../common/VideoPlayer';
 
 // Styled components for different content types
