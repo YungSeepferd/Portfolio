@@ -145,7 +145,7 @@ const HeroContent = () => {
                 key={index}
                 label={skill}
                 size="medium"
-                variant="skill"
+                variant="filled"
                 sx={{ pointerEvents: 'none' }}
               />
             ))}
@@ -163,7 +163,7 @@ const HeroContent = () => {
                 key={index}
                 label={skill}
                 size="medium"
-                variant="skill"
+                variant="filled"
                 sx={{ pointerEvents: 'none' }}
               />
             ))}

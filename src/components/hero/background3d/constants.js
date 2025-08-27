@@ -5,7 +5,7 @@
 // Shape type identifiers
 export const SHAPE_TYPES = {
   SPHERE: 0,
-  BOX: 1,   // Changed from CUBE to BOX for consistency
+  CUBE: 1,   // Cube scene with interactive grid
   TORUS: 2
 };
 
@@ -87,7 +87,7 @@ export const SHAPE_LIMITS = {
     mobile: 25,  // Fewer shapes on mobile for better performance
     desktop: 50  // More shapes on desktop for richer visuals
   },
-  BOX: {
+  CUBE: {
     mobile: 20,
     desktop: 40
   },

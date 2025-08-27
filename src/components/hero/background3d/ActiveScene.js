@@ -11,8 +11,6 @@ import { SHAPE_TYPES } from './constants';
  * ActiveScene - Manages which 3D scene is currently active
  */
 const ActiveScene = ({ 
-  mousePosition, 
-  mouseData,
   onClick, 
   isDragging, 
   theme,
@@ -92,8 +90,6 @@ const ActiveScene = ({
       {currentShapeType === SHAPE_TYPES.SPHERE && (
         <SphereScene 
           color={activeColor}
-          mousePosition={mousePosition}
-          mouseData={mouseData}
           isTransitioning={isTransitioning}
           easterEggActive={easterEggActive}
           interactionCount={interactionCount}
@@ -101,11 +97,9 @@ const ActiveScene = ({
         />
       )}
       
-      {currentShapeType === SHAPE_TYPES.BOX && (
+      {currentShapeType === SHAPE_TYPES.CUBE && (
         <BoxScene 
           color={activeColor}
-          mousePosition={mousePosition}
-          mouseData={mouseData}
           isTransitioning={isTransitioning}
           easterEggActive={easterEggActive}
           interactionCount={interactionCount}
@@ -115,8 +109,6 @@ const ActiveScene = ({
       {currentShapeType === SHAPE_TYPES.TORUS && (
         <TorusScene 
           color={activeColor}
-          mousePosition={mousePosition}
-          mouseData={mouseData}
           isTransitioning={isTransitioning}
           easterEggActive={easterEggActive}
           interactionCount={interactionCount}

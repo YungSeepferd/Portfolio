@@ -93,7 +93,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     borderColor: 'divider',
     borderRadius: `4px 4px 0 0`, // Reduced from theme.shape.borderRadius for less rounded corners
     overflow: 'hidden',
-  }), [theme]);
+  }), []);
 
   const contentStyles = useMemo(() => ({
     flex: '1 1 40%',
@@ -128,7 +128,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
       <Card 
         onClick={handleClick} 
         variant="outlined"
-        elevation={isHovered ? 8 : 2}
+        elevation={0}
         sx={cardStyles}
       >
         {/* Image Area with Overlay */}

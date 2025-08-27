@@ -65,7 +65,7 @@ const AboutSection = () => {
   return (
     <ErrorBoundary componentName="AboutSection">
       <Box
-        id="about-section-root"
+        id="about"
         component="section"
         sx={{
           width: '100%',

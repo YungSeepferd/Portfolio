@@ -26,8 +26,8 @@ function App() {
             <main>
               <Suspense fallback={<LoadingFallback />}>
                 <Hero />
-                <AboutSection />
                 <Work />
+                <AboutSection />
               </Suspense>
             </main>
             <FooterContact />

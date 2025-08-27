@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ListItem, Stack } from '@mui/material';
+import { Button, ListItem, Stack, useTheme } from '@mui/material';
 import { scroller } from 'react-scroll';
 
 /**
@@ -9,6 +9,8 @@ import { scroller } from 'react-scroll';
  * @param {function} [onClick] - Optional click handler (for mobile drawer)
  */
 const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
+  const theme = useTheme();
+  
   // Handler to scroll to section
   const handleScroll = (target) => {
     scroller.scrollTo(target, {
@@ -33,7 +35,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           sx={{
             py: 1.5,
             px: 2,
-            borderRadius: item.isCallToAction ? 3 : 1,
+            borderRadius: item.isCallToAction ? theme.shape.borderRadiusScale.xl : theme.shape.borderRadiusScale.xs,
             textTransform: 'none',
             fontWeight: item.isCallToAction ? 600 : 500,
             minWidth: 'auto',
@@ -61,9 +63,9 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           color={item.isCallToAction ? 'secondary' : 'inherit'}
           sx={{
             ml: idx === 0 ? 0 : 2,
-            px: item.isCallToAction ? 3 : 2,
-            py: item.isCallToAction ? 1 : 0.5,
-            borderRadius: item.isCallToAction ? 3 : 1,
+            px: 2,
+            py: 0.5,
+            borderRadius: item.isCallToAction ? theme.shape.borderRadiusScale.xl : theme.shape.borderRadiusScale.xs,
             position: 'relative',
             textTransform: 'none',
             fontWeight: item.isCallToAction ? 600 : 500,

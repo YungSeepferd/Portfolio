@@ -15,9 +15,9 @@ const WorldMouseListener = ({ mouseData }) => {
   const { camera, raycaster } = useThree();
   const { updateMousePosition } = useSceneState();
   
-  // Virtual plane for raycasting
+  // Virtual plane for raycasting - XZ plane for horizontal grid interaction
   const virtualPlane = React.useMemo(() => {
-    return new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    return new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   }, []);
   
   // Convert normalized mouse coordinates to world coordinates

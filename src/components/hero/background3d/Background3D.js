@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import { SceneProvider, useSceneState } from './SceneContext';
 import ActiveScene from './ActiveScene';
 import LoadingFallback from './components/LoadingFallback';
 import { CANVAS_SETTINGS } from './constants';
 import InteractiveCamera from './InteractiveCamera';
-import useMouseTracking from './hooks/useMouseTracking';
-import WorldMouseListener from './components/WorldMouseListener';
 import { useTheme } from '@mui/material/styles';
+
 
 /**
  * Background3DInner Component - Inner component with access to SceneContext
@@ -39,8 +37,6 @@ const Background3DInner = ({ onSceneClick, performanceMode = 'medium', mouseData
 
   return (
     <>
-      {/* World coordinate transformer - must be inside Canvas */}
-      <WorldMouseListener mouseData={mouseData} />
       
       {/* Advanced Camera with auto-rotation and interaction */}
       <InteractiveCamera enableAutoRotate={true} rotateSpeed={0.3} />
@@ -61,22 +57,9 @@ const Background3DInner = ({ onSceneClick, performanceMode = 'medium', mouseData
         color={theme.palette.secondary.light}
       />
       
-      {/* Add OrbitControls to enable dragging/rotation */}
-      <OrbitControls 
-        enableZoom={false}
-        enablePan={false}
-        rotateSpeed={0.5}
-        minPolarAngle={Math.PI / 6}     // Limit vertical rotation
-        maxPolarAngle={Math.PI / 1.5}   // Limit vertical rotation
-        dampingFactor={0.05}            // Smooth damping effect
-        enabled={true}                  // Always enabled
-        onChange={() => setIsDragging(true)}
-        onEnd={() => setIsDragging(false)}
-      />
       
       {/* Main scene with shapes */}
       <ActiveScene 
-        mousePosition={mouseData ? mouseData.normalized : null} 
         onClick={handleSceneClick} 
         onDragStart={() => setIsDragging(true)}
         onDragEnd={() => setIsDragging(false)}
@@ -92,14 +75,11 @@ const Background3DInner = ({ onSceneClick, performanceMode = 'medium', mouseData
  * Background3D Component - Enhanced interactive 3D background for the hero section
  */
 const Background3D = ({ onSceneClick, performanceMode = 'medium' }) => {
-  const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const theme = useTheme();
   
-  // Use mouse tracking without Three.js dependencies
-  const mouseData = useMouseTracking({
-    domElement: containerRef.current
-  });
+  // Simplified mouse data - will be handled by pointer events in scenes
+  const mouseData = { active: true };
   
   // Handle loading state
   const handleLoaded = useCallback(() => {

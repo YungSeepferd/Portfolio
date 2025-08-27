@@ -1,7 +1,8 @@
-import React, { useRef, useMemo, useEffect } from 'react';
-import { useTheme, useMediaQuery } from '@mui/material';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 import { useSceneState } from '../SceneContext';
 import { getDynamicColor, themeColorToThreeColor } from '../utils/sceneThemeUtils';
 import { SHAPE_TYPES } from '../constants';
@@ -15,12 +16,12 @@ import { SHAPE_TYPES } from '../constants';
  * - Changes colors based on energy/activation levels
  */
 const BoxScene = ({ 
-  color = new THREE.Color(0x6366F1), // Default fallback, but we'll use theme-derived colors
-  mousePosition, 
-  mouseData,
-  isTransitioning,
-  easterEggActive = false,
-  interactionCount = 0
+  onClick, 
+  onDragStart, 
+  onDragEnd, 
+  isDragging, 
+  theme: propTheme, 
+  performanceMode = 'medium' 
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,22 +35,13 @@ const BoxScene = ({
   const cubeRefs = useRef([]);
   const cubeStates = useRef([]);
   
-  // Track cursor position in world space
-  const cursorWorldPosition = useMemo(() => {
-    // Use mouseData.world if available for more accurate positioning
-    if (mouseData && mouseData.world) {
-      return {
-        x: mouseData.world.x * 2, // Scale to match grid size
-        z: -mouseData.world.z * 2  // Flip Z for proper orientation
-      };
-    }
-    // Fallback to normalized position
-    if (!mousePosition) return { x: 0, z: 0 };
-    return {
-      x: mousePosition.x * 5,
-      z: -mousePosition.y * 5
-    };
-  }, [mousePosition, mouseData]);
+  // Simplified cursor tracking using pointer events
+  const [cursorWorldPosition, setCursorWorldPosition] = useState({ x: 0, z: 0 });
+  
+  // State for easter egg and interaction tracking
+  const [easterEggActive] = useState(false);
+  const [interactionCount] = useState(0);
+  const [isTransitioning] = useState(false);
 
   // Track previous cursor position for movement detection
   const prevCursorPosition = useRef({ x: 0, z: 0 });
@@ -65,6 +57,8 @@ const BoxScene = ({
     cubeRefs.current = [];
     cubeStates.current = [];
     
+    console.log('📦 BoxScene Grid Setup:', { gridSize, spacing, offset });
+    
     for (let x = 0; x < gridSize; x++) {
       for (let z = 0; z < gridSize; z++) {
         const index = x * gridSize + z;
@@ -73,8 +67,11 @@ const BoxScene = ({
         
         grid.push({
           index,
-          position: new THREE.Vector3(xPos, 0, zPos)
+          position: new THREE.Vector3(xPos, 0, zPos),
+          gridCoords: { x, z } // Add grid coordinates for debugging
         });
+        
+        console.log(`📦 Cube[${index}] at grid(${x},${z}) → world(${xPos.toFixed(1)}, ${zPos.toFixed(1)})`);
         
         cubeRefs.current[index] = React.createRef();
         cubeStates.current[index] = {
@@ -146,7 +143,7 @@ const BoxScene = ({
           x: cursorWorldPosition.x,
           z: cursorWorldPosition.z
         };
-        rippleStrength = 0.6; // Reduced from 0.8 for a smaller effect
+        rippleStrength = 0.4; // Further reduced for more precise effect
         
         // Update previous position
         prevCursorPosition.current = {...cursorWorldPosition};
@@ -166,7 +163,7 @@ const BoxScene = ({
         x: cursorWorldPosition.x,
         z: cursorWorldPosition.z
       };
-      rippleStrength = 0.6; // Reduced strength for smaller effect
+      rippleStrength = 0.4; // Reduced strength for more precise effect
     }
     // Create automatic ripples occasionally
     else if (easterEggActive || (currentTime % 10 < 0.1 && !hasInteraction)) {
@@ -192,20 +189,24 @@ const BoxScene = ({
       const autoHeight = Math.sin(currentTime * state.autoMovement.speed + state.autoMovement.phase + cube.position.x + cube.position.z) * state.autoMovement.amplitude;
       finalHeight += autoHeight;
       
-      // 2. Mouse/cursor influence - reduce the influence radius
-      if (mousePosition && isInteractionEnabled) {
+      // 2. Mouse/cursor influence - precise localized interaction
+      if (isInteractionEnabled) {
         const dist = Math.sqrt(
           Math.pow(cube.position.x - cursorWorldPosition.x, 2) + 
           Math.pow(cube.position.z - cursorWorldPosition.z, 2)
         );
         
-        // Reduced interaction radius from 3 to 2.2
-        if (dist < 2.2) {
-          // Stronger falloff for more localized effect
-          const strength = Math.pow(1 - Math.min(1, dist / 2.2), 1.5);
-          finalHeight += 1.3 * strength;
-          state.energy = Math.min(1, state.energy + 0.1);
+        // Precise interaction radius for localized effect (about 3x3 grid)
+        const interactionRadius = 1.5; // Fixed radius for consistent interaction
+        if (dist < interactionRadius) {
+          // Sharp falloff for precise activation
+          const strength = Math.pow(1 - Math.min(1, dist / interactionRadius), 2.0);
+          finalHeight += 1.2 * strength;
+          state.energy = Math.min(1, state.energy + 0.2 * strength);
           state.lastActive = currentTime;
+          
+          // Debug logging for activated cubes
+          console.log(`🔥 ACTIVATED Cube[${cube.index}] grid(${cube.gridCoords.x},${cube.gridCoords.z}) world(${cube.position.x.toFixed(1)},${cube.position.z.toFixed(1)}) dist=${dist.toFixed(2)} strength=${strength.toFixed(2)}`);
         }
       }
       
@@ -216,21 +217,21 @@ const BoxScene = ({
           Math.pow(cube.position.z - rippleCenter.z, 2)
         );
         
-        // Smaller ripple effect radius
-        const waveFrequency = 2.5; // Increased from 2.0 for tighter waves
-        const maxRippleDistance = gridSize * 0.5; // Reduced from 0.7
+        // Controlled ripple effect for wave propagation
+        const waveFrequency = 2.0; 
+        const maxRippleDistance = 4.0; // Limited distance for controlled waves
         
         if (rippleDist < maxRippleDistance) {
-          // Calculate ripple wave effect
-          const ripplePhase = rippleDist * waveFrequency - currentTime * 6;
-          const rippleEffect = Math.sin(ripplePhase) * rippleStrength * 
-                               Math.pow(1 - rippleDist / maxRippleDistance, 1.2); // Added power for sharper falloff
+          // Calculate ripple wave effect with controlled propagation
+          const ripplePhase = rippleDist * waveFrequency - currentTime * 5;
+          const falloff = Math.pow(1 - Math.min(1, rippleDist / maxRippleDistance), 1.0);
+          const rippleEffect = Math.sin(ripplePhase) * rippleStrength * falloff;
           
-          finalHeight += rippleEffect;
+          finalHeight += rippleEffect * 0.8; // Reduced intensity
           
           // Add energy based on ripple for visual effects
-          if (rippleEffect > 0.1) {
-            state.energy = Math.max(state.energy, rippleEffect * 0.5);
+          if (Math.abs(rippleEffect) > 0.1) {
+            state.energy = Math.max(state.energy, Math.abs(rippleEffect) * 0.5);
           }
         }
       }
@@ -306,7 +307,7 @@ const BoxScene = ({
           theme,
           currentTime + (cube.index * 0.1), // Add cube index for variation
           state.energy,
-          SHAPE_TYPES.BOX,
+          SHAPE_TYPES.CUBE,
           false // not hovered
         );
         
@@ -331,6 +332,23 @@ const BoxScene = ({
   
   return (
     <group position={[0, -1, 0]}>
+      {/* Invisible ground plane for pointer events */}
+      <mesh
+        position={[0, -0.5, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        onPointerMove={(event) => {
+          // Update cursor position from pointer event
+          setCursorWorldPosition({
+            x: event.point.x,
+            z: event.point.z
+          });
+        }}
+        visible={false}
+      >
+        <planeGeometry args={[gridSize * 2, gridSize * 2]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
+      
       {/* Add central light in Easter egg mode */}
       {easterEggActive && (
         <pointLight

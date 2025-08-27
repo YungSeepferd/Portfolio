@@ -12,15 +12,17 @@ import { getDynamicColor, themeColorToThreeColor } from '../utils/sceneThemeUtil
  */
 const SphereScene = ({ 
   color = new THREE.Color(), // Will be overridden by theme-derived colors
-  mousePosition, 
-  mouseData, 
   isTransitioning, 
   easterEggActive = false,
-  interactionCount = 0
+  interactionCount = 0,
+  theme: propTheme
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { isInteractionEnabled } = useSceneState();
+  
+  // Mouse cursor tracking using pointer events
+  const [cursorWorldPosition, setCursorWorldPosition] = useState({ x: 0, y: 0, z: 0 });
   
   // Set up pools of shapes for reuse
   const [shapesPool] = useState(() => 
@@ -215,56 +217,22 @@ const SphereScene = ({
     };
   }, [isMobile, shapesPool]);
   
-  // Update cursor position from mouseData prop (world coordinates)
+  
+  // Update cursor position from pointer events
   useEffect(() => {
-    // If we have the new mouseData with world coordinates, use that
-    if (mouseData && mouseData.world) {
-      // Store previous position before updating
-      prevCursorPosition.current.copy(cursorPosition.current);
-      
-      // Use the world position directly since it's already in 3D space
-      // But clamp it to reasonable bounds to prevent extreme positions
-      const clampedWorld = mouseData.world.clone();
-      clampedWorld.x = Math.max(-8, Math.min(8, clampedWorld.x));
-      clampedWorld.y = Math.max(-6, Math.min(6, clampedWorld.y));
-      clampedWorld.z = Math.max(-8, Math.min(8, clampedWorld.z));
-      
-      cursorPosition.current.copy(clampedWorld);
-      
-      // Set movement bias from world velocity if available
-      if (mouseData.velocity) {
-        const velocityLength = mouseData.velocity.length();
-        if (velocityLength > 0.001) {
-          // Create a normalized direction vector from velocity
-          movementBias.current.copy(mouseData.velocity).normalize();
-          hasMouseMoved.current = true;
-          lastMouseMoveTime.current = clock.getElapsedTime();
-        }
-      }
-    } 
-    // Fallback to old method if we don't have world coordinates
-    else if (mousePosition) {
-      // Store previous position before updating
-      prevCursorPosition.current.copy(cursorPosition.current);
-      
-      // Convert screen coordinates to world space with better scaling
-      cursorPosition.current.set(
-        mousePosition.x * 6, // Reduced from 8 to 6
-        mousePosition.y * 4, // Reduced from 8 to 4 for Y axis
-        0
-      );
-      
-      // Calculate cursor movement for momentum
-      tempVector.current.subVectors(cursorPosition.current, prevCursorPosition.current);
-      
-      // Update bias when there's significant movement
-      if (tempVector.current.lengthSq() > 0.001) {
-        movementBias.current.copy(tempVector.current).normalize();
-        hasMouseMoved.current = true;
-        lastMouseMoveTime.current = clock.getElapsedTime();
-      }
-    }
-  }, [mousePosition, mouseData, clock]);
+    // Store previous position before updating
+    prevCursorPosition.current.copy(cursorPosition.current);
+    
+    // Use cursor world position from pointer events
+    cursorPosition.current.set(
+      cursorWorldPosition.x,
+      cursorWorldPosition.y,
+      cursorWorldPosition.z
+    );
+    
+    hasMouseMoved.current = true;
+    lastMouseMoveTime.current = Date.now() * 0.001; // Convert to seconds
+  }, [cursorWorldPosition]);
   
   // Add cursor direction tracking for color mapping
   const cursorDirection = useRef({ angle: 0, hue: 0 });
@@ -306,13 +274,7 @@ const SphereScene = ({
     const timeSinceLastMove = currentTime - lastMouseMoveTime.current;
     
     // Update cursor direction for hue mapping
-    if (mouseData?.world) {
-      updateCursorDirection(mouseData.world);
-    } else if (mousePosition) {
-      // Convert screen coordinates to world coordinates
-      const worldPos = new THREE.Vector3(mousePosition.x * 8, mousePosition.y * 8, 0);
-      updateCursorDirection(worldPos);
-    }
+    updateCursorDirection(cursorPosition.current);
     
     // Reset mouse movement flag after 0.5 seconds of no movement
     if (hasMouseMoved.current && timeSinceLastMove > 0.5) {
@@ -416,11 +378,11 @@ const SphereScene = ({
       });
       
       // Mouse interaction - NOW USING WORLD COORDINATES
-      if ((mouseData?.world || mousePosition) && isInteractionEnabled && !isTransitioning) {
+      if (isInteractionEnabled && !isTransitioning) {
         // Calculate distance to cursor in world space
         tempVector.current.copy(shape.position);
         const distToCursor = tempVector.current.distanceTo(cursorPosition.current);
-        const interactionRadius = 5; // Increased from 3
+        const interactionRadius = 8; // Significantly increased for better coverage
         
         if (distToCursor < interactionRadius) {
           // Track this sphere for spread calculations
@@ -626,6 +588,24 @@ const SphereScene = ({
           </mesh>
         );
       })}
+      
+      {/* Invisible ground plane for pointer events */}
+      <mesh
+        position={[0, 0, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        onPointerMove={(event) => {
+          // Update cursor position from pointer event
+          setCursorWorldPosition({
+            x: event.point.x,
+            y: event.point.y,
+            z: event.point.z
+          });
+        }}
+        visible={false}
+      >
+        <planeGeometry args={[20, 20]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
     </>
   );
 };

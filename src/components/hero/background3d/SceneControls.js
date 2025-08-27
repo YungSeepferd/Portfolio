@@ -45,13 +45,13 @@ const SceneControls = () => {
           : 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderRadius: theme.shape.borderRadius * 3.5,
+        borderRadius: theme.shape.borderRadiusScale.xxl,
         padding: theme.spacing(0.5),
         border: `1px solid ${theme.palette.divider}`,
         boxShadow: theme.shadows[8],
         '& .MuiIconButton-root': {
           color: theme.palette.text.secondary,
-          borderRadius: theme.shape.borderRadius * 2,
+          borderRadius: theme.shape.borderRadiusScale.xl,
           transition: theme.transitions.create(['color', 'background-color', 'transform', 'box-shadow'], {
             duration: theme.transitions.duration.shorter,
             easing: theme.transitions.easing.easeInOut,

@@ -147,7 +147,7 @@ const Header = () => {
                   }}
                   aria-label={link.ariaLabel}
                 >
-                  <LinkedInIcon fontSize={{ xs: 'small', sm: 'medium' }} />
+                  <LinkedInIcon fontSize="medium" />
                 </IconButton>
               ))}
             </Box>
@@ -167,6 +167,7 @@ const Header = () => {
                 <Box
                   component="span"
                   sx={{
+                    fontFamily: theme.typography.fontFamily,
                     fontSize: '0.75rem',
                     fontWeight: 600,
                     color: theme.palette.secondary.dark,

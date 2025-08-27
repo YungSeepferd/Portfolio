@@ -1,9 +1,9 @@
 # UX Portfolio Project
 
-_Last updated: 17 April 2025_
+_Last updated: 27 August 2025_
 
 ## Overview
-A modular, maintainable UX portfolio built with React and Material UI, featuring a dynamic project showcase, design system, and robust theme management. All legacy, unused, and redundant files have been removed for clarity and maintainability.
+A modular, maintainable UX portfolio built with React and Material UI, featuring a dynamic project showcase, interactive 3D background, design system, and robust theme management. The portfolio includes advanced Three.js integration for immersive visual experiences and is deployed via GitHub Pages with automated CI/CD.
 
 ---
 
@@ -12,6 +12,7 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
 ```
 / (root)
 ├── README.md                # Project documentation (this file)
+├── link-list.md             # Documentation links and resources used
 ├── package.json             # Project dependencies and scripts
 ├── public/                  # Static assets and HTML template
 │   └── index.html           # Main HTML entry point
@@ -41,7 +42,7 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
   - `contact/`    : Footer contact form and social links
   - `dev/`        : Development-only tools (DesignSystemViewer, ThemeDebugger)
   - `header/`     : Main navigation/header
-  - `hero/`       : Hero section, 3D/canvas backgrounds, skills
+  - `hero/`       : Hero section, interactive 3D backgrounds with Three.js, skills
   - `work/`       : Portfolio/work section, dynamic project modal, project data pipeline
     - `data/`     : Project data (per-project files), skill tags, UI config
 
@@ -133,7 +134,46 @@ A modular, maintainable UX portfolio built with React and Material UI, featuring
 
 ---
 
+## 3D Features & Technology Stack
+
+### Interactive 3D Background
+- **React Three Fiber**: 3D scene rendering with React integration
+- **Three.js**: WebGL-based 3D graphics library
+- **Interactive Camera**: Auto-rotation with user interaction controls
+- **Dynamic Lighting**: Theme-aware ambient and point lighting
+- **Scene Management**: Context-based state management for 3D components
+- **Shape Switching**: Click interactions to change 3D geometries
+
+### Performance Considerations
+- Optimized rendering with useCallback and useMemo hooks
+- Conditional performance monitoring (Stats component removed for stability)
+- Responsive 3D canvas with proper cleanup
+
+---
+
+## Deployment & CI/CD
+
+### GitHub Pages Deployment
+- **Automated Workflow**: GitHub Actions for continuous deployment
+- **Custom Domain**: Deployed to `goekevincent.me`
+- **Build Process**: Automated npm build and deployment to gh-pages branch
+- **Configuration**: CNAME and .nojekyll files for proper GitHub Pages setup
+
+### Development Workflow
+- **Live Reload**: Development server with hot module replacement
+- **Theme System**: Real-time theme switching between light/dark modes
+- **Error Boundaries**: Robust error handling and recovery
+
+---
+
+## Documentation Resources
+- See `link-list.md` for comprehensive documentation links and resources used
+- All external APIs, libraries, and tools are documented with their sources
+
+---
+
 ## Notes
 - All unused/legacy files, hooks, and utilities have been removed.
 - The codebase is clean, modular, and ready for further development.
+- Interactive 3D background enhances user experience with modern web technologies.
 - For a full list of dependencies, see `package.json`.

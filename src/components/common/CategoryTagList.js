@@ -33,7 +33,7 @@ function CategoryTagList({ tags, onTagClick, sx }) {
           key={tag}
           label={tag}
           size="small"
-          variant="category"
+          variant="outlined"
           sx={{ my: 0.5 }}
           onClick={onTagClick ? () => onTagClick(tag) : undefined}
         />

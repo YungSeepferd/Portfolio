@@ -220,24 +220,33 @@ const createAppTheme = (mode = 'dark') => {
         letterSpacing: '0.03333em',
       },
       chipText: {
-        fontSize: '0.875rem',
+        fontSize: '0.75rem',
         fontWeight: 500,
       },
     },
-    shape: {
-      borderRadius: 8,
-      borderRadiusSm: 4,
-      borderRadiusMd: 8,
-      borderRadiusLg: 16,
-      borderRadiusXl: 24,
-      // For custom components
-      cardRadius: 16,
+    accent: {
+      main: accentMain,
+      light: accentLight,
+      dark: accentDark,
+      contrastText: '#ffffff',
       buttonRadius: 8,
       inputRadius: 8,
       // For 3D scene controls
       controlRadius: 4,
     },
     spacing: 8,
+    shape: {
+      borderRadius: 8,
+      // Consistent border radius scale for less rounded design
+      borderRadiusScale: {
+        xs: 2,    // Extra small - subtle rounding
+        sm: 4,    // Small - project cards, chips
+        md: 6,    // Medium - modals, overlays  
+        lg: 8,    // Large - default theme value
+        xl: 12,   // Extra large - buttons, containers
+        xxl: 16,  // Extra extra large - special UI elements
+      }
+    },
     shadows: [
       'none',
       '0px 2px 1px -1px rgba(0,0,0,0.1),0px 1px 1px 0px rgba(0,0,0,0.07),0px 1px 3px 0px rgba(0,0,0,0.06)',

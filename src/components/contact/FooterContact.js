@@ -79,7 +79,7 @@ const FooterContact = ({ projectContext }) => {
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                     <Typography 
-                      variant={{ xs: 'h4', sm: 'h3' }} 
+                      variant="h3" 
                       gutterBottom 
                       sx={{ 
                         color: theme.palette.common.white,
@@ -93,7 +93,7 @@ const FooterContact = ({ projectContext }) => {
                     </Typography>
                     
                     <Typography 
-                      variant={{ xs: 'body2', sm: 'body1' }} 
+                      variant="body1" 
                       sx={{ 
                         color: theme.palette.common.white, 
                         mb: { xs: 2, sm: 3 },
@@ -108,7 +108,7 @@ const FooterContact = ({ projectContext }) => {
                     </Typography>
                     
                     <Typography 
-                      variant={{ xs: 'h6', sm: 'h5' }}
+                      variant="h5"
                       sx={{
                         color: theme.palette.common.white,
                         mb: { xs: 1.5, sm: 2 },
@@ -137,7 +137,7 @@ const FooterContact = ({ projectContext }) => {
                             color: theme.palette.common.white,
                             backgroundColor: 'rgba(255,255,255,0.15)',
                             border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: theme.shape.borderRadius * 1.5,
+                            borderRadius: theme.shape.borderRadiusScale.xl,
                             boxShadow: theme.shadows[4],
                             transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
                               duration: theme.transitions.duration.shorter,
@@ -164,7 +164,7 @@ const FooterContact = ({ projectContext }) => {
                           color: theme.palette.common.white,
                           backgroundColor: 'rgba(255,255,255,0.15)',
                           border: '1px solid rgba(255,255,255,0.3)',
-                          borderRadius: theme.shape.borderRadius * 1.5,
+                          borderRadius: theme.shape.borderRadiusScale.xl,
                           boxShadow: theme.shadows[4],
                           transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
                             duration: theme.transitions.duration.shorter,
@@ -190,7 +190,7 @@ const FooterContact = ({ projectContext }) => {
                           color: theme.palette.common.white,
                           backgroundColor: 'rgba(255,255,255,0.15)',
                           border: '1px solid rgba(255,255,255,0.3)',
-                          borderRadius: theme.shape.borderRadius * 1.5,
+                          borderRadius: theme.shape.borderRadiusScale.xl,
                           boxShadow: theme.shadows[4],
                           transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
                             duration: theme.transitions.duration.shorter,
@@ -215,7 +215,7 @@ const FooterContact = ({ projectContext }) => {
                       color="secondary" 
                       component="a" 
                       href={mailtoLink}
-                      size={{ xs: 'medium', sm: 'large' }}
+                      size="large"
                       sx={{ 
                         textTransform: 'none', 
                         px: { xs: 3, sm: 4 }, 

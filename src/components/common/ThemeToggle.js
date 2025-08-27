@@ -19,7 +19,7 @@ const ThemeToggle = ({ onToggle, mode }) => {
         aria-label="toggle theme"
         sx={{
           p: theme.spacing(1.5),
-          borderRadius: theme.shape.borderRadius * 2,
+          borderRadius: theme.shape.borderRadiusScale.xl,
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.action.hover,
           border: `1px solid ${theme.palette.divider}`,

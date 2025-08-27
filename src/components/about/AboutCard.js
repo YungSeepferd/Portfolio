@@ -85,7 +85,7 @@ const AboutCard = ({
     <CardComponent
       {...motionProps}
       variant={isTransparent ? undefined : "outlined"}
-      elevation={isTransparent ? 0 : 2}
+      elevation={0}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}

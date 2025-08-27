@@ -65,7 +65,7 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
               key={label}
               label={label}
               icon={getTechIcon(label)}
-              size={{ xs: 'small', sm: validSize }}
+              size={validSize}
               sx={{ 
                 ...theme.chip,
                 fontSize: { xs: '0.625rem', sm: '0.75rem' },

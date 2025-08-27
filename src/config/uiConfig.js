@@ -1,8 +1,8 @@
 // Navigation items for header and drawer
 export const navItems = [
   { name: 'Home', target: 'hero' },
-  { name: 'About', target: 'about' },
   { name: 'Work', target: 'work' },
+  { name: 'About', target: 'about' },
   { name: 'Contact', target: 'contact', isCallToAction: true }
 ];
 

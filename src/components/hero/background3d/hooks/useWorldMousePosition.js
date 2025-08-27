@@ -38,13 +38,8 @@ const useWorldMousePosition = ({
   // Initialize tracking plane
   useEffect(() => {
     // Create a virtual plane for intersection testing
-    if (trackingPlane === 'horizontal') {
-      // XZ plane (horizontal - y is up)
-      trackingPlaneRef.current = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    } else {
-      // XY plane (vertical - z is depth)
-      trackingPlaneRef.current = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    }
+    // Use XZ plane (y=0) for horizontal grid interaction
+    trackingPlaneRef.current = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   }, [trackingPlane]);
   
   // Get real DOM element for event handling
