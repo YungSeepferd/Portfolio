@@ -33,7 +33,7 @@ jobs:
         
       - name: Audit dependencies
         run: |
-          npm audit
+          npm audit fix
 
       - name: Build
         run: |
