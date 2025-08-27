@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback, useRef } from 'react';
-import { Modal, Box, IconButton, useTheme, Typography } from '@mui/material';
+import { Modal, Box, IconButton, useTheme, Fab } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Tooltip from '@mui/material/Tooltip';
 import ProjectFullContent from './ProjectFullContent';
 
@@ -106,89 +106,76 @@ const ProjectModal = ({
           }),
         }}
       >
-        {/* Navigation Buttons - Both Top Left, Accent Color */}
-        <Box sx={{ 
-          position: 'absolute', 
-          top: { xs: 8, sm: 16 }, 
-          left: { xs: 8, sm: 16 }, 
-          zIndex: theme.zIndex.modal + 1, 
-          display: 'flex', 
-          gap: { xs: 1, sm: 2 },
-          flexWrap: 'wrap',
-        }}>
-          {onPreviousProject && (
-            <Tooltip title="Previous Project">
-              <IconButton
-                aria-label="previous project"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPreviousProject();
-                  if (contentRef.current) contentRef.current.scrollTop = 0;
-                }}
-                sx={{
-                  color: 'primary.contrastText',
-                  backgroundColor: 'primary.main',
-                  boxShadow: theme.shadows[2],
-                  borderRadius: theme.shape.borderRadius,
-                  display: 'flex',
-                  alignItems: 'center',
-                  px: 2,
-                  py: 1,
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                    transform: 'translateY(-2px)',
-                    boxShadow: theme.shadows[4],
-                  },
-                  transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
-                    duration: theme.transitions.duration.short,
-                    easing: theme.transitions.easing.easeInOut,
-                  }),
-                }}
-              >
-                <KeyboardArrowLeftIcon fontSize="medium" sx={{ mr: 1 }} />
-                <Typography variant="button" sx={{ fontSize: '1rem', fontWeight: 500 }}>
-                  Previous Project
-                </Typography>
-              </IconButton>
-            </Tooltip>
-          )}
-          {onNextProject && (
-            <Tooltip title="Next Project">
-              <IconButton
-                aria-label="next project"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNextProject();
-                  if (contentRef.current) contentRef.current.scrollTop = 0;
-                }}
-                sx={{
-                  color: 'primary.contrastText',
-                  backgroundColor: 'primary.main',
-                  boxShadow: theme.shadows[2],
-                  borderRadius: theme.shape.borderRadius,
-                  display: 'flex',
-                  alignItems: 'center',
-                  px: 2,
-                  py: 1,
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                    transform: 'translateY(-2px)',
-                    boxShadow: theme.shadows[4],
-                  },
-                  transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
-                    duration: theme.transitions.duration.short,
-                    easing: theme.transitions.easing.easeInOut,
-                  }),
-                }}
-              >
-                <Typography variant="button" sx={{ fontSize: '1rem', fontWeight: 500, mr: 1 }}>
-                  Next Project
-                </Typography>
-                <KeyboardArrowRightIcon fontSize="medium" />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Box>
+        {/* Navigation Buttons - Floating Action Buttons positioned on sides */}
+        {onPreviousProject && (
+          <Tooltip title="Previous Project (←)" placement="right">
+            <Fab
+              color="primary"
+              aria-label="previous project"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPreviousProject();
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              sx={{
+                position: 'absolute',
+                left: { xs: 16, sm: 24 },
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: theme.zIndex.modal + 1,
+                boxShadow: theme.shadows[6],
+                '&:hover': {
+                  transform: 'translateY(-50%) scale(1.1)',
+                  boxShadow: theme.shadows[12],
+                },
+                '&:active': {
+                  transform: 'translateY(-50%) scale(0.95)',
+                },
+                transition: theme.transitions.create(['transform', 'box-shadow'], {
+                  duration: theme.transitions.duration.shorter,
+                  easing: theme.transitions.easing.easeInOut,
+                }),
+              }}
+            >
+              <ArrowBackIcon />
+            </Fab>
+          </Tooltip>
+        )}
+        
+        {onNextProject && (
+          <Tooltip title="Next Project (→)" placement="left">
+            <Fab
+              color="primary"
+              aria-label="next project"
+              onClick={(e) => {
+                e.stopPropagation();
+                onNextProject();
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              sx={{
+                position: 'absolute',
+                right: { xs: 16, sm: 24 },
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: theme.zIndex.modal + 1,
+                boxShadow: theme.shadows[6],
+                '&:hover': {
+                  transform: 'translateY(-50%) scale(1.1)',
+                  boxShadow: theme.shadows[12],
+                },
+                '&:active': {
+                  transform: 'translateY(-50%) scale(0.95)',
+                },
+                transition: theme.transitions.create(['transform', 'box-shadow'], {
+                  duration: theme.transitions.duration.shorter,
+                  easing: theme.transitions.easing.easeInOut,
+                }),
+              }}
+            >
+              <ArrowForwardIcon />
+            </Fab>
+          </Tooltip>
+        )}
 
         {/* Close Button - Top Right, Design System Styling */}
         <Tooltip title="Close Project">

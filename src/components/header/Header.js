@@ -118,7 +118,15 @@ const Header = () => {
                     alignItems: 'center',
                   }}
                 >
-                  VG
+                  <Box
+                    component="img"
+                    src="/favicon.svg"
+                    alt="VG Logo"
+                    sx={{
+                      height: '32px',
+                      width: '32px'
+                    }}
+                  />
                 </Box>
               </ScrollLink>
               {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}
@@ -144,6 +152,29 @@ const Header = () => {
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <NavLinks navItems={navItems} variant="desktop" />
+              <Box 
+                sx={{ 
+                  mx: 2, 
+                  px: 2, 
+                  py: 0.5,
+                  backgroundColor: 'rgba(194, 247, 80, 0.15)',
+                  borderRadius: 1,
+                  border: `1px solid ${theme.palette.secondary.main}`,
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: theme.palette.secondary.dark,
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  WORK IN PROGRESS
+                </Box>
+              </Box>
               <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
                 <ThemeToggle mode={mode} onToggle={toggleTheme} />
               </Box>
@@ -192,7 +223,15 @@ const Header = () => {
                 color: theme.palette.primary.main
               }}
             >
-              VG
+              <Box
+                component="img"
+                src="/favicon.svg"
+                alt="VG Logo"
+                sx={{
+                  height: '28px',
+                  width: '28px'
+                }}
+              />
             </Box>
             <IconButton color="inherit" onClick={handleDrawerToggle}>
               <CloseIcon />

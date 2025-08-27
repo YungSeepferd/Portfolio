@@ -81,13 +81,10 @@ const AboutSlideshow = React.memo(({ pictures }) => {
       sx={{
         position: 'relative',
         width: '100%',
-        // Adjust height to maintain good proportions at 40% width
-        height: { 
-          xs: '300px', // Mobile height
-          sm: '350px',
-          md: '450px', // Adjusted for desktop
-          lg: '500px'  // For large screens
-        },
+        // Let height be determined by the image content
+        height: 'auto',
+        minHeight: 'auto',
+        maxHeight: 'none',
         overflow: 'hidden',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: theme.palette.background.default,
@@ -124,10 +121,12 @@ const AboutSlideshow = React.memo(({ pictures }) => {
             onLoad={handleImageLoad}
             style={{
               width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: getCurrentImagePosition(defaultPics[current]), // Apply appropriate positioning
+              height: 'auto', // Let height be determined by image aspect ratio
+              maxWidth: '100%',
+              objectFit: 'contain',
+              objectPosition: getCurrentImagePosition(defaultPics[current]),
               opacity: loaded ? 1 : 0,
+              display: 'block', // Ensure proper block display
             }}
           />
         </Box>

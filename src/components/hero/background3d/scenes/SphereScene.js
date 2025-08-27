@@ -146,22 +146,29 @@ const SphereScene = ({
     for (let i = 0; i < count; i++) {
       const shape = shapesPool.get();
       if (shape) {
-        // Random starting position with better distribution
-        const radius = 4 + Math.random() * 3; // Distribute in a shell between radius 4 and 7
+        // Fixed starting position distribution - keep spheres within visible bounds
+        // Use a smaller, more controlled radius to prevent going out of frame
+        const radius = 2 + Math.random() * 2; // Reduced from 4-7 to 2-4
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
         
+        // Calculate position with bounds checking
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
+        
+        // Clamp positions to ensure they stay within reasonable bounds
         shape.position.set(
-          radius * Math.sin(phi) * Math.cos(theta),
-          radius * Math.sin(phi) * Math.sin(theta),
-          radius * Math.cos(phi)
+          Math.max(-6, Math.min(6, x)), // Clamp X between -6 and 6
+          Math.max(-4, Math.min(4, y)), // Clamp Y between -4 and 4
+          Math.max(-6, Math.min(6, z))  // Clamp Z between -6 and 6
         );
         
-        // Random initial velocity (very small to start)
+        // Smaller initial velocity to prevent immediate drift
         shape.velocity.set(
-          THREE.MathUtils.randFloat(-0.002, 0.002),
-          THREE.MathUtils.randFloat(-0.002, 0.002),
-          THREE.MathUtils.randFloat(-0.002, 0.002)
+          THREE.MathUtils.randFloat(-0.001, 0.001),
+          THREE.MathUtils.randFloat(-0.001, 0.001),
+          THREE.MathUtils.randFloat(-0.001, 0.001)
         );
         
         // Save initial position for reference
@@ -179,18 +186,18 @@ const SphereScene = ({
         shape.excitementLevel = 0;
         shape.scale.set(1, 1, 1);
         
-        // Reset auto-movement properties with varied parameters
+        // Reset auto-movement properties with more controlled parameters
         shape.autoMovement = {
-          speed: Math.random() * 0.004 + 0.001,
+          speed: Math.random() * 0.002 + 0.0005, // Reduced speed
           direction: new THREE.Vector3(
             Math.random() * 2 - 1,
             Math.random() * 2 - 1,
             Math.random() * 2 - 1
           ).normalize(),
           rotationSpeed: {
-            x: Math.random() * 0.005,
-            y: Math.random() * 0.005,
-            z: Math.random() * 0.005
+            x: Math.random() * 0.003, // Reduced rotation speed
+            y: Math.random() * 0.003,
+            z: Math.random() * 0.003
           },
           timeOffset: Math.random() * 1000
         };
@@ -212,8 +219,17 @@ const SphereScene = ({
   useEffect(() => {
     // If we have the new mouseData with world coordinates, use that
     if (mouseData && mouseData.world) {
+      // Store previous position before updating
+      prevCursorPosition.current.copy(cursorPosition.current);
+      
       // Use the world position directly since it's already in 3D space
-      cursorPosition.current.copy(mouseData.world);
+      // But clamp it to reasonable bounds to prevent extreme positions
+      const clampedWorld = mouseData.world.clone();
+      clampedWorld.x = Math.max(-8, Math.min(8, clampedWorld.x));
+      clampedWorld.y = Math.max(-6, Math.min(6, clampedWorld.y));
+      clampedWorld.z = Math.max(-8, Math.min(8, clampedWorld.z));
+      
+      cursorPosition.current.copy(clampedWorld);
       
       // Set movement bias from world velocity if available
       if (mouseData.velocity) {
@@ -231,10 +247,10 @@ const SphereScene = ({
       // Store previous position before updating
       prevCursorPosition.current.copy(cursorPosition.current);
       
-      // Convert screen coordinates to world space
+      // Convert screen coordinates to world space with better scaling
       cursorPosition.current.set(
-        mousePosition.x * 8,
-        mousePosition.y * 8,
+        mousePosition.x * 6, // Reduced from 8 to 6
+        mousePosition.y * 4, // Reduced from 8 to 4 for Y axis
         0
       );
       
@@ -378,22 +394,22 @@ const SphereScene = ({
       shape.rotation.y += autoMove.rotationSpeed.y * rotationMultiplier;
       shape.rotation.z += autoMove.rotationSpeed.z * rotationMultiplier;
       
-      // Bounce off boundaries with a soft approach
+      // Improved boundary system with tighter bounds
       ['x', 'y', 'z'].forEach(axis => {
-        const limit = 8; // Expanded from 5 to 8
+        const limit = axis === 'y' ? 5 : 7; // Tighter Y bounds (5), normal X/Z bounds (7)
         const position = shape.position[axis];
         const absPosition = Math.abs(position);
         
         // Soft boundary - start pushing back before hitting hard limit
-        if (absPosition > limit - 1) {
-          // Soft force pushing back toward center
-          const pushbackForce = (absPosition - (limit - 1)) * 0.01 * Math.sign(position);
+        if (absPosition > limit - 2) {
+          // Stronger soft force pushing back toward center
+          const pushbackForce = (absPosition - (limit - 2)) * 0.02 * Math.sign(position);
           shape.velocity[axis] -= pushbackForce;
           
-          // Hard boundary - bounce
+          // Hard boundary - bounce with stronger containment
           if (absPosition > limit) {
-            shape.velocity[axis] *= -0.8; // Bounce with energy loss
-            shape.position[axis] = limit * Math.sign(position) * 0.95; // Pull slightly in from edge
+            shape.velocity[axis] *= -0.9; // Stronger bounce
+            shape.position[axis] = limit * Math.sign(position) * 0.9; // Pull further in from edge
             autoMove.direction[axis] *= -1; // Reverse auto-movement direction
           }
         }

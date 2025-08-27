@@ -61,13 +61,20 @@ const ActionButton = ({
       startIcon={icon}
       sx={{
         minWidth: 'auto',
-        fontWeight: 'medium',
+        fontWeight: 500,
         fontSize: size === 'large' ? '0.875rem' : '0.75rem',
         textTransform: 'none',
         borderRadius: theme.shape.borderRadius,
-        boxShadow: variant === 'contained' ? theme.shadows[2] : 'none',
+        px: theme.spacing(2),
+        py: theme.spacing(0.75),
+        transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color'], {
+          duration: theme.transitions.duration.shorter,
+        }),
         '&:hover': {
-          boxShadow: variant === 'contained' ? theme.shadows[4] : theme.shadows[1],
+          boxShadow: variant === 'contained' ? theme.shadows[4] : theme.shadows[2],
+        },
+        '&:focus': {
+          boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
         },
         ...sx
       }}

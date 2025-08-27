@@ -32,8 +32,16 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           fullWidth
           sx={{
             py: 1.5,
-            borderRadius: item.isCallToAction ? '50px' : 'default',
+            px: 2,
+            borderRadius: item.isCallToAction ? 3 : 1,
             textTransform: 'none',
+            fontWeight: item.isCallToAction ? 600 : 500,
+            minWidth: 'auto',
+            '&:hover': {
+              backgroundColor: item.isCallToAction 
+                ? 'secondary.dark' 
+                : 'action.hover',
+            },
           }}
           onClick={() => handleScroll(item.target)}
         >
@@ -54,11 +62,17 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           sx={{
             ml: idx === 0 ? 0 : 2,
             px: item.isCallToAction ? 3 : 2,
-            py: item.isCallToAction ? 0.5 : 'auto',
-            borderRadius: item.isCallToAction ? '50px' : 'default',
+            py: item.isCallToAction ? 1 : 0.5,
+            borderRadius: item.isCallToAction ? 3 : 1,
             position: 'relative',
             textTransform: 'none',
-            fontWeight: 500,
+            fontWeight: item.isCallToAction ? 600 : 500,
+            minWidth: 'auto',
+            '&:hover': {
+              backgroundColor: item.isCallToAction 
+                ? 'secondary.dark' 
+                : 'action.hover',
+            },
           }}
           onClick={() => handleScroll(item.target)}
         >

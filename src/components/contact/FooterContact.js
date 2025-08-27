@@ -126,8 +126,22 @@ const FooterContact = ({ projectContext }) => {
                         <IconButton 
                           sx={{ 
                             color: theme.palette.common.white,
-                            backgroundColor: 'rgba(255,255,255,0.1)',
-                            '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' },
+                            backgroundColor: 'rgba(255,255,255,0.15)',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            borderRadius: theme.shape.borderRadius * 1.5,
+                            boxShadow: theme.shadows[4],
+                            transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+                              duration: theme.transitions.duration.shorter,
+                              easing: theme.transitions.easing.easeInOut,
+                            }),
+                            '&:hover': { 
+                              backgroundColor: 'rgba(255,255,255,0.25)',
+                              transform: 'translateY(-2px)',
+                              boxShadow: theme.shadows[8],
+                            },
+                            '&:active': {
+                              transform: 'translateY(0)',
+                            }
                           }}
                         >
                           <EmailIcon />
@@ -139,8 +153,22 @@ const FooterContact = ({ projectContext }) => {
                         target="_blank"
                         sx={{ 
                           color: theme.palette.common.white,
-                          backgroundColor: 'rgba(255,255,255,0.1)',
-                          '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' },
+                          backgroundColor: 'rgba(255,255,255,0.15)',
+                          border: '1px solid rgba(255,255,255,0.3)',
+                          borderRadius: theme.shape.borderRadius * 1.5,
+                          boxShadow: theme.shadows[4],
+                          transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+                            duration: theme.transitions.duration.shorter,
+                            easing: theme.transitions.easing.easeInOut,
+                          }),
+                          '&:hover': { 
+                            backgroundColor: 'rgba(255,255,255,0.25)',
+                            transform: 'translateY(-2px)',
+                            boxShadow: theme.shadows[8],
+                          },
+                          '&:active': {
+                            transform: 'translateY(0)',
+                          }
                         }}
                       >
                         <LinkedInIcon />
@@ -151,8 +179,22 @@ const FooterContact = ({ projectContext }) => {
                         target="_blank"
                         sx={{ 
                           color: theme.palette.common.white,
-                          backgroundColor: 'rgba(255,255,255,0.1)',
-                          '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' },
+                          backgroundColor: 'rgba(255,255,255,0.15)',
+                          border: '1px solid rgba(255,255,255,0.3)',
+                          borderRadius: theme.shape.borderRadius * 1.5,
+                          boxShadow: theme.shadows[4],
+                          transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+                            duration: theme.transitions.duration.shorter,
+                            easing: theme.transitions.easing.easeInOut,
+                          }),
+                          '&:hover': { 
+                            backgroundColor: 'rgba(255,255,255,0.25)',
+                            transform: 'translateY(-2px)',
+                            boxShadow: theme.shadows[8],
+                          },
+                          '&:active': {
+                            transform: 'translateY(0)',
+                          }
                         }}
                       >
                         <GitHubIcon />

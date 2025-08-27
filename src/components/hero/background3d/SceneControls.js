@@ -39,16 +39,36 @@ const SceneControls = () => {
         zIndex: 100,
         display: 'flex',
         flexDirection: 'row',
-        gap: 1,
-        background: 'rgba(0,0,0,0.1)',
-        backdropFilter: 'blur(10px)',
-        borderRadius: '28px',
-        padding: '4px',
+        gap: theme.spacing(0.5),
+        background: theme.palette.mode === 'dark' 
+          ? 'rgba(0, 0, 0, 0.6)' 
+          : 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderRadius: theme.shape.borderRadius * 3.5,
+        padding: theme.spacing(0.5),
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: theme.shadows[8],
         '& .MuiIconButton-root': {
           color: theme.palette.text.secondary,
-          '&.active': {
+          borderRadius: theme.shape.borderRadius * 2,
+          transition: theme.transitions.create(['color', 'background-color', 'transform', 'box-shadow'], {
+            duration: theme.transitions.duration.shorter,
+            easing: theme.transitions.easing.easeInOut,
+          }),
+          '&:hover': {
             color: theme.palette.primary.main,
-            background: 'rgba(255,255,255,0.1)',
+            backgroundColor: theme.palette.action.hover,
+            transform: 'scale(1.1)',
+            boxShadow: theme.shadows[4],
+          },
+          '&.active': {
+            color: theme.palette.primary.contrastText,
+            backgroundColor: theme.palette.primary.main,
+            boxShadow: theme.shadows[6],
+            '&:hover': {
+              backgroundColor: theme.palette.primary.dark,
+            }
           }
         }
       }}

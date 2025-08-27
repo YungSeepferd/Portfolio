@@ -53,7 +53,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     cursor: 'pointer',
     position: 'relative',
     width: '100%',
-    aspectRatio: '1 / 1',
+    aspectRatio: '4 / 3', // Changed from 1/1 to 4/3 for smaller height
     minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
@@ -125,7 +125,12 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Card onClick={handleClick} sx={cardStyles}>
+      <Card 
+        onClick={handleClick} 
+        variant="outlined"
+        elevation={isHovered ? 8 : 2}
+        sx={cardStyles}
+      >
         {/* Image Area with Overlay */}
         <Box sx={imageAreaStyles}>
           <Box sx={imageContainerStyles}>

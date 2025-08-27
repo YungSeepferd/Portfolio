@@ -57,7 +57,7 @@ const ProjectCard = ({ project, onClick }) => {
           cursor: 'pointer',
           position: 'relative',
           width: '100%',
-          aspectRatio: '1 / 1',
+          aspectRatio: '4 / 2',
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',

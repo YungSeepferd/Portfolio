@@ -18,13 +18,23 @@ const ThemeToggle = ({ onToggle, mode }) => {
         color="inherit"
         aria-label="toggle theme"
         sx={{
-          p: 1,
-          borderRadius: '50%',
+          p: theme.spacing(1.5),
+          borderRadius: theme.shape.borderRadius * 2,
           color: theme.palette.text.primary,
-          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
-          transition: 'all 0.3s ease',
+          backgroundColor: theme.palette.action.hover,
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow: theme.shadows[2],
+          transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
+            duration: theme.transitions.duration.shorter,
+            easing: theme.transitions.easing.easeInOut,
+          }),
           '&:hover': {
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)',
+            backgroundColor: theme.palette.action.selected,
+            transform: 'scale(1.05)',
+            boxShadow: theme.shadows[4],
+          },
+          '&:active': {
+            transform: 'scale(0.95)',
           }
         }}
       >

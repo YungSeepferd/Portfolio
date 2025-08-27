@@ -84,7 +84,8 @@ const AboutCard = ({
   return (
     <CardComponent
       {...motionProps}
-      variant={isTransparent ? undefined : "bigCard"}
+      variant={isTransparent ? undefined : "outlined"}
+      elevation={isTransparent ? 0 : 2}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -97,6 +98,14 @@ const AboutCard = ({
         cursor: onClick ? 'pointer' : 'default',
         backgroundColor: hasBackground ? theme.palette.background.paper : 'transparent',
         boxShadow: isTransparent ? 'none' : undefined,
+        borderRadius: theme.shape.borderRadius,
+        transition: theme.transitions.create(['box-shadow', 'transform'], {
+          duration: theme.transitions.duration.shorter,
+        }),
+        '&:hover': onClick ? {
+          transform: 'translateY(-2px)',
+          boxShadow: theme.shadows[8],
+        } : undefined,
       }}
       {...props}
     >
