@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import ProjectCard from './ProjectCard';
+import ProjectCardImproved from './ProjectCardImproved';
 import { fadeInUp, staggerChildren } from '../../theme/animations';
 
 /**
@@ -50,7 +50,7 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
             variants={itemVariants}
             sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
-            <ProjectCard
+            <ProjectCardImproved
               project={project}
               onClick={() => onCardClick(project)}
             />
