@@ -109,10 +109,10 @@ const Header = () => {
                   sx={{ 
                     cursor: 'pointer',
                     fontWeight: 700,
-                    fontSize: '1.5rem',
+                    fontSize: { xs: '1.25rem', sm: '1.5rem' },
                     letterSpacing: '-0.5px',
                     color: theme.palette.text.primary,
-                    paddingLeft: { xs: '0px', sm: '0px', md: '8px', lg: '20px' },
+                    paddingLeft: { xs: '8px', sm: '12px', md: '8px', lg: '20px' },
                     transition: 'padding 0.2s',
                     display: 'flex',
                     alignItems: 'center',
@@ -123,8 +123,8 @@ const Header = () => {
                     src="/favicon.svg"
                     alt="VG Logo"
                     sx={{
-                      height: '32px',
-                      width: '32px'
+                      height: { xs: '28px', sm: '32px' },
+                      width: { xs: '28px', sm: '32px' }
                     }}
                   />
                 </Box>
@@ -137,15 +137,17 @@ const Header = () => {
                   target="_blank"
                   size="small"
                   sx={{
-                    ml: 1,
+                    ml: { xs: 0.5, sm: 1 },
                     color: theme.palette.secondary.dark,
                     backgroundColor: 'rgba(194,247,80,0.10)',
                     '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
-                    p: 0.5
+                    p: { xs: 0.25, sm: 0.5 },
+                    minWidth: { xs: '36px', sm: '40px' },
+                    minHeight: { xs: '36px', sm: '40px' }
                   }}
                   aria-label={link.ariaLabel}
                 >
-                  <LinkedInIcon fontSize="small" />
+                  <LinkedInIcon fontSize={{ xs: 'small', sm: 'medium' }} />
                 </IconButton>
               ))}
             </Box>

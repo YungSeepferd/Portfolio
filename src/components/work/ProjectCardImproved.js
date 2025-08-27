@@ -58,7 +58,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: 4, // Reduced from theme.shape.borderRadius for less rounded corners
     boxShadow: theme.shadows[2],
     backgroundColor: 'background.default',
     transition: theme.transitions.create(['transform', 'box-shadow', 'border-color'], {
@@ -91,7 +91,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     justifyContent: 'center',
     borderBottom: 1,
     borderColor: 'divider',
-    borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+    borderRadius: `4px 4px 0 0`, // Reduced from theme.shape.borderRadius for less rounded corners
     overflow: 'hidden',
   }), [theme]);
 

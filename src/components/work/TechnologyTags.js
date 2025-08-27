@@ -57,7 +57,7 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
   if (!technologies.length) return null;
   return (
     <Box sx={{ width: '100%', ...sx }}>
-      <Stack direction="row" spacing={1} flexWrap="wrap">
+      <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} flexWrap="wrap" justifyContent="center">
         {technologies.map((tech) => {
           const label = typeof tech === 'string' ? tech : tech?.name || '';
           return (
@@ -65,8 +65,15 @@ const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small'
               key={label}
               label={label}
               icon={getTechIcon(label)}
-              size={validSize}
-              sx={theme.chip}
+              size={{ xs: 'small', sm: validSize }}
+              sx={{ 
+                ...theme.chip,
+                fontSize: { xs: '0.625rem', sm: '0.75rem' },
+                height: { xs: 20, sm: 24 },
+                '& .MuiChip-label': {
+                  px: { xs: 0.5, sm: 1 }
+                }
+              }}
             />
           );
         })}

@@ -95,7 +95,7 @@ const ProjectModal = ({
           maxWidth: { sm: '95vw' }, 
           maxHeight: { sm: '95vh' },
           bgcolor: 'background.paper',
-          borderRadius: { xs: 0, sm: theme.shape.borderRadius * 1.5 },
+          borderRadius: { xs: 0, sm: 6 }, // Reduced from theme.shape.borderRadius * 1.5 for less rounded corners
           boxShadow: theme.shadows[24],
           overflow: 'hidden',
           position: 'relative',

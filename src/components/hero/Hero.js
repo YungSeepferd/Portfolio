@@ -3,6 +3,7 @@ import { Box, useTheme, useMediaQuery, IconButton, Tooltip, Fade } from '@mui/ma
 import HeroContent from './HeroContent';
 import ErrorBoundary from '../common/ErrorBoundary';
 import ScrollIndicator from './ScrollIndicator';
+import MobileScrollHelper from './MobileScrollHelper';
 import Background3D from './background3d/Background3D';
 import { SHAPE_TYPES } from './background3d/constants';
 import { SceneProvider, useSceneState } from './background3d/SceneContext';
@@ -435,6 +436,9 @@ const Hero = () => {
           <ScrollIndicator />
         </Box>
       )}
+      
+      {/* Mobile Scroll Helper - Mobile Only */}
+      {isMobile && <MobileScrollHelper />}
     </Box>
   );
 };

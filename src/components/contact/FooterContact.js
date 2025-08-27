@@ -77,38 +77,45 @@ const FooterContact = ({ projectContext }) => {
                     mx: 'auto', // Center the card horizontally
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
+                  <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                     <Typography 
-                      variant="h3" 
+                      variant={{ xs: 'h4', sm: 'h3' }} 
                       gutterBottom 
                       sx={{ 
                         color: theme.palette.common.white,
                         fontWeight: 'bold',
-                        mb: 3,
+                        mb: { xs: 2, sm: 3 },
+                        fontSize: { xs: '1.75rem', sm: '2.125rem', md: '3rem' },
+                        textAlign: { xs: 'center', sm: 'left' }
                       }}
                     >
                       Let's Connect!
                     </Typography>
                     
                     <Typography 
-                      variant="body1" 
+                      variant={{ xs: 'body2', sm: 'body1' }} 
                       sx={{ 
                         color: theme.palette.common.white, 
-                        mb: 3,
+                        mb: { xs: 2, sm: 3 },
                         opacity: 0.9,
-                        maxWidth: '700px', // Constrain text width for readability
+                        maxWidth: '700px',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        textAlign: { xs: 'center', sm: 'left' },
+                        lineHeight: { xs: 1.5, sm: 1.6 }
                       }}
                     >
                       {contactMessage}
                     </Typography>
                     
                     <Typography 
-                      variant="h5"
+                      variant={{ xs: 'h6', sm: 'h5' }}
                       sx={{
                         color: theme.palette.common.white,
-                        mb: 2,
+                        mb: { xs: 1.5, sm: 2 },
                         fontWeight: 'medium',
-                        wordBreak: 'break-word'
+                        wordBreak: 'break-word',
+                        fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                        textAlign: { xs: 'center', sm: 'left' }
                       }}
                     >
                       goeke.vincent@gmail.com
@@ -118,8 +125,10 @@ const FooterContact = ({ projectContext }) => {
                     <Box 
                       sx={{ 
                         display: 'flex', 
-                        gap: 2, 
-                        mb: 3 
+                        gap: { xs: 1, sm: 2 }, 
+                        mb: 3,
+                        flexWrap: 'wrap',
+                        justifyContent: { xs: 'center', sm: 'flex-start' }
                       }}
                     >
                       <a href={mailtoLink} style={{ textDecoration: 'none' }}>
@@ -206,12 +215,15 @@ const FooterContact = ({ projectContext }) => {
                       color="secondary" 
                       component="a" 
                       href={mailtoLink}
-                      size="large"
+                      size={{ xs: 'medium', sm: 'large' }}
                       sx={{ 
                         textTransform: 'none', 
-                        px: 4, 
-                        py: 1.5,
+                        px: { xs: 3, sm: 4 }, 
+                        py: { xs: 1, sm: 1.5 },
                         fontWeight: 'bold',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        width: { xs: '100%', sm: 'auto' },
+                        maxWidth: { xs: '280px', sm: 'none' }
                       }}
                     >
                       Contact Me

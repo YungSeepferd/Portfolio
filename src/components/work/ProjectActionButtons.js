@@ -62,11 +62,11 @@ const ActionButton = ({
       sx={{
         minWidth: 'auto',
         fontWeight: 500,
-        fontSize: size === 'large' ? '0.875rem' : '0.75rem',
+        fontSize: { xs: size === 'large' ? '0.75rem' : '0.625rem', sm: size === 'large' ? '0.875rem' : '0.75rem' },
         textTransform: 'none',
         borderRadius: theme.shape.borderRadius,
-        px: theme.spacing(2),
-        py: theme.spacing(0.75),
+        px: { xs: theme.spacing(1), sm: theme.spacing(2) },
+        py: { xs: theme.spacing(0.5), sm: theme.spacing(0.75) },
         transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color'], {
           duration: theme.transitions.duration.shorter,
         }),
@@ -140,7 +140,7 @@ const standardizeAction = (action) => {
 const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, size = 'small', ...rest }) => {
   if (!actions.length) return null;
   return (
-    <Stack direction="row" spacing={1} flexWrap="nowrap" alignItems="center">
+    <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} flexWrap={{ xs: 'wrap', sm: 'nowrap' }} alignItems="center" justifyContent="center">
       {actions.slice(0, maxButtons).map((action, idx) => (
         <ActionButton
           key={action.label + idx}
@@ -150,7 +150,7 @@ const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, si
           sx={{
             whiteSpace: 'nowrap',
             minWidth: 'unset',
-            px: 2,
+            px: { xs: 1, sm: 2 },
             ...action.sx,
           }}
         />
