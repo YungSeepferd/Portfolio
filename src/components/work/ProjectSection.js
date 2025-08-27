@@ -1,13 +1,11 @@
 import React from 'react';
 import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { motion } from 'framer-motion';
-import ContentAwareImage from '../common/ContentAwareImage';
-import VideoPlayer from '../common/VideoPlayer';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import ProjectContentRenderer from './ProjectContentRenderer';
-import ProjectGallery from './ProjectGallery';
 import { ProjectActionButtonsBar } from './ProjectMetaBar';
+import ResponsiveSection from './layout/ResponsiveSection';
+import { normalizeSection } from '../../utils/sectionNormalizer';
+import { analyzeSectionContent } from '../../utils/sectionAnalyzer';
 
 /**
  * Helper function to format section numbers
@@ -47,15 +45,31 @@ const ProjectSection = ({
   sectionNumber,
   sectionIndex,
   fallbackContent,
-  type, // <-- add type prop
+  type, 
   sx = {}
 }) => {
   const theme = useTheme();
-  const isReverse = layout === 'textRight';
-  const isTextOnly = layout === 'textOnly';
-  const isMediaOnly = layout === 'mediaOnly';
-
-  // Format section number (from prop or generated from index)
+  
+  // Create raw section data for processing
+  const rawSectionData = {
+    id,
+    title,
+    content,
+    media: mediaData,
+    takeaways,
+    outcomes,
+    layout,
+    type,
+    sectionNumber,
+    sectionIndex
+  };
+  
+  // Normalize section data to consistent format
+  const normalizedSection = normalizeSection(rawSectionData, sectionIndex);
+  
+  // Analyze content to determine optimal rendering strategy
+  const renderingStrategy = analyzeSectionContent(normalizedSection);
+  
   const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
 
   // Section heading (add section number above title)
@@ -146,179 +160,43 @@ const ProjectSection = ({
   // Helper for full-width content box with consistent side padding
   const fullWidthBox = (children) => (
     <Box
-      id={`project-section-root-${id || sectionIndex}`}
+      id={id}
       sx={{
+        width: '100%',
         maxWidth: '1200px',
         mx: 'auto',
         px: { xs: 2, sm: 3, md: 4 },
-        py: { xs: 3, md: 5 },
-        mb: 6,
-        background: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
-        boxShadow: theme.shadows[2],
+        py: { xs: 4, md: 6 },
+        ...sx
       }}
+      role="region"
+      aria-labelledby={id}
     >
       {children}
     </Box>
   );
 
-  // Helper for full-width image frame (single or up to 3 images)
-  const fullWidthImageFrame = (mediaArr) => {
-    if (!mediaArr || mediaArr.length === 0) return null;
-    if (mediaArr.length === 1) {
-      const img = mediaArr[0];
-      return (
-        <Box
-          sx={{
-            width: '100%',
-            mb: 3,
-            borderRadius: 3,
-            overflow: 'hidden',
-            boxShadow: theme.shadows[3],
-            aspectRatio: '16/7',
-            background: theme.palette.grey[100],
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <ContentAwareImage
-            src={img.src || img}
-            alt={img.alt || 'Section image'}
-            containerHeight="100%"
-            containerWidth="100%"
-            aspect={img.aspect || 'landscape'}
-            sx={{ borderRadius: theme.shape.borderRadius }}
-          />
-        </Box>
-      );
-    }
-    // Up to 3 images in a row
-    return (
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        {mediaArr.slice(0, 3).map((img, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              flex: 1,
-              borderRadius: 2,
-              overflow: 'hidden',
-              boxShadow: theme.shadows[1],
-              aspectRatio: '16/9',
-              background: theme.palette.grey[100],
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <ContentAwareImage
-              src={img.src || img}
-              alt={img.alt || `Section image ${idx + 1}`}
-              containerHeight="100%"
-              containerWidth="100%"
-              aspect={img.aspect || 'landscape'}
-              sx={{ borderRadius: theme.shape.borderRadius }}
-            />
-          </Box>
-        ))}
-      </Box>
-    );
-  };
 
-  // --- Section type-based rendering ---
-  switch (type) {
-    case 'gallery':
-      // Full-width gallery section
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          <ProjectGallery images={mediaData} title={title} />
-        </>
-      );
-    case 'outcomes':
-    case 'takeaways':
-      // Full-width outcomes/takeaways
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {renderOutcomesTakeaways()}
-        </>
-      );
-    case 'textOnly':
-      // Full-width text section, with optional images
-      return fullWidthBox(
-        <>
-          {headingElement}
-          {Array.isArray(mediaData) && mediaData.length > 0 && fullWidthImageFrame(mediaData)}
-          {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-          {renderOutcomesTakeaways()}
-        </>
-      );
-    case 'prototype':
-      // Placeholder: Replace with your PrototypeShowcase component if available
+  // --- Unified Content-Driven Rendering System ---
+  
+  // Handle special cases that require legacy rendering
+  if (renderingStrategy.requiresSpecialHandling) {
+    // Legacy special section handling
+    const legacyType = normalizedSection.metadata.originalType;
+    
+    if (legacyType === 'prototype') {
       return (
         <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
           {headingElement}
-          {/* <PrototypeShowcase ... /> */}
           <Typography variant="body2">[Prototype embed coming soon]</Typography>
         </Box>
       );
-    case 'custom':
-      return (
-        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
-          {headingElement}
-          {children}
-        </Box>
-      );
-    case 'research':
-      // Full-width research section, two-column if you want, but keep maxWidth and padding
-      return fullWidthBox(
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={7}>
-            {headingElement}
-            {content && (
-              React.isValidElement(content)
-                ? content
-                : <ProjectContentRenderer content={content} variant="body1" />
-            )}
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <Box sx={{ p: 2, bgcolor: theme.palette.background.paper, borderRadius: 2 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>Highlighted Quotes</Typography>
-              <Typography variant="body2" color="text.secondary">"Empathy quote or persona card here..."</Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      );
-    case 'metrics':
-      // Metrics/statistics cards (placeholder)
-      return (
-        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={id}>
-          {title && (
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
-              {title}
-            </Typography>
-          )}
-          <Box sx={{ p: 2, bgcolor: theme.palette.success.light, borderRadius: 2, minWidth: 120 }}>
-            <Typography variant="h6">SUS: 75.38</Typography>
-            <Typography variant="caption">Usability Score</Typography>
-          </Box>
-          <Box sx={{ p: 2, bgcolor: theme.palette.info.light, borderRadius: 2, minWidth: 120 }}>
-            <Typography variant="h6">Trust: 5.82</Typography>
-            <Typography variant="caption">Post-Interaction</Typography>
-          </Box>
-        </Box>
-      );
-    case 'figmaEmbed':
-      // Figma iframe embed (placeholder)
+    }
+    
+    if (legacyType === 'figmaEmbed') {
       return (
         <Box sx={{ ...sx, width: '100%', textAlign: 'center' }} id={id}>
-          {title && (
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600, color: theme.palette.text.primary }}>
-              {title}
-            </Typography>
-          )}
+          {headingElement}
           <Box sx={{ my: 2 }}>
             <iframe
               title="Figma Prototype"
@@ -331,125 +209,78 @@ const ProjectSection = ({
           </Box>
         </Box>
       );
-    default:
-      // ...existing code for split layout...
-      const textContentElement = (
-        <Grid container justifyContent="center">
-          <Box
-            component={motion.div}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-            id={id}
-          >
-            {headingElement}
-            {content && (React.isValidElement(content) ? content : <ProjectContentRenderer content={content} variant="body1" />)}
-            {renderOutcomesTakeaways()}
-            {children && (
-              <Box sx={{ mt: 3 }}>
-                <ProjectActionButtonsBar actions={children} layout="row" />
-              </Box>
-            )}
-          </Box>
-        </Grid>
-      );
-      let mediaElement = null;
-      if (Array.isArray(mediaData) && mediaData.length > 0) {
-        mediaElement = (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {mediaData.slice(0, 1).map((img, idx) => (
-              <ContentAwareImage
-                key={idx}
-                src={img.src || img}
-                alt={img.alt || title || 'Project media'}
-                containerHeight="100%"
-                containerWidth="100%"
-                aspect={img.aspect || 'landscape'}
-                sx={{ borderRadius: theme.shape.borderRadius }}
-              />
-            ))}
-          </Box>
-        );
-      } else if (mediaData?.src) {
-        const aspect = mediaData.aspect || 'landscape';
-        const aspectRatioMap = { portrait: 3/4, landscape: 16/9, square: 1 };
-        const aspectRatio = aspectRatioMap[aspect] || aspectRatioMap.landscape;
-        mediaElement = (
-          <Box
-            component={motion.div}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } } }}
-            sx={{
-              width: '100%',
-              aspectRatio: aspectRatio,
-              minHeight: { xs: 240, md: 320 },
-              maxHeight: { md: 600 },
-              borderRadius: theme.shape.borderRadius,
-              overflow: 'hidden',
-              boxShadow: theme.shadows[3],
-            }}
-          >
-            {mediaData.type === 'video' ? (
-              <VideoPlayer
-                src={mediaData.src}
-                containerHeight="100%"
-                containerWidth="100%"
-                controls={true}
-                muted={true}
-              />
-            ) : (
-              <ContentAwareImage
-                src={mediaData.src}
-                alt={mediaData.alt || title || 'Project media'}
-                containerHeight="100%"
-                containerWidth="100%"
-                aspect={aspect}
-                sx={{ borderRadius: theme.shape.borderRadius }}
-              />
-            )}
-          </Box>
-        );
-      }
-      if (isTextOnly) {
-        return fullWidthBox(textContentElement);
-      }
-      if (isMediaOnly) {
-        return fullWidthBox(mediaElement);
-      }
+    }
+    
+    if (legacyType === 'metrics') {
       return (
-        <Grid
-          id={`project-section-grid-${id || sectionIndex}`}
-          container
-          spacing={{ xs: 4, md: 6 }}
-          sx={{ mb: 6, maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }}
-          alignItems="stretch"
-        >
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'left' }}
-            order={{ xs: 1, md: isReverse ? 2 : 1 }}
-          >
-            {textContentElement}
-          </Grid>
-          {mediaElement && (
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-              order={{ xs: 2, md: isReverse ? 1 : 2 }}
-            >
-              {mediaElement}
-            </Grid>
-          )}
-        </Grid>
+        <Box sx={{ ...sx, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }} id={id}>
+          {headingElement}
+          <Box sx={{ p: 2, bgcolor: theme.palette.success.light, borderRadius: 2, minWidth: 120 }}>
+            <Typography variant="h6">SUS: 75.38</Typography>
+            <Typography variant="caption">Usability Score</Typography>
+          </Box>
+          <Box sx={{ p: 2, bgcolor: theme.palette.info.light, borderRadius: 2, minWidth: 120 }}>
+            <Typography variant="h6">Trust: 5.82</Typography>
+            <Typography variant="caption">Post-Interaction</Typography>
+          </Box>
+        </Box>
       );
+    }
+    
+    if (legacyType === 'custom') {
+      return (
+        <Box id={id} sx={{ my: 6, ...sx }} role="region" aria-labelledby={id}>
+          {headingElement}
+          {children}
+        </Box>
+      );
+    }
+    
+    // Fallback for outcomes/takeaways special handling
+    if (legacyType === 'outcomes' || legacyType === 'takeaways') {
+      return fullWidthBox(
+        <>
+          {headingElement}
+          {renderOutcomesTakeaways()}
+        </>
+      );
+    }
   }
+  
+  // Use unified ResponsiveSection renderer for all standard content
+  return (
+    <ResponsiveSection
+      id={normalizedSection.id}
+      title={normalizedSection.title}
+      content={normalizedSection.content}
+      mediaData={normalizedSection.media}
+      sectionNumber={sectionNumber}
+      sectionIndex={sectionIndex}
+      type={renderingStrategy.primaryRenderer}
+      layout={renderingStrategy.layoutHint}
+      sx={{
+        ...sx,
+        // Apply spacing recommendations from analysis
+        mb: renderingStrategy.spacing,
+        // Apply priority-based styling
+        ...(renderingStrategy.priority === 'primary' && {
+          '& .section-heading': { fontSize: '1.2em' }
+        })
+      }}
+    >
+      {/* Render outcomes and takeaways if present */}
+      {(normalizedSection.outcomes.length > 0 || normalizedSection.takeaways.length > 0) && 
+        renderOutcomesTakeaways()
+      }
+      
+      {/* Render action buttons if provided */}
+      {children && (
+        <Box sx={{ mt: 3 }}>
+          <ProjectActionButtonsBar actions={children} layout="row" />
+        </Box>
+      )}
+    </ResponsiveSection>
+  );
 };
 
 export default ProjectSection;
