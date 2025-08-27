@@ -55,6 +55,9 @@ export const useProjectModal = (projects = []) => {
           e.preventDefault();
           closeModal();
           break;
+        default:
+          // No action needed for other keys
+          break;
       }
     };
     
