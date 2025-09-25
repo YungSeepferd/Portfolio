@@ -155,10 +155,21 @@ const AboutTabNavigator = forwardRef((props, ref) => {
             variant={isMobile ? "scrollable" : "fullWidth"}
             scrollButtons={isMobile ? "auto" : false}
             allowScrollButtonsMobile
+            textColor="secondary"
+            indicatorColor="secondary"
             sx={{ 
               width: '100%',
               '& .MuiTabs-flexContainer': {
                 justifyContent: 'space-between',
+              },
+              '& .MuiTab-root': {
+                color: theme.palette.text.secondary,
+                '&.Mui-selected': {
+                  color: theme.palette.secondary.main,
+                },
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: theme.palette.secondary.main,
               }
             }}
           >

@@ -209,8 +209,8 @@ const AboutCard = ({
               id={`about-card-title-${title.toLowerCase().replace(/\s+/g, '-')}`}
               sx={{
                 color: theme.palette.mode === 'dark'
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main,
+                  ? theme.palette.secondary.light
+                  : theme.palette.secondary.main,
               }}
             >
               {title}

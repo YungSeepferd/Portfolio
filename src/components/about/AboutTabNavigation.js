@@ -77,7 +77,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
                 color: theme.palette.text.secondary,
                 minWidth: { xs: 'auto', md: 0 }, // Allow tabs to be narrower on mobile
                 '&.Mui-selected': {
-                  color: theme.palette.primary.main,
+                  color: theme.palette.secondary.main,
                 },
                 '&:hover': {
                   color: theme.palette.secondary.main,
@@ -88,7 +88,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
                 whiteSpace: 'nowrap', // Prevent text wrapping
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: theme.palette.primary.main, // UPDATED: Match selected tab color
+                backgroundColor: theme.palette.secondary.main, // UPDATED: Match selected tab color
                 height: 3,
                 transition: 'all 0.3s ease',
               },

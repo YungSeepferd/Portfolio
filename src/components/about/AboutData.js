@@ -66,7 +66,7 @@ export const aboutData = [
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-              <BrushIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
+              <BrushIcon color="secondary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Design</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -75,7 +75,7 @@ export const aboutData = [
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-              <AccessibilityNewIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
+              <AccessibilityNewIcon color="secondary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Research</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -84,7 +84,7 @@ export const aboutData = [
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-              <CodeIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
+              <CodeIcon color="secondary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Development</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -93,7 +93,7 @@ export const aboutData = [
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-              <LocalLibraryIcon color="primary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
+              <LocalLibraryIcon color="secondary" sx={{ mr: 1, mt: 0.5, mb: 1 }} />
               <Typography variant="h6">Methodologies</Typography>
             </Box>
             <Typography variant="body2" paragraph>
@@ -151,9 +151,9 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
-                <BusinessCenterIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <BusinessCenterIcon color="secondary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
                 <Box sx={{ lineHeight: 1 }}>
-                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>UX Intern</Typography>
+                  <Typography variant="h6" sx={{ color: 'secondary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>UX Intern</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>DJay Munich | 2022</Typography>
                 </Box>
               </Box>
@@ -180,9 +180,9 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
-                <WorkIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <WorkIcon color="secondary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
                 <Box sx={{ lineHeight: 1 }}>
-                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>IT & Podcast Production Support</Typography>
+                  <Typography variant="h6" sx={{ color: 'secondary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>IT & Podcast Production Support</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>University Hospital Munich | 2020–2022</Typography>
                 </Box>
               </Box>
@@ -209,9 +209,9 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0 }}>
-                <HeadsetMicIcon color="primary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
+                <HeadsetMicIcon color="secondary" sx={{ mr: 1, mt: 0.2, fontSize: '1.3rem' }} />
                 <Box sx={{ lineHeight: 1 }}>
-                  <Typography variant="h6" sx={{ color: 'primary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>Freelance Audio Producer / Sound Designer</Typography>
+                  <Typography variant="h6" sx={{ color: 'secondary.main', fontSize: '0.95rem', lineHeight: 1.1 }}>Freelance Audio Producer / Sound Designer</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontSize: '0.85rem', lineHeight: 1.1, mt: -0.3 }}>Freelancer | Since 2015</Typography>
                 </Box>
               </Box>
@@ -250,8 +250,8 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <SchoolIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>M.Sc. Human-Computer Interaction</Typography>
+                <SchoolIcon color="secondary" sx={{ mr: 2, mt: 0 }} />              <Box>
+                  <Typography variant="h6" sx={{ color: 'secondary.main' }}>M.Sc. Human-Computer Interaction</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>FH Salzburg & PLUS Salzburg | 2022 - 2025</Typography>
                 </Box>
               </Box>
@@ -273,8 +273,8 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <MenuBookIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>B.Sc. Media Informatics</Typography>
+                <MenuBookIcon color="secondary" sx={{ mr: 2, mt: 0 }} />              <Box>
+                  <Typography variant="h6" sx={{ color: 'secondary.main' }}>B.Sc. Media Informatics</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>LMU Munich | 2018 - 2021</Typography>
                 </Box>
               </Box>
@@ -296,8 +296,8 @@ export const aboutData = [
               boxShadow: 1
             }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <AutoStoriesIcon color="primary" sx={{ mr: 2, mt: 0 }} />              <Box>
-                  <Typography variant="h6" sx={{ color: 'primary.main' }}>Diploma in Audio Design</Typography>
+                <AutoStoriesIcon color="secondary" sx={{ mr: 2, mt: 0 }} />              <Box>
+                  <Typography variant="h6" sx={{ color: 'secondary.main' }}>Diploma in Audio Design</Typography>
                   <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>Deutsche POP, Munich | 2017 - 2019</Typography>
                 </Box>
               </Box>

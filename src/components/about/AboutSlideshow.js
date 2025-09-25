@@ -109,6 +109,7 @@ const AboutSlideshow = React.memo(({ pictures }) => {
             size={40} 
             thickness={4} 
             aria-label="Loading image"
+            color="secondary"
           />
         </Box>
       )}
@@ -165,7 +166,7 @@ const AboutSlideshow = React.memo(({ pictures }) => {
                 width: theme.customComponents?.parallax?.dot?.size || '8px',
                 height: theme.customComponents?.parallax?.dot?.size || '8px',
                 backgroundColor: i === current 
-                  ? theme.palette.dots?.active || theme.palette.primary.main 
+                  ? theme.palette.dots?.active || theme.palette.secondary.main 
                   : theme.palette.dots?.inactive || 'rgba(255,255,255,0.3)',
                 borderRadius: '50%',
                 transition: 'background-color 0.3s ease',

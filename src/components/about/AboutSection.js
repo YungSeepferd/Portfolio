@@ -132,7 +132,7 @@ const AboutSection = () => {
               gap: 2
             }}
           >
-            <CircularProgress color="primary" />
+            <CircularProgress color="secondary" />
             <Typography variant="body2" color="text.secondary">
               Loading content...
             </Typography>
@@ -158,7 +158,7 @@ const AboutSection = () => {
             </Typography>
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               startIcon={<RefreshIcon />}
               onClick={() => window.location.reload()}
               sx={{ mt: 3 }}
