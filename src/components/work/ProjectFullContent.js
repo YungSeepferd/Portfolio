@@ -82,7 +82,7 @@ const ProjectFullContent = ({ project }) => {
         backgroundColor: theme.palette.background.paper
       }}>
         {/* Project Content Sections */}
-        <ProjectSections sections={sections} />
+        <ProjectSections sections={sections} projectId={project.id} />
         {/* Prototype Showcase (if available) */}
         {prototype && (
           <PrototypeShowcase

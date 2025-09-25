@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box, Typography, useTheme, IconButton, Dialog, DialogContent, Grid, useMediaQuery } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,56 +11,51 @@ import { analyzeImage, isVideo } from '../../utils/mediaUtils';
 const ProjectGallery = ({ images = [], title = '' }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [mediaInfo, setMediaInfo] = useState([]);
   const [openOverlay, setOpenOverlay] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   
-  // Process media types on mount
-  const processMedia = useCallback(async () => {
-    if (!images || images.length === 0) return;
-    
-    const mediaData = await Promise.all(images.map(async (media, index) => {
-      // Basic media info
+  const mediaInfo = useMemo(() => {
+    if (!images || images.length === 0) return [];
+
+    return images.map((media, index) => {
       const isVideoFile = isVideo(media);
       const src = typeof media === 'string' ? media : media?.src || '';
-      // Extract aspect if present
-      const aspect = typeof media === 'object' && media.aspect ? media.aspect : 'landscape';
-      // For images, analyze orientation
-      let orientation = aspect;
-      let thumbnailSrc = src;
+      const aspectHint = typeof media === 'object' && media.aspect ? media.aspect : undefined;
+
+      let orientation = aspectHint;
       if (isVideoFile) {
         orientation = 'landscape';
-      } else if (!aspect) {
-        // Use image analyzer for images if aspect not set
+      } else if (!orientation) {
         const analysis = analyzeImage(media);
-        orientation = analysis.orientation;
+        if (analysis?.isPortrait) {
+          orientation = 'portrait';
+        } else if (analysis?.aspectRatio === 1) {
+          orientation = 'square';
+        } else {
+          orientation = 'landscape';
+        }
       }
-      // Detect if it's a phone screenshot
-      const isPhone = 
-        orientation === 'portrait' || 
+
+      const isPhone =
+        orientation === 'portrait' ||
         src.toLowerCase().includes('phone') ||
         src.toLowerCase().includes('mobile') ||
         src.toLowerCase().includes('app');
+
       return {
         id: index,
         original: media,
         src,
-        thumbnailSrc,
+        thumbnailSrc: src,
         isVideo: isVideoFile,
         orientation,
-        aspect,
+        aspect: aspectHint || orientation,
         isPhone,
         isDesktop: !isPhone
       };
-    }));
-    
-    setMediaInfo(mediaData);
+    });
   }, [images]);
-  
-  useEffect(() => {
-    processMedia();
-  }, [processMedia]);
-  
+
   if (!images || images.length === 0 || mediaInfo.length === 0) return null;
 
   // Open overlay with specific image

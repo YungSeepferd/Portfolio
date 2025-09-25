@@ -36,6 +36,7 @@ const ContentAwareImage = ({
   fallbackSrc,
   containerOrientation = "auto",
   sx = {},
+  onLoad: externalOnLoad,
   ...otherProps
 }) => {
   const theme = useTheme();
@@ -74,10 +75,42 @@ const ContentAwareImage = ({
     (processedImageData ? getOptimalObjectFit(processedImageData, containerOrientation) : 'cover');
 
   // Handle image load success
-  const handleImageLoad = useCallback(() => {
+  const handleImageLoad = useCallback((event) => {
     setLoading(false);
     setError(null);
-  }, []);
+    if (event?.target) {
+      const { naturalWidth, naturalHeight } = event.target;
+      if (naturalWidth > 0 && naturalHeight > 0) {
+        setProcessedImageData(prevData => {
+          const aspectRatio = naturalWidth / naturalHeight;
+          const isPortrait = naturalHeight > naturalWidth;
+          const isLandscape = !isPortrait;
+
+          // Avoid unnecessary state updates if data hasn't effectively changed
+          if (
+            prevData &&
+            prevData.aspectRatio === aspectRatio &&
+            prevData.isPortrait === isPortrait &&
+            prevData.isLandscape === isLandscape
+          ) {
+            return prevData;
+          }
+
+          // Cache actual metadata so object-fit decisions react to the real image dimensions
+          return {
+            src,
+            aspectRatio,
+            isPortrait,
+            isLandscape
+          };
+        });
+      }
+    }
+
+    if (typeof externalOnLoad === 'function') {
+      externalOnLoad(event);
+    }
+  }, [externalOnLoad, src]);
 
   // Handle image load error with retry logic
   const handleImageError = useCallback((e) => {

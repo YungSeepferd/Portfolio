@@ -71,35 +71,34 @@ export const analyzeImage = (src, options = {}) => {
  * @returns {string} - CSS object-fit value (cover, contain, etc)
  */
 export const getOptimalObjectFit = (imageData, containerOrientation = 'landscape') => {
-  // If no image data, default to cover which works well in most cases
   if (!imageData) return 'cover';
-  
-  // Extract image properties
+
   const { isPortrait, isLandscape, aspectRatio } = imageData;
-  
-  // Handle container orientation
+  const normalizedAspectRatio = (Number.isFinite(aspectRatio) && aspectRatio > 0) ? aspectRatio : 1;
+  const portrait = typeof isPortrait === 'boolean' ? isPortrait : normalizedAspectRatio < 1;
+  const landscape = typeof isLandscape === 'boolean' ? isLandscape : !portrait;
+
   if (containerOrientation === 'portrait') {
-    // Portrait container
-    if (isPortrait) {
-      // Portrait image in portrait container - use cover
+    if (portrait) {
       return 'cover';
-    } else {
-      // Landscape image in portrait container - use contain for wide images
-      return aspectRatio > 2 ? 'contain' : 'cover';
     }
-  } else if (containerOrientation === 'square') {
-    // Square container - use cover for most cases
-    return 'cover';
-  } else {
-    // Landscape container (default)
-    if (isLandscape) {
-      // Landscape image in landscape container - use cover
-      return 'cover';
-    } else {
-      // Portrait image in landscape container - use contain for tall images
-      return aspectRatio < 0.5 ? 'contain' : 'cover';
-    }
+    return normalizedAspectRatio > 1.6 ? 'contain' : 'cover';
   }
+
+  if (containerOrientation === 'square') {
+    if (normalizedAspectRatio > 1.5 || normalizedAspectRatio < 0.7) {
+      return 'contain';
+    }
+    return 'cover';
+  }
+
+  // Default landscape container
+  if (!landscape || portrait) {
+    // `contain` keeps tall phone screenshots visible inside widescreen frames
+    return normalizedAspectRatio <= 0.95 ? 'contain' : 'cover';
+  }
+
+  return 'cover';
 };
 
 /**

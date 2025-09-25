@@ -18,13 +18,18 @@ const HeroBackground = memo(({ onSceneClick, onToggleParticles, showParticles, e
   
   // Only show hint briefly on first load, then let users discover naturally
   useEffect(() => {
-    const timer = setTimeout(() => {
+    let hideTimer;
+    const showTimer = setTimeout(() => {
       setShowInteractionHint(true);
-      // Hide after just 1.5 seconds
-      setTimeout(() => setShowInteractionHint(false), 1500);
+      hideTimer = setTimeout(() => setShowInteractionHint(false), 1500);
     }, 1000); // Show after 1 second delay
-    
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(showTimer);
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+    };
   }, []);
   
   return (
@@ -75,16 +80,13 @@ const BackgroundController = memo(({
   const [showGuide, setShowGuide] = useState(false);
   const { switchShapeType } = useSceneState();
   
-  // Handle background click with improved logging
+  // Handle background click
   const handleBackgroundClick = useCallback(() => {
-    console.log("📢 BackgroundController: Scene change button clicked");
-    
     // Update scene context
     switchShapeType();
     
     // Notify parent component
     if (onSceneClick) {
-      console.log("📢 BackgroundController: Calling parent onSceneClick handler");
       onSceneClick();
     }
   }, [switchShapeType, onSceneClick]);
@@ -271,8 +273,6 @@ const Hero = () => {
 
   // Handle scene click to change scene type
   const handleSceneClick = useCallback(() => {
-    console.log("📢 Hero.js: handleSceneClick called - About to change scene");
-    
     // Track interaction sequence for pattern detection
     interactionSequence.current.push({
       type: 'click',
@@ -295,9 +295,7 @@ const Hero = () => {
       type: 'CHANGE_SCENE', 
       payload: { newIndex: newSceneIndex, sceneName }
     });
-    
-    console.log(`📢 Hero.js: Scene changed to ${sceneName} (index: ${newSceneIndex})`);
-    
+
     // Hide scene name after 2 seconds
     setTimeout(() => {
       dispatch({ type: 'HIDE_SCENE_NAME' });

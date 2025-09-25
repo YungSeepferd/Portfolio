@@ -105,6 +105,7 @@ const ProjectModal = ({
             easing: theme.transitions.easing.easeInOut,
           }),
         }}
+        data-testid="project-modal"
       >
         {/* Navigation Buttons - Floating Action Buttons positioned on sides */}
         {onPreviousProject && (
@@ -204,6 +205,7 @@ const ProjectModal = ({
                 easing: theme.transitions.easing.easeInOut,
               }),
             }}
+            data-testid="project-modal-close"
           >
             <CloseIcon fontSize="large" />
           </IconButton>

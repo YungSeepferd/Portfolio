@@ -26,14 +26,6 @@ const AboutSection = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Log the data state
-  useEffect(() => {
-    console.log('About section state:', { 
-      isLoading,
-      dataLength: aboutData?.length || 0,
-    });
-  }, [isLoading]);
-  
   const handleSectionChange = (newSection) => {
     try {
       if (newSection >= 0 && newSection < aboutData.length) {

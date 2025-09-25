@@ -84,7 +84,6 @@ const Background3D = ({ onSceneClick, performanceMode = 'medium' }) => {
   // Handle loading state
   const handleLoaded = useCallback(() => {
     setIsLoading(false);
-    console.log("🎨 Background3D: Canvas loaded successfully");
   }, []);
 
   // Memoize canvas style to prevent unnecessary re-renders

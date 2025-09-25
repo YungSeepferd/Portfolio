@@ -43,29 +43,19 @@ export const SceneProvider = ({ children }) => {
   
   // Function to switch between scene types with smooth transition
   const switchShapeType = useCallback(() => {
-    console.log("🔄 SceneContext: switchShapeType called, current state:", {
-      currentShapeType,
-      isTransitioning
-    });
-    
     // Don't switch during transition or if interaction is disabled
     if (isTransitioning || !isInteractionEnabled) {
-      console.log("🔄 SceneContext: Ignoring switchShapeType - already in transition or interaction disabled");
       return;
     }
-    
-    console.log("🔄 SceneContext: Starting transition");
     setIsTransitioning(true);
     
-    // Delay actual shape change to allow for transition animation
+    // First timeout lets the current scene animate out before we swap buffers
     setTimeout(() => {
       const newType = (currentShapeType + 1) % 3;
-      console.log(`🔄 SceneContext: Changing shape type from ${currentShapeType} to ${newType}`);
       setCurrentShapeType(newType);
       
-      // Reset transitioning state after animation completes
+      // Second timeout hands control back once the new scene animates in
       setTimeout(() => {
-        console.log("🔄 SceneContext: Transition complete");
         setIsTransitioning(false);
       }, 400); // Duration based on transition animation
     }, 200);

@@ -24,6 +24,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     if (!project) return null;
     
     const { 
+      id,
       title, 
       description, 
       categories = [], 
@@ -38,6 +39,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     const primaryMedia = project.media || projectUtils.getProjectPrimaryMedia(project);
     
     return {
+      id,
       title,
       description,
       categories,
@@ -52,7 +54,8 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
   const cardStyles = useMemo(() => ({
     cursor: 'pointer',
     position: 'relative',
-    width: '100%',
+    width: '95%',
+    mx: 'auto',
     aspectRatio: '4 / 3', // Changed from 1/1 to 4/3 for smaller height
     minHeight: 0,
     display: 'flex',
@@ -111,7 +114,8 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
 
   if (!projectData) return null;
 
-  const { title, description, categories, technologies, linksArray, primaryMedia } = projectData;
+  const { id, title, description, categories, technologies, linksArray, primaryMedia } = projectData;
+  const cardTestId = id ? `project-card-${id}` : 'project-card';
 
   return (
     <motion.div
@@ -130,6 +134,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
         variant="outlined"
         elevation={0}
         sx={cardStyles}
+        data-testid={cardTestId}
       >
         {/* Image Area with Overlay */}
         <Box sx={imageAreaStyles}>

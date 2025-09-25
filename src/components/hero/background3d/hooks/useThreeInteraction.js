@@ -58,12 +58,10 @@ const useThreeInteraction = ({
       
       // Check for double click
       if (clickEndTime - lastClickTime < doubleClickThreshold) {
-        console.log('Double click detected');
         onDoubleClick && onDoubleClick(event);
         // Reset last click time to prevent triple-click
         setLastClickTime(0);
       } else {
-        console.log('Click detected');
         onClick && onClick(event);
         setLastClickTime(clickEndTime);
       }

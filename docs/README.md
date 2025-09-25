@@ -1,6 +1,6 @@
 # Portfolio Documentation Index
 
-_Last updated: 27 August 2025_
+_Last updated: 18 March 2026_
 
 ## Documentation Overview
 
@@ -10,7 +10,7 @@ This directory contains all project documentation organized by category. This is
 
 - **New to the project?** Start with [Project Overview](project/overview.md)
 - **Setting up development?** See [Setup Guide](project/setup.md)
-- **Understanding the codebase?** Check [File Structure](architecture/file-structure.md)
+- **Understanding the codebase?** Start with the new [System Overview](architecture/system-overview.md) and then dive into [File Structure](architecture/file-structure.md)
 - **Working with design system?** Visit [Design System Overview](design-system/overview.md)
 
 ## Documentation Structure
@@ -24,6 +24,7 @@ docs/
 │   ├── setup.md                # Installation and development setup
 │   └── deployment.md           # Deployment and CI/CD information
 ├── architecture/                # Technical architecture
+│   ├── system-overview.md     # High-level map of application modules
 │   ├── file-structure.md       # Complete file and folder structure
 │   ├── data-flow.md            # Data flow and state management
 │   └── technology-stack.md     # Technology choices and versions

@@ -30,29 +30,27 @@ const ProjectPrototypeEmbed = ({ type = 'figma', url, title = "Prototype" }) => 
   // Construct the correct embed URL (example for Figma)
   let embedUrl = url;
   if (type === 'figma') {
-    // Basic check if it looks like a Figma embed URL already
-    if (!url.includes('figma.com/embed')) {
-      // Attempt to construct embed URL from a standard Figma link
-      // Example: https://www.figma.com/file/...?node-id=... or https://www.figma.com/proto/...?node-id=...
+    const isEmbedUrl = /figma\.com\/embed/i.test(url);
+
+    if (!isEmbedUrl) {
       try {
         const urlObj = new URL(url);
+
         if (urlObj.hostname === 'www.figma.com' || urlObj.hostname === 'figma.com') {
-           // Keep existing query params, add embed specific ones
-           urlObj.pathname = `/embed`;
-           urlObj.searchParams.set('embed_host', 'share'); // Standard embed host
-           // urlObj.searchParams.set('hub_file_id', '...'); // Optional: if you have hub file ID
-           embedUrl = urlObj.toString();
+          const normalizedUrl = urlObj.toString();
+          embedUrl = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(normalizedUrl)}`;
         } else {
-           console.warn("Provided URL doesn't look like a standard Figma link. Using as is.");
+          console.warn("Provided URL doesn't look like a standard Figma link. Using as is.");
         }
       } catch (e) {
         console.error("Error parsing Figma URL, using as is:", e);
       }
     }
-     // Add necessary Figma embed parameters if missing
-     if (!embedUrl.includes('scaling=scale-down-width')) {
-        embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'scaling=scale-down-width';
-     }
+
+    // Ensure the embed respects width scaling without duplicating the param
+    if (!/scaling=/.test(embedUrl)) {
+      embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'scaling=scale-down-width';
+    }
   }
   // Add logic for other types (e.g., InVision, Marvel) if needed
 

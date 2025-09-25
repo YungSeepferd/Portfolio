@@ -57,8 +57,6 @@ const BoxScene = ({
     cubeRefs.current = [];
     cubeStates.current = [];
     
-    console.log('📦 BoxScene Grid Setup:', { gridSize, spacing, offset });
-    
     for (let x = 0; x < gridSize; x++) {
       for (let z = 0; z < gridSize; z++) {
         const index = x * gridSize + z;
@@ -70,8 +68,6 @@ const BoxScene = ({
           position: new THREE.Vector3(xPos, 0, zPos),
           gridCoords: { x, z } // Add grid coordinates for debugging
         });
-        
-        console.log(`📦 Cube[${index}] at grid(${x},${z}) → world(${xPos.toFixed(1)}, ${zPos.toFixed(1)})`);
         
         cubeRefs.current[index] = React.createRef();
         cubeStates.current[index] = {
@@ -204,9 +200,6 @@ const BoxScene = ({
           finalHeight += 1.2 * strength;
           state.energy = Math.min(1, state.energy + 0.2 * strength);
           state.lastActive = currentTime;
-          
-          // Debug logging for activated cubes
-          console.log(`🔥 ACTIVATED Cube[${cube.index}] grid(${cube.gridCoords.x},${cube.gridCoords.z}) world(${cube.position.x.toFixed(1)},${cube.position.z.toFixed(1)}) dist=${dist.toFixed(2)} strength=${strength.toFixed(2)}`);
         }
       }
       
