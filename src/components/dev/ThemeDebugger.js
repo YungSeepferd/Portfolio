@@ -20,6 +20,7 @@ import SpacingIcon from '@mui/icons-material/Straighten';
 import AnimationIcon from '@mui/icons-material/Animation';
 import BreakpointIcon from '@mui/icons-material/Devices';
 import ExtensionIcon from '@mui/icons-material/Extension';
+import { getSpacingPreset, getTypographyPreset, spacingPresets, typographyPresets } from '../../theme/presets';
 
 /**
  * Theme Debugger Tool
@@ -89,15 +90,20 @@ const ThemeDebugger = () => {
   );
 
   // Typography preview for each variant
-  const TypographyPreview = () => (
-    <Box>
-      {Object.keys(theme.typography).map((variant) => (
-        <Typography key={variant} variant={variant} sx={{ mb: 1 }}>
-          {variant}: The quick brown fox jumps over the lazy dog
-        </Typography>
-      ))}
-    </Box>
-  );
+  const TypographyPreview = () => {
+    const variantEntries = Object.entries(theme.typography).filter(([, value]) => (
+      typeof value === 'object' && value !== null && Object.prototype.hasOwnProperty.call(value, 'fontSize')
+    ));
+    return (
+      <Box>
+        {variantEntries.map(([variant]) => (
+          <Typography key={variant} variant={variant} sx={{ mb: 1 }}>
+            {variant}: The quick brown fox jumps over the lazy dog
+          </Typography>
+        ))}
+      </Box>
+    );
+  };
 
   // Spacing preview
   const SpacingPreview = () => (
@@ -111,6 +117,17 @@ const ThemeDebugger = () => {
           </IconButton>
         </Box>
       ))}
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>Spacing Presets</Typography>
+        {Object.keys(spacingPresets).map((key) => (
+          <Box key={key} sx={{ mb: 1.5 }}>
+            <Typography variant="body2">{key}</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+              {JSON.stringify(getSpacingPreset(key))}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 
@@ -142,7 +159,7 @@ const ThemeDebugger = () => {
   return (
     <>
       <Fab 
-        color="secondary" 
+        color="primary" 
         size="small" 
         onClick={() => setOpen(true)}
         sx={{ 
@@ -168,6 +185,7 @@ const ThemeDebugger = () => {
             <Tab icon={<SpacingIcon />} label="Spacing" />
             <Tab icon={<BreakpointIcon />} label="Breakpoints" />
             <Tab icon={<AnimationIcon />} label="Animations" />
+            <Tab icon={<ExtensionIcon />} label="Presets" />
           </Tabs>
           {/* Palette Tab */}
           {tabValue === 0 && (
@@ -202,6 +220,40 @@ const ThemeDebugger = () => {
           {tabValue === 3 && <BreakpointsPreview />}
           {/* Animations Tab */}
           {tabValue === 4 && <AnimationsPreview />}
+          {/* Presets Tab */}
+          {tabValue === 5 && (
+            <Box>
+              <Typography variant="h6" sx={{ mb: 2 }}>Typography Presets</Typography>
+              {Object.keys(typographyPresets).map((key) => {
+                const preset = getTypographyPreset(theme, key);
+                return (
+                  <Box key={key} sx={{ mb: 1.5 }}>
+                    <Typography
+                      variant={preset.variant}
+                      component={preset.component}
+                      sx={preset.sx}
+                    >
+                      {key} preset sample text
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {JSON.stringify(preset.sx)}
+                    </Typography>
+                  </Box>
+                );
+              })}
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Spacing Presets</Typography>
+                {Object.keys(spacingPresets).map((key) => (
+                  <Box key={key} sx={{ mb: 1.5 }}>
+                    <Typography variant="body2">{key}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {JSON.stringify(getSpacingPreset(key))}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
         </Box>
       </Drawer>
     </>

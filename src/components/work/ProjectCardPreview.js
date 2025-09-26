@@ -8,8 +8,9 @@ import ProjectActionButtons from './ProjectActionButtons';
  * 
  * Displays technology tags (top) and action buttons (bottom) in a hover overlay.
  */
-const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
+const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = 'compact' }) => {
   const theme = useTheme();
+  const isComfortable = size === 'comfortable';
   const hasContent = (technologies.length > 0 || links.length > 0);
   if (!hasContent) return null;
   
@@ -50,8 +51,8 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
                 border: 1,
                 borderColor: 'divider',
                 borderRadius: 8, // Reduced from theme.shape.borderRadius * 2 for less rounded corners
-                px: { xs: 1, sm: 2 },
-                py: { xs: 0.25, sm: 0.5 },
+                px: isComfortable ? { xs: 1.5, sm: 2.5 } : { xs: 1, sm: 2 },
+                py: isComfortable ? { xs: 0.75, sm: 1 } : { xs: 0.25, sm: 0.5 },
                 maxWidth: { xs: '100%', sm: '90%' },
                 display: 'flex',
                 justifyContent: 'center',
@@ -61,7 +62,11 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
                 WebkitBackdropFilter: 'blur(8px)',
               }}
             >
-              <TechnologyTags technologies={technologies} variant="hover" size="small" />
+              <TechnologyTags
+                technologies={technologies}
+                variant="hover"
+                size={isComfortable ? 'medium' : 'small'}
+              />
             </Box>
           </Box>
         )}
@@ -89,8 +94,8 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
                 border: 1,
                 borderColor: 'divider',
                 borderRadius: 8, // Reduced from theme.shape.borderRadius * 2 for less rounded corners
-                px: { xs: 1, sm: 2 },
-                py: { xs: 0.5, sm: 1 },
+                px: isComfortable ? { xs: 1.5, sm: 2.5 } : { xs: 1, sm: 2 },
+                py: isComfortable ? { xs: 0.75, sm: 1.1 } : { xs: 0.5, sm: 1 },
                 maxWidth: { xs: '100%', sm: '95%' },
                 display: 'flex',
                 justifyContent: 'center',
@@ -100,7 +105,13 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [] }) => {
                 WebkitBackdropFilter: 'blur(8px)',
               }}
             >
-              <ProjectActionButtons actions={links} layout="row" maxButtons={4} size="small" />
+              <ProjectActionButtons
+                actions={links}
+                layout="row"
+                maxButtons={links.length}
+                size={isComfortable ? 'medium' : 'small'}
+                density={isComfortable ? 'comfortable' : 'compact'}
+              />
             </Box>
           </Box>
         )}

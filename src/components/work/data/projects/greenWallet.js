@@ -6,9 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
 
 // Import all project images and videos directly
 import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
@@ -78,21 +75,18 @@ const greenWallet = {
     {
       label: "Try Prototype",
       url: "https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share",
-      icon: <SmartphoneIcon fontSize="small" />,
       contentType: 'iframe',
       openInPopup: true
     },
     {
       label: "View Presentation",
       url: presentationPDF,
-      icon: <SlideshowIcon fontSize="small" />,
       contentType: 'pdf',
       openInPopup: true
     },
     {
       label: "Hackathon Winner",
       url: "https://www.linkedin.com/posts/alles-fuer-den-gast_allesfaesrdengast-gastmesse-gastrohackathon-activity-7129517120463192064-_11i?utm_source=share&utm_medium=member_desktop&rcm=ACoAAC2Uif8Be-XBXBcxg2OW-UH9jV1ETYju6Dw",
-      icon: <EmojiEventsIcon fontSize="small" />,
       contentType: 'external',
       openInPopup: true
     }

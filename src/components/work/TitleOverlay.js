@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import CategoryTagList from '../common/CategoryTagList';
+import { getTypographyPreset } from '../../theme/presets';
 
 /**
  * TitleOverlay Component
@@ -10,7 +11,9 @@ import CategoryTagList from '../common/CategoryTagList';
  */
 const TitleOverlay = ({ title, description, categories = [] }) => {
   const theme = useTheme();
-  
+  const overlayTitlePreset = getTypographyPreset(theme, 'overlayTitle');
+  const overlaySubtitlePreset = getTypographyPreset(theme, 'overlaySubtitle');
+
   return (
     <Box
       sx={{
@@ -25,18 +28,21 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
         alignItems: 'flex-start',
         background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)',
         color: theme.palette.common.white,
-        padding: { xs: 3, sm: 4, md: 5 },
+        padding: {
+          xs: theme.spacing(3),
+          sm: theme.spacing(4),
+          md: theme.spacing(5),
+        },
         boxSizing: 'border-box',
       }}
     >
       {/* Project Title */}
       <Typography
-        variant="h2"
-        component="h1"
+        variant={overlayTitlePreset.variant}
+        component={overlayTitlePreset.component}
         sx={{
-          fontWeight: 700,
+          ...overlayTitlePreset.sx,
           mb: 1,
-          fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
           textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
         }}
       >
@@ -45,12 +51,12 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
       
       {/* Project Description */}
       <Typography
-        variant="h5"
+        variant={overlaySubtitlePreset.variant}
+        component={overlaySubtitlePreset.component}
         sx={{
+          ...overlaySubtitlePreset.sx,
           mb: 2,
           maxWidth: '800px',
-          fontWeight: 400,
-          fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
           textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
         }}
       >

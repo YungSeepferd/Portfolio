@@ -8,6 +8,7 @@ import useDataLoader from '../../hooks/useDataLoader';
 import { useProjectModal } from '../../hooks/useProjectModal';
 import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * Improved Work Component with better separation of concerns
@@ -41,17 +42,22 @@ const Work = () => {
   const filteredProjects = useMemo(() => projects, [projects]);
 
   // Memoized section styles
-  const sectionStyles = useMemo(() => ({
-    py: theme.spacing(8, 12), // Use theme spacing scale
-    px: theme.spacing(2, 4, 6, 8),
-    backgroundColor: 'background.paper',
-    position: 'relative',
-    zIndex: theme.zIndex.section || 1,
-    transition: theme.transitions.create(['background-color', 'color'], {
-      duration: theme.transitions.duration.standard,
-      easing: theme.transitions.easing.easeInOut,
-    }),
-  }), [theme]);
+  const sectionStyles = useMemo(() => {
+    const vertical = getSpacingPreset('sectionVertical');
+    const horizontal = getSpacingPreset('pageHorizontal');
+    return {
+      pt: vertical.pt,
+      pb: vertical.pb,
+      px: horizontal.px,
+      backgroundColor: 'background.paper',
+      position: 'relative',
+      zIndex: theme.zIndex.section || 1,
+      transition: theme.transitions.create(['background-color', 'color'], {
+        duration: theme.transitions.duration.standard,
+        easing: theme.transitions.easing.easeInOut,
+      }),
+    };
+  }, [theme]);
 
   const headerStyles = useMemo(() => ({
     maxWidth: theme.breakpoints.values.lg,
@@ -59,6 +65,9 @@ const Work = () => {
     textAlign: 'center',
     mb: theme.spacing(6),
   }), [theme]);
+
+  const sectionTitlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const sectionSubtitlePreset = getTypographyPreset(theme, 'sectionSubtitle');
 
   return (
     <Box>
@@ -71,12 +80,11 @@ const Work = () => {
           {/* Header Section */}
           <Box sx={headerStyles}>
             <Typography
-              variant="h2"
-              component="h2"
+              variant={sectionTitlePreset.variant}
+              component={sectionTitlePreset.component}
               sx={{
-                mb: theme.spacing(2),
-                fontWeight: theme.typography.fontWeightBold,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                ...sectionTitlePreset.sx,
+                background: `linear-gradient(45deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.light} 100%)`,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 display: 'inline-block',
@@ -85,14 +93,11 @@ const Work = () => {
               My Work
             </Typography>
             <Typography
-              variant="subtitle1"
+              variant={sectionSubtitlePreset.variant}
+              component={sectionSubtitlePreset.component}
               sx={{
-                color: 'text.secondary',
-                maxWidth: theme.spacing(87.5), // 700px equivalent
-                mx: 'auto',
+                ...sectionSubtitlePreset.sx,
                 mb: theme.spacing(4),
-                fontSize: { xs: '1rem', md: '1.1rem' },
-                lineHeight: 1.6,
               }}
             >
               A selection of my recent projects and case studies. Click on a project to learn more.

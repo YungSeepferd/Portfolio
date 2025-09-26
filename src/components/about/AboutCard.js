@@ -64,14 +64,21 @@ const AboutCard = ({
   
   // Determine component to use based on variant
   const CardComponent = isTransparent ? Box : Paper;
+
+  const hoverOffset = theme.customEffects?.cardHover?.y ?? -5;
+  const hoverShadow = theme.customEffects?.cardHover?.boxShadow ?? theme.shadows[4];
+  const enableHoverAnimation = !isTransparent && variant !== 'noBorder';
+  const allowHoverShadow = enableHoverAnimation;
+  const whileHoverStyles = allowHoverShadow
+    ? { y: hoverOffset, boxShadow: hoverShadow }
+    : enableHoverAnimation
+      ? { y: hoverOffset }
+      : undefined;
   
   // Only apply motion effects for non-transparent cards
-  const motionProps = isTransparent ? {} : {
+  const motionProps = (isTransparent || !enableHoverAnimation) ? {} : {
     component: motion.div,
-    whileHover: {
-      y: theme.customEffects?.cardHover?.y || -5,
-      boxShadow: theme.customEffects?.cardHover?.boxShadow || theme.shadows[4],
-    },
+    whileHover: whileHoverStyles,
     transition: { type: "tween", duration: 0.2 }
   };
 
@@ -102,9 +109,9 @@ const AboutCard = ({
         transition: theme.transitions.create(['box-shadow', 'transform'], {
           duration: theme.transitions.duration.shorter,
         }),
-        '&:hover': onClick ? {
+        '&:hover': onClick && enableHoverAnimation ? {
           transform: 'translateY(-2px)',
-          boxShadow: theme.shadows[8],
+          ...(allowHoverShadow ? { boxShadow: theme.shadows[8] } : {}),
         } : undefined,
       }}
       {...props}
@@ -209,8 +216,8 @@ const AboutCard = ({
               id={`about-card-title-${title.toLowerCase().replace(/\s+/g, '-')}`}
               sx={{
                 color: theme.palette.mode === 'dark'
-                  ? theme.palette.secondary.light
-                  : theme.palette.secondary.main,
+                  ? theme.palette.primary.light
+                  : theme.palette.primary.main,
               }}
             >
               {title}

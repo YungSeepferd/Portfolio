@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import TechnologyTags from './TechnologyTags';
 import ProjectActionButtons from './ProjectActionButtons';
 import SkillTags from '../hero/SkillTags';
+import { getSpacingPreset } from '../../theme/presets';
 
 /**
  * ProjectMetaBar
@@ -21,22 +22,53 @@ const ProjectMetaBar = ({
   sx = {},
   ...rest
 }) => {
-  // Responsive side paddings for detail view
-  const techPadding = variant === 'full' ? { pl: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
-  const actionsPadding = variant === 'full' ? { pr: { xs: 2, sm: 4, md: 6, lg: 12.5 } } : {};
+  const theme = useTheme();
+  const metaSpacing = variant === 'full' ? getSpacingPreset('metaBar') : null;
 
   // Map variant to valid ActionButton size
-  let actionButtonSize = 'medium';
-  if (variant === 'full') actionButtonSize = 'large';
-  if (variant === 'hover') actionButtonSize = 'small';
+  let actionButtonSize = 'small';
+  let actionButtonDensity = 'compact';
+  if (variant === 'full') {
+    actionButtonSize = 'small';
+    actionButtonDensity = 'comfortable';
+  }
+
+  const resolvedMaxButtons = variant === 'full' ? actions.length : maxButtons;
 
   // Map variant to valid SkillTag size
   const skillTagSize = variant === 'full' || variant === 'hover' ? 'medium' : 'small';
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, flexWrap: 'nowrap', justifyContent: 'space-between', ...sx }}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: variant === 'full' ? 'column' : 'row',
+        alignItems: variant === 'full' ? 'stretch' : 'center',
+        justifyContent: variant === 'full' ? 'flex-start' : 'space-between',
+        flexWrap: variant === 'full' ? 'nowrap' : 'nowrap',
+        ...(variant === 'full'
+          ? {
+              px: metaSpacing?.px,
+              py: metaSpacing?.py,
+              rowGap: metaSpacing?.rowGap,
+              columnGap: metaSpacing?.columnGap,
+              backgroundColor: 'background.paper',
+              borderRadius: theme.shape.borderRadius,
+            }
+          : { gap: theme.spacing(2) }),
+        ...sx,
+      }}
+    >
       {technologies.length > 0 && (
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', ...techPadding }}>
+        <Box
+          sx={{
+            flex: variant === 'full' ? '1 1 auto' : 1,
+            display: 'flex',
+            justifyContent: 'flex-start',
+            minWidth: 0,
+          }}
+        >
           <TechnologyTags technologies={technologies} variant={variant} size={skillTagSize} />
         </Box>
       )}
@@ -44,8 +76,25 @@ const ProjectMetaBar = ({
         <SkillTags skills={skills} size={skillTagSize} />
       )}
       {actions.length > 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'flex-end', minWidth: 0, ...actionsPadding }}>
-          <ProjectActionButtons actions={actions} layout="row" maxButtons={maxButtons} size={actionButtonSize} />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: variant === 'full' ? 'column' : 'row',
+            justifyContent: variant === 'full' ? 'flex-start' : { xs: 'flex-start', md: 'flex-end' },
+            alignItems: variant === 'full' ? 'stretch' : 'center',
+            minWidth: 0,
+            columnGap: variant === 'full' ? 0 : theme.spacing(1),
+            rowGap: variant === 'full' ? metaSpacing?.rowGap : theme.spacing(0.5),
+            flex: variant === 'full' ? '0 0 auto' : undefined,
+          }}
+        >
+          <ProjectActionButtons
+            actions={actions}
+            layout={variant === 'full' ? 'column' : 'row'}
+            maxButtons={resolvedMaxButtons}
+            size={actionButtonSize}
+            density={actionButtonDensity}
+          />
         </Box>
       )}
     </Box>

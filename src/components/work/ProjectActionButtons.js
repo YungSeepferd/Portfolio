@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Stack, useTheme } from '@mui/material';
+import LaunchIcon from '@mui/icons-material/Launch';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { useModalContext } from '../../context/ModalContext';
 import { resolveMediaPath } from '../../utils/MediaPathResolver';
+import { getTypographyPreset } from '../../theme/presets';
 
 const ActionButton = ({ 
   label, 
@@ -16,19 +20,23 @@ const ActionButton = ({
   openInPopup = true,
   contentType = 'external',
   forceColor,
+  density = 'compact',
   ...props 
 }) => {
   const theme = useTheme();
+  const buttonPresetKey = size === 'large' ? 'button' : size === 'small' ? 'buttonCompact' : 'button';
+  const buttonPreset = getTypographyPreset(theme, buttonPresetKey);
   const { openPdf, openIframe, openExternalContent } = useModalContext();
+
+  const normalizedLabel = label ? label.toLowerCase() : '';
 
   const determineColor = () => {
     if (forceColor) return forceColor;
-    if (!label) return color;
-    const normalizedLabel = label.toLowerCase();
+    if (contentType === 'pdf') return 'secondary';
     if (normalizedLabel.includes('github')) return 'info';
-    if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
     if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
-    return 'accent';
+    if (contentType === 'iframe') return 'info';
+    return color;
   };
   const buttonColor = determineColor();
 
@@ -50,6 +58,10 @@ const ActionButton = ({
     }
   };
 
+  const isCompact = density === 'compact' || size === 'small';
+  const paddingX = isCompact ? { xs: theme.spacing(0.6), sm: theme.spacing(1.25) } : { xs: theme.spacing(0.9), sm: theme.spacing(1.6) };
+  const paddingY = isCompact ? { xs: theme.spacing(0.2), sm: theme.spacing(0.4) } : { xs: theme.spacing(0.3), sm: theme.spacing(0.55) };
+
   return (
     <Button
       id={`action-button-${label ? label.toLowerCase().replace(/\s+/g, '-') : 'unnamed'}`}
@@ -61,12 +73,11 @@ const ActionButton = ({
       startIcon={icon}
       sx={{
         minWidth: 'auto',
-        fontWeight: 500,
-        fontSize: { xs: size === 'large' ? '0.75rem' : '0.625rem', sm: size === 'large' ? '0.875rem' : '0.75rem' },
+        ...buttonPreset.sx,
         textTransform: 'none',
         borderRadius: theme.shape.borderRadius,
-        px: { xs: theme.spacing(1), sm: theme.spacing(2) },
-        py: { xs: theme.spacing(0.5), sm: theme.spacing(0.75) },
+        px: paddingX,
+        py: paddingY,
         transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color'], {
           duration: theme.transitions.duration.shorter,
         }),
@@ -97,39 +108,40 @@ ActionButton.propTypes = {
   openInPopup: PropTypes.bool,
   contentType: PropTypes.oneOf(['pdf', 'iframe', 'external']),
   forceColor: PropTypes.string,
-  id: PropTypes.string
+  id: PropTypes.string,
+  density: PropTypes.oneOf(['compact', 'comfortable']),
 };
 
 const standardizeAction = (action) => {
-  const getLinkIcon = (label) => {
-    if (!label) return undefined;
-    const normalizedLabel = label.toLowerCase();
-    if (normalizedLabel.includes('github')) return action.icon;
-    if (normalizedLabel.includes('paper') || normalizedLabel.includes('article')) return action.icon;
-    if (normalizedLabel.includes('pdf') || normalizedLabel.includes('presentation')) return action.icon;
-    if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return action.icon;
-    if (normalizedLabel.includes('view') || normalizedLabel.includes('visit')) return action.icon;
-    return action.icon;
-  };
-  const getLinkColor = (label) => {
-    if (!label) return 'primary';
-    const normalizedLabel = label.toLowerCase();
-    if (normalizedLabel.includes('github')) return 'info';
-    if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
-    if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
-    return 'primary';
-  };
   let contentType = action.contentType || 'external';
   if (!action.contentType && action.url) {
     if (action.url.endsWith('.pdf')) contentType = 'pdf';
     else if (action.url.includes('figma.com') || action.url.includes('prototype')) contentType = 'iframe';
   }
   const resolvedUrl = resolveMediaPath(action.url || action.href || '#');
+
+  const getLinkIcon = (label) => {
+    if (action.icon) return action.icon;
+    const normalizedLabel = label ? label.toLowerCase() : '';
+    if (normalizedLabel.includes('github')) return <GitHubIcon fontSize="small" />;
+    if (contentType === 'pdf') return <PictureAsPdfIcon fontSize="small" />;
+    return <LaunchIcon fontSize="small" />;
+  };
+
+  const getLinkColor = (label) => {
+    if (!label) return 'primary';
+    const normalizedLabel = label.toLowerCase();
+    if (normalizedLabel.includes('github')) return 'info';
+    if (contentType === 'pdf' || normalizedLabel.includes('pdf') || normalizedLabel.includes('presentation')) return 'secondary';
+    if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
+    return 'primary';
+  };
+
   return {
     ...action,
     label: action.label || 'View',
     href: resolvedUrl,
-    icon: action.icon || getLinkIcon(action.label),
+    icon: getLinkIcon(action.label),
     color: action.color || getLinkColor(action.label),
     contentType,
     openInPopup: action.openInPopup !== false,
@@ -137,26 +149,53 @@ const standardizeAction = (action) => {
   };
 };
 
-const ProjectActionButtons = ({ actions = [], layout = 'row', maxButtons = 4, size = 'small', ...rest }) => {
+const ProjectActionButtons = ({
+  actions = [],
+  layout = 'row',
+  maxButtons = 4,
+  size = 'small',
+  density = 'compact',
+  ...rest
+}) => {
   if (!actions.length) return null;
+  const shouldWrap = layout === 'column' ? false : actions.length > 3 || density === 'compact';
+  const stackSpacing = layout === 'column'
+    ? 1
+    : { xs: 0.4, sm: density === 'compact' ? 0.6 : 0.8 };
+
   return (
-    <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} flexWrap={{ xs: 'wrap', sm: 'nowrap' }} alignItems="center" justifyContent="center">
+    <Stack
+      direction={layout === 'column' ? 'column' : 'row'}
+      spacing={stackSpacing}
+      flexWrap={layout === 'column' ? 'nowrap' : { xs: 'wrap', sm: shouldWrap ? 'wrap' : 'nowrap' }}
+      alignItems="center"
+      justifyContent="center"
+      sx={{ width: '100%', rowGap: layout === 'column' ? 0.5 : undefined }}
+    >
       {actions.slice(0, maxButtons).map((action, idx) => (
         <ActionButton
           key={action.label + idx}
           {...standardizeAction(action)}
           size={size}
+          density={density}
           {...rest}
           sx={{
             whiteSpace: 'nowrap',
             minWidth: 'unset',
-            px: { xs: 1, sm: 2 },
             ...action.sx,
           }}
         />
       ))}
     </Stack>
   );
+};
+
+ProjectActionButtons.propTypes = {
+  actions: PropTypes.array,
+  layout: PropTypes.oneOf(['row', 'column']),
+  maxButtons: PropTypes.number,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  density: PropTypes.oneOf(['compact', 'comfortable']),
 };
 
 export default ProjectActionButtons;

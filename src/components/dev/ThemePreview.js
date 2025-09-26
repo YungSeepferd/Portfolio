@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   Box, 
   Paper, 
@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import createAppTheme from '../../theme';
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * ThemePreview Component
@@ -15,15 +17,19 @@ import CssBaseline from '@mui/material/CssBaseline';
  * A development tool that shows a sample of the theme with mode toggling capability.
  * This is useful for previewing theme changes in isolation.
  */
-const ThemePreview = () => {
-  const [mode, setMode] = useState('light');
+const ThemePreview = ({ baseTheme }) => {
+  const initialMode = baseTheme?.palette?.mode ?? 'light';
+  const [mode, setMode] = useState(initialMode);
   
-  // Create a theme with the selected mode
-  const theme = createTheme({
-    palette: {
-      mode: mode
-    }
-  });
+  const theme = useMemo(() => createAppTheme(mode), [mode]);
+  const typographySamples = useMemo(() => (
+    ['heroTitle', 'sectionTitle', 'cardTitle', 'bodyLong']
+      .map((key) => ({ key, preset: getTypographyPreset(theme, key) }))
+  ), [theme]);
+  const spacingSamples = useMemo(() => (
+    ['pageHorizontal', 'sectionVertical', 'cardContent']
+      .map((key) => ({ key, preset: getSpacingPreset(key) }))
+  ), []);
   
   const handleModeChange = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -45,7 +51,7 @@ const ThemePreview = () => {
             <Typography variant="body2" sx={{ ml: 1 }}>Dark</Typography>
           </Box>
         </Box>
-        
+
         <Paper sx={{ p: 3, mb: 4 }}>
           <Typography variant="h5" gutterBottom>Typography</Typography>
           <Typography variant="h1">Heading 1</Typography>
@@ -62,7 +68,25 @@ const ThemePreview = () => {
           <Typography variant="caption" display="block">Caption Text</Typography>
           <Typography variant="overline" display="block">Overline Text</Typography>
         </Paper>
-        
+
+        <Paper sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h5" gutterBottom>Typography Presets</Typography>
+          {typographySamples.map(({ key, preset }) => (
+            <Box key={key} sx={{ mb: 1.5 }}>
+              <Typography
+                variant={preset.variant}
+                component={preset.component}
+                sx={preset.sx}
+              >
+                {key} preset sample text
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {JSON.stringify(preset.sx)}
+              </Typography>
+            </Box>
+          ))}
+        </Paper>
+
         <Paper sx={{ p: 3 }}>
           <Typography variant="h5" gutterBottom>Colors & Palette</Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
@@ -130,6 +154,17 @@ const ThemePreview = () => {
             >
               Paper
             </Box>
+          </Box>
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6" gutterBottom>Spacing Presets</Typography>
+            {spacingSamples.map(({ key, preset }) => (
+              <Box key={key} sx={{ mb: 1.5 }}>
+                <Typography variant="subtitle2">{key}</Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                  {JSON.stringify(preset)}
+                </Typography>
+              </Box>
+            ))}
           </Box>
         </Paper>
       </Container>

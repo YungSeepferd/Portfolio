@@ -19,6 +19,19 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
   const theme = useTheme();
   // Use useMediaQuery hook to determine screen size
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const stickyTop = React.useMemo(() => {
+    const toolbarHeight = theme.mixins?.toolbar?.minHeight;
+    if (typeof toolbarHeight === 'number') {
+      return toolbarHeight;
+    }
+    if (toolbarHeight && typeof toolbarHeight === 'object') {
+      const values = Object.values(toolbarHeight).filter(Boolean);
+      if (values.length) {
+        return values[0];
+      }
+    }
+    return theme.spacing(8);
+  }, [theme]);
   
   return (
     <Box 
@@ -27,8 +40,11 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
         width: '100%',
         backgroundColor: theme.palette.background.paper,
         borderBottom: `1px solid ${theme.palette.divider}`,
-        position: 'relative',
-        zIndex: 2,
+        position: 'sticky',
+        top: stickyTop,
+        zIndex: (theme.zIndex?.appBar ?? 1100) - 1,
+        backdropFilter: 'blur(6px)',
+        boxShadow: theme.shadows[1],
       }}
     >
       <Container 
@@ -77,10 +93,10 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
                 color: theme.palette.text.secondary,
                 minWidth: { xs: 'auto', md: 0 }, // Allow tabs to be narrower on mobile
                 '&.Mui-selected': {
-                  color: theme.palette.secondary.main,
+                color: theme.palette.primary.main,
                 },
                 '&:hover': {
-                  color: theme.palette.secondary.main,
+                color: theme.palette.primary.main,
                 },
                 transition: 'color 0.3s ease',
                 flex: { xs: 'none', md: 1 }, // Don't use flex on mobile
@@ -88,7 +104,7 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
                 whiteSpace: 'nowrap', // Prevent text wrapping
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: theme.palette.secondary.main, // UPDATED: Match selected tab color
+                backgroundColor: theme.palette.primary.main,
                 height: 3,
                 transition: 'all 0.3s ease',
               },

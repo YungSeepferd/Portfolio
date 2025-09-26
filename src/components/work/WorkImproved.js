@@ -75,8 +75,7 @@ const WorkImproved = () => {
               component="h2"
               sx={{
                 mb: theme.spacing(2),
-                fontWeight: theme.typography.fontWeightBold,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                background: `linear-gradient(45deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.light} 100%)`,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 display: 'inline-block',

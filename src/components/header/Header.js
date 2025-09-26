@@ -138,7 +138,7 @@ const Header = () => {
                   size="small"
                   sx={{
                     ml: { xs: 0.5, sm: 1 },
-                    color: theme.palette.secondary.dark,
+                    color: theme.palette.primary.dark,
                     backgroundColor: 'rgba(194,247,80,0.10)',
                     '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
                     p: { xs: 0.25, sm: 0.5 },
@@ -161,7 +161,7 @@ const Header = () => {
                   py: 0.5,
                   backgroundColor: 'rgba(194, 247, 80, 0.15)',
                   borderRadius: 1,
-                  border: `1px solid ${theme.palette.secondary.main}`,
+                  border: `1px solid ${theme.palette.primary.main}`,
                 }}
               >
                 <Box
@@ -170,7 +170,7 @@ const Header = () => {
                     fontFamily: theme.typography.fontFamily,
                     fontSize: '0.75rem',
                     fontWeight: 600,
-                    color: theme.palette.secondary.dark,
+                    color: theme.palette.primary.dark,
                     letterSpacing: '0.5px',
                     textTransform: 'uppercase',
                   }}

@@ -9,6 +9,7 @@ import ContentAwareGrid from './ContentAwareGrid';
 import AdaptiveImageContainer from './AdaptiveImageContainer';
 import ProjectContentRenderer from '../ProjectContentRenderer';
 import { analyzeTextContent } from '../../../utils/contentAnalysis';
+import { getSpacingPreset, getTypographyPreset } from '../../../theme/presets';
 
 const ResponsiveSection = ({
   id,
@@ -24,6 +25,11 @@ const ResponsiveSection = ({
   ...props
 }) => {
   const theme = useTheme();
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+  const titlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const contentStack = getSpacingPreset('stackMedium');
+  const horizontalPadding = getSpacingPreset('pageHorizontal');
+  const verticalPadding = getSpacingPreset('sectionVertical');
 
   // Format section number
   const formattedNumber = sectionNumber ? 
@@ -38,32 +44,25 @@ const ResponsiveSection = ({
     <Box className={`section-heading ${className}`} sx={{ mb: 3 }}>
       {formattedNumber && (
         <Typography
-          variant="h6"
-          component="span"
-          sx={{
-            display: 'block',
-            color: theme.palette.primary.main,
-            fontWeight: 600,
-            mb: 1,
-            fontSize: '1.1rem',
-          }}
+          variant={eyebrowPreset.variant}
+          component={eyebrowPreset.component}
+          sx={eyebrowPreset.sx}
         >
           {formattedNumber}
         </Typography>
       )}
       {title && (
         <Typography
-          variant="h3"
-          component="h3"
+          variant={titlePreset.variant}
+          component={titlePreset.component}
           id={id}
           tabIndex={-1}
           sx={{ 
-            mb: 2, 
+            ...titlePreset.sx,
             scrollMarginTop: '80px',
-            // Responsive title sizing based on content
             fontSize: {
-              xs: textAnalysis.length === 'long' ? '1.75rem' : '2rem',
-              md: textAnalysis.length === 'long' ? '2.25rem' : '2.5rem'
+              xs: textAnalysis.length === 'long' ? '1.75rem' : titlePreset.sx?.fontSize?.xs ?? '2rem',
+              md: textAnalysis.length === 'long' ? '2.25rem' : titlePreset.sx?.fontSize?.md ?? '2.5rem'
             }
           }}
         >
@@ -75,7 +74,7 @@ const ResponsiveSection = ({
 
   // Content component
   const ContentBlock = ({ className = '' }) => (
-    <Box className={`content-block ${className}`}>
+    <Box className={`content-block ${className}`} sx={contentStack}>
       <SectionHeading />
       {content && (
         React.isValidElement(content) ? 
@@ -116,8 +115,9 @@ const ResponsiveSection = ({
           sx={{
             maxWidth: '1400px',
             mx: 'auto',
-            px: { xs: 2, sm: 3, md: 4 },
-            py: { xs: 4, md: 6 },
+            px: horizontalPadding.px,
+            pt: verticalPadding.pt,
+            pb: verticalPadding.pb,
             ...sx
           }}
           {...props}
@@ -143,7 +143,8 @@ const ResponsiveSection = ({
           id={id}
           sx={{
             width: '100%',
-            py: { xs: 4, md: 6 },
+            pt: verticalPadding.pt,
+            pb: verticalPadding.pb,
             ...sx
           }}
           {...props}
@@ -162,7 +163,7 @@ const ResponsiveSection = ({
           </Box>
           
           {/* Centered content */}
-          <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }}>
+          <Box sx={{ maxWidth: '1200px', mx: 'auto', px: horizontalPadding.px }}>
             <ContentBlock />
           </Box>
         </Box>
@@ -175,8 +176,9 @@ const ResponsiveSection = ({
           sx={{
             maxWidth: '1000px',
             mx: 'auto',
-            px: { xs: 2, sm: 3, md: 4 },
-            py: { xs: 4, md: 6 },
+            px: horizontalPadding.px,
+            pt: verticalPadding.pt,
+            pb: verticalPadding.pb,
             ...sx
           }}
           {...props}
@@ -193,8 +195,9 @@ const ResponsiveSection = ({
           sx={{
             maxWidth: '1200px',
             mx: 'auto',
-            px: { xs: 2, sm: 3, md: 4 },
-            py: { xs: 4, md: 6 },
+            px: horizontalPadding.px,
+            pt: verticalPadding.pt,
+            pb: verticalPadding.pb,
             ...sx
           }}
           {...props}

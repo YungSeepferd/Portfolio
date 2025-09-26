@@ -114,14 +114,14 @@ const SphereScene = ({
     
     // Extract colors from theme
     const primary = hexToHSL(theme.palette.primary.main);
-    const secondary = hexToHSL(theme.palette.secondary.main);
+    const secondary = hexToHSL(theme.palette.primary.main);
     const info = hexToHSL(theme.palette.info?.main || '#29b6f6');
     
     return {
       [SHAPE_TYPES.SPHERE]: primary,
       [SHAPE_TYPES.BOX]: secondary,
       [SHAPE_TYPES.TORUS]: info,
-      hover: hexToHSL(theme.palette.secondary.light), // Hover state color
+      hover: hexToHSL(theme.palette.primary.light), // Hover state color
     };
   }, [theme.palette]);
 

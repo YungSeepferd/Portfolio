@@ -131,7 +131,7 @@ const DesignSystemViewer = () => {
         <Grid container spacing={2}>
           {Object.entries(theme.breakpoints.values).map(([key, value]) => (
             <Grid item xs={6} sm={4} md={3} key={key}>
-              <Box sx={{ p: 2, mb: 1, border: '1px dashed', borderColor: 'secondary.main', borderRadius: 1 }}>
+              <Box sx={{ p: 2, mb: 1, border: '1px dashed', borderColor: 'primary.main', borderRadius: 1 }}>
                 <Typography variant="body2">{key}</Typography>
                 <Typography variant="caption">{value}px</Typography>
               </Box>

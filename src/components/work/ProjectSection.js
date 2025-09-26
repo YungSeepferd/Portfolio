@@ -6,6 +6,7 @@ import { ProjectActionButtonsBar } from './ProjectMetaBar';
 import ResponsiveSection from './layout/ResponsiveSection';
 import { normalizeSection } from '../../utils/sectionNormalizer';
 import { analyzeSectionContent } from '../../utils/sectionAnalyzer';
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * Helper function to format section numbers
@@ -71,6 +72,10 @@ const ProjectSection = ({
   const renderingStrategy = analyzeSectionContent(normalizedSection);
   
   const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+  const titlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const sectionPadding = getSpacingPreset('pageHorizontal');
+  const sectionVertical = getSpacingPreset('sectionVertical');
 
   // Section heading (add section number above title)
   const headingElement = (title || formattedNumber) && (
@@ -86,26 +91,23 @@ const ProjectSection = ({
     >
       {formattedNumber && (
         <Typography
-          variant="h6"
-          component="span"
-          sx={{
-            display: 'block',
-            color: theme.palette.primary.main,
-            fontWeight: 600,
-            mb: 1,
-            fontSize: '1.1rem',
-          }}
+          variant={eyebrowPreset.variant}
+          component={eyebrowPreset.component}
+          sx={eyebrowPreset.sx}
         >
           {formattedNumber}
         </Typography>
       )}
       {title && (
         <Typography
-          variant="h3"
-          component="h3"
+          variant={titlePreset.variant}
+          component={titlePreset.component}
           id={id}
           tabIndex={-1}
-          sx={{ mb: 2, scrollMarginTop: '80px' }}
+          sx={{
+            ...titlePreset.sx,
+            scrollMarginTop: '80px',
+          }}
         >
           {title}
         </Typography>
@@ -165,8 +167,9 @@ const ProjectSection = ({
         width: '100%',
         maxWidth: '1200px',
         mx: 'auto',
-        px: { xs: 2, sm: 3, md: 4 },
-        py: { xs: 4, md: 6 },
+        px: sectionPadding.px,
+        pt: sectionVertical.pt,
+        pb: sectionVertical.pb,
         ...sx
       }}
       role="region"

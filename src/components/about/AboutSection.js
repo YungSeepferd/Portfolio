@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
 import { aboutData } from './AboutData'; // Import directly for immediate use
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * AboutSection Component
@@ -15,6 +16,9 @@ const AboutSection = () => {
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
+  const horizontalPadding = getSpacingPreset('pageHorizontal');
+  const sectionTitlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const sectionSubtitlePreset = getTypographyPreset(theme, 'sectionSubtitle');
   
   // Use direct data import instead of useDataLoader for about section
   useEffect(() => {
@@ -71,12 +75,7 @@ const AboutSection = () => {
           id="about-section-header"
           sx={{ 
             width: '100%',
-            px: { 
-              xs: theme.spacing(2),
-              sm: theme.spacing(4),
-              md: theme.spacing(6),
-              lg: theme.spacing(8),
-            },
+            px: horizontalPadding.px,
             boxSizing: 'border-box',
           }}
         >
@@ -95,9 +94,10 @@ const AboutSection = () => {
               }}
             >
               <Typography 
-                variant="h2" 
-                component="h2" 
+                variant={sectionTitlePreset.variant}
+                component={sectionTitlePreset.component}
                 sx={{ 
+                  ...sectionTitlePreset.sx,
                   mb: 2,
                   color: theme.palette.text.primary,
                 }}
@@ -106,8 +106,10 @@ const AboutSection = () => {
               </Typography>
               
               <Typography 
-                variant="subtitle1"
+                variant={sectionSubtitlePreset.variant}
+                component={sectionSubtitlePreset.component}
                 sx={{
+                  ...sectionSubtitlePreset.sx,
                   maxWidth: '800px',
                   mx: 'auto',
                   color: theme.palette.text.secondary

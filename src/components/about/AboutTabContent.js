@@ -38,8 +38,9 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         p: { xs: 2, sm: 3, md: 4 },
         backgroundColor: 'background.paper',
         borderRadius: 0.5, // Minimized rounded corners
-        boxShadow: 1,
+        boxShadow: 'none',
         mb: 3,
+        scrollMarginTop: { xs: theme.spacing(12), md: theme.spacing(14) },
       }}
     >
       {/* Dynamic Image Container */}
@@ -52,13 +53,11 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: theme.shape.borderRadius,
-          backgroundColor: 'background.default',
-          boxShadow: 1,
-          overflow: 'visible', // Changed from 'hidden' to allow full image display
-          // Remove fixed height constraints to let images determine their own size
-          minHeight: 'auto',
-          maxHeight: 'none',
-          height: 'auto',
+          backgroundColor: 'background.paper',
+          boxShadow: 'none',
+          overflow: 'hidden',
+          minHeight: { xs: 260, sm: 320, md: 360 },
+          maxHeight: { xs: 360, sm: 400, md: 460 },
         }}
       >
         <AboutSlideshow pictures={tabData.pictures} />
@@ -73,11 +72,12 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
           flexDirection: 'column',
           justifyContent: 'center',
           minWidth: 0, // Prevents flex item from overflowing
+          gap: theme.spacing(2.5),
           pl: { md: 3 },
           pr: { xs: 0, md: 2 }, // Add right padding on desktop
           '& .MuiTypography-root': {
-            mb: 2.5,
-            wordWrap: 'break-word', // Ensure long words break properly
+            marginBottom: 0,
+            overflowWrap: 'break-word', // Ensure long words break properly
             hyphens: 'auto', // Enable hyphenation for better text flow
           },
           // Ensure proper spacing and readability

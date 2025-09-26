@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useCallback, useRef, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { Box, Fade, useTheme, useMediaQuery, Tabs, Tab } from '@mui/material'; // Removed unused Container
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
@@ -20,6 +20,19 @@ const AboutTabNavigator = forwardRef((props, ref) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [isTabSwitching, setIsTabSwitching] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const stickyTop = useMemo(() => {
+    const toolbarHeight = theme.mixins?.toolbar?.minHeight;
+    if (typeof toolbarHeight === 'number') {
+      return toolbarHeight;
+    }
+    if (toolbarHeight && typeof toolbarHeight === 'object') {
+      const values = Object.values(toolbarHeight).filter(Boolean);
+      if (values.length) {
+        return values[0];
+      }
+    }
+    return theme.spacing(8);
+  }, [theme]);
   
   // Use debouncing to prevent rapid state changes
   const debouncedTabIndex = useDebounce(tabIndex, 200);
@@ -147,6 +160,13 @@ const AboutTabNavigator = forwardRef((props, ref) => {
             },
             mb: 4,
             boxSizing: 'border-box',
+            position: 'sticky',
+            top: stickyTop,
+            zIndex: (theme.zIndex?.appBar ?? 1100) - 1,
+            backgroundColor: theme.palette.background.default,
+            backdropFilter: 'blur(6px)',
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            boxShadow: theme => (isScrolling || isTabSwitching ? theme.shadows[2] : 'none'),
           }}
         >
           <Tabs 
@@ -165,11 +185,11 @@ const AboutTabNavigator = forwardRef((props, ref) => {
               '& .MuiTab-root': {
                 color: theme.palette.text.secondary,
                 '&.Mui-selected': {
-                  color: theme.palette.secondary.main,
+                color: theme.palette.primary.main,
                 },
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: theme.palette.primary.main,
               }
             }}
           >

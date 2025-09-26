@@ -5,6 +5,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
 // Removed Salzburg image import
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
@@ -16,6 +17,12 @@ const FooterContact = ({ projectContext }) => {
   const contactMessage = projectContext 
     ? `Interested in discussing more about the ${projectContext} project? I'd love to share insights about the process and outcomes!` 
     : "If you want to chat about UX, haptic design, or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
+
+  const horizontalPadding = getSpacingPreset('pageHorizontal');
+  const verticalPadding = getSpacingPreset('sectionVertical');
+  const headlinePreset = getTypographyPreset(theme, 'overlayTitle');
+  const bodyPreset = getTypographyPreset(theme, 'bodyLong');
+  const contactLinePreset = getTypographyPreset(theme, 'cardTitle');
 
   return (
     <Box 
@@ -41,7 +48,7 @@ const FooterContact = ({ projectContext }) => {
           elevation={3}
           square
           sx={{
-            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+            background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
             overflow: 'hidden',
             position: 'relative',
             py: 8, // Use theme spacing
@@ -51,12 +58,7 @@ const FooterContact = ({ projectContext }) => {
           <Box
             sx={{
               width: '100%',
-              px: { 
-                xs: '20px',
-                sm: '30px',
-                md: '40px',
-                lg: '50px',
-              },
+              px: horizontalPadding.px,
               boxSizing: 'border-box',
               position: 'relative',
               zIndex: 2,
@@ -79,13 +81,13 @@ const FooterContact = ({ projectContext }) => {
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                     <Typography 
-                      variant="h3" 
+                      variant={headlinePreset.variant}
+                      component={headlinePreset.component}
                       gutterBottom 
                       sx={{ 
+                        ...headlinePreset.sx,
                         color: theme.palette.common.white,
-                        fontWeight: 'bold',
                         mb: { xs: 2, sm: 3 },
-                        fontSize: { xs: '1.75rem', sm: '2.125rem', md: '3rem' },
                         textAlign: { xs: 'center', sm: 'left' }
                       }}
                     >
@@ -93,28 +95,29 @@ const FooterContact = ({ projectContext }) => {
                     </Typography>
                     
                     <Typography 
-                      variant="body1" 
+                      variant={bodyPreset.variant}
+                      component={bodyPreset.component}
                       sx={{ 
+                        ...bodyPreset.sx,
                         color: theme.palette.common.white, 
                         mb: { xs: 2, sm: 3 },
                         opacity: 0.9,
                         maxWidth: '700px',
-                        fontSize: { xs: '0.875rem', sm: '1rem' },
-                        textAlign: { xs: 'center', sm: 'left' },
-                        lineHeight: { xs: 1.5, sm: 1.6 }
+                        textAlign: { xs: 'center', sm: 'left' }
                       }}
                     >
                       {contactMessage}
                     </Typography>
                     
                     <Typography 
-                      variant="h5"
+                      variant={contactLinePreset.variant}
+                      component={contactLinePreset.component}
                       sx={{
+                        ...contactLinePreset.sx,
                         color: theme.palette.common.white,
                         mb: { xs: 1.5, sm: 2 },
                         fontWeight: 'medium',
                         wordBreak: 'break-word',
-                        fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
                         textAlign: { xs: 'center', sm: 'left' }
                       }}
                     >
@@ -212,7 +215,7 @@ const FooterContact = ({ projectContext }) => {
                     
                     <Button 
                       variant="contained" 
-                      color="secondary" 
+                      color="primary" 
                       component="a" 
                       href={mailtoLink}
                       size="large"

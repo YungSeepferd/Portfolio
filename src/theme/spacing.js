@@ -54,7 +54,9 @@ themeSpacing.section = {
 
 // Card and element spacing
 themeSpacing.card = {
-  padding: 3,       // 24px padding inside cards
+  padding: 3,       // Default card padding in units (24px)
+  paddingX: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
+  paddingY: { xs: 1.5, md: 2 },
   marginBottom: 4,  // 32px margin below cards
   gap: 2,           // 16px gap between card elements
 };

@@ -76,9 +76,9 @@ const components = (theme) => ({
             ? theme.palette.grey[900]
             : theme.palette.grey[100],
           color: theme.palette.mode === 'dark'
-            ? theme.palette.secondary.light
-            : theme.palette.secondary.dark,
-          border: `1px solid ${theme.palette.secondary.main}`,
+            ? theme.palette.primary.light
+            : theme.palette.primary.dark,
+          border: `1px solid ${theme.palette.primary.main}`,
           fontWeight: 400,
           letterSpacing: 0.2,
         },

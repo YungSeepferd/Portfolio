@@ -7,10 +7,6 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ImageIcon from '@mui/icons-material/Image';
-import LaunchIcon from '@mui/icons-material/Launch';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import ArticleIcon from '@mui/icons-material/Article';
-import GitHubIcon from '@mui/icons-material/GitHub';
 
 // Import project images
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
@@ -30,35 +26,30 @@ const links = [
   {
     label: "Try Demo",
     url: "https://react-midi.netlify.app/",
-    icon: <LaunchIcon fontSize="small" />,
     contentType: 'iframe',
     openInPopup: true
   },
   {
     label: "View Presentation",
     url: presentationPDF,
-    icon: <SlideshowIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "View Paper",
     url: paperPDF,
-    icon: <ArticleIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "View Poster",
     url: posterPDF,
-    icon: <ImageIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "GitHub",
     url: "https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main",
-    icon: <GitHubIcon fontSize="small" />,
     contentType: 'external',
     openInPopup: true
   }

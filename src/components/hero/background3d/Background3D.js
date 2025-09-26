@@ -54,7 +54,7 @@ const Background3DInner = ({ onSceneClick, performanceMode = 'medium', mouseData
       <pointLight 
         position={[-10, -10, -10]} 
         intensity={0.4}
-        color={theme.palette.secondary.light}
+        color={theme.palette.primary.light}
       />
       
       

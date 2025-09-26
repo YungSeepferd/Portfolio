@@ -36,6 +36,7 @@ const ContentAwareImage = ({
   fallbackSrc,
   containerOrientation = "auto",
   sx = {},
+  imageSx = {},
   onLoad: externalOnLoad,
   ...otherProps
 }) => {
@@ -157,6 +158,9 @@ const ContentAwareImage = ({
     setProcessedImageData(null);
   }, []);
 
+  const { borderRadius: customBorderRadius, ...restSx } = sx || {};
+  const resolvedBorderRadius = customBorderRadius ?? theme.shape.borderRadius;
+
   return (
     <Box
       sx={{
@@ -164,8 +168,8 @@ const ContentAwareImage = ({
         overflow: "hidden",
         height: containerHeight,
         width: containerWidth,
-        borderRadius: theme.shape.borderRadius,
-        ...sx,
+        borderRadius: resolvedBorderRadius,
+        ...restSx,
       }}
     >
       {/* Skeleton loader shown while loading */}
@@ -181,7 +185,7 @@ const ContentAwareImage = ({
             left: 0,
             zIndex: 1,
             bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: resolvedBorderRadius,
           }}
         />
       )}
@@ -213,7 +217,8 @@ const ContentAwareImage = ({
           objectFit: determinedObjectFit,
           objectPosition: objectPosition,
           transition: "transform 0.3s ease",
-          borderRadius: theme.shape.borderRadius,
+          borderRadius: resolvedBorderRadius,
+          ...imageSx,
           ...(expandOnHover && {
             "&:hover": {
               transform: "scale(1.05)",

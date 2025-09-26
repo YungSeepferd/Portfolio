@@ -1,8 +1,7 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import ArticleIcon from '@mui/icons-material/Article';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 // Import project images and videos with standardized names
 import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';
@@ -54,14 +53,12 @@ const bachelorThesis = {
     {
       label: "View Presentation",
       url: presentationPDF,
-      icon: <SlideshowIcon fontSize="small" />,
       contentType: 'pdf',
       openInPopup: true
     },
     {
       label: "View Thesis",
       url: thesisPDF,
-      icon: <ArticleIcon fontSize="small" />,
       contentType: 'pdf',
       openInPopup: true
     }

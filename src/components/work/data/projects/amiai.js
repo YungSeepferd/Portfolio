@@ -6,7 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
 
 // Import project image - use direct imports for consistent processing by the bundler
 import AMIAILogo from '../../../../assets/images/AMIAI/AMIAI.svg';
@@ -35,7 +34,6 @@ const links = [
   {
     label: "View Presentation",
     url: presentationPDF,
-    icon: <SlideshowIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   }
@@ -47,7 +45,7 @@ const amiai = {
   title: "AMIAI – Critical Visual Campaign",
   description: "A visual campaign exploring AI-generated content credibility and digital literacy.",
   categories: ["Graphic Design", "Visual Communication", "Marketing Campaigns"],
-  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects", "Cinema 4D"],
+  technologies: ["Adobe Photoshop", "Adobe Illustrator", "After Effects"],
   cardVariant: cardVariant,
   links: links,
   sections: [

@@ -143,11 +143,28 @@ export const getAssetPath = (section, filename) => {
  * @param {string} position - CSS object-position value
  * @returns {Object} - Image object with src, alt, and position
  */
-export const createAboutImage = (imgSrc, alt, position = 'center center') => {
+export const createAboutImage = (imgSrc, alt, position = 'center center', options = {}) => {
+  const metadata = typeof options === 'object' && options !== null ? options : {};
+  const width = metadata.width ?? metadata.naturalWidth ?? metadata.pixelWidth;
+  const height = metadata.height ?? metadata.naturalHeight ?? metadata.pixelHeight;
+
+  let aspectRatioNumeric = metadata.aspectRatio;
+  if (!aspectRatioNumeric && width && height) {
+    aspectRatioNumeric = width / height;
+  }
+
+  const aspectRatioValue = metadata.aspectRatioValue
+    ?? (width && height ? `${width} / ${height}` : undefined);
+
   return {
     src: imgSrc,
     alt: alt || (typeof imgSrc === 'string' ? imgSrc.split('/').pop().replace(/\.[^/.]+$/, "") : "Image"),
-    position
+    position,
+    width,
+    height,
+    aspectRatio: aspectRatioNumeric,
+    aspectRatioValue,
+    objectFit: metadata.objectFit,
   };
 };
 

@@ -5,7 +5,6 @@
  */
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 
 // Import project images and videos directly with standardized naming
 import ADHDeerOverview from '../../../../assets/images/ADHDeer/ADHDeer_Overview.png';
@@ -69,14 +68,12 @@ const adhdeer = {
     {
       label: "View Presentation",
       url: presentationPDF,
-      icon: <DashboardIcon fontSize="small" />,
       contentType: 'pdf',
       openInPopup: true
     },
     {
       label: "Try Prototype",
       url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
-      icon: <DashboardIcon fontSize="small" />,
       contentType: 'iframe',
       openInPopup: true
     }

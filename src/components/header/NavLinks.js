@@ -30,7 +30,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
       >
         <Button
           variant={item.isCallToAction ? 'contained' : 'text'}
-          color={item.isCallToAction ? 'secondary' : 'inherit'}
+          color={item.isCallToAction ? 'primary' : 'inherit'}
           fullWidth
           sx={{
             py: 1.5,
@@ -41,7 +41,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
             minWidth: 'auto',
             '&:hover': {
               backgroundColor: item.isCallToAction 
-                ? 'secondary.dark' 
+                ? 'primary.dark' 
                 : 'action.hover',
             },
           }}
@@ -60,7 +60,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
         <Button
           key={item.target}
           variant={item.isCallToAction ? 'contained' : 'text'}
-          color={item.isCallToAction ? 'secondary' : 'inherit'}
+          color={item.isCallToAction ? 'primary' : 'inherit'}
           sx={{
             ml: idx === 0 ? 0 : 2,
             px: 2,
@@ -72,7 +72,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
             minWidth: 'auto',
             '&:hover': {
               backgroundColor: item.isCallToAction 
-                ? 'secondary.dark' 
+                ? 'primary.dark' 
                 : 'action.hover',
             },
           }}

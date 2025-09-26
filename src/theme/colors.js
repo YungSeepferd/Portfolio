@@ -7,18 +7,18 @@
 
 // Primary color palette
 const primary = {
-  main: '#5363EE',
-  light: '#7B8AFF',
-  dark: '#2B3A9A',
-  contrastText: '#FFFFFF',
+  main: '#C2F750',
+  light: '#E6FFB2',
+  dark: '#8CBF2F',
+  contrastText: '#0B1300',
 };
 
 // Secondary color palette
 const secondary = {
-  main: '#C2F750',
-  light: '#E6FFB2',
-  dark: '#8CBF2F',
-  contrastText: '#111111',
+  main: '#5363EE',
+  light: '#7B8AFF',
+  dark: '#2B3A9A',
+  contrastText: '#FFFFFF',
 };
 
 // Status colors

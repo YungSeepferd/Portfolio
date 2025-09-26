@@ -355,8 +355,8 @@ const BoxScene = ({
       {/* Cube meshes with theme-derived base colors */}
       {cubeGrid.map((cube, i) => {
         // Get initial color from theme
-        const baseColor = themeColorToThreeColor(theme.palette.secondary.main);
-        const emissiveColor = themeColorToThreeColor(theme.palette.secondary.light);
+        const baseColor = themeColorToThreeColor(theme.palette.primary.main);
+        const emissiveColor = themeColorToThreeColor(theme.palette.primary.light);
         
         return (
           <mesh

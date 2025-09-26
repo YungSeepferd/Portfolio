@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
+import { Card, CardActionArea, CardContent, Typography, Box, Stack, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import ContentAwareImage from '../common/ContentAwareImage';
 import ProjectCardPreview from './ProjectCardPreview';
 import CategoryTagList from '../common/CategoryTagList';
 import projectUtils from '../../utils/projectUtils';
 import VideoPlayer from '../common/VideoPlayer';
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * Improved ProjectCard with memoization and consistent theme usage
@@ -26,7 +27,6 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     const { 
       id,
       title, 
-      description, 
       categories = [], 
       technologies = [], 
       links = [],
@@ -41,7 +41,6 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     return {
       id,
       title,
-      description,
       categories,
       technologies,
       linksArray,
@@ -56,7 +55,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     position: 'relative',
     width: '95%',
     mx: 'auto',
-    aspectRatio: '4 / 3', // Changed from 1/1 to 4/3 for smaller height
+    aspectRatio: { xs: 'auto', lg: '4 / 3' },
     minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
@@ -71,7 +70,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     '&:hover': {
       transform: 'translateY(-4px)',
       boxShadow: theme.shadows[8],
-      borderColor: 'secondary.main',
+      borderColor: 'primary.main',
     },
     ...(projectData?.cardVariant && projectData.cardVariant !== 'default' && {
       borderTop: `4px solid ${theme.palette[projectData.cardVariant]?.main || theme.palette.primary.main}`
@@ -81,8 +80,9 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
   const imageAreaStyles = useMemo(() => ({
     position: 'relative',
     width: '100%',
-    flex: '0 0 60%',
-    minHeight: 0,
+    flex: { xs: '0 0 auto', md: '0 0 52%' },
+    aspectRatio: { xs: '4 / 3', sm: '3 / 2', lg: 'auto' },
+    minHeight: { lg: 0 },
   }), []);
 
   const imageContainerStyles = useMemo(() => ({
@@ -98,23 +98,13 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     overflow: 'hidden',
   }), []);
 
-  const contentStyles = useMemo(() => ({
-    flex: '1 1 40%',
-    display: 'flex',
-    flexDirection: 'column',
-    p: theme.spacing(1.5, 2),
-    minHeight: 0,
-    backgroundColor: 'background.paper',
-    justifyContent: 'flex-start',
-    overflow: 'hidden',
-    '&:last-child': {
-      pb: theme.spacing(1.5, 2),
-    },
-  }), [theme]);
+  const contentSpacing = useMemo(() => getSpacingPreset('cardContent'), []);
+  const titlePreset = useMemo(() => getTypographyPreset(theme, 'cardTitle'), [theme]);
+  const isTouchLayout = useMediaQuery(theme.breakpoints.down('md'));
 
   if (!projectData) return null;
 
-  const { id, title, description, categories, technologies, linksArray, primaryMedia } = projectData;
+  const { id, title, categories, technologies, linksArray, primaryMedia } = projectData;
   const cardTestId = id ? `project-card-${id}` : 'project-card';
 
   return (
@@ -130,109 +120,95 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
       onMouseLeave={handleMouseLeave}
     >
       <Card 
-        onClick={handleClick} 
         variant="outlined"
         elevation={0}
         sx={cardStyles}
         data-testid={cardTestId}
       >
-        {/* Image Area with Overlay */}
-        <Box sx={imageAreaStyles}>
-          <Box sx={imageContainerStyles}>
-            {primaryMedia?.type === 'image' && (
-              <ContentAwareImage
-                src={primaryMedia.src}
-                alt={`${title} preview`}
-                containerHeight="100%"
-                containerWidth="100%"
-                objectFit="cover"
-                sx={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  borderRadius: 0, 
-                  objectPosition: 'center' 
-                }}
-                onError={(e) => {
-                  console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
-                  e.target.src = '/assets/images/placeholders/project.jpg';
-                }}
-              />
-            )}
-            {primaryMedia?.type === 'video' && (
-              <VideoPlayer
-                src={primaryMedia.src}
-                containerHeight="100%"
-                containerWidth="100%"
-                autoplay={true}
-                muted={true}
-                controls={true}
-                poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
-                onError={(e) => {
-                  console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
-                }}
-              />
-            )}
-            {!primaryMedia && (
-              <ContentAwareImage
-                src={'/assets/images/placeholders/project.jpg'}
-                alt={`${title} preview`}
-                containerHeight="100%"
-                containerWidth="100%"
-                objectFit="cover"
-                sx={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  borderRadius: 0, 
-                  objectPosition: 'center' 
-                }}
-              />
-            )}
-          </Box>
+        <CardActionArea
+          onClick={handleClick}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            height: '100%',
+            '& .MuiCardActionArea-focusHighlight': { opacity: 0.08 },
+          }}
+        >
+          <Box sx={imageAreaStyles}>
+            <Box sx={imageContainerStyles}>
+              {primaryMedia?.type === 'image' && (
+                <ContentAwareImage
+                  src={primaryMedia.src}
+                  alt={`${title} preview`}
+                  containerHeight="100%"
+                  containerWidth="100%"
+                  objectFit="cover"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 0,
+                    objectPosition: 'center',
+                  }}
+                  onError={(e) => {
+                    console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
+                    e.target.src = '/assets/images/placeholders/project.jpg';
+                  }}
+                />
+              )}
+              {primaryMedia?.type === 'video' && (
+                <VideoPlayer
+                  src={primaryMedia.src}
+                  containerHeight="100%"
+                  containerWidth="100%"
+                  autoplay={true}
+                  muted={true}
+                  controls={true}
+                  poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
+                  onError={(e) => {
+                    console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+                  }}
+                />
+              )}
+              {!primaryMedia && (
+                <ContentAwareImage
+                  src={'/assets/images/placeholders/project.jpg'}
+                  alt={`${title} preview`}
+                  containerHeight="100%"
+                  containerWidth="100%"
+                  objectFit="cover"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 0,
+                    objectPosition: 'center',
+                  }}
+                />
+              )}
+            </Box>
           <ProjectCardPreview
-            isVisible={isHovered}
+            isVisible={isHovered || isTouchLayout}
             technologies={technologies}
             links={linksArray}
+            size={isTouchLayout ? 'comfortable' : 'compact'}
           />
-        </Box>
+          </Box>
 
-        {/* Content */}
-        <CardContent sx={contentStyles}>
-          <Typography
-            variant="h6"
-            component="h3"
-            gutterBottom
-            sx={{ 
-              fontWeight: theme.typography.fontWeightSemiBold,
-              color: 'text.primary', 
-              fontSize: { xs: '1rem', md: '1.1rem' },
-              lineHeight: 1.3,
-              mb: theme.spacing(1),
-            }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ 
-              mb: theme.spacing(1),
-              flexGrow: 1,
-              display: '-webkit-box', 
-              WebkitLineClamp: 3, 
-              WebkitBoxOrient: 'vertical', 
-              overflow: 'hidden', 
-              fontSize: { xs: '0.875rem', md: '0.9375rem' },
-              lineHeight: 1.5,
-            }}
-          >
-            {description}
-          </Typography>
-          {categories && categories.length > 0 && (
-            <Box sx={{ mt: 'auto', pt: theme.spacing(1) }}>
-              <CategoryTagList tags={categories} />
-            </Box>
-          )}
-        </CardContent>
+          <CardContent sx={{ width: '100%', px: contentSpacing.px, py: contentSpacing.py }}>
+            <Stack spacing={contentSpacing.rowGap} alignItems="flex-start">
+              <Typography
+                variant={titlePreset.variant}
+                component={titlePreset.component}
+                sx={{ ...titlePreset.sx, color: 'text.primary' }}
+              >
+                {title}
+              </Typography>
+              {categories && categories.length > 0 && (
+                <CategoryTagList tags={categories} previewCount={isTouchLayout ? 8 : 6} />
+              )}
+            </Stack>
+          </CardContent>
+        </CardActionArea>
       </Card>
     </motion.div>
   );

@@ -71,7 +71,7 @@ const ActiveScene = ({
         themeColor = theme.palette.primary.main;
         break;
       case SHAPE_TYPES.BOX:
-        themeColor = theme.palette.secondary.main;
+        themeColor = theme.palette.primary.main;
         break;
       case SHAPE_TYPES.TORUS:
         themeColor = theme.palette.info?.main || theme.palette.primary.light;

@@ -82,8 +82,8 @@ export const createCustomParts = (theme) => {
           focusRing: alpha(theme.palette.primary.main, 0.25),
         },
         secondary: {
-          color: theme.palette.secondary.main,
-          focusRing: alpha(theme.palette.secondary.main, 0.25),
+          color: theme.palette.primary.main,
+          focusRing: alpha(theme.palette.primary.main, 0.25),
         },
         success: {
           color: theme.palette.success.main,
@@ -98,8 +98,8 @@ export const createCustomParts = (theme) => {
           focusRing: alpha(theme.palette.error.main, 0.25),
         },
         info: {
-          color: theme.palette.info.main,
-          focusRing: alpha(theme.palette.info.main, 0.25),
+          color: theme.palette.secondary.main,
+          focusRing: alpha(theme.palette.secondary.main, 0.25),
         },
       },
     },

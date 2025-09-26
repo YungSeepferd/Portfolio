@@ -35,14 +35,14 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
       <Grid
         id="project-grid-root"
         container
-        spacing={{ xs: 2, sm: 3, md: 4 }}
+        spacing={{ xs: 2, sm: 3, lg: 4 }}
       >
         {projects.map((project, index) => (
           <Grid
             item
             xs={12} // 1 per row on mobile
-            sm={6}  // 2 per row on small screens
-            md={6}  // 2 per row on medium screens
+            sm={12}  // Stack sooner on small screens
+            md={12}  // Maintain single column through medium breakpoints
             lg={6}  // 2 per row on large screens
             xl={6}  // 2 per row on extra large screens
             key={project.id || index}

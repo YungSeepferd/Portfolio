@@ -43,7 +43,7 @@ const LoadingState = () => {
                 variant="rectangular" 
                 width="100%" 
                 height="60%"
-                sx={{ borderRadius: theme.shape.borderRadius }}
+                sx={{ borderRadius: 0 }}
               />
               <Box sx={{ pt: theme.spacing(2) }}>
                 <Skeleton variant="text" width="80%" height={24} />

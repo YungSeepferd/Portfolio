@@ -6,9 +6,7 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import ArticleIcon from '@mui/icons-material/Article';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 // Import project images directly with standardized naming
 import OverviewImage from '../../../../assets/images/Masterthesis/headerimagemasterthesis.png';
@@ -56,21 +54,18 @@ const links = [
   {
     label: "View Presentation",
     url: presentationPDF,
-    icon: <SlideshowIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "View Thesis",
     url: thesisPDF,
-    icon: <ArticleIcon fontSize="small" />,
     contentType: 'pdf',
     openInPopup: true
   },
   {
     label: "Miro Template",
     url: "https://miro.com/app/live-embed/uXjVLZy8Sr4=/?moveToViewport=-23778,-21432,70849,35904&embedId=821121874827",
-    icon: <DashboardIcon fontSize="small" />,
     contentType: 'iframe',
     openInPopup: true
   }

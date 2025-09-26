@@ -17,13 +17,13 @@ const createAppTheme = (mode = 'dark') => {
   const isDark = mode === 'dark';
   
   // Define primary colors - used in 3D scenes and UI elements
-  const primaryHue = 230; // Indigo/blue
-  const secondaryHue = 85; // Lime/light green
+  const primaryHue = 85; // Lime/light green becomes primary
+  const secondaryHue = 230; // Indigo/blue becomes secondary
   const accentHue = 190; // Cyan/light blue
   
   // Lightness values - adjust based on light/dark mode
-  const primaryLightness = isDark ? 65 : 45;
-  const secondaryLightness = isDark ? 65 : 50;
+  const primaryLightness = isDark ? 65 : 55;
+  const secondaryLightness = isDark ? 60 : 45;
   const accentLightness = isDark ? 60 : 45;
   
   // Convert HSL to RGB hex for Material UI
@@ -62,13 +62,13 @@ const createAppTheme = (mode = 'dark') => {
         main: primaryMain,
         light: primaryLight,
         dark: primaryDark,
-        contrastText: '#ffffff',
+        contrastText: isDark ? '#0b1300' : '#0b1300',
       },
       secondary: {
         main: secondaryMain,
         light: secondaryLight,
         dark: secondaryDark,
-        contrastText: isDark ? '#000000' : '#ffffff',
+        contrastText: '#ffffff',
       },
       accent: {
         main: accentMain,
@@ -136,7 +136,7 @@ const createAppTheme = (mode = 'dark') => {
         box: secondaryMain,
         torus: accentMain,
         particleColor: isDark ? '#ffffff' : primaryMain,
-        emissive: isDark ? secondaryLight : secondaryMain,
+        emissive: isDark ? primaryLight : primaryMain,
         background: isDark ? '#121212' : '#f7f9fc',
       }
     },

@@ -1,6 +1,6 @@
 import React from 'react';
 import SkillTag from '../common/SkillTagList';
-import { Box, Stack, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FigmaIcon from '@mui/icons-material/DesignServices';
@@ -13,6 +13,7 @@ import JavascriptIcon from '@mui/icons-material/Javascript';
 import StorageIcon from '@mui/icons-material/Storage';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import AdobeIcon from '@mui/icons-material/PhotoCamera';
+import { getSpacingPreset } from '../../theme/presets';
 
 // Map technology names to icons
 const techIconMap = {
@@ -50,34 +51,47 @@ const getTechIcon = (name) => {
  */
 const TechnologyTags = ({ technologies = [], variant = 'default', size = 'small', sx = {} }) => {
   const theme = useTheme();
+  const groupSpacing = getSpacingPreset('chipGroup');
 
   // Map size to valid values for SkillTagList
   const validSize = size === 'full' || size === 'hover' ? 'medium' : size;
+  const shouldCompact = technologies.length >= (variant === 'hover' ? 4 : 5);
+  const chipSize = shouldCompact ? 'small' : validSize;
 
   if (!technologies.length) return null;
   return (
-    <Box sx={{ width: '100%', ...sx }}>
-      <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} flexWrap="wrap" justifyContent="center">
-        {technologies.map((tech) => {
-          const label = typeof tech === 'string' ? tech : tech?.name || '';
-          return (
-            <SkillTag
-              key={label}
-              label={label}
-              icon={getTechIcon(label)}
-              size={validSize}
-              sx={{ 
-                ...theme.chip,
-                fontSize: { xs: '0.625rem', sm: '0.75rem' },
-                height: { xs: 20, sm: 24 },
-                '& .MuiChip-label': {
-                  px: { xs: 0.5, sm: 1 }
-                }
-              }}
-            />
-          );
-        })}
-      </Stack>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        columnGap: groupSpacing.columnGap,
+        rowGap: groupSpacing.rowGap,
+        ...sx,
+      }}
+    >
+      {technologies.map((tech) => {
+        const label = typeof tech === 'string' ? tech : tech?.name || '';
+        return (
+          <SkillTag
+            key={label}
+            label={label}
+            icon={getTechIcon(label)}
+            size={chipSize}
+            sx={{ 
+              ...theme.chip,
+              fontSize: shouldCompact ? { xs: '0.55rem', sm: '0.675rem' } : { xs: '0.625rem', sm: '0.75rem' },
+              height: shouldCompact ? { xs: 18, sm: 22 } : { xs: 20, sm: 24 },
+              '& .MuiChip-label': {
+                px: shouldCompact ? { xs: 0.4, sm: 0.75 } : { xs: 0.5, sm: 1 },
+              },
+              mx: 0,
+              my: 0,
+            }}
+          />
+        );
+      })}
     </Box>
   );
 };

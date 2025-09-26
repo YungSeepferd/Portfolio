@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { skillsRow1, skillsRow2 } from './skillsData';
 import SkillTagList from '../common/SkillTagList';
+import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 
 /**
  * HeroContent Component
@@ -39,10 +40,12 @@ const HeroContent = () => {
       transition: { duration: 0.6, ease: "easeOut" }
     }
   };
-  
-  // Determine if mobile for responsive layout
-  const isMobileBreakpoint = theme.breakpoints.values.sm;
-  
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const heroPadding = getSpacingPreset('pageHorizontal');
+  const heroTitlePreset = getTypographyPreset(theme, 'heroTitle');
+  const heroSubtitlePreset = getTypographyPreset(theme, 'heroSubtitle');
+  const heroBodyPreset = getTypographyPreset(theme, 'bodyLong');
+
   return (
     <Box
       sx={{
@@ -55,7 +58,7 @@ const HeroContent = () => {
         zIndex: 10,
         pointerEvents: 'none', // All content is non-interactive by default
         userSelect: 'none',
-        pl: { xs: 2, sm: 4, md: 8, lg: 12 }, // Responsive padding
+        px: heroPadding.px,
       }}
     >
       <motion.div
@@ -63,27 +66,20 @@ const HeroContent = () => {
         animate="visible"
         variants={containerVariants}
         style={{
-          maxWidth: `min(100%, 650px)`,
-          textAlign: window.innerWidth < isMobileBreakpoint ? 'center' : 'left',
+          maxWidth: 'min(100%, 650px)',
+          textAlign: isMobile ? 'center' : 'left',
           pointerEvents: 'none',
         }}
       >
         {/* Main Title */}
         <motion.div variants={itemVariants}>
           <Typography
-            variant="h1"
+            variant={heroTitlePreset.variant}
+            component={heroTitlePreset.component}
             sx={{
-              fontSize: {
-                xs: '2.5rem', // Mobile
-                sm: '3.5rem', // Tablet
-                md: '4.5rem', // Desktop
-                lg: '5rem'    // Large desktop
-              },
-              fontWeight: 700,
-              lineHeight: 1.2,
+              ...heroTitlePreset.sx,
               mb: 1,
               color: theme.palette.text.primary,
-              letterSpacing: '-0.5px',
             }}
           >
             Vincent Göke
@@ -93,17 +89,11 @@ const HeroContent = () => {
         {/* Subtitle */}
         <motion.div variants={itemVariants}>
           <Typography
-            variant="h4"
-            component="h2"
+            variant={heroSubtitlePreset.variant}
+            component={heroSubtitlePreset.component}
             sx={{
-              fontSize: {
-                xs: '0.8rem',
-                sm: '1rem',
-                md: '1.35rem'
-              },
-              fontWeight: 500,
+              ...heroSubtitlePreset.sx,
               mb: 4,
-              color: theme.palette.secondary.main, // Changed to secondary (yellow) color
             }}
           >
             Creative Technologist & Interaction Designer
@@ -113,11 +103,11 @@ const HeroContent = () => {
         {/* Status Text */}
         <motion.div variants={itemVariants}>
           <Typography 
-            variant="body1"
+            variant={heroBodyPreset.variant}
+            component={heroBodyPreset.component}
             sx={{ 
+              ...heroBodyPreset.sx,
               mb: 2,
-              fontSize: '1.1rem',
-              lineHeight: 1.7,
               color: theme.palette.text.secondary,
             }}
           >
@@ -137,7 +127,7 @@ const HeroContent = () => {
               flexWrap: 'wrap',
               gap: 1,
               mb: 1.5,
-              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
+              justifyContent: isMobile ? 'center' : 'flex-start',
             }}
           >
             {skillsRow1.map((skill, index) => (
@@ -155,7 +145,7 @@ const HeroContent = () => {
               display: 'flex', 
               flexWrap: 'wrap',
               gap: 1,
-              justifyContent: window.innerWidth < isMobileBreakpoint ? 'center' : 'flex-start',
+              justifyContent: isMobile ? 'center' : 'flex-start',
             }}
           >
             {skillsRow2.map((skill, index) => (
