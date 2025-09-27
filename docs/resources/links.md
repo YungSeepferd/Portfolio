@@ -48,6 +48,12 @@ This document contains all the documentation sources and resources used during t
 
 ## Project-Specific Resources
 
+### React Bits Component Library
+- **Main Documentation**: https://reactbits.dev/get-started/introduction
+  - Curated React component blueprints for marketing and content-heavy experiences
+  - Focus on accessibility, responsive layout primitives, and composable sections
+  - Useful as inspiration/pattern library when extending beyond stock MUI widgets
+
 ### GitHub Pages Deployment
 - **GitHub Actions**: Automated deployment workflow
 - **Custom Domain**: goekevincent.me configuration

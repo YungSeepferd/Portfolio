@@ -31,7 +31,8 @@
   - Build ProjectSectionNav.js to handle project navigation
   - Implement standardized ProjectImageGallery.js with lightbox
   - Design system-compliant PrototypeShowcase.js component
-  
+  - Evaluate React Bits marketing sections for reusable wrappers
+
 - [ ] **Refactor inconsistent components**
   - Update all timeout durations to use theme animation settings
   - Standardize card layouts to maintain consistent heights
@@ -100,4 +101,3 @@
   - Implement comprehensive image optimization pipeline
   - Create responsive image loading strategies
   - Add progressive loading for large media files
-

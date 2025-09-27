@@ -297,3 +297,10 @@ if (error) return <ErrorMessage error={error} onRetry={reload} />;
 3. **Focus Management** - Proper focus handling in modals and navigation
 4. **Alt Text** - Descriptive alt text for all images
 5. **Color Contrast** - Ensure sufficient contrast ratios in both themes
+
+## External Component Libraries
+
+### React Bits (Marketing Sections)
+- Reference guide: `docs/design-system/react-bits.md`
+- Use for structured hero/testimonial/FAQ layouts when MUI primitives are too low-level.
+- Wrap third-party components in adapters that translate our design tokens (colors, spacing, typography) into the library's expected props or CSS variables.

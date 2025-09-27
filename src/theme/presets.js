@@ -220,7 +220,9 @@ export const getSpacingPreset = (key) => {
 export const typographyPresets = TYPOGRAPHY_PRESETS;
 export const spacingPresets = SPACING_PRESETS;
 
-export default {
+const presets = {
   typographyPresets: TYPOGRAPHY_PRESETS,
   spacingPresets: SPACING_PRESETS,
 };
+
+export default presets;
