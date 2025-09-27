@@ -454,12 +454,19 @@ const createAppTheme = (mode = 'dark') => {
     },
   };
   
-  // Update theme with custom transitions while preserving the create function
+  // Import component overrides
+  const { components: componentOverrides } = require('./theme/components').default(theme);
+
+  // Update theme with custom transitions and component overrides while preserving the create function
   const themeWithTransitions = createTheme(theme, {
     transitions: {
       easing: transitionsConfig.easing,
       duration: transitionsConfig.duration,
     },
+    components: {
+      ...theme.components,
+      ...componentOverrides
+    }
   });
   
   // Make typography responsive and return the final theme

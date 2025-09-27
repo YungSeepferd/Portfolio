@@ -151,7 +151,6 @@ const AboutTabNavigator = forwardRef((props, ref) => {
         <Box 
           id="about-tabs-navigation"
           sx={{ 
-            width: '100%',
             px: { 
               xs: theme.spacing(2),
               sm: theme.spacing(4),
@@ -169,14 +168,14 @@ const AboutTabNavigator = forwardRef((props, ref) => {
             boxShadow: theme => (isScrolling || isTabSwitching ? theme.shadows[2] : 'none'),
           }}
         >
-          <Tabs 
+          <Tabs
             value={tabIndex} 
             onChange={handleTabChange} 
             variant={isMobile ? "scrollable" : "fullWidth"}
             scrollButtons={isMobile ? "auto" : false}
             allowScrollButtonsMobile
-            textColor="secondary"
-            indicatorColor="secondary"
+            textColor="primary"
+            indicatorColor="primary"
             sx={{ 
               width: '100%',
               '& .MuiTabs-flexContainer': {
@@ -185,7 +184,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
               '& .MuiTab-root': {
                 color: theme.palette.text.secondary,
                 '&.Mui-selected': {
-                color: theme.palette.primary.main,
+                  color: theme.palette.primary.main,
                 },
               },
               '& .MuiTabs-indicator': {

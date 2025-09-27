@@ -75,7 +75,7 @@ const TYPOGRAPHY_PRESETS = {
       fontWeight: 600,
       letterSpacing: '0.08em',
       textTransform: 'uppercase',
-      color: theme.palette ? theme.palette.primary.main : undefined,
+      color: theme.palette ? theme.palette.secondary.main : undefined,
       fontSize: {
         xs: '1rem',
         md: '1.125rem',

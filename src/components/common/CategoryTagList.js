@@ -70,7 +70,7 @@ function CategoryTagList({ tags = [], onTagClick, previewCount = 6, sx }) {
                 width: theme.spacing(0.75),
                 height: theme.spacing(3),
                 borderRadius: theme.shape.borderRadius,
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: theme.palette.primary.main,
                 flexShrink: 0,
               }}
             />

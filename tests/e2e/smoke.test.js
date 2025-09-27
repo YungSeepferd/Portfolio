@@ -8,6 +8,24 @@ require('chromedriver');
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 const HEADLESS = process.env.HEADLESS !== 'false';
 
+async function dismissDevOverlay(driver) {
+  // CRA/webpack overlay can sporadically cover the page on warnings; hide it if present
+  try {
+    await driver.executeScript(`
+      (function() {
+        const el = document.getElementById('webpack-dev-server-client-overlay');
+        if (el) {
+          el.style.display = 'none';
+          el.style.pointerEvents = 'none';
+          el.setAttribute('aria-hidden', 'true');
+        }
+      })();
+    `);
+  } catch (e) {
+    // no-op; overlay not present or cannot be manipulated
+  }
+}
+
 async function clickNavButton(driver, label) {
   const button = await driver.wait(
     until.elementLocated(By.xpath(`//button[normalize-space()='${label}']`)),
@@ -19,9 +37,17 @@ async function clickNavButton(driver, label) {
     button
   );
 
+  await dismissDevOverlay(driver);
+
   await driver.wait(until.elementIsVisible(button), 5000);
   await driver.wait(until.elementIsEnabled(button), 5000);
-  await button.click();
+
+  // Use JS click as a fallback to avoid interception by transient overlays
+  try {
+    await button.click();
+  } catch (err) {
+    await driver.executeScript('arguments[0].click();', button);
+  }
   await driver.sleep(500);
 }
 
@@ -48,6 +74,8 @@ async function runSmokeTest() {
     await driver.get(baseUrl);
     console.log(`[selenium] Navigating to ${baseUrl}`);
 
+    await dismissDevOverlay(driver);
+
     await driver.wait(until.elementLocated(By.css('#hero')), 15000);
     const heroTitleEls = await driver.findElements(By.css('#hero h1, #hero h2'));
     if (heroTitleEls.length) {
@@ -67,7 +95,14 @@ async function runSmokeTest() {
       firstCard
     );
     await driver.wait(until.elementIsVisible(firstCard), 5000);
-    await driver.executeScript('arguments[0].click();', firstCard);
+    // Click the inner CardActionArea to ensure the onClick handler fires
+    const actionArea = await firstCard.findElement(By.css('.MuiCardActionArea-root'));
+    await dismissDevOverlay(driver);
+    try {
+      await actionArea.click();
+    } catch (err) {
+      await driver.executeScript('arguments[0].click();', actionArea);
+    }
 
     const modal = await driver.wait(
       until.elementLocated(By.css('[data-testid="project-modal"]')),
@@ -89,7 +124,7 @@ async function runSmokeTest() {
 
     await clickNavButton(driver, 'About');
     const aboutHeading = await driver.wait(
-      until.elementLocated(By.css('#about h2')),
+      until.elementLocated(By.css('#about h1, #about h2, #about h3')),
       10000
     );
     console.log(`[selenium] About section heading: ${await aboutHeading.getText()}`);

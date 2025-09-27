@@ -205,40 +205,9 @@ export const getShadow = (theme, intensity = 'medium') => {
  * @returns {string} - The accent color for the project
  */
 export const getProjectAccentColor = (project, theme) => {
-  if (!project) return theme.palette.primary.main;
-  
-  // If project has a specific accent color defined, use it
-  if (project.accentColor) return project.accentColor;
-  
-  // Otherwise determine color from cardVariant
-  switch (project.cardVariant) {
-    case 'primary':
-      return theme.palette.primary.main;
-    case 'secondary':
-      return theme.palette.secondary.main;
-    case 'success':
-      return theme.palette.success.main;
-    case 'info':
-      return theme.palette.info.main;
-    case 'warning':
-      return theme.palette.warning.main;
-    case 'error':
-      return theme.palette.error.main;
-    default:
-      // Use modulo to assign consistent colors based on project ID
-      const colorOptions = [
-        theme.palette.primary.main,
-        theme.palette.secondary.main,
-        theme.palette.success.main,
-        theme.palette.info.main,
-        theme.palette.warning.main,
-        theme.palette.error.main
-      ];
-      
-      return project.id 
-        ? colorOptions[(project.id - 1) % colorOptions.length]
-        : theme.palette.primary.main;
-  }
+  // Always use the primary color from theme for consistency
+  return theme.palette.primary.main;
+}
 };
 
 /**

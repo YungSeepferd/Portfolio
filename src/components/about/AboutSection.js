@@ -134,7 +134,7 @@ const AboutSection = () => {
               gap: 2
             }}
           >
-            <CircularProgress color="secondary" />
+            <CircularProgress color="primary" />
             <Typography variant="body2" color="text.secondary">
               Loading content...
             </Typography>

@@ -19,7 +19,6 @@ const FooterContact = ({ projectContext }) => {
     : "If you want to chat about UX, haptic design, or just say hello, I'd love to hear from you! Let's schedule a call or connect through any of these channels.";
 
   const horizontalPadding = getSpacingPreset('pageHorizontal');
-  const verticalPadding = getSpacingPreset('sectionVertical');
   const headlinePreset = getTypographyPreset(theme, 'overlayTitle');
   const bodyPreset = getTypographyPreset(theme, 'bodyLong');
   const contactLinePreset = getTypographyPreset(theme, 'cardTitle');
@@ -135,27 +134,7 @@ const FooterContact = ({ projectContext }) => {
                       }}
                     >
                       <a href={mailtoLink} style={{ textDecoration: 'none' }}>
-                        <IconButton 
-                          sx={{ 
-                            color: theme.palette.common.white,
-                            backgroundColor: 'rgba(255,255,255,0.15)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: theme.shape.borderRadiusScale.xl,
-                            boxShadow: theme.shadows[4],
-                            transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
-                              duration: theme.transitions.duration.shorter,
-                              easing: theme.transitions.easing.easeInOut,
-                            }),
-                            '&:hover': { 
-                              backgroundColor: 'rgba(255,255,255,0.25)',
-                              transform: 'translateY(-2px)',
-                              boxShadow: theme.shadows[8],
-                            },
-                            '&:active': {
-                              transform: 'translateY(0)',
-                            }
-                          }}
-                        >
+                        <IconButton variant="glassmorphic">
                           <EmailIcon />
                         </IconButton>
                       </a>
@@ -163,25 +142,7 @@ const FooterContact = ({ projectContext }) => {
                       <IconButton 
                         href="https://www.linkedin.com/in/vincent-g-193124194/"
                         target="_blank"
-                        sx={{ 
-                          color: theme.palette.common.white,
-                          backgroundColor: 'rgba(255,255,255,0.15)',
-                          border: '1px solid rgba(255,255,255,0.3)',
-                          borderRadius: theme.shape.borderRadiusScale.xl,
-                          boxShadow: theme.shadows[4],
-                          transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
-                            duration: theme.transitions.duration.shorter,
-                            easing: theme.transitions.easing.easeInOut,
-                          }),
-                          '&:hover': { 
-                            backgroundColor: 'rgba(255,255,255,0.25)',
-                            transform: 'translateY(-2px)',
-                            boxShadow: theme.shadows[8],
-                          },
-                          '&:active': {
-                            transform: 'translateY(0)',
-                          }
-                        }}
+                        variant="glassmorphic"
                       >
                         <LinkedInIcon />
                       </IconButton>
@@ -189,44 +150,24 @@ const FooterContact = ({ projectContext }) => {
                       <IconButton 
                         href="https://github.com/YungSeepferd"
                         target="_blank"
-                        sx={{ 
-                          color: theme.palette.common.white,
-                          backgroundColor: 'rgba(255,255,255,0.15)',
-                          border: '1px solid rgba(255,255,255,0.3)',
-                          borderRadius: theme.shape.borderRadiusScale.xl,
-                          boxShadow: theme.shadows[4],
-                          transition: theme.transitions.create(['background-color', 'transform', 'box-shadow'], {
-                            duration: theme.transitions.duration.shorter,
-                            easing: theme.transitions.easing.easeInOut,
-                          }),
-                          '&:hover': { 
-                            backgroundColor: 'rgba(255,255,255,0.25)',
-                            transform: 'translateY(-2px)',
-                            boxShadow: theme.shadows[8],
-                          },
-                          '&:active': {
-                            transform: 'translateY(0)',
-                          }
-                        }}
+                        variant="glassmorphic"
                       >
                         <GitHubIcon />
                       </IconButton>
                     </Box>
                     
                     <Button 
-                      variant="contained" 
-                      color="primary" 
+                      variant="glassmorphic" 
                       component="a" 
                       href={mailtoLink}
                       size="large"
                       sx={{ 
-                        textTransform: 'none', 
-                        px: { xs: 3, sm: 4 }, 
-                        py: { xs: 1, sm: 1.5 },
-                        fontWeight: 'bold',
-                        fontSize: { xs: '0.875rem', sm: '1rem' },
                         width: { xs: '100%', sm: 'auto' },
-                        maxWidth: { xs: '280px', sm: 'none' }
+                        maxWidth: { xs: '280px', sm: 'none' },
+                        mx: { xs: 'auto', sm: 0 },
+                        display: 'flex',
+                        py: 1.5,
+                        px: 4
                       }}
                     >
                       Contact Me

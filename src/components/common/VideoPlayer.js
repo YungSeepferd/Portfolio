@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Box, IconButton, CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -7,6 +7,7 @@ import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 /**
  * Custom video player component with controls
+ * Uses non-button elements for controls to avoid nesting issues with CardActionArea
  */
 const VideoPlayer = ({ 
   src, 
@@ -22,9 +23,11 @@ const VideoPlayer = ({
   const [isPlaying, setIsPlaying] = useState(autoplay);
   const [isMuted, setIsMuted] = useState(muted);
   const [isLoading, setIsLoading] = useState(true);
+  const [showControls, setShowControls] = useState(false);
   const videoRef = useRef(null);
   
-  const handlePlayPause = () => {
+  const handlePlayPause = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling to parent
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
@@ -35,12 +38,16 @@ const VideoPlayer = ({
     }
   };
   
-  const handleMute = () => {
+  const handleMute = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling to parent
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
+
+  const handleMouseEnter = () => setShowControls(true);
+  const handleMouseLeave = () => setShowControls(false);
   
   const handleLoadedData = (e) => {
     setIsLoading(false);
@@ -53,8 +60,14 @@ const VideoPlayer = ({
         position: 'relative',
         width: containerWidth,
         height: containerHeight,
-        ...props.sx
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        bgcolor: 'background.paper'
       }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {isLoading && (
         <Box
@@ -90,9 +103,10 @@ const VideoPlayer = ({
           objectFit: 'contain',
           display: 'block'
         }}
+        {...props}
       />
       
-      {controls && !isLoading && (
+      {controls && !isLoading && showControls && (
         <Box
           sx={{
             position: 'absolute',
@@ -105,14 +119,49 @@ const VideoPlayer = ({
             justifyContent: 'space-between',
             zIndex: 2
           }}
+          onClick={(e) => e.stopPropagation()} // Prevent clicks from reaching CardActionArea
         >
-          <IconButton size="small" onClick={handlePlayPause} sx={{ color: 'white' }}>
+          <Box
+            role="button"
+            tabIndex={0}
+            onClick={handlePlayPause}
+            onKeyPress={(e) => e.key === 'Enter' && handlePlayPause(e)}
+            sx={{ 
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              p: 1,
+              borderRadius: '4px',
+              transition: 'background-color 0.2s',
+              '&:hover': { 
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
             {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-          </IconButton>
+          </Box>
           
-          <IconButton size="small" onClick={handleMute} sx={{ color: 'white' }}>
+          <Box
+            role="button"
+            tabIndex={0}
+            onClick={handleMute}
+            onKeyPress={(e) => e.key === 'Enter' && handleMute(e)}
+            sx={{ 
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              p: 1,
+              borderRadius: '4px',
+              transition: 'background-color 0.2s',
+              '&:hover': { 
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
             {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
-          </IconButton>
+          </Box>
         </Box>
       )}
     </Box>

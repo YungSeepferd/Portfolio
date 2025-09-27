@@ -111,7 +111,7 @@ const HeroContent = () => {
               color: theme.palette.text.secondary,
             }}
           >
-            Fulltime | Available from June 2025 | On-Site, Hybrid, Remote
+            Fulltime/ Internship | Junior/ Midlevel | On-Site/ Hybrid/ Remote
           </Typography>
         </motion.div>
         

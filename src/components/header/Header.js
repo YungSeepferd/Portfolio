@@ -135,19 +135,11 @@ const Header = () => {
                   key={link.name}
                   href={link.url}
                   target="_blank"
-                  size="small"
-                  sx={{
-                    ml: { xs: 0.5, sm: 1 },
-                    color: theme.palette.primary.dark,
-                    backgroundColor: 'rgba(194,247,80,0.10)',
-                    '&:hover': { backgroundColor: 'rgba(194,247,80,0.18)' },
-                    p: { xs: 0.25, sm: 0.5 },
-                    minWidth: { xs: '36px', sm: '40px' },
-                    minHeight: { xs: '36px', sm: '40px' }
-                  }}
+                  variant="glassmorphic"
+                  size="medium"
                   aria-label={link.ariaLabel}
                 >
-                  <LinkedInIcon fontSize="medium" />
+                  <LinkedInIcon />
                 </IconButton>
               ))}
             </Box>

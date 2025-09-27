@@ -61,20 +61,11 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           key={item.target}
           variant={item.isCallToAction ? 'contained' : 'text'}
           color={item.isCallToAction ? 'primary' : 'inherit'}
+          size={item.isCallToAction ? 'medium' : 'small'}
           sx={{
             ml: idx === 0 ? 0 : 2,
-            px: 2,
-            py: 0.5,
-            borderRadius: item.isCallToAction ? theme.shape.borderRadiusScale.xl : theme.shape.borderRadiusScale.xs,
-            position: 'relative',
-            textTransform: 'none',
-            fontWeight: item.isCallToAction ? 600 : 500,
             minWidth: 'auto',
-            '&:hover': {
-              backgroundColor: item.isCallToAction 
-                ? 'primary.dark' 
-                : 'action.hover',
-            },
+            position: 'relative',
           }}
           onClick={() => handleScroll(item.target)}
         >

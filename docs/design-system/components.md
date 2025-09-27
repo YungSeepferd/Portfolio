@@ -28,8 +28,6 @@
 
 **Development Components** (`src/components/dev/`)
 - Development-only tools and debuggers
-- Conditionally rendered in development mode
-
 ## Standard Component Patterns
 
 ### Card Components
@@ -41,7 +39,6 @@
   onClick={handleProjectClick}
   variant="primary" // primary, secondary, featured
 />
-```
 
 **ThemedCard** - General purpose card
 ```javascript
@@ -49,15 +46,6 @@
   elevation={2}
   variant="outlined"
   sx={{ p: 3 }}
->
-  Content
-</ThemedCard>
-```
-
-### Button Components
-
-**ActionButton** - Standardized action buttons
-```javascript
 <ActionButton
   label="View Project"
   icon={<LaunchIcon />}
@@ -66,6 +54,35 @@
   size="medium" // small, medium, large
 />
 ```
+
+#### Glassmorphic Variant (Design System)
+
+Use the glassmorphic style for contact CTAs and social icon buttons. This variant mirrors the Hero scene label style (the on‑screen "Sphere/Cube/Torus" label):
+
+- Dark mode: frosted white overlay (`rgba(255,255,255,0.10)`) with backdrop blur.
+- Light mode: smoky black overlay (`rgba(0,0,0,0.70)`) with backdrop blur.
+- Border: `1px solid` using `theme.palette.divider`.
+- Focus: visible outline using `theme.palette.primary.main`.
+
+Usage:
+
+```jsx
+// Contact CTA
+<Button variant="glassmorphic" size="large" href="mailto:goeke.vincent@gmail.com">
+  Contact Me
+</Button>
+
+// Social icon buttons
+<IconButton variant="glassmorphic" href="https://www.linkedin.com/in/vincent-g-193124194/" target="_blank">
+  <LinkedInIcon />
+</IconButton>
+```
+
+Notes:
+
+- This variant is implemented via theme overrides in `src/theme/components.js` for both `MuiButton` and `MuiIconButton`.
+- Prefer this style for contact‑oriented actions; use standard `contained/outlined/text` for regular navigation and in‑page actions.
+- Ensure contrast remains acceptable over varied backgrounds; the theme adapts per mode but always verify legibility in dark and light.
 
 ### Media Components
 

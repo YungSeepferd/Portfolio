@@ -129,6 +129,14 @@ Goal: Restore full, dynamic project display functionality within the modal.
 -   Test theme toggling.
 -   Consider adding basic smoke tests or component rendering tests using React Testing Library if time permits.
 
+## Documentation follow-ups (2025-09-27)
+
+- Create a short page for end-to-end testing: how to run `npm start` and `npm run test:e2e`, headless mode tips, and resolving dev overlay issues.
+- Add a brief guideline for adding new 3D scenes and wiring them via `SceneContext` (expected props, performance tips, and where to place assets).
+- Expand design system docs to reference the token files under `src/theme/` explicitly and show common `sx` patterns (cards, stacks, section headers).
+- Document Framer Motion usage patterns used in this project (variants, `AnimatePresence` in modals, staggered grids) with links to official docs.
+- Audit `docs/legacy/` and list candidates to archive or cross-link with current pages to reduce drift.
+
 # Next Steps (as of 16 April 2025)
 
 - All previously marked unused files (utilities, hooks, context) have been deleted.

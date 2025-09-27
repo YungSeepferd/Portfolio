@@ -62,10 +62,6 @@ const toolGroups = [
     tags: ['Figma', 'Adobe XD', 'Miro', 'Prototyping'],
   },
   {
-    title: 'Research Toolkit',
-    tags: ['User Testing', 'Usability Testing', 'A/B Testing', 'Heuristic Evaluation', 'Data Analysis', 'Thematic Analysis'],
-  },
-  {
     title: 'Development Stack',
     tags: ['JavaScript', 'HTML/CSS', 'React', 'Unity', 'C', 'C#', 'C++', 'Python', 'Golang', 'Arduino'],
   },
@@ -199,7 +195,7 @@ export const aboutData = [
                   gap: theme.spacing(1),
                 })}
                 >
-                  <Icon color="secondary" sx={{ fontSize: '1.5rem' }} />
+                  <Icon color="primary" sx={{ fontSize: '1.5rem' }} />
                   <Typography variant="h6">{title}</Typography>
                 </Box>
                 <Typography variant="body2">{description}</Typography>
@@ -260,7 +256,7 @@ export const aboutData = [
                   gap: theme.spacing(1),
                 })}
                 >
-                  <Icon color="secondary" sx={{ mt: 0.2, fontSize: '1.3rem' }} />
+                  <Icon color="primary" sx={{ mt: 0.2, fontSize: '1.3rem' }} />
                   <Box>
                     <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 600 }}>{title}</Typography>
                     <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>{subtitle}</Typography>
@@ -317,7 +313,7 @@ export const aboutData = [
                   gap: theme.spacing(1.5),
                 })}
                 >
-                  <Icon color="secondary" sx={{ fontSize: '1.3rem' }} />
+                  <Icon color="primary" sx={{ fontSize: '1.3rem' }} />
                   <Box>
                     <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 600 }}>{title}</Typography>
                     <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>{subtitle}</Typography>
