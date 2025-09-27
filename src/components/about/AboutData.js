@@ -112,21 +112,18 @@ const educationItems = [
     subtitle: 'FH Salzburg & PLUS Salzburg | 2022 - 2025',
     description: "Specialized in haptic interaction design and multi-sensory user experience. Master's thesis on emotion-driven haptic feedback design methodologies.",
     icon: SchoolIcon,
-    isFullWidth: false,
   },
   {
     title: 'B.Sc. Media Informatics',
     subtitle: 'LMU Munich | 2018 - 2021',
     description: 'Focused on HMI design, web technologies, and interactive systems. Bachelor\'s thesis on trust in autonomous vehicle interfaces.',
     icon: MenuBookIcon,
-    isFullWidth: false,
   },
   {
     title: 'Diploma in Audio Design',
     subtitle: 'Deutsche POP, Munich | 2017 - 2019',
     description: 'Professional training in audio production, sound design, and music technology with emphasis on electronic music production.',
     icon: AutoStoriesIcon,
-    isFullWidth: true,
   },
 ];
 
@@ -300,8 +297,8 @@ export const aboutData = [
       <>
         <Typography variant="h4">Academic Qualifications</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          {educationItems.map(({ icon: Icon, title, subtitle, description, isFullWidth }) => (
-            <Grid item xs={12} md={isFullWidth ? 12 : 6} key={title}>
+          {educationItems.map(({ icon: Icon, title, subtitle, description }) => (
+            <Grid item xs={12} key={title}>
               <Box sx={(theme) => ({
                 ...infoCardSx(theme),
                 gap: theme.spacing(1.5),

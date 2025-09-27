@@ -24,6 +24,7 @@ const VideoPlayer = ({
   const [isMuted, setIsMuted] = useState(muted);
   const [isLoading, setIsLoading] = useState(true);
   const [showControls, setShowControls] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
   
   const handlePlayPause = (e) => {
@@ -46,8 +47,18 @@ const VideoPlayer = ({
     }
   };
 
-  const handleMouseEnter = () => setShowControls(true);
-  const handleMouseLeave = () => setShowControls(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    setShowControls(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    // Only hide controls if video is playing and not paused
+    if (isPlaying) {
+      setShowControls(false);
+    }
+  };
   
   const handleLoadedData = (e) => {
     setIsLoading(false);
@@ -106,7 +117,7 @@ const VideoPlayer = ({
         {...props}
       />
       
-      {controls && !isLoading && showControls && (
+      {controls && !isLoading && (showControls || !isPlaying) && (
         <Box
           sx={{
             position: 'absolute',
@@ -117,7 +128,12 @@ const VideoPlayer = ({
             backgroundColor: 'rgba(0,0,0,0.5)',
             display: 'flex',
             justifyContent: 'space-between',
-            zIndex: 2
+            zIndex: 2,
+            opacity: isHovered || !isPlaying ? 1 : 0,
+            transition: 'opacity 0.3s ease-in-out',
+            '&:hover': {
+              opacity: 1
+            }
           }}
           onClick={(e) => e.stopPropagation()} // Prevent clicks from reaching CardActionArea
         >
