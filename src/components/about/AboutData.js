@@ -180,7 +180,7 @@ export const aboutData = [
     ],
     content: (
       <>
-        <Typography variant="h5" sx={{ mb: 3 }}>Core Competencies</Typography>
+        <Typography variant="h4">Core Competencies</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {coreCompetencyItems.map(({ title, description, icon: Icon }) => (
             <Grid item xs={12} sm={6} key={title}>
@@ -204,7 +204,7 @@ export const aboutData = [
           ))}
         </Grid>
 
-        <Typography variant="h5" sx={{ mb: 3 }}>Tools & Technologies</Typography>
+        <Typography variant="h5" sx={{ mt: 4, mb: 3 }}>Tools & Technologies</Typography>
         <Grid container spacing={3}>
           {toolGroups.map(({ title, tags }) => (
             <Grid item xs={12} md={4} key={title}>
@@ -241,7 +241,7 @@ export const aboutData = [
     ],
     content: (
       <>
-        <Typography variant="h5" sx={{ mb: 2 }}>Professional Experience</Typography>
+        <Typography variant="h4">Professional Experience</Typography>
         <Grid container spacing={2} sx={{ mb: 3 }}>
           {experienceItems.map(({ icon: Icon, title, subtitle, description, bullets, isFullWidth }) => (
             <Grid item xs={12} md={isFullWidth ? 12 : 6} key={title}>
@@ -298,7 +298,7 @@ export const aboutData = [
     ],
     content: (
       <>
-        <Typography variant="h5" sx={{ mb: 3 }}>Academic Qualifications</Typography>
+        <Typography variant="h4">Academic Qualifications</Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {educationItems.map(({ icon: Icon, title, subtitle, description, isFullWidth }) => (
             <Grid item xs={12} md={isFullWidth ? 12 : 6} key={title}>

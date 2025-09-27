@@ -161,46 +161,63 @@ const AboutTabNavigator = forwardRef((props, ref) => {
             boxSizing: 'border-box',
             position: 'sticky',
             top: stickyTop,
-            zIndex: (theme.zIndex?.appBar ?? 1100) - 1,
             backgroundColor: theme.palette.background.default,
             backdropFilter: 'blur(6px)',
             borderBottom: `1px solid ${theme.palette.divider}`,
-            boxShadow: theme => (isScrolling || isTabSwitching ? theme.shadows[2] : 'none'),
+            boxShadow: isScrolling || isTabSwitching ? theme.shadows[2] : 'none',
+            zIndex: 10
           }}
         >
           <Tabs
-            value={tabIndex} 
-            onChange={handleTabChange} 
+            value={tabIndex}
+            onChange={handleTabChange}
             variant={isMobile ? "scrollable" : "fullWidth"}
             scrollButtons={isMobile ? "auto" : false}
             allowScrollButtonsMobile
             textColor="primary"
             indicatorColor="primary"
-            sx={{ 
-              width: '100%',
+            sx={{
+              minHeight: 64,
               '& .MuiTabs-flexContainer': {
-                justifyContent: 'space-between',
+                gap: { xs: 1, sm: 2, md: 4 },
+                justifyContent: 'space-around',
               },
               '& .MuiTab-root': {
                 color: theme.palette.text.secondary,
+                fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.1rem' },
+                fontWeight: 500,
+                letterSpacing: '0.03em',
+                padding: { xs: '12px 8px', sm: '16px 12px', md: '20px 16px' },
+                minWidth: 'fit-content',
+                flex: '1 1 auto',
+                maxWidth: 'none',
                 '&.Mui-selected': {
                   color: theme.palette.primary.main,
+                  fontWeight: 600,
                 },
+                '&:hover': {
+                  color: theme.palette.primary.main,
+                  opacity: 0.9,
+                }
               },
               '& .MuiTabs-indicator': {
+                height: 3,
+                borderRadius: '3px 3px 0 0',
                 backgroundColor: theme.palette.primary.main,
               }
             }}
           >
             {aboutData.map((tab, index) => (
               <Tab 
-                key={index} 
-                label={tab.title} 
-                sx={{ 
-                  fontSize: { xs: '0.9rem', sm: '1rem' },
-                  minWidth: 0,
-                  px: { xs: 1, sm: 2, md: 3 },
-                }} 
+                key={index}
+                label={tab.title}
+                sx={{
+                  textTransform: 'none',
+                  minHeight: 'auto',
+                  '&:not(:last-child)': {
+                    marginRight: { xs: 1, sm: 2, md: 3 },
+                  },
+                }}
               />
             ))}
           </Tabs>
@@ -218,7 +235,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
               lg: theme.spacing(8),
             },
             py: { xs: 4, md: 6 },
-            boxSizing: 'border-box',
+            boxSizing: 'border-box'
           }}
         >
           <Box sx={{ pt: 2, pb: 4 }}>

@@ -25,6 +25,11 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
     );
   }
   
+  // Extract the first h4 heading to place it in the top row
+  const content = React.Children.toArray(tabData.content.props.children);
+  const heading = content.find(child => child.type === Typography && child.props.variant === 'h4');
+  const restContent = content.filter(child => child !== heading);
+
   return (
     <Box
       role="tabpanel"
@@ -32,67 +37,103 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
       aria-labelledby={`about-tab-${tabIndex}`}
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        alignItems: 'stretch',
+        flexDirection: 'column',
         gap: { xs: 4, md: 6 },
         p: { xs: 2, sm: 3, md: 4 },
         backgroundColor: 'background.paper',
-        borderRadius: 0.5, // Minimized rounded corners
+        borderRadius: 0.5,
         boxShadow: 'none',
         mb: 3,
         scrollMarginTop: { xs: theme.spacing(12), md: theme.spacing(14) },
       }}
     >
-      {/* Dynamic Image Container */}
-      <Box
-        id={`about-tab-image-section-${tabIndex}`}
+      {/* Top Row: Image and Heading */}
+      <Box 
         sx={{
-          flex: { xs: 'none', md: '0 0 45%' },
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: theme.shape.borderRadius,
-          backgroundColor: 'background.paper',
-          boxShadow: 'none',
-          overflow: 'hidden',
-          minHeight: { xs: 260, sm: 320, md: 360 },
-          maxHeight: { xs: 360, sm: 400, md: 460 },
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '45% 1fr' },
+          gap: { xs: 4, md: 6 },
+          alignItems: 'flex-start',
         }}
       >
-        <AboutSlideshow pictures={tabData.pictures} />
+        {/* Image Container */}
+        <Box
+          id={`about-tab-image-section-${tabIndex}`}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: 'background.paper',
+            boxShadow: 'none',
+            overflow: 'hidden',
+            minHeight: { xs: 260, sm: 320, md: 280 },
+            maxHeight: { xs: 360, sm: 400, md: 380 },
+          }}
+        >
+          <AboutSlideshow pictures={tabData.pictures} />
+        </Box>
+
+        {/* Heading Section */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            minHeight: { md: '100%' },
+            '& .MuiTypography-h4': {
+              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+              lineHeight: 1.2,
+              mb: 2,
+            },
+            '& .MuiTypography-subtitle1': {
+              color: 'text.secondary',
+              mb: 2,
+            },
+          }}
+        >
+          {heading}
+          {tabData.subtitle && (
+            <Typography variant="subtitle1">
+              {tabData.subtitle}
+            </Typography>
+          )}
+        </Box>
       </Box>
-      {/* Responsive Text Content */}
+
+      {/* Bottom Row: Full Width Content */}
       <Box
-        id={`about-tab-text-section-${tabIndex}`}
+        id={`about-tab-content-section-${tabIndex}`}
         sx={{
-          flex: 1,
+          width: '100%',
           color: theme.palette.text.primary,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          minWidth: 0, // Prevents flex item from overflowing
-          gap: theme.spacing(2.5),
-          pl: { md: 3 },
-          pr: { xs: 0, md: 2 }, // Add right padding on desktop
           '& .MuiTypography-root': {
             marginBottom: 0,
-            overflowWrap: 'break-word', // Ensure long words break properly
-            hyphens: 'auto', // Enable hyphenation for better text flow
-          },
-          // Ensure proper spacing and readability
-          '& .MuiTypography-h4': {
-            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
-            lineHeight: 1.2,
+            overflowWrap: 'break-word',
+            hyphens: 'auto',
           },
           '& .MuiTypography-body1': {
             fontSize: { xs: '0.95rem', sm: '1rem', md: '1.1rem' },
             lineHeight: 1.6,
-            maxWidth: '100%',
+            mb: 2,
+            '&:last-child': {
+              mb: 0,
+            },
+          },
+          '& ul, & ol': {
+            pl: 2.5,
+            mb: 2,
+            '& li': {
+              mb: 1,
+              '&:last-child': {
+                mb: 0,
+              },
+            },
           },
         }}
       >
-        {tabData.content}
+        {restContent}
       </Box>
     </Box>
   );
