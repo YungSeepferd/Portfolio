@@ -4,10 +4,12 @@ This document contains all the documentation sources and resources used during t
 
 ## How to Use the Docs
 
-- Start at `docs/README.md` as the hub. It links to architecture, design system, and development guides.
-- Prefer official docs for React, MUI, React Three Fiber, and Drei. Avoid blogs and SEO content.
-- Cross-link related docs using relative paths (e.g., `../design-system/overview.md`) and section anchors (e.g., `#theme-system`).
-- Use search in your editor to locate symbols or files and reference whole files or folders in PR descriptions.
+- **Start at the hub**: `docs/README.md` provides the index to all documentation categories.
+- **Navigate by category**: Architecture docs for system understanding, design-system for theming/components, development for current work.
+- **Official sources first**: Always prefer official documentation for React 18, MUI 5, React Three Fiber, Drei, and Framer Motion over blog posts.
+- **Cross-linking**: Use relative paths (`../design-system/overview.md`) and section anchors (`#theme-system`) to connect related docs.
+- **Search efficiently**: Use editor search (Cmd/Ctrl+P) to locate files; grep for symbols and imports across the codebase.
+- **Update policy**: When modifying docs, update the "Last Updated" date and cross-reference related files that may need updates.
 
 ## Three.js and React Three Fiber Documentation
 
@@ -65,14 +67,53 @@ This document contains all the documentation sources and resources used during t
 - **Selenium WebDriver**: [selenium.dev – WebDriver](https://www.selenium.dev/documentation/webdriver/)
   - Used by `tests/e2e/smoke.test.js` to drive Chrome via Chromedriver
   - Requires `npm start` in one terminal and `npm run test:e2e` in another
+  - Headless mode supported for CI/CD environments
+  - See `docs/development/daily-notes/2025-09-29-scroll-fixes.md` for test examples
 
-## Animation Library
+### Routing
+
+- **React Router DOM**: [React Router v6 Docs](https://reactrouter.com/en/main)
+  - **Package**: `react-router-dom@^6.30.0`
+  - **Current Usage**: Minimal single-page application structure
+  - **Implementation**: `BrowserRouter` in `src/App.js`, `ScrollToTop` utility in `src/components/common/`
+  - **Future**: Prepared for multi-page expansion (NotFoundPage component exists)
+
+### Scroll Management
+
+- **React Scroll**: [React Scroll GitHub](https://github.com/fisshy/react-scroll)
+  - **Package**: `react-scroll@^1.9.0`
+  - **Usage**: Smooth scroll navigation in `src/components/header/Header.js` and `NavLinks.js`
+  - **Components**: `Link`, `scroller` for programmatic scrolling to named sections
+  - **Integration**: Works alongside custom `scrollUtils.js` for viewport detection
+
+### Styling System
+
+- **Styled Components**: [Styled Components Docs](https://styled-components.com/)
+  - **Package**: `styled-components@^6.1.17`
+  - **Status**: ⚠️ **Minimal usage - removal candidate**
+  - **Current Usage**: Only imported in `src/theme/animations.js` for keyframe definitions (lines 8, 122-149)
+  - **Issue**: Redundant with Emotion (MUI's styling engine) - creates bundle bloat
+  - **Recommendation**: Refactor animations.js to use pure CSS keyframes or Framer Motion, then remove dependency
+  - **Memory Note**: Previously flagged as redundant; styled-components exports in animations.js are unused elsewhere
+
+## Animation Libraries
 
 ### Framer Motion
 
-- **Official Site**: [Framer Motion](https://www.framer.com/motion/)
+- **Official Documentation**: [Framer Motion](https://www.framer.com/motion/)
+- **Main Docs**: [Motion API Reference](https://www.framer.com/motion/introduction/)
   - Animation primitives and transitions used across interactive elements
   - Variants, gestures, and `AnimatePresence` support modal and card animations
+  - Used extensively in: ProjectModal, ProjectCardImproved, Hero section, About tabs
+  - See `src/theme/animations.js` for predefined motion variants
+
+### GSAP (Green Sock Animation Platform)
+
+- **Status**: ⚠️ **Dependency present but UNUSED in codebase**
+- **Package**: `gsap@^3.13.0` in package.json
+- **Usage**: Zero imports found across entire `src/` directory
+- **Recommendation**: Remove in next dependency cleanup (`npm uninstall gsap`)
+- **Note**: All animations currently handled by Framer Motion and CSS transitions
 
 ## Project-Specific Resources
 
@@ -80,9 +121,12 @@ This document contains all the documentation sources and resources used during t
 
 - **Main Documentation**: [React Bits – Get Started](https://reactbits.dev/get-started/introduction)
 - **Internal Integration Guide**: [docs/design-system/react-bits.md](../design-system/react-bits.md)
-- Curated React component blueprints for marketing and content-heavy experiences
-- Focus on accessibility, responsive layout primitives, and composable sections
-- Useful as inspiration/pattern library when extending beyond stock MUI widgets
+- **Package**: `react-bits@^1.0.5`
+- **Status**: ⚠️ **Installed but NOT actively integrated**
+- **Current Usage**: Zero imports in production code
+- **Purpose**: Reference library for marketing section patterns and accessibility blueprints
+- **Integration Plan**: See `docs/design-system/react-bits.md` for proposed adapter pattern using MUI theme wrappers
+- **Recommendation**: Keep as design reference or remove if not planned for near-term integration
 
 ### 3D Scene Management
 
@@ -110,6 +154,40 @@ This document contains all the documentation sources and resources used during t
 - **Configuration**: Maintained in `/src/config/uiConfig.js`
 - **Component Order**: Hero → Work → About → Contact
 
+## Recent Component Additions
+
+### TechBar Component (Added 2025-09-27)
+
+- **File**: `src/components/work/TechBar.js`
+- **Purpose**: Minimal wrapper around `TechnologyTags` for stable technology chip rendering
+- **Implementation**: Pass-through component with prop validation
+- **Usage**: Provides consistent entry point for technology badges across Work section
+- **Daily Notes**: [2025-09-27.md](../development/daily-notes/2025-09-27.md)
+
+### Scroll & Tab Navigation Improvements (2025-09-29)
+
+- **Major Enhancement**: About section tab navigation with scroll-spy detection
+- **New Hook**: `useScrollSpy` - IntersectionObserver-based scroll position tracking
+  - Detects active section based on viewport visibility
+  - Configurable threshold, rootMargin, and scroll offset
+  - Used by `AboutTabNavigatorScrollSpy.js`
+- **Fixes**: 9 iterative improvements for scroll alignment, sticky header offsets, and tab activation
+- **Documentation**: [2025-09-29-scroll-fixes.md](../development/daily-notes/2025-09-29-scroll-fixes.md)
+- **Related Files**: `AboutTabNavigatorScrollSpy.js`, `AboutSection.js`, `useScrollSpy.js`
+
+## Advanced Content Pipeline (Undocumented)
+
+### Content Analysis Utilities
+
+These utilities enable adaptive, intelligent rendering of project content:
+
+- **contentAnalysis.js**: Analyzes image dimensions and text content for optimal layout decisions
+- **sectionAnalyzer.js**: Determines rendering strategies based on content type (text-heavy, media-heavy, balanced)
+- **sectionNormalizer.js**: Standardizes project section data structures for consistent processing
+- **projectGalleryValidator.js**: Dev-only validation for gallery media aspect hints
+
+**Usage**: Work section project modals use these to dynamically adapt layouts based on content characteristics.
+
 ---
-*Last Updated: September 27, 2025*
+*Last Updated: September 30, 2025*
 *Project: React Portfolio with 3D Background*

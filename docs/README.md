@@ -1,6 +1,6 @@
 # Portfolio Documentation Index
 
-_Last updated: 18 March 2026_
+_Last updated: September 30, 2025_
 
 ## Documentation Overview
 
@@ -116,7 +116,12 @@ When updating documentation:
   - `NextSteps.md`           : Refactoring and cleanup plans
 
 - **src/hooks/**
-  - Custom hooks for data loading, debouncing, intersection observer, etc.
+  - `useDataLoader.js`       : Promise-aware data loading with retry and validation
+  - `useProjectModal.js`     : Project modal navigation and state management
+  - `useScrollSpy.js`        : Scroll-based section detection using IntersectionObserver (added 2025-09-29)
+  - `useIntersectionObserver.js` : Generic intersection observer hook
+  - `useDebounce.js`         : Debounce hook for performance optimization
+  - `useThemeUtils.js`       : Theme-related utility hooks
 
 - **src/pages/**
   - `HomePage.js`        : Main landing page (if used)
@@ -134,6 +139,10 @@ When updating documentation:
   - `themeUtils.js`           : Theme-related helpers
   - `scrollUtils.js`          : Smooth scrolling helpers
   - `MediaPathResolver.js`    : Resolves asset paths for media
+  - `contentAnalysis.js`      : Analyzes content for optimal layout decisions (added 2025)
+  - `sectionAnalyzer.js`      : Determines rendering strategies for sections (added 2025)
+  - `sectionNormalizer.js`    : Standardizes section data structures (added 2025)
+  - `projectGalleryValidator.js` : Dev-only gallery validation (added 2025)
 
 ---
 

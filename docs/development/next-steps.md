@@ -131,16 +131,68 @@ Goal: Restore full, dynamic project display functionality within the modal.
 
 ## Documentation follow-ups (2025-09-27)
 
-- Create a short page for end-to-end testing: how to run `npm start` and `npm run test:e2e`, headless mode tips, and resolving dev overlay issues.
-- Add a brief guideline for adding new 3D scenes and wiring them via `SceneContext` (expected props, performance tips, and where to place assets).
-- Expand design system docs to reference the token files under `src/theme/` explicitly and show common `sx` patterns (cards, stacks, section headers).
-- Document Framer Motion usage patterns used in this project (variants, `AnimatePresence` in modals, staggered grids) with links to official docs.
-- Audit `docs/legacy/` and list candidates to archive or cross-link with current pages to reduce drift.
+✓ **Completed September 30, 2025** - Comprehensive documentation sweep executed:
+- ✓ Updated `docs/resources/links.md` with all current dependencies, usage status, and removal candidates
+- ✓ Updated `docs/architecture/system-overview.md` with new components, hooks, and utilities
+- ✓ Updated `docs/architecture/file-structure.md` with new utility files
+- ✓ Updated `docs/README.md` with expanded hooks and utils documentation
+- ✓ Created `docs/development/docs-follow-ups.md` with prioritized documentation tasks
+- ✓ Corrected all date inconsistencies (removed future "March 2026" dates)
 
-# Next Steps (as of 16 April 2025)
+**Remaining tasks** moved to `docs/development/docs-follow-ups.md`:
+- E2E testing guide (high priority)
+- 3D scene integration guide (medium priority)
+- Content pipeline comprehensive documentation (medium priority)
+- Framer Motion patterns documentation (medium priority)
+- Scroll & navigation best practices extraction (from Sept 29 notes)
 
-- All previously marked unused files (utilities, hooks, context) have been deleted.
-- Media/image utilities are consolidated in `mediaUtils.js` and used by all relevant components.
-- Layout and spacing are handled with MUI's Box and sx prop; no redundant layout components remain.
-- Dependency cleanup is complete and the app builds successfully.
-- The codebase is clean, modular, and ready for further development or optimization.
+## Recent Major Improvements (September 2025)
+
+### TechBar Component (2025-09-27)
+- Implemented minimal wrapper around `TechnologyTags` for stable technology chip rendering
+- Located at `src/components/work/TechBar.js`
+- Provides consistent entry point for technology badges across Work section
+- See `docs/development/daily-notes/2025-09-27.md` for implementation details
+
+### About Section Scroll Improvements (2025-09-29)
+- **9 iterative improvements** to scroll navigation and tab detection
+- Implemented `useScrollSpy` hook for IntersectionObserver-based scroll tracking
+- Fixed sticky header offset calculations
+- Resolved tab activation sensitivity and scroll alignment issues
+- See comprehensive documentation: `docs/development/daily-notes/2025-09-29-scroll-fixes.md`
+
+### Advanced Content Pipeline (2025)
+- Added `contentAnalysis.js` - analyzes content for optimal layout decisions
+- Added `sectionAnalyzer.js` - determines rendering strategies (text-heavy, media-heavy, balanced)
+- Added `sectionNormalizer.js` - standardizes section data structures
+- Added `projectGalleryValidator.js` - dev-only validation for gallery media
+- Enables adaptive, intelligent rendering of project content in Work section
+
+# Status Summary (as of September 30, 2025)
+
+## Completed ✓
+- All previously marked unused files (utilities, hooks, context) have been deleted
+- Media/image utilities are consolidated in `mediaUtils.js` and used by all relevant components
+- Layout and spacing are handled with MUI's Box and sx prop; no redundant layout components remain
+- TechBar component implemented for consistent technology badge rendering
+- About section scroll navigation with 9 iterative improvements
+- Advanced content analysis pipeline for adaptive Work section rendering
+- Comprehensive documentation sweep completed with all files updated to current state
+
+## Known Issues / Removal Candidates
+- **GSAP**: Dependency present but completely unused (0 imports) - removal candidate
+- **styled-components**: Only used in `src/theme/animations.js` for keyframe exports (lines 8, 122-149), which are unused elsewhere - removal candidate after refactoring animations.js
+- **react-bits**: Installed but not integrated in production code - keep as reference or remove
+- **Markdown linting**: 50+ style warnings in docs (pre-existing, non-functional) - low priority cleanup
+
+## Next Development Priorities
+1. **Dependency cleanup**: Remove GSAP, refactor animations.js to eliminate styled-components
+2. **E2E test coverage**: Expand smoke tests based on new components and scroll behaviors
+3. **Performance monitoring**: Profile content pipeline utilities for large project datasets
+4. **Accessibility audit**: Verify ARIA labels and keyboard navigation in new scroll-spy implementation
+
+## Documentation Priorities
+See `docs/development/docs-follow-ups.md` for full prioritized list. Top items:
+1. E2E testing guide (how to run, troubleshoot, extend)
+2. 3D scene integration guidelines (SceneContext, performance, theming)
+3. Content pipeline comprehensive documentation (normalizer → analyzer → renderer flow)

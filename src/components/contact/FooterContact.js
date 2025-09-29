@@ -4,8 +4,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
-// Removed Salzburg image import
 import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
+import DotGridBackground from '../common/DotGridBackground';
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
@@ -28,7 +28,7 @@ const FooterContact = ({ projectContext }) => {
       component="footer" 
       id="footer-contact" 
       sx={{ 
-        width: '100vw', // Ensure full viewport width
+        width: '100vw',
         maxWidth: '100vw',
         padding: 0,
         marginBottom: 0,
@@ -50,10 +50,17 @@ const FooterContact = ({ projectContext }) => {
             background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
             overflow: 'hidden',
             position: 'relative',
-            py: 8, // Use theme spacing
-            minHeight: '500px', // Min height instead of fixed height
+            py: 8,
+            minHeight: '500px',
           }}
         >
+          {/* Interactive Dot Grid Background */}
+          <DotGridBackground 
+            dotSize={16}
+            gap={32}
+            proximity={150}
+          />
+
           <Box
             sx={{
               width: '100%',
@@ -74,8 +81,8 @@ const FooterContact = ({ projectContext }) => {
                     color: theme.palette.common.white,
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     height: '100%',
-                    maxWidth: '900px', // Add a max-width for better readability
-                    mx: 'auto', // Center the card horizontally
+                    maxWidth: '900px',
+                    mx: 'auto',
                   }}
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>

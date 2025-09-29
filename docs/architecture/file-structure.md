@@ -108,7 +108,11 @@ src/
     ├── projectUtils.js        # Project helpers
     ├── themeUtils.js          # Theme utilities
     ├── scrollUtils.js         # Smooth scrolling
-    └── MediaPathResolver.js   # Asset path resolution
+    ├── MediaPathResolver.js   # Asset path resolution
+    ├── contentAnalysis.js     # Content analysis for adaptive layouts
+    ├── sectionAnalyzer.js     # Section rendering strategy determination
+    ├── sectionNormalizer.js   # Section data standardization
+    └── projectGalleryValidator.js # Dev-only gallery validation
 ```
 
 ## Key Architecture Patterns
