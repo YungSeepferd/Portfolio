@@ -53,7 +53,7 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
     ));
   }
 
-  // Desktop: use Stack for spacing and alignment
+  // Desktop: use Stack for spacing and alignment (pill-style buttons)
   return (
     <Stack direction="row" alignItems="center" gap={2} pr={{ md: 3, lg: 5 }}>
       {navItems.map((item, idx) => (
@@ -63,9 +63,23 @@ const NavLinks = ({ navItems, variant = 'desktop', onClick }) => {
           color={item.isCallToAction ? 'primary' : 'inherit'}
           size={item.isCallToAction ? 'medium' : 'small'}
           sx={{
-            ml: idx === 0 ? 0 : 2,
+            ml: idx === 0 ? 0 : 1,
             minWidth: 'auto',
             position: 'relative',
+            textTransform: 'none',
+            fontWeight: item.isCallToAction ? 600 : 600,
+            px: item.isCallToAction ? 2.25 : 1.5,
+            py: item.isCallToAction ? 1 : 0.75,
+            borderRadius: item.isCallToAction ? 2 : '999px',
+            color: item.isCallToAction ? undefined : theme.palette.text.secondary,
+            '&:hover': {
+              backgroundColor: item.isCallToAction ? undefined : 'action.hover',
+              color: item.isCallToAction ? undefined : theme.palette.primary.main,
+            },
+            '&:focus-visible': {
+              outline: `2px solid ${theme.palette.primary.main}`,
+              outlineOffset: 2,
+            },
           }}
           onClick={() => handleScroll(item.target)}
         >

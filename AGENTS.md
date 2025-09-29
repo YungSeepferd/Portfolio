@@ -6,9 +6,9 @@ This file defines the expectations for AI coding agents collaborating on the **V
 
 ## 1. Mission Context
 
-- **Tech stack**: React 18 (CRA), Material UI 5, Framer Motion, React Three Fiber + Three.js, Selenium for smoke tests.
+- **Tech stack**: React 18 (CRA), Material UI 5, Framer Motion, React Three Fiber + Three.js, React-bits, GSAP, Selenium for smoke tests.
 - **Structure**: Single-page portfolio with distinct feature sections (Hero, Work, About, Contact) rendered inside `src/App.js`.
-- **Design system first**: Styling is token-driven. All colours, spacing, and typography originate from `src/theme/`.
+- **Design system first**: Styling is token-driven. All colours, spacing, and typography originate from `src/theme/`. Use the least amount of overrides possible.
 - **Data-driven content**: Project and about sections are defined via structured JS objects. Updating content almost always means editing data files rather than JSX.
 
 ## 2. Repository Orientation

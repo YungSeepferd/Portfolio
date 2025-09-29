@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { motion } from 'framer-motion';
 import AboutTabNavigator from './AboutTabNavigator';
 import ErrorBoundary from '../common/ErrorBoundary';
-import { aboutData } from './AboutData'; // Import directly for immediate use
-import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
+import aboutData from './AboutData'; // Import default export
 
 /**
  * AboutSection Component
@@ -16,9 +14,7 @@ const AboutSection = () => {
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-  const horizontalPadding = getSpacingPreset('pageHorizontal');
-  const sectionTitlePreset = getTypographyPreset(theme, 'sectionTitle');
-  const sectionSubtitlePreset = getTypographyPreset(theme, 'sectionSubtitle');
+  // Header presets removed; title moved into AboutTabNavigator left column
   
   // Use direct data import instead of useDataLoader for about section
   useEffect(() => {
@@ -42,18 +38,7 @@ const AboutSection = () => {
     }
   };
 
-  // Animation variants for section fade-in
-  const sectionAnimation = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut"
-      }
-    }
-  };
+  // Header animation removed with old header block
   
   // Check if we have valid data
   const hasValidData = Array.isArray(aboutData) && aboutData.length > 0;
@@ -70,56 +55,7 @@ const AboutSection = () => {
           py: 8,
         }}
       >
-        {/* Header section */}
-        <Box 
-          id="about-section-header"
-          sx={{ 
-            width: '100%',
-            px: horizontalPadding.px,
-            boxSizing: 'border-box',
-          }}
-        >
-          <motion.div
-            variants={sectionAnimation}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <Box 
-              id="about-section-header-inner"
-              sx={{ 
-                width: '100%', 
-                textAlign: 'center',
-                mb: { xs: 4, md: 6 },
-              }}
-            >
-              <Typography 
-                variant={sectionTitlePreset.variant}
-                component={sectionTitlePreset.component}
-                sx={{ 
-                  ...sectionTitlePreset.sx,
-                  mb: 2,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                About
-              </Typography>
-              
-              <Typography 
-                variant={sectionSubtitlePreset.variant}
-                component={sectionSubtitlePreset.component}
-                sx={{
-                  ...sectionSubtitlePreset.sx,
-                  maxWidth: '800px',
-                  mx: 'auto',
-                  color: theme.palette.text.secondary
-                }}
-              >
-                Learn more about my background, skills, and professional journey
-              </Typography>
-            </Box>
-          </motion.div>
-        </Box>
+        {/* Header removed: Title moved to left tabs column; description removed per request */}
         
         {/* Render loading state or content */}
         {isLoading ? (

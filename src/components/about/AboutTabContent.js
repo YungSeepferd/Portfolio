@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme, Card } from '@mui/material';
 import AboutSlideshow from './AboutSlideshow';
 
 /**
@@ -25,10 +25,19 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
     );
   }
   
-  // Extract the first h4 heading to place it in the top row
-  const content = React.Children.toArray(tabData.content.props.children);
-  const heading = content.find(child => child.type === Typography && child.props.variant === 'h4');
-  const restContent = content.filter(child => child !== heading);
+  // Determine headline and content body
+  const contentArray = tabData?.content ? React.Children.toArray(tabData.content.props.children) : [];
+  // Strip any h4 heading from content to avoid duplicate headings
+  const extractedHeading = contentArray.find(
+    (child) => child?.type === Typography && child?.props?.variant === 'h4'
+  );
+  // Always mirror the tab label for the content headline
+  const headingNode = (
+    <Typography variant="h4" sx={{ mb: 2 }}>{tabData.title}</Typography>
+  );
+  const contentBody = contentArray.filter((child) => child !== extractedHeading);
+
+  const isWhoAmI = tabData?.title === 'WhoAmI';
 
   return (
     <Box
@@ -41,66 +50,67 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         gap: { xs: 4, md: 6 },
         p: { xs: 2, sm: 3, md: 4 },
         backgroundColor: 'background.paper',
-        borderRadius: 0.5,
+        borderRadius: 0,
         boxShadow: 'none',
         mb: 3,
         scrollMarginTop: { xs: theme.spacing(12), md: theme.spacing(14) },
       }}
     >
-      {/* Top Row: Image and Heading */}
-      <Box 
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '45% 1fr' },
-          gap: { xs: 4, md: 6 },
-          alignItems: 'flex-start',
-        }}
-      >
-        {/* Image Container */}
-        <Box
-          id={`about-tab-image-section-${tabIndex}`}
+      {/* Top Row: Image and Heading (hidden for WhoAmI) */}
+      {!isWhoAmI && (
+        <Box 
           sx={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: 'background.paper',
-            boxShadow: 'none',
-            overflow: 'hidden',
-            minHeight: { xs: 260, sm: 320, md: 280 },
-            maxHeight: { xs: 360, sm: 400, md: 380 },
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '45% 1fr' },
+            gap: { xs: 4, md: 6 },
+            alignItems: 'flex-start',
           }}
         >
-          <AboutSlideshow pictures={tabData.pictures} />
-        </Box>
+          {/* Image Card */}
+          <Card
+            id={`about-tab-image-section-${tabIndex}`}
+            elevation={3}
+            sx={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 0,
+              overflow: 'hidden',
+              minHeight: { xs: 260, sm: 320, md: 280 },
+              maxHeight: { xs: 360, sm: 400, md: 380 },
+            }}
+          >
+            <AboutSlideshow pictures={tabData.pictures} />
+          </Card>
 
-        {/* Heading Section */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            minHeight: { md: '100%' },
-            '& .MuiTypography-h4': {
-              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
-              lineHeight: 1.2,
-              mb: 2,
-            },
-            '& .MuiTypography-subtitle1': {
-              color: 'text.secondary',
-              mb: 2,
-            },
-          }}
-        >
-          {heading}
-          {tabData.subtitle && (
-            <Typography variant="subtitle1">
-              {tabData.subtitle}
-            </Typography>
-          )}
+          {/* Heading Section */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              minHeight: { md: '100%' },
+              '& .MuiTypography-h4': {
+                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                lineHeight: 1.2,
+                mb: 2,
+              },
+              '& .MuiTypography-subtitle1': {
+                color: 'text.secondary',
+                mb: 2,
+              },
+            }}
+          >
+            {headingNode}
+            {tabData.subtitle && (
+              <Typography variant="subtitle1">
+                {tabData.subtitle}
+              </Typography>
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {/* Bottom Row: Full Width Content */}
       <Box
@@ -133,7 +143,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
           },
         }}
       >
-        {restContent}
+        {contentBody}
       </Box>
     </Box>
   );

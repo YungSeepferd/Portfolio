@@ -33,7 +33,8 @@ themeSpacing.content = {
   itemSpacing: 1.5,    // 12px spacing between items (8px * 1.5)
   paragraphSpacing: 2, // 16px spacing between paragraphs
   listItemSpacing: 1,  // 8px spacing between list items
-  sectionSpacing: 3    // 24px spacing between sections
+  sectionSpacing: 3,   // 24px spacing between sections
+  listIndent: 2.5,     // 20px list left padding
 };
 
 // Additional spacing configurations
@@ -59,6 +60,36 @@ themeSpacing.card = {
   paddingY: { xs: 1.5, md: 2 },
   marginBottom: 4,  // 32px margin below cards
   gap: 2,           // 16px gap between card elements
+};
+
+// Bento grid spacing tokens
+themeSpacing.bento = {
+  rowGap: 3,      // 24px vertical gap between bento rows
+  columnGap: 3,   // 24px horizontal gap between bento columns
+};
+
+// Tabs spacing tokens (used in About left nav and mobile tabs)
+themeSpacing.tabs = {
+  // Min label height in spacing units (7 * 8px = 56px)
+  minHeight: 7,
+  // Label paddings in spacing units
+  labelPaddingLeft: 2.5,
+  labelPaddingRight: 1.5,
+  // Indicator thickness in px
+  indicatorThicknessPx: 3,
+};
+
+// About layout tokens
+themeSpacing.about = {
+  leftNavWidthPx: 240,
+  gridGap: 2, // default column/row gap inside about layout grids
+};
+
+// Icon size tokens
+themeSpacing.icon = {
+  sm: 3,  // 24px
+  md: 4,  // 32px
+  lg: 6,  // 48px
 };
 
 /**

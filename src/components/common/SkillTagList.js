@@ -35,7 +35,7 @@ SkillTagList.propTypes = {
   label: PropTypes.string.isRequired,
   size: PropTypes.oneOf(["small", "medium"]),
   onClick: PropTypes.func,
-  variant: PropTypes.oneOf(["filled", "outlined"]),
+  variant: PropTypes.oneOf(["filled", "outlined", "category", "skill"]),
   color: PropTypes.oneOf(["default", "primary", "secondary", "error", "info", "success", "warning"]),
   sx: PropTypes.object,
 };

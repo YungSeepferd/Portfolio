@@ -67,6 +67,11 @@ const AboutSlideshow = React.memo(({ pictures }) => {
       setLoaded(false);
     }
 
+    // If there is only one image, do not auto-cycle
+    if (!defaultPics || defaultPics.length <= 1) {
+      return;
+    }
+
     // Set timer for next image
     const timer = setTimeout(() => {
       // Mark this image as loaded for future reference
