@@ -5,7 +5,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
 import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
-import DotGridBackground from '../common/DotGridBackground';
+import HybridFooterBackground from '../common/HybridFooterBackground';
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
@@ -54,11 +54,18 @@ const FooterContact = ({ projectContext }) => {
             minHeight: '500px',
           }}
         >
-          {/* Interactive Dot Grid Background */}
-          <DotGridBackground 
-            dotSize={16}
-            gap={32}
-            proximity={150}
+          {/* Hybrid Background: Animated Mesh + Interactive Dot Grid */}
+          <HybridFooterBackground 
+            meshProps={{
+              orbCount: 6,
+              baseSpeed: 0.4,
+              mouseInfluence: 0.12
+            }}
+            dotProps={{
+              dotSize: 12,
+              gap: 36,
+              proximity: 180
+            }}
           />
 
           <Box
@@ -141,7 +148,12 @@ const FooterContact = ({ projectContext }) => {
                       }}
                     >
                       <a href={mailtoLink} style={{ textDecoration: 'none' }}>
-                        <IconButton variant="glassmorphic">
+                        <IconButton 
+                          variant="glassmorphic"
+                          sx={{
+                            color: theme.palette.common.white,
+                          }}
+                        >
                           <EmailIcon />
                         </IconButton>
                       </a>
@@ -150,6 +162,9 @@ const FooterContact = ({ projectContext }) => {
                         href="https://www.linkedin.com/in/vincent-g-193124194/"
                         target="_blank"
                         variant="glassmorphic"
+                        sx={{
+                          color: theme.palette.common.white,
+                        }}
                       >
                         <LinkedInIcon />
                       </IconButton>
@@ -158,6 +173,9 @@ const FooterContact = ({ projectContext }) => {
                         href="https://github.com/YungSeepferd"
                         target="_blank"
                         variant="glassmorphic"
+                        sx={{
+                          color: theme.palette.common.white,
+                        }}
                       >
                         <GitHubIcon />
                       </IconButton>
