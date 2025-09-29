@@ -82,27 +82,26 @@ const coreCompetencyItems = [
   },
   {
     title: 'Technical Craft',
-    description: 'From Arduino and embedded systems to modern web frameworks, I work across the stack.',
+    description: 'From Arduino, Raspberry Pie, and embedded systems to modern web frameworks, I learn and grow across the stack.',
     icon: CodeIcon,
     skills: [
       'Arduino',
+      'Raspberry Pie',
       'Embedded Systems',
       'Web Frameworks',
+      'Software Development',
       'Physical Prototyping',
-      'Adafruit ItsyBitsy',
-      'Golang',
-      'Analytical Sketching'
     ]
   },
   {
     title: 'Workflow & Tools',
-    description: 'I integrate local LLM APIs and n8n workflow automation to streamline repetitive tasks.',
+    description: 'I currently explore local LLM APIs and n8n workflow automation to streamline repetitive tasks.',
     icon: WorkIcon,
     skills: [
-      'Local LLM APIs',
-      'n8n Automation',
+      'Local Ollama LLM APIs',
+      '(Local) embedded n8n Automation',
       'Workflow Optimization',
-      'Task Automation',
+      'LLM Prompt Engineering',
       'Creative Problem-Solving',
       'Process Design',
       'Tool Integration'
@@ -113,27 +112,13 @@ const coreCompetencyItems = [
     description: 'Outside of design, I explore electronic music production and creative coding projects.',
     icon: HeadsetMicIcon,
     skills: [
-      'Electronic Music',
+      'Cooking',
       'Creative Coding',
       'Music Production',
-      'Outdoor Activities',
-      'Work-Life Balance',
+      'Gaming',
       'Personal Projects',
-      'FC Schalke 04 Support'
-    ]
-  },
-  {
-    title: 'Core Values',
-    description: 'Quality work emerges from curiosity, humility, and continuous learning.',
-    icon: LocalLibraryIcon,
-    skills: [
-      'Curiosity',
-      'Humility',
-      'Continuous Learning',
-      'Measuring Impact',
-      'Questioning Assumptions',
-      'Feedback Openness',
-      'People-First Design'
+      'Football',
+      'FC Schalke 04'
     ]
   }
 ];
@@ -142,7 +127,7 @@ const coreCompetencyItems = [
 const designCompetencyItems = [
   {
     title: 'Design',
-    description: 'Crafting intuitive and engaging user experiences through thoughtful design',
+    description: 'Crafting intuitive and engaging multimodal user experiences through thoughtful design',
     icon: BrushIcon,
     skills: [
       'UI/UX Design',

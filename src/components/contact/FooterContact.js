@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, Typography, IconButton, Button, useTheme, Paper, Grid, Card, CardContent } from '@mui/material';
+import { Box, Typography, IconButton, Button, useTheme, Paper, Grid, CardContent } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { motion } from 'framer-motion';
 import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 import HybridFooterBackground from '../common/HybridFooterBackground';
+import EnhancedFooterCard from './EnhancedFooterCard';
 
 const FooterContact = ({ projectContext }) => {
   const theme = useTheme();
@@ -78,127 +79,119 @@ const FooterContact = ({ projectContext }) => {
             }}
           >
             <Grid container spacing={4} justifyContent="center">
-              {/* Content Box - Now full width */}
+              {/* Enhanced Interactive Card with 3D Tilt Effects */}
               <Grid item xs={12}>
-                <Card 
-                  elevation={6}
-                  sx={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
-                    backdropFilter: 'blur(10px)',
-                    color: theme.palette.common.white,
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    height: '100%',
-                    maxWidth: '900px',
-                    mx: 'auto',
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-                    <Typography 
-                      variant={headlinePreset.variant}
-                      component={headlinePreset.component}
-                      gutterBottom 
-                      sx={{ 
-                        ...headlinePreset.sx,
-                        color: theme.palette.common.white,
-                        mb: { xs: 2, sm: 3 },
-                        textAlign: { xs: 'center', sm: 'left' }
-                      }}
-                    >
-                      Let's Connect!
-                    </Typography>
-                    
-                    <Typography 
-                      variant={bodyPreset.variant}
-                      component={bodyPreset.component}
-                      sx={{ 
-                        ...bodyPreset.sx,
-                        color: theme.palette.common.white, 
-                        mb: { xs: 2, sm: 3 },
-                        opacity: 0.9,
-                        maxWidth: '700px',
-                        textAlign: { xs: 'center', sm: 'left' }
-                      }}
-                    >
-                      {contactMessage}
-                    </Typography>
-                    
-                    <Typography 
-                      variant={contactLinePreset.variant}
-                      component={contactLinePreset.component}
-                      sx={{
-                        ...contactLinePreset.sx,
-                        color: theme.palette.common.white,
-                        mb: { xs: 1.5, sm: 2 },
-                        fontWeight: 'medium',
-                        wordBreak: 'break-word',
-                        textAlign: { xs: 'center', sm: 'left' }
-                      }}
-                    >
-                      goeke.vincent@gmail.com
-                    </Typography>
-                    
-                    {/* Contact Icons */}
-                    <Box 
-                      sx={{ 
-                        display: 'flex', 
-                        gap: { xs: 1, sm: 2 }, 
-                        mb: 3,
-                        flexWrap: 'wrap',
-                        justifyContent: { xs: 'center', sm: 'flex-start' }
-                      }}
-                    >
-                      <a href={mailtoLink} style={{ textDecoration: 'none' }}>
+                <Box sx={{ maxWidth: '900px', mx: 'auto' }}>
+                  <EnhancedFooterCard>
+                    <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+                      <Typography 
+                        variant={headlinePreset.variant}
+                        component={headlinePreset.component}
+                        gutterBottom 
+                        sx={{ 
+                          ...headlinePreset.sx,
+                          color: theme.palette.common.white,
+                          mb: { xs: 2, sm: 3 },
+                          textAlign: { xs: 'center', sm: 'left' }
+                        }}
+                      >
+                        Let's Connect!
+                      </Typography>
+                      
+                      <Typography 
+                        variant={bodyPreset.variant}
+                        component={bodyPreset.component}
+                        sx={{ 
+                          ...bodyPreset.sx,
+                          color: theme.palette.common.white, 
+                          mb: { xs: 2, sm: 3 },
+                          opacity: 0.9,
+                          maxWidth: '700px',
+                          textAlign: { xs: 'center', sm: 'left' }
+                        }}
+                      >
+                        {contactMessage}
+                      </Typography>
+                      
+                      <Typography 
+                        variant={contactLinePreset.variant}
+                        component={contactLinePreset.component}
+                        sx={{
+                          ...contactLinePreset.sx,
+                          color: theme.palette.common.white,
+                          mb: { xs: 1.5, sm: 2 },
+                          fontWeight: 'medium',
+                          wordBreak: 'break-word',
+                          textAlign: { xs: 'center', sm: 'left' }
+                        }}
+                      >
+                        goeke.vincent@gmail.com
+                      </Typography>
+                      
+                      {/* Contact Icons */}
+                      <Box 
+                        sx={{ 
+                          display: 'flex', 
+                          gap: { xs: 1, sm: 2 }, 
+                          mb: 3,
+                          flexWrap: 'wrap',
+                          justifyContent: { xs: 'center', sm: 'flex-start' }
+                        }}
+                      >
+                        <a href={mailtoLink} style={{ textDecoration: 'none' }}>
+                          <IconButton 
+                            variant="glassmorphic"
+                            sx={{
+                              color: theme.palette.common.white,
+                            }}
+                          >
+                            <EmailIcon />
+                          </IconButton>
+                        </a>
+                        
                         <IconButton 
+                          href="https://www.linkedin.com/in/vincent-g-193124194/"
+                          target="_blank"
                           variant="glassmorphic"
                           sx={{
                             color: theme.palette.common.white,
                           }}
                         >
-                          <EmailIcon />
+                          <LinkedInIcon />
                         </IconButton>
-                      </a>
+                        
+                        <IconButton 
+                          href="https://github.com/YungSeepferd"
+                          target="_blank"
+                          variant="glassmorphic"
+                          sx={{
+                            color: theme.palette.common.white,
+                          }}
+                        >
+                          <GitHubIcon />
+                        </IconButton>
+                      </Box>
                       
-                      <IconButton 
-                        href="https://www.linkedin.com/in/vincent-g-193124194/"
-                        target="_blank"
-                        variant="glassmorphic"
-                        sx={{
+                      <Button 
+                        variant="glassmorphic" 
+                        component="a" 
+                        href={mailtoLink}
+                        size="large"
+                        sx={{ 
+                          width: { xs: '100%', sm: 'auto' },
+                          maxWidth: { xs: '280px', sm: 'none' },
+                          mx: { xs: 'auto', sm: 0 },
+                          display: 'flex',
+                          py: 1.5,
+                          px: 4,
                           color: theme.palette.common.white,
                         }}
                       >
-                        <LinkedInIcon />
-                      </IconButton>
-                      
-                      <IconButton 
-                        href="https://github.com/YungSeepferd"
-                        target="_blank"
-                        variant="glassmorphic"
-                        sx={{
-                          color: theme.palette.common.white,
-                        }}
-                      >
-                        <GitHubIcon />
-                      </IconButton>
-                    </Box>
-                    
-                    <Button 
-                      variant="glassmorphic" 
-                      component="a" 
-                      href={mailtoLink}
-                      size="large"
-                      sx={{ 
-                        width: { xs: '100%', sm: 'auto' },
-                        maxWidth: { xs: '280px', sm: 'none' },
-                        mx: { xs: 'auto', sm: 0 },
-                        display: 'flex',
-                        py: 1.5,
-                        px: 4
-                      }}
-                    >
-                      Contact Me
-                    </Button>
-                  </CardContent>
-                </Card>
+                        Contact Me
+                      </Button>
+                    </CardContent>
+                  </EnhancedFooterCard>
+                </Box>
               </Grid>
             </Grid>
             
