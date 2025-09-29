@@ -65,7 +65,7 @@ const ActionButton = ({
   return (
     <Button
       id={`action-button-${label ? label.toLowerCase().replace(/\s+/g, '-') : 'unnamed'}`}
-      variant={variant}
+      variant="glassmorphic"
       size={size}
       color={buttonColor}
       href={href}
@@ -75,17 +75,44 @@ const ActionButton = ({
         minWidth: 'auto',
         ...buttonPreset.sx,
         textTransform: 'none',
-        borderRadius: theme.shape.borderRadius,
         px: paddingX,
         py: paddingY,
-        transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color'], {
+        // Glassmorphic overrides
+        background: theme.palette.mode === 'dark'
+          ? 'rgba(255, 255, 255, 0.15)'
+          : 'rgba(5, 38, 45, 0.20)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: theme.palette.mode === 'dark'
+          ? `1px solid rgba(255, 255, 255, 0.3)`
+          : `1px solid rgba(5, 38, 45, 0.3)`,
+        color: theme.palette.common.white,
+        borderRadius: 0,
+        boxShadow: theme.shadows[2],
+        transition: theme.transitions.create(['background-color', 'box-shadow', 'transform'], {
           duration: theme.transitions.duration.shorter,
         }),
         '&:hover': {
-          boxShadow: variant === 'contained' ? theme.shadows[4] : theme.shadows[2],
+          background: theme.palette.mode === 'dark'
+            ? 'rgba(255, 255, 255, 0.25)'
+            : 'rgba(5, 38, 45, 0.30)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: theme.palette.mode === 'dark'
+            ? `1px solid rgba(255, 255, 255, 0.4)`
+            : `1px solid rgba(5, 38, 45, 0.4)`,
+          transform: 'translateY(-2px)',
+          boxShadow: theme.shadows[4],
+        },
+        '&:active': {
+          transform: 'translateY(0)',
+          background: theme.palette.mode === 'dark'
+            ? 'rgba(255, 255, 255, 0.20)'
+            : 'rgba(5, 38, 45, 0.25)',
         },
         '&:focus': {
-          boxShadow: `0 0 0 2px ${theme.palette.primary.main}40`,
+          outline: `2px solid ${theme.palette.primary.main}`,
+          outlineOffset: 2,
         },
         ...sx
       }}

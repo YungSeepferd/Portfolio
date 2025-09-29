@@ -6,7 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import LaunchIcon from '@mui/icons-material/Launch';
 
 // Import project images directly with standardized naming
 import OverviewImage from '../../../../assets/images/Masterthesis/headerimagemasterthesis.png';
@@ -75,7 +74,7 @@ const links = [
 const masterThesis = {
   id: 'masterThesis',
   title: "Prototyping Emotions – Master Thesis",
-  description: "A structured methodology for prototyping emotional haptic feedback using the Circumplex Model of Affect.",
+  description: "A structured methodology for prototyping emotional haptic feedback.",
   categories: ["UX Research", "Interaction Design", "HCI Methodologies", "Haptic Design"],
   technologies: ["Figma", "Miro", "Hapticlabs DevKit", "Hapticlabs Studio"],
   cardVariant: cardVariant,
@@ -87,7 +86,7 @@ const masterThesis = {
       title: 'Project Overview',
       content: (
         <Typography variant="body1" paragraph>
-          This master thesis developed a structured methodological toolkit designed to assist novice designers in crafting emotionally resonant haptic feedback systems. The research bridges the gap between emotion theory and practical haptic design through structured workshop methodologies and technical implementations, specifically targeting accessibility and intuitive use within educational contexts.
+          This master thesis developed a structured methodological toolkit designed to assist novice interaction designers in exploring emotionally resonant haptic feedback systems. The research identified the gap between emotion theory and practical haptic design through structured workshop methodologies and explorative tactile experience prototyping, specifically targeting communicational and intuitive use within educational contexts.
         </Typography>
       ),
       media: { type: 'image', src: media.images.overview },

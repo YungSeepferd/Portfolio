@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Typography, useTheme, CircularProgress, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import AboutTabNavigator from './AboutTabNavigator';
+import AboutTabNavigatorScrollSpy from './AboutTabNavigatorScrollSpy';
 import ErrorBoundary from '../common/ErrorBoundary';
 import aboutData from './AboutData'; // Import default export
 
@@ -14,7 +14,9 @@ const AboutSection = () => {
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-  // Header presets removed; title moved into AboutTabNavigator left column
+  const [scrollLocked, setScrollLocked] = useState(false);
+  const [isAtViewportTop, setIsAtViewportTop] = useState(false);
+  const sectionRef = useRef(null);
   
   // Use direct data import instead of useDataLoader for about section
   useEffect(() => {
@@ -25,6 +27,78 @@ const AboutSection = () => {
     
     return () => clearTimeout(timer);
   }, []);
+  
+  // Detect when About section reaches viewport top
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Check if section is at or near the top of viewport
+        const rect = entry.boundingClientRect;
+        // More lenient threshold - within 50px of top
+        const atTop = rect.top <= 50 && rect.top >= -10;
+        const isAtTop = atTop && entry.isIntersecting;
+        setIsAtViewportTop(isAtTop);
+        
+        // Don't automatically lock - let the parallax container handle scrolling
+        setScrollLocked(false);
+      },
+      {
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+        rootMargin: '0px 0px 0px 0px',
+      }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+  
+  // Body scroll lock effect - only when section is at viewport top
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    
+    // Prevent wheel and touch scroll on body
+    const preventScroll = (e) => {
+      if (scrollLocked && isAtViewportTop) {
+        e.preventDefault();
+      }
+    };
+    
+    // Only lock scroll when section is at viewport top AND scroll lock is requested
+    if (scrollLocked && isAtViewportTop) {
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '0';
+      
+      // Capture wheel events to prevent page scroll
+      window.addEventListener('wheel', preventScroll, { passive: false });
+      window.addEventListener('touchmove', preventScroll, { passive: false });
+    } else {
+      // Unlock body scroll
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.width = '';
+      document.body.style.top = '';
+      
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+    };
+  }, [scrollLocked, isAtViewportTop]);
   
   const handleSectionChange = (newSection) => {
     try {
@@ -37,6 +111,12 @@ const AboutSection = () => {
       console.error("Error changing about section:", error);
     }
   };
+  
+  const handleScrollLock = (shouldLock) => {
+    // Disabled - allow free scrolling throughout
+    // The parallax container handles its own scroll
+    setScrollLocked(false);
+  };
 
   // Header animation removed with old header block
   
@@ -46,6 +126,7 @@ const AboutSection = () => {
   return (
     <ErrorBoundary componentName="AboutSection">
       <Box
+        ref={sectionRef}
         id="about"
         component="section"
         sx={{
@@ -105,12 +186,12 @@ const AboutSection = () => {
             </Button>
           </Box>
         ) : (
-          /* Tab Navigation & Content */
-          <AboutTabNavigator 
+          /* Scroll-Based Tab Navigation & Content */
+          <AboutTabNavigatorScrollSpy
             ref={tabNavigatorRef} 
             onSectionChange={handleSectionChange}
-            currentSection={activeSection}
             aboutData={aboutData}
+            onScrollLock={handleScrollLock}
           />
         )}
       </Box>

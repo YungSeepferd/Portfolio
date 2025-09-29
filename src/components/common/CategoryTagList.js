@@ -67,8 +67,8 @@ function CategoryTagList({ tags = [], onTagClick, previewCount = 6, sx }) {
           >
             <Box
               sx={{
-                width: theme.spacing(0.75),
-                height: theme.spacing(3),
+                width: theme.spacing(0.5),
+                height: theme.spacing(2.5),
                 borderRadius: theme.shape.borderRadius,
                 backgroundColor: theme.palette.primary.main,
                 flexShrink: 0,
@@ -77,11 +77,14 @@ function CategoryTagList({ tags = [], onTagClick, previewCount = 6, sx }) {
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 600,
+                fontWeight: 400,
                 letterSpacing: '0.01em',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                color: theme.palette.mode === 'light' 
+                  ? 'rgba(8, 88, 104, 0.85)' // Dark grey/teal for light theme
+                  : 'rgba(255, 255, 255, 0.7)', // Light grey for dark theme
               }}
             >
               {tag}

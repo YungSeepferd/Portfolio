@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, useTheme, Card } from '@mui/material';
+import spacingTokens from '../../theme/spacing';
 import AboutSlideshow from './AboutSlideshow';
 
 /**
@@ -47,9 +48,9 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: { xs: 4, md: 6 },
-        p: { xs: 2, sm: 3, md: 4 },
-        backgroundColor: 'background.paper',
+        gap: spacingTokens.content.panel.gap,
+        p: spacingTokens.content.panel.padding,
+        backgroundColor: 'transparent',
         borderRadius: 0,
         boxShadow: 'none',
         mb: 3,
@@ -132,7 +133,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
             },
           },
           '& ul, & ol': {
-            pl: 2.5,
+            pl: (t) => t.spacing(spacingTokens.content.listIndent),
             mb: 2,
             '& li': {
               mb: 1,

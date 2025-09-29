@@ -46,20 +46,13 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
           >
             <Box
               sx={{
-                backgroundColor: 'background.paper',
-                opacity: 0.95,
-                border: 1,
-                borderColor: 'divider',
-                borderRadius: 8, // Reduced from theme.shape.borderRadius * 2 for less rounded corners
+                // Removed opaque background to allow glassmorphic effect
                 px: isComfortable ? { xs: 1.5, sm: 2.5 } : { xs: 1, sm: 2 },
                 py: isComfortable ? { xs: 0.75, sm: 1 } : { xs: 0.25, sm: 0.5 },
                 maxWidth: { xs: '100%', sm: '90%' },
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                boxShadow: theme.shadows[4],
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
               }}
             >
               <TechnologyTags
@@ -89,20 +82,13 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
           >
             <Box
               sx={{
-                backgroundColor: 'background.paper',
-                opacity: 0.95,
-                border: 1,
-                borderColor: 'divider',
-                borderRadius: 8, // Reduced from theme.shape.borderRadius * 2 for less rounded corners
+                // Removed opaque background to allow glassmorphic effect
                 px: isComfortable ? { xs: 1.5, sm: 2.5 } : { xs: 1, sm: 2 },
                 py: isComfortable ? { xs: 0.75, sm: 1.1 } : { xs: 0.5, sm: 1 },
                 maxWidth: { xs: '100%', sm: '95%' },
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                boxShadow: theme.shadows[4],
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
               }}
             >
               <ProjectActionButtons

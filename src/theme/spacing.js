@@ -35,6 +35,10 @@ themeSpacing.content = {
   listItemSpacing: 1,  // 8px spacing between list items
   sectionSpacing: 3,   // 24px spacing between sections
   listIndent: 2.5,     // 20px list left padding
+  panel: {
+    padding: { xs: 2, sm: 3, md: 4 }, // responsive padding units
+    gap: { xs: 4, md: 6 },            // responsive gap units
+  }
 };
 
 // Additional spacing configurations
@@ -81,7 +85,7 @@ themeSpacing.tabs = {
 
 // About layout tokens
 themeSpacing.about = {
-  leftNavWidthPx: 240,
+  leftNavWidthPx: 280,
   gridGap: 2, // default column/row gap inside about layout grids
 };
 

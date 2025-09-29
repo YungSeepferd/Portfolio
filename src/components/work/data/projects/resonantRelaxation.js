@@ -6,7 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import ImageIcon from '@mui/icons-material/Image';
 
 // Import project images
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';

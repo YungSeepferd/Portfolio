@@ -103,21 +103,6 @@ const {
       id: 'section-overview',
       type: 'default',
       title: 'Overview',
-      content: <Typography>...</Typography>,
-      media: { type: 'image', src: '...' },
-      layout: 'textLeft',
-      anchor: 'overview',
-      navigable: true
-    }
-  ]
-}
-```
-
-## Theme Data Flow
-
-### Theme Creation Process
-
-1. **Token Definition** (`src/theme/`)
    - Color palettes in `palette/light.js` and `palette/dark.js`
    - Typography in `typography.js`
    - Spacing in `spacing.js`

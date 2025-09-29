@@ -35,7 +35,8 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
       <Grid
         id="project-grid-root"
         container
-        spacing={{ xs: 2, sm: 3, lg: 4 }}
+        rowSpacing={{ xs: 2, sm: 3, lg: 3 }}
+        columnSpacing={{ xs: 2, sm: 3, lg: 3 }}
       >
         {projects.map((project, index) => (
           <Grid

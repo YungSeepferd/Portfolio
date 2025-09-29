@@ -380,7 +380,7 @@ const Hero = () => {
             top: '30%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.7)',
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(5, 38, 45, 0.20)',
             backdropFilter: 'blur(8px)',
             color: theme.palette.common.white,
             padding: theme.spacing(1, 2),
@@ -395,7 +395,7 @@ const Hero = () => {
               duration: theme.transitions.duration.shorter,
             }),
             '&:hover': {
-              backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.8)',
+              backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(5, 38, 45, 0.30)',
             },
           }}
         >

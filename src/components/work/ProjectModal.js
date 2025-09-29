@@ -95,7 +95,7 @@ const ProjectModal = ({
           maxWidth: { sm: '95vw' }, 
           maxHeight: { sm: '95vh' },
           bgcolor: 'background.paper',
-          borderRadius: { xs: 0, sm: 6 }, // Reduced from theme.shape.borderRadius * 1.5 for less rounded corners
+          borderRadius: 0,
           boxShadow: theme.shadows[24],
           overflow: 'hidden',
           position: 'relative',
@@ -228,7 +228,7 @@ const ProjectModal = ({
             },
             '&::-webkit-scrollbar-thumb': {
               backgroundColor: theme.palette.action.disabled,
-              borderRadius: '4px',
+              borderRadius: 0,
               '&:hover': {
                 backgroundColor: theme.palette.action.disabledBackground,
               },

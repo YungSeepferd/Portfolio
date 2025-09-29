@@ -1,11 +1,11 @@
 import React from 'react';
-import { Typography, Box, Grid } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 // Import Material UI icons for visual enhancement
 import CodeIcon from '@mui/icons-material/Code';
 import EducationBento from './EducationBento';
 import WhoAmIBento from './WhoAmIBento';
-import SkillsBento from './SkillsBento';
 import CategorizedTags from '../common/CategorizedTags';
+import ExperienceBento from './ExperienceBento';
 import BrushIcon from '@mui/icons-material/Brush';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
@@ -16,27 +16,14 @@ import SchoolIcon from '@mui/icons-material/School';
 
 // Import images directly
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
+import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
 import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
 
 // Import utility for creating image objects with positioning
 import { createAboutImage } from '../../utils/mediaUtils';
 
-const infoCardSx = (theme) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(1.5),
-  height: '100%',
-  padding: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius.sm,
-  backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[1],
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    boxShadow: theme.shadows[4],
-    transform: 'translateY(-2px)',
-  },
-});
+// infoCardSx removed; Experience now rendered via ExperienceBento
 
 // Centralized tag categories used in Skills & Technology tab
 const skillTagCategories = [
@@ -59,14 +46,100 @@ const skillTagCategories = [
   { title: 'Frameworks & Libraries', color: 'warning', items: ['React', 'Three.js', 'Material UI', 'Bootstrap'] },
   { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs'] },
   { title: 'Tools', color: 'warning', items: ['Figma', 'Adobe CC', 'Unity', 'Git', 'GitHub Copilot', 'Windsurf', 'Cursor', 'Ableton Live', 'Logic Pro', 'Pro Tools'] },
-  { title: 'Hardware', color: 'warning', items: ['Arduino', 'Adafruit ItsyBitsy', 'Embedded (basics)', 'Physical Prototyping'] },
-  { title: 'AI & Automation', color: 'info', items: ['Local LLM APIs', 'n8n (workflow automation)'] },
   { title: 'Data & ML', color: 'warning', items: ['TensorFlow'] },
   { title: 'Creative Coding', color: 'warning', items: ['Processing', 'Max/MSP'] },
   { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Analytical Sketching'] },
 ];
-
+// Original core competency items with icons and skills (now for Skills & Technologies tab)
 const coreCompetencyItems = [
+  {
+    title: 'Collaboration',
+    description: 'Effective teamwork requires more than talent—it needs structure. I value clear processes, thorough documentation, and genuine shared ownership of outcomes.',
+    icon: BusinessCenterIcon,
+    skills: [
+      'Clear Processes',
+      'Thorough Documentation',
+      'Shared Ownership',
+      'Role Definition',
+      'Handoff Management',
+      'Calm Communication',
+      'Respectful Teamwork'
+    ]
+  },
+  {
+    title: 'My Approach',
+    description: 'I start with contextual inquiry and semi‑structured interviews to understand real user needs.',
+    icon: AccessibilityNewIcon,
+    skills: [
+      'Contextual Inquiry',
+      'Semi-Structured Interviews',
+      'Thematic Analysis',
+      'Digital Ethnography',
+      'Expert Reviews',
+      'ATLAS.ti',
+      'Human Insight'
+    ]
+  },
+  {
+    title: 'Technical Craft',
+    description: 'From Arduino and embedded systems to modern web frameworks, I work across the stack.',
+    icon: CodeIcon,
+    skills: [
+      'Arduino',
+      'Embedded Systems',
+      'Web Frameworks',
+      'Physical Prototyping',
+      'Adafruit ItsyBitsy',
+      'Golang',
+      'Analytical Sketching'
+    ]
+  },
+  {
+    title: 'Workflow & Tools',
+    description: 'I integrate local LLM APIs and n8n workflow automation to streamline repetitive tasks.',
+    icon: WorkIcon,
+    skills: [
+      'Local LLM APIs',
+      'n8n Automation',
+      'Workflow Optimization',
+      'Task Automation',
+      'Creative Problem-Solving',
+      'Process Design',
+      'Tool Integration'
+    ]
+  },
+  {
+    title: 'Beyond Work',
+    description: 'Outside of design, I explore electronic music production and creative coding projects.',
+    icon: HeadsetMicIcon,
+    skills: [
+      'Electronic Music',
+      'Creative Coding',
+      'Music Production',
+      'Outdoor Activities',
+      'Work-Life Balance',
+      'Personal Projects',
+      'FC Schalke 04 Support'
+    ]
+  },
+  {
+    title: 'Core Values',
+    description: 'Quality work emerges from curiosity, humility, and continuous learning.',
+    icon: LocalLibraryIcon,
+    skills: [
+      'Curiosity',
+      'Humility',
+      'Continuous Learning',
+      'Measuring Impact',
+      'Questioning Assumptions',
+      'Feedback Openness',
+      'People-First Design'
+    ]
+  }
+];
+
+// Design competencies with icons for WhoAmI tab
+const designCompetencyItems = [
   {
     title: 'Design',
     description: 'Crafting intuitive and engaging user experiences through thoughtful design',
@@ -203,6 +276,19 @@ const experienceItems = [
   }
 ];
 
+// Map existing experienceItems to ExperienceBento items schema (must be after definition)
+const experienceBentoItems = experienceItems.map((e) => ({
+  type: /freelanc/i.test(e.title)
+    ? 'freelance'
+    : (/university|assistant|intern/i.test(`${e.title} ${e.subtitle}`) ? 'education' : 'work'),
+  title: e.title,
+  subtitle: e.subtitle,
+  // Try to derive duration from subtitle after a '|'
+  duration: e.subtitle && e.subtitle.includes('|') ? e.subtitle.split('|').pop().trim() : undefined,
+  description: e.description,
+  responsibilities: e.bullets,
+}));
+
 const aboutData = [
   // WhoAmI tab (previously About Me)
   {
@@ -226,17 +312,82 @@ const aboutData = [
     title: "Skills & Technology",
     subtitle: "Core competencies, tools and frameworks",
     pictures: [
-      createAboutImage(WhoamiImage, 'Skills background', 'center 30%', {
+      createAboutImage(SkillsImage, 'Skills background', 'center 30%', {
         objectFit: 'cover',
       }),
     ],
     content: (
       <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <Typography variant="h4" sx={{ mb: 3 }}>Core Competencies</Typography>
-        <SkillsBento items={coreCompetencyItems} />
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>Tooling & Frameworks</Typography>
-          <CategorizedTags categories={skillTagCategories} />
+        <Typography variant="h4" sx={{ mb: 4 }}>Technical Stack & Tools</Typography>
+        
+        {/* Grid of 3 comprehensive cards */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, mb: 4 }}>
+          {/* Card 1: Tools & Workflow */}
+          <Box sx={{ 
+            p: 3, 
+            borderRadius: 2, 
+            bgcolor: 'rgba(255, 152, 0, 0.05)',
+            border: '1px solid rgba(255, 152, 0, 0.2)',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'warning.main' }}>
+              Tools & Workflow Automation
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
+              From design tools (Figma, Adobe CC) to AI-assisted development (GitHub Copilot, Windsurf, Cursor), audio production (Ableton, Logic Pro), and workflow automation (n8n, local LLM APIs)—I integrate modern tooling to eliminate repetitive tasks and create space for creative problem-solving.
+            </Typography>
+            <Box sx={{ mt: 'auto' }}>
+              <CategorizedTags categories={skillTagCategories.filter(cat => 
+                cat.title === 'Tools'
+              )} />
+            </Box>
+          </Box>
+
+          {/* Card 2: Languages & Stack */}
+          <Box sx={{ 
+            p: 3, 
+            borderRadius: 2, 
+            bgcolor: 'rgba(3, 169, 244, 0.05)',
+            border: '1px solid rgba(3, 169, 244, 0.2)',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'info.main' }}>
+              Languages & Technical Stack
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
+              Multi-paradigm technical foundation spanning frontend (JS/TS, React, Three.js), embedded systems (C, C++, C#), creative coding (Processing, Max/MSP), and specialized audio-UX/haptic interfaces (Tone.js, RNBO, Interhaptics)—bridging digital and physical experiences.
+            </Typography>
+            <Box sx={{ mt: 'auto' }}>
+              <CategorizedTags categories={skillTagCategories.filter(cat => 
+                ['Languages', 'Frameworks & Libraries', 'Haptics & Audio‑UX', 'Creative Coding'].includes(cat.title)
+              )} />
+            </Box>
+          </Box>
+
+          {/* Card 3: Currently Improving - Full width */}
+          <Box sx={{ 
+            p: 3, 
+            borderRadius: 2, 
+            bgcolor: 'rgba(156, 39, 176, 0.05)',
+            border: '1px solid rgba(156, 39, 176, 0.2)',
+            gridColumn: { xs: '1', md: 'span 2' },
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'secondary.main' }}>
+              Currently Improving
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
+              Expanding capabilities in two strategic directions: Golang for backend/systems programming (complementing frontend expertise for full-stack development) and analytical sketching for visual communication (essential for workshop facilitation and collaborative design). This reflects my commitment to both technical depth and effective human communication.
+            </Typography>
+            <Box sx={{ mt: 'auto' }}>
+              <CategorizedTags categories={skillTagCategories.filter(cat => 
+                cat.title === 'Currently Improving'
+              )} />
+            </Box>
+          </Box>
         </Box>
       </Box>
     ),
@@ -253,49 +404,10 @@ const aboutData = [
       })
     ],
     content: (
-      <>
-        <Typography variant="h4">Professional Experience</Typography>
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          {experienceItems.map(({ icon: Icon, title, subtitle, description, bullets, isFullWidth }) => (
-            <Grid item xs={12} md={isFullWidth ? 12 : 6} key={title}>
-              <Box sx={(theme) => ({
-                ...infoCardSx(theme),
-                gap: theme.spacing(1.5),
-              })}
-              >
-                <Box sx={(theme) => ({
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: theme.spacing(1),
-                })}
-                >
-                  <Icon color="primary" sx={{ mt: 0.2, fontSize: '1.3rem' }} />
-                  <Box>
-                    <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 600 }}>{title}</Typography>
-                    <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>{subtitle}</Typography>
-                  </Box>
-                </Box>
-                <Typography variant="body2">{description}</Typography>
-                <Box component="ul" sx={(theme) => ({
-                  pl: theme.spacing(2.5),
-                  mt: 0,
-                  mb: 0,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: theme.spacing(1),
-                })}
-                >
-                  {bullets.map((item) => (
-                    <Typography key={item} component="li" variant="body2" sx={{ lineHeight: 1.4 }}>
-                      {item}
-                    </Typography>
-                  ))}
-                </Box>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </>
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Typography variant="h4" sx={{ mb: 3 }}>Professional Experience</Typography>
+        <ExperienceBento items={experienceBentoItems} />
+      </Box>
     )
   },
   // Education tab
@@ -346,7 +458,7 @@ export const getAboutData = () => {
   return aboutData;
 };
 
-// Export coreCompetencyItems for use in other components if needed
-export { coreCompetencyItems };
+// Export both competency arrays for use in other components
+export { coreCompetencyItems, designCompetencyItems };
 
 export default aboutData;

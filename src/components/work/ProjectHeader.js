@@ -66,7 +66,7 @@ const ProjectHeader = ({ title, description, categories = [], project }) => {
                   size="small"
                   variant="outlined"
                   sx={{ 
-                    borderRadius: '4px',
+                    borderRadius: 0,
                     fontWeight: 500,
                   }}
                 />

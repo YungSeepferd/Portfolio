@@ -236,7 +236,7 @@ const createAppTheme = (mode = 'dark') => {
     },
     spacing: 8,
     shape: {
-      borderRadius: 8,
+      borderRadius: 0,
       // Consistent border radius scale for less rounded design
       borderRadiusScale: {
         xs: 2,    // Extra small - subtle rounding
@@ -327,7 +327,7 @@ const createAppTheme = (mode = 'dark') => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
+            borderRadius: 0,
             boxShadow: isDark 
               ? '0 4px 20px rgba(0, 0, 0, 0.4)'
               : '0 4px 20px rgba(0, 0, 0, 0.08)',
@@ -343,7 +343,7 @@ const createAppTheme = (mode = 'dark') => {
       MuiChip: {
         styleOverrides: {
           root: {
-            borderRadius: 6,
+            borderRadius: 0,
             fontWeight: 500,
             fontSize: '0.875rem',
             height: 'auto',
@@ -414,7 +414,7 @@ const createAppTheme = (mode = 'dark') => {
         styleOverrides: {
           root: {
             backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)',
-            borderRadius: 8,
+            borderRadius: 0,
           },
         }
       },

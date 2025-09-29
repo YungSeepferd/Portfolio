@@ -1,161 +1,128 @@
 import React from 'react';
-import { Box, Typography, useTheme, Tooltip, Fade, Paper } from '@mui/material';
-import BentoGrid, { BentoItem } from './BentoGrid';
-import { styled } from '@mui/material/styles';
-import { motion } from 'framer-motion';
-
-const SkillCard = styled(Box)(({ theme, color = 'primary' }) => ({
-  position: 'relative',
-  padding: theme.spacing(3),
-  borderRadius: 0,
-  backgroundColor: theme.palette.background.paper,
-  height: '100%',
-  overflow: 'hidden',
-  border: `1px solid ${theme.palette.divider}`,
-  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-  cursor: 'default',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: theme.shadows[6],
-    '& .skill-icon': {
-      transform: 'scale(1.1)',
-    },
-  },
-}));
-
-const SkillIcon = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color',
-})(({ theme, color = 'primary' }) => ({
-  width: 48,
-  height: 48,
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: theme.spacing(2),
-  color: theme.palette[color].contrastText,
-  backgroundColor: theme.palette[color].main,
-  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-  boxShadow: theme.shadows[2],
-  '& svg': {
-    width: 24,
-    height: 24,
-    transition: 'all 0.3s ease',
-  },
-}));
-
-const SkillDescription = styled(Box)(({ theme }) => ({
-  overflow: 'visible',
-}));
-
-const SkillTags = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: theme.spacing(1),
-  marginTop: theme.spacing(2),
-  opacity: 1,
-}));
+import { Box, Typography, useTheme, Grid } from '@mui/material';
+import spacingTokens from '../../theme/spacing';
 
 const SkillsBento = ({ items = [] }) => {
   const theme = useTheme();
   
   // Define colors for different skill categories
-  const colors = ['primary', 'secondary', 'success', 'warning', 'info', 'error'];
+  const colors = ['primary.main', 'secondary.main', 'success.main', 'warning.main', 'info.main', 'error.main'];
+  
+  const getBgGradient = (index) => {
+    const gradients = [
+      'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(25, 118, 210, 0.2) 100%)',
+      'linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(156, 39, 176, 0.2) 100%)',
+      'linear-gradient(135deg, rgba(67, 160, 71, 0.1) 0%, rgba(67, 160, 71, 0.2) 100%)',
+      'linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.2) 100%)',
+      'linear-gradient(135deg, rgba(3, 169, 244, 0.1) 0%, rgba(3, 169, 244, 0.2) 100%)',
+      'linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.2) 100%)',
+    ];
+    return gradients[index % gradients.length];
+  };
   
   return (
-    <BentoGrid 
-      columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}
-      enableHoverEffect={true}
-      staggerDelay={0.05}
-      containerSx={{ 
-        '& > *': {
-          transition: 'all 0.3s ease',
-        },
-      }}
-      itemSx={{ borderRadius: 0 }}
-    >
+    <Grid container rowSpacing={spacingTokens.bento.rowGap} columnSpacing={spacingTokens.bento.columnGap} sx={{ mt: 3, mb: 4 }}>
       {items.map((item, index) => {
         const color = colors[index % colors.length];
+        const bgGradient = getBgGradient(index);
         const Icon = item.icon;
+        const [base, tone] = color.split('.');
+        const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
         
         return (
-          <BentoItem 
-            key={item.title} 
-            span={1}
-            variant={'default'}
-            elevation={1}
-            sx={{
-              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              borderRadius: 0,
-            }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+          <Grid item xs={12} sm={6} md={4} key={item.title}>
+            <Box
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                position: 'relative',
+                overflow: 'hidden',
+                minHeight: 'auto',
+                backgroundColor: 'rgba(245, 245, 245, 0.6)',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 3,
+                },
+                transition: theme.transitions.create(['transform', 'box-shadow'], {
+                  duration: theme.transitions.duration.standard,
+                }),
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: bgGradient,
+                  opacity: 0.3,
+                  transition: 'opacity 0.3s ease-in-out',
+                  zIndex: 0,
+                },
+                '& > *': {
+                  position: 'relative',
+                  zIndex: 1,
+                }
+              }}
             >
-              <SkillCard color={color}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <SkillIcon className="skill-icon" color={color}>
-                    {Icon && <Icon />}
-                  </SkillIcon>
-                  <Box ml={2}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette[color].main }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {item.subtitle || ''}
-                    </Typography>
-                  </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 48,
+                    height: 48,
+                    borderRadius: '50%',
+                    bgcolor: `${color}20`,
+                    color: color,
+                    mr: 2,
+                    flexShrink: 0
+                  }}
+                >
+                  {Icon && <Icon />}
                 </Box>
-                
-                <SkillDescription>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {item.description}
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                    {item.title}
                   </Typography>
-                </SkillDescription>
-                
-                {item.skills && (
-                  <SkillTags>
-                    {item.skills.map((skill, i) => (
-                      <Tooltip key={i} title={skill} arrow TransitionComponent={Fade}>
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.2, delay: i * 0.03 }}
-                        >
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              display: 'inline-block',
-                              px: 1.5,
-                              py: 0.5,
-                              borderRadius: 4,
-                              fontSize: '0.7rem',
-                              fontWeight: 500,
-                              backgroundColor: theme.palette[color].light + '40',
-                              color: theme.palette[color].dark,
-                              border: `1px solid ${theme.palette[color].light}80`,
-                              whiteSpace: 'nowrap',
-                              backdropFilter: 'blur(4px)',
-                              '&:hover': {
-                                backgroundColor: theme.palette[color].light + '60',
-                              },
-                            }}
-                          >
-                            {skill}
-                          </Paper>
-                        </motion.span>
-                      </Tooltip>
-                    ))}
-                  </SkillTags>
-                )}
-              </SkillCard>
-            </motion.div>
-          </BentoItem>
+                  {item.subtitle && (
+                    <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                      {item.subtitle}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+              
+              <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6, mb: 1 }}>
+                {item.description}
+              </Typography>
+              
+              {item.skills && item.skills.length > 0 && (
+                <Box sx={{ mt: 1.5, display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+                  {item.skills.map((skill, i) => (
+                    <Box 
+                      key={i}
+                      sx={{
+                        px: 1,
+                        py: 0.25,
+                        borderRadius: 0.5,
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        backgroundColor: `${color}15`,
+                        color: paletteColor,
+                        border: `1px solid ${color}30`,
+                      }}
+                    >
+                      {skill}
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          </Grid>
         );
       })}
-    </BentoGrid>
+    </Grid>
   );
 };
 

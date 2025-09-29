@@ -6,11 +6,11 @@
 const effects = {
   glassmorphism: {
     light: {
-      background: 'rgba(255, 255, 255, 0.15)',
-      backgroundHover: 'rgba(255, 255, 255, 0.25)',
-      backgroundActive: 'rgba(255, 255, 255, 0.2)',
-      border: 'rgba(255, 255, 255, 0.3)',
-      borderHover: 'rgba(255, 255, 255, 0.4)',
+      background: 'rgba(5, 38, 45, 0.20)',
+      backgroundHover: 'rgba(5, 38, 45, 0.30)',
+      backgroundActive: 'rgba(5, 38, 45, 0.25)',
+      border: 'rgba(5, 38, 45, 0.3)',
+      borderHover: 'rgba(5, 38, 45, 0.4)',
       blur: '8px',
       blurHover: '12px',
       shadow: '0px 2px 4px -1px rgba(0,0,0,0.1),0px 4px 5px 0px rgba(0,0,0,0.07),0px 1px 10px 0px rgba(0,0,0,0.06)',

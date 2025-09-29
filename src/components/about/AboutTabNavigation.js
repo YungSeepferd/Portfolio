@@ -92,13 +92,19 @@ const AboutTabNavigation = ({ tabIndex, handleTabChange, tabItems, isTabSwitchin
                 fontWeight: 500,
                 color: theme.palette.text.secondary,
                 minWidth: { xs: 'auto', md: 0 }, // Allow tabs to be narrower on mobile
+                backgroundColor: 'transparent',
                 '&.Mui-selected': {
-                color: theme.palette.primary.main,
+                  color: theme.palette.primary.main,
+                  backgroundColor: 'rgba(150, 132, 69, 0.05)', // 5% of primary.main (#968445)
+                },
+                '&.Mui-selected:hover': {
+                  backgroundColor: 'rgba(150, 132, 69, 0.1)', // 10% of primary.main - darker on hover
                 },
                 '&:hover': {
-                color: theme.palette.primary.main,
+                  color: theme.palette.primary.main,
+                  backgroundColor: 'rgba(150, 132, 69, 0.05)', // 5% of primary.main
                 },
-                transition: 'color 0.3s ease',
+                transition: 'color 0.3s ease, background-color 0.3s ease',
                 flex: { xs: 'none', md: 1 }, // Don't use flex on mobile
                 maxWidth: { xs: 'none', md: 'none' }, // Remove max width constraint
                 whiteSpace: 'nowrap', // Prevent text wrapping

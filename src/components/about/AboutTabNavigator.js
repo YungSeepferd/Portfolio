@@ -4,6 +4,7 @@ import spacingTokens from '../../theme/spacing';
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
 import useDebounce from '../../hooks/useDebounce';
+import useScrollSpy from '../../hooks/useScrollSpy';
 
 // Constants for timeout durations
 const SCROLL_TIMEOUT = 350;  // Increased from 200 for smoother transitions
@@ -14,12 +15,24 @@ const SCROLL_TIMEOUT = 350;  // Increased from 200 for smoother transitions
  */
 const AboutTabNavigator = forwardRef((props, ref) => {
   const { onSectionChange, currentSection = 0, aboutData = [] } = props;
-  const [tabIndex, setTabIndex] = useState(currentSection);
-  const [fadeIn, setFadeIn] = useState(true);
-  const scrollRef = useRef(null);
   const theme = useTheme();
-  const [isScrolling, setIsScrolling] = useState(false);
+  
+  // Scroll spy hook for automatic tab switching based on scroll
+  const { 
+    activeSection, 
+    setSectionRef, 
+    containerRef,
+    isAtBottom,
+    checkIfAtBottom
+  } = useScrollSpy({ 
+    sectionCount: aboutData.length,
+    threshold: 0.5,
+    rootMargin: '-20% 0px -20% 0px'
+  });
+  
   const [isTabSwitching, setIsTabSwitching] = useState(false);
+  const tabSwitchTimeoutRef = useRef(null);
+  
   // Responsive layout handled via sx breakpoints; no isMobile flag needed
   const stickyTop = useMemo(() => {
     const toolbarHeight = theme.mixins?.toolbar?.minHeight;
@@ -36,7 +49,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
   }, [theme]);
   
   // Use debouncing to prevent rapid state changes
-  const debouncedTabIndex = useDebounce(tabIndex, 200);
+  const debouncedActiveSection = useDebounce(activeSection, 150);
 
   // Update local state when parent changes currentSection
   useEffect(() => {
@@ -166,7 +179,7 @@ const AboutTabNavigator = forwardRef((props, ref) => {
           {/* Left: vertical tabs (desktop) */}
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             <Box sx={(t) => ({ position: 'sticky', top: stickyTop, alignSelf: 'start', zIndex: t.zIndex.appBar - 1, backgroundColor: t.palette.background.default, display: 'flex', flexDirection: 'column', maxHeight: `calc(100vh - ${typeof stickyTop === 'number' ? `${stickyTop}px` : stickyTop})` })}>
-              <Typography variant="h6" sx={(t) => ({ mb: 3, pl: t.spacing(spacingTokens.tabs.labelPaddingLeft), fontWeight: 700, color: t.palette.text.primary })}>
+              <Typography variant="h1" sx={(t) => ({ mb: 3, pl: t.spacing(spacingTokens.tabs.labelPaddingLeft), fontWeight: 700, color: t.palette.text.primary })}>
                 About
               </Typography>
               <Tabs

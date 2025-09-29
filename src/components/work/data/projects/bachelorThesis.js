@@ -1,7 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import LaunchIcon from '@mui/icons-material/Launch';
 
 // Import project images and videos with standardized names
 import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';

@@ -36,7 +36,25 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     const linksArray = Array.isArray(links) ? links : 
                       (links && typeof links === 'object' ? Object.values(links) : []);
     
-    const primaryMedia = project.media || projectUtils.getProjectPrimaryMedia(project);
+    // Extract media with proper fallback logic
+    let primaryMedia = null;
+    
+    // If project.media exists and has the expected structure
+    if (project.media) {
+      if (typeof project.media === 'object' && project.media.type && project.media.src) {
+        // Already in correct format
+        primaryMedia = project.media;
+      } else if (typeof project.media === 'string') {
+        // String path - assume it's an image
+        primaryMedia = { type: 'image', src: project.media };
+      }
+    }
+    
+    // Fallback to projectUtils if no valid media found
+    if (!primaryMedia) {
+      const fallbackSrc = projectUtils.getProjectPrimaryMedia(project);
+      primaryMedia = { type: 'image', src: fallbackSrc };
+    }
     
     return {
       id,
@@ -55,47 +73,65 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     position: 'relative',
     width: '95%',
     mx: 'auto',
-    aspectRatio: { xs: 'auto', lg: '4 / 3' },
-    minHeight: 0,
+    height: '100%', // Consistent height
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    borderRadius: 4, // Reduced from theme.shape.borderRadius for less rounded corners
+    borderRadius: 0,
     boxShadow: theme.shadows[2],
     backgroundColor: 'background.default',
-    transition: theme.transitions.create(['transform', 'box-shadow', 'border-color'], {
+    transition: theme.transitions.create(['transform', 'box-shadow'], {
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
     }),
     '&:hover': {
       transform: 'translateY(-4px)',
       boxShadow: theme.shadows[8],
-      borderColor: 'primary.main',
     },
+    // Accent border moved to left side with 40% opacity
     ...(projectData?.cardVariant && projectData.cardVariant !== 'default' && {
-      borderTop: `4px solid ${theme.palette[projectData.cardVariant]?.main || theme.palette.primary.main}`
+      borderLeft: `3px solid ${theme.palette[projectData.cardVariant]?.main ? 
+        `${theme.palette[projectData.cardVariant].main}66` : 
+        `${theme.palette.primary.main}66`}`
     })
   }), [theme, projectData?.cardVariant]);
 
   const imageAreaStyles = useMemo(() => ({
     position: 'relative',
     width: '100%',
-    flex: { xs: '0 0 auto', md: '0 0 52%' },
-    aspectRatio: { xs: '4 / 3', sm: '3 / 2', lg: 'auto' },
-    minHeight: { lg: 0 },
-  }), []);
+    height: 0,
+    paddingBottom: '56.25%', // 16:9 aspect ratio (9/16 * 100%)
+    flexShrink: 0, // Prevent image from shrinking
+    // Dark overlay on hover for better button contrast
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+      transition: theme.transitions.create(['background-color'], {
+        duration: theme.transitions.duration.standard,
+      }),
+      zIndex: 1,
+      pointerEvents: 'none',
+    },
+    '&:hover::before': {
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    },
+  }), [theme]);
 
   const imageContainerStyles = useMemo(() => ({
     width: '100%',
     height: '100%',
     backgroundColor: 'background.default',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderBottom: 1,
     borderColor: 'divider',
-    borderRadius: `4px 4px 0 0`, // Reduced from theme.shape.borderRadius for less rounded corners
+    borderRadius: 0,
     overflow: 'hidden',
+    padding: 0,
+    // Removed flex centering to allow image to fill completely
   }), []);
 
   const contentSpacing = useMemo(() => getSpacingPreset('cardContent'), []);
@@ -132,12 +168,20 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
             flexDirection: 'column',
             alignItems: 'stretch',
             height: '100%',
+            padding: 0,
             '& .MuiCardActionArea-focusHighlight': { opacity: 0.08 },
           }}
         >
           <Box sx={imageAreaStyles}>
-            <Box sx={imageContainerStyles}>
-              {primaryMedia?.type === 'image' && (
+            <Box 
+              sx={{
+                ...imageContainerStyles,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+              }}
+            >
+              {primaryMedia?.type === 'image' && primaryMedia.src && (
                 <ContentAwareImage
                   src={primaryMedia.src}
                   alt={`${title} preview`}
@@ -151,28 +195,33 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
                     objectPosition: 'center',
                   }}
                   onError={(e) => {
-                    console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
-                    e.target.src = '/assets/images/placeholders/project.jpg';
+                    if (process.env.NODE_ENV === 'development') {
+                      console.error(`Failed to load image for ${title}:`, primaryMedia.src, e);
+                    }
                   }}
+                  fallbackSrc="/assets/images/placeholders/project.jpg"
                 />
               )}
-              {primaryMedia?.type === 'video' && (
+              {primaryMedia?.type === 'video' && primaryMedia.src && (
                 <VideoPlayer
                   src={primaryMedia.src}
                   containerHeight="100%"
                   containerWidth="100%"
                   autoplay={true}
                   muted={true}
-                  controls={true}
-                  poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
+                  controls={false}
+                  loop={true}
+                  poster={primaryMedia.poster}
                   onError={(e) => {
-                    console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.error(`Failed to load video for ${title}:`, primaryMedia.src, e);
+                    }
                   }}
                 />
               )}
-              {!primaryMedia && (
+              {(!primaryMedia || (!primaryMedia.src)) && (
                 <ContentAwareImage
-                  src={'/assets/images/placeholders/project.jpg'}
+                  src="/assets/images/placeholders/project.jpg"
                   alt={`${title} preview`}
                   containerHeight="100%"
                   containerWidth="100%"
@@ -195,16 +244,24 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
           </Box>
 
           <CardContent sx={{ width: '100%', px: contentSpacing.px, py: contentSpacing.py }}>
-            <Stack spacing={contentSpacing.rowGap} alignItems="flex-start">
+            <Stack spacing={1} alignItems="flex-start">
               <Typography
                 variant={titlePreset.variant}
                 component={titlePreset.component}
-                sx={{ ...titlePreset.sx, color: 'text.primary' }}
+                sx={{ 
+                  ...titlePreset.sx, 
+                  color: 'text.primary',
+                  py: 2.5
+                }}
               >
                 {title}
               </Typography>
               {categories && categories.length > 0 && (
-                <CategoryTagList tags={categories} previewCount={isTouchLayout ? 8 : 6} />
+                <CategoryTagList 
+                  tags={categories} 
+                  previewCount={isTouchLayout ? 8 : 6}
+                  sx={{ pb: 2 }}
+                />
               )}
             </Stack>
           </CardContent>

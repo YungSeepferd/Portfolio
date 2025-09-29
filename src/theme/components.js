@@ -52,8 +52,8 @@ const components = (theme) => {
           ...(ownerState.variant === 'glassmorphic' && {
             // True glassmorphism to match Hero scene label
             background: theme.palette.mode === 'dark'
-              ? 'rgba(255, 255, 255, 0.10)'
-              : 'rgba(0, 0, 0, 0.70)',
+              ? 'rgba(255, 255, 255, 0.15)'
+              : 'rgba(5, 38, 45, 0.20)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             border: `1px solid ${theme.palette.divider}`,
@@ -65,8 +65,8 @@ const components = (theme) => {
             },
             '&:hover': {
               background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.15)'
-                : 'rgba(0, 0, 0, 0.80)',
+                ? 'rgba(255, 255, 255, 0.25)'
+                : 'rgba(5, 38, 45, 0.30)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
               transform: 'translateY(-2px)',
@@ -75,8 +75,8 @@ const components = (theme) => {
             '&:active': {
               transform: 'translateY(0)',
               background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.12)'
-                : 'rgba(0, 0, 0, 0.65)',
+                ? 'rgba(255, 255, 255, 0.20)'
+                : 'rgba(5, 38, 45, 0.25)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)'
             },
@@ -139,8 +139,8 @@ const components = (theme) => {
 
           ...(ownerState.variant === 'glassmorphic' && {
             background: theme.palette.mode === 'dark'
-              ? 'rgba(255, 255, 255, 0.10)'
-              : 'rgba(0, 0, 0, 0.70)',
+              ? 'rgba(255, 255, 255, 0.15)'
+              : 'rgba(5, 38, 45, 0.20)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             border: `1px solid ${theme.palette.divider}`,
@@ -150,8 +150,8 @@ const components = (theme) => {
             '& .MuiTouchRipple-root': { opacity: 0.4 },
             '&:hover': {
               background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.15)'
-                : 'rgba(0, 0, 0, 0.80)',
+                ? 'rgba(255, 255, 255, 0.25)'
+                : 'rgba(5, 38, 45, 0.30)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
               transform: 'translateY(-2px)',
@@ -160,8 +160,8 @@ const components = (theme) => {
             '&:active': {
               transform: 'translateY(0)',
               background: theme.palette.mode === 'dark'
-                ? 'rgba(255, 255, 255, 0.12)'
-                : 'rgba(0, 0, 0, 0.65)',
+                ? 'rgba(255, 255, 255, 0.20)'
+                : 'rgba(5, 38, 45, 0.25)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)'
             },
@@ -176,7 +176,7 @@ const components = (theme) => {
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: radius.lg,
+          borderRadius: 0,
           overflow: 'hidden',
           transition: theme.transitions.create(['transform', 'box-shadow']),
           '&:hover': {
@@ -190,7 +190,7 @@ const components = (theme) => {
       styleOverrides: {
         root: {
           fontWeight: theme.typography.fontWeightMedium,
-          borderRadius: radius.pill,
+          borderRadius: 0,
         },
       },
       variants: [

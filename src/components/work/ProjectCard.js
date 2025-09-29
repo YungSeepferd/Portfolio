@@ -72,21 +72,16 @@ const ProjectCard = ({ project, onClick }) => {
           borderBottomRightRadius: cardRadius,
           boxShadow: theme.shadows[2],
           backgroundColor: theme.palette.background.default,
-          transition: theme.transitions.create(['transform', 'box-shadow', 'border-color'], {
+          transition: theme.transitions.create(['transform', 'box-shadow'], {
             duration: theme.transitions.duration.standard,
             easing: theme.transitions.easing.easeInOut,
           }),
           '&:hover': {
             transform: 'translateY(-4px)',
             boxShadow: `0 8px 20px 0 ${theme.palette.primary.main}33`,
-            borderColor: 'primary.main',
-            '&::after': {
-              opacity: 1,
-              borderColor: 'primary.main',
-            },
           },
           ...(cardVariant && cardVariant !== 'default' && {
-            borderTop: `4px solid ${theme.palette[cardVariant]?.main || 'primary.main'}`
+            borderTop: `2px solid ${theme.palette[cardVariant]?.main || 'primary.main'}`
           })
         }}
       >
@@ -97,6 +92,7 @@ const ProjectCard = ({ project, onClick }) => {
             flexDirection: 'column',
             alignItems: 'stretch',
             height: '100%',
+            padding: 0,
             '& .MuiCardActionArea-focusHighlight': { opacity: 0.08 },
           }}
         >

@@ -1,46 +1,38 @@
 import React from 'react';
 import { Box, Typography, useTheme, Grid } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import spacingTokens from '../../theme/spacing';
-import { motion } from 'framer-motion';
+import SkillsBento from './SkillsBento';
+import { designCompetencyItems } from './AboutData';
 
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 
-const BioCard = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  padding: theme.spacing(3),
-  borderRadius: 0,
-  backgroundColor: theme.palette.background.paper,
-  height: '100%',
-  overflow: 'visible',
-  border: `1px solid ${theme.palette.divider}`,
-  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-  cursor: 'default',
-  '&:hover': {
-    boxShadow: theme.shadows[3],
-  },
-}));
-
-const BioDescription = styled(Box)(({ theme }) => ({
-  overflow: 'visible',
-}));
-
 const WhoAmIBento = () => {
   const theme = useTheme();
+  
+  const getBgGradient = (colorKey) => {
+    const gradientMap = {
+      'primary.main': 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(25, 118, 210, 0.2) 100%)',
+      'secondary.main': 'linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(156, 39, 176, 0.2) 100%)',
+      'info.main': 'linear-gradient(135deg, rgba(3, 169, 244, 0.1) 0%, rgba(3, 169, 244, 0.2) 100%)',
+      'warning.main': 'linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.2) 100%)',
+      'success.main': 'linear-gradient(135deg, rgba(67, 160, 71, 0.1) 0%, rgba(67, 160, 71, 0.2) 100%)',
+    };
+    return gradientMap[colorKey] || gradientMap['primary.main'];
+  };
 
   const items = [
-    // Row 1 - full-bleed image from Skills & Technology
+    // Row 1
     {
       key: 'skills-image',
       raw: true,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
-        <Box sx={{ height: '100%', width: '100%', borderRadius: 0, overflow: 'hidden' }}>
+        <Box sx={{ height: '100%', width: '100%', borderRadius: 2, overflow: 'hidden' }}>
           <Box
             component="img"
             src={WhoamiImage}
-            alt="Skills & Technology"
+            alt="Vincent Göke"
             sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         </Box>
@@ -54,7 +46,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          I practice evidence‑based design that balances user needs, business goals, and technical feasibility. Accessibility and inclusion are non‑negotiable; clarity, calmness, and learnability guide my decisions.
+          I believe in evidence‑based design that carefully balances user needs, business goals, and technical feasibility. Accessibility and inclusion aren't optional—they're foundational. Every design decision is guided by three core principles: clarity for understanding, calmness for focus, and learnability for long‑term adoption.
         </Typography>
       )
     },
@@ -66,150 +58,156 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Media Informatics → Human‑Computer Interaction. Blending research, prototyping, and front‑end craft with a strong audio/haptics interest and hands‑on workshop facilitation.
+          My journey began with Media Informatics and evolved into specialized Human‑Computer Interaction studies. I combine academic research with hands‑on prototyping and front‑end development, while maintaining a strong interest in audio and haptic interfaces. Workshop facilitation has become a natural extension of this practice.
         </Typography>
       )
     },
 
-    // Row 2
+    // Row 2 - Core Competencies from Skills & Technologies
     {
-      key: 'ai-automation',
-      title: 'AI & Automation',
+      key: 'design',
+      title: 'Design',
       color: 'info',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
-        <Box component="ul" sx={(t) => ({ pl: t.spacing(spacingTokens.content.listIndent), m: 0, mt: 1 })}>
-          {['Local LLM APIs', 'n8n workflow automation'].map((t) => (
-            <Typography key={t} component="li" variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-              {t}
-            </Typography>
-          ))}
-        </Box>
-      )
-    },
-    {
-      key: 'hardware',
-      title: 'Hardware & Prototyping',
-      color: 'warning',
-      colSpan: { xs: 1, sm: 1, md: 1 },
-      rowSpan: { xs: 1, md: 1 },
-      body: (
-        <Box component="ul" sx={(t) => ({ pl: t.spacing(spacingTokens.content.listIndent), m: 0, mt: 1 })}>
-          {['Arduino', 'Adafruit ItsyBitsy', 'Embedded (basics)', 'Physical prototyping'].map((t) => (
-            <Typography key={t} component="li" variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-              {t}
-            </Typography>
-          ))}
-        </Box>
-      )
-    },
-    {
-      key: 'collaboration',
-      title: 'Collaboration',
-      color: 'primary',
-      colSpan: { xs: 1, sm: 1, md: 1 },
-      rowSpan: { xs: 1, md: 1 },
-      body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Team processes, documentation, and shared ownership. Clear roles, explicit handoffs, and calm comms.
+          Crafting intuitive and engaging user experiences through thoughtful design: UI/UX Design, Interaction Design, Wireframing, Prototyping, Visual Design, User Flows, Information Architecture.
         </Typography>
       )
     },
-
-    // Row 3
     {
       key: 'research',
-      title: 'Research Focus',
+      title: 'Research',
       color: 'success',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
-        <Box component="ul" sx={(theme) => ({ pl: theme.spacing(spacingTokens.content.listIndent), m: 0, mt: 1, columnCount: { xs: 1, md: 1 }, columnGap: theme.spacing(2) })}>
-          {[
-            'Contextual inquiry',
-            'Semi‑structured interviews',
-            'Thematic analysis',
-            'Digital ethnography',
-            'Expert review',
-            'ATLAS.ti (AI‑assisted)'
-          ].map((t) => (
-            <Typography key={t} component="li" variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-              {t}
-            </Typography>
-          ))}
-        </Box>
+        <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
+          Uncovering user needs and validating design decisions through research: User Research, Usability Testing, A/B Testing, Heuristic Evaluation, User Interviews, Data Analysis, Thematic Analysis.
+        </Typography>
       )
     },
     {
-      key: 'beyond',
-      title: 'Beyond Work',
+      key: 'development',
+      title: 'Development',
+      color: 'warning',
+      colSpan: { xs: 1, sm: 1, md: 1 },
+      rowSpan: { xs: 1, md: 1 },
+      body: (
+        <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
+          Bringing designs to life with clean, accessible code: Frontend Development, Responsive Design, Design Systems, Accessibility, Mobile Development, Sensor Integration, Haptic Feedback.
+        </Typography>
+      )
+    },
+
+    // Row 3 - Continued Core Competencies
+    {
+      key: 'audio',
+      title: 'Audio',
       color: 'secondary',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Electronic music, creative coding, and outdoors. Lifelong supporter of FC Schalke 04.
+          Designing immersive audio experiences and sound interactions: Sound Design, Audio Programming, Music Production, Interactive Audio, Spatial Audio, Signal Processing, Audio-Visual Integration.
         </Typography>
       )
     },
     {
-      key: 'improving',
-      title: 'Currently Improving',
+      key: 'teaching',
+      title: 'Teaching',
       color: 'info',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
-        <Box component="ul" sx={(t) => ({ pl: t.spacing(spacingTokens.content.listIndent), m: 0, mt: 1 })}>
-          {['Golang', 'Analytical sketching'].map((t) => (
-            <Typography key={t} component="li" variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-              {t}
-            </Typography>
-          ))}
-        </Box>
+        <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
+          Empowering others through knowledge sharing and mentorship: Workshop Facilitation, Curriculum Development, Technical Instruction, Mentoring, Public Speaking, Knowledge Transfer, Documentation.
+        </Typography>
+      )
+    },
+    {
+      key: 'project-management',
+      title: 'Project Management',
+      color: 'primary',
+      colSpan: { xs: 1, sm: 1, md: 1 },
+      rowSpan: { xs: 1, md: 1 },
+      body: (
+        <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
+          Leading projects from concept to successful delivery: Agile Methodologies, Scrum, Kanban, Team Leadership, Stakeholder Management, Requirements Gathering, Roadmapping.
+        </Typography>
       )
     },
   ];
 
   return (
-    <Grid
-      container
-      rowSpacing={spacingTokens.bento.rowGap}
-      columnSpacing={spacingTokens.bento.columnGap}
-      sx={{ mt: 1, mb: 2, alignItems: 'stretch' }}
-    >
-      {items.map((item, idx) => {
-        const color = item.color;
-        return (
-          <Grid item xs={12} sm={6} md={4} key={item.key} sx={{ display: 'flex' }}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: idx * 0.05 }}
-              style={{ width: '100%', height: '100%' }}
-            >
+    <Box>
+      {/* Top row - Image and description boxes */}
+      <Grid container rowSpacing={spacingTokens.bento.rowGap} columnSpacing={spacingTokens.bento.columnGap} sx={{ mt: 3, mb: 4 }}>
+        {items.slice(0, 3).map((item, idx) => {
+          const colorKey = `${item.color}.main`;
+          const bgGradient = getBgGradient(colorKey);
+          const [base, tone] = colorKey.split('.');
+          const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
+          
+          return (
+            <Grid item xs={12} sm={6} md={4} key={item.key}>
               {item.raw ? (
-                item.body
+                <Box sx={{ borderRadius: 2, overflow: 'hidden', height: '100%' }}>
+                  {item.body}
+                </Box>
               ) : (
-                <BioCard sx={item.noBorder ? { border: 'none', height: '100%' } : { height: '100%' }}>
+                <Box
+                  sx={{
+                    p: 3,
+                    borderRadius: 2,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    minHeight: 'auto',
+                    backgroundColor: 'rgba(245, 245, 245, 0.6)',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 3,
+                    },
+                    transition: theme.transitions.create(['transform', 'box-shadow'], {
+                      duration: theme.transitions.duration.standard,
+                    }),
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: bgGradient,
+                      opacity: 0.3,
+                      transition: 'opacity 0.3s ease-in-out',
+                      zIndex: 0,
+                    },
+                    '& > *': {
+                      position: 'relative',
+                      zIndex: 1,
+                    }
+                  }}
+                >
                   {item.title && (
-                    <Typography
-                      variant="overline"
-                      sx={{ color: theme.palette[color].main, letterSpacing: 1, opacity: 0.9 }}
-                    >
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
                       {item.title}
                     </Typography>
                   )}
-                  <BioDescription>
+                  <Box>
                     {item.body}
-                  </BioDescription>
-                </BioCard>
+                  </Box>
+                </Box>
               )}
-            </motion.div>
-          </Grid>
-        );
-      })}
-    </Grid>
+            </Grid>
+          );
+        })}
+      </Grid>
+
+      {/* Bottom rows - SkillsBento with icons and tags */}
+      <SkillsBento items={designCompetencyItems} />
+    </Box>
   );
 };
 

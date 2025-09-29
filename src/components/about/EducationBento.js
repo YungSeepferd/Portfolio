@@ -136,7 +136,10 @@ const EducationBento = () => {
         mb: 4
       }}
     >
-      {educationItems.map(({ title, subtitle, description, link, courses, modules, highlights, audioCourses, competencies, icon: Icon, color, gridArea, bgImage }) => (
+      {educationItems.map(({ title, subtitle, description, link, courses, modules, highlights, audioCourses, competencies, icon: Icon, color, gridArea, bgImage }) => {
+        const [base, tone] = (color || 'primary.main').split('.');
+        const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
+        return (
         <Box
           key={title}
           sx={{
@@ -145,12 +148,10 @@ const EducationBento = () => {
             borderRadius: 2,
             position: 'relative',
             overflow: 'hidden',
+            backgroundColor: 'rgba(245, 245, 245, 0.6)',
             '&:hover': {
               transform: 'translateY(-4px)',
               boxShadow: 3,
-              '&::before': {
-                opacity: 1
-              }
             },
             transition: theme.transitions.create(['transform', 'box-shadow'], {
               duration: theme.transitions.duration.standard,
@@ -163,7 +164,7 @@ const EducationBento = () => {
               right: 0,
               bottom: 0,
               background: bgImage,
-              opacity: 0.7,
+              opacity: 0.3,
               transition: 'opacity 0.3s ease-in-out',
               zIndex: 0,
             },
@@ -287,33 +288,9 @@ const EducationBento = () => {
             </Box>
           )}
           
-          {/* Decorative elements */}
-          <Box
-            sx={{
-              position: 'absolute',
-              right: -20,
-              bottom: -20,
-              width: 100,
-              height: 100,
-              borderRadius: '50%',
-              bgcolor: `${color}10`,
-              zIndex: 0,
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 40,
-              top: -20,
-              width: 60,
-              height: 60,
-              borderRadius: '50%',
-              bgcolor: `${color}05`,
-              zIndex: 0,
-            }}
-          />
         </Box>
-      ))}
+        );
+      })}
     </Box>
   );
 };

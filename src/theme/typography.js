@@ -26,7 +26,7 @@ const typography = {
     lineHeight: 1.2,
   },
   h3: {
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: '2.25rem',
     lineHeight: 1.3,
   },

@@ -100,7 +100,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                 width: '100%',
                 aspectRatio: item.aspect === 'portrait' ? 3/4 : item.aspect === 'square' ? 1 : 16/9,
                 overflow: 'hidden',
-                borderRadius: theme.shape.borderRadius,
+                borderRadius: 0,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 background: theme.palette.grey[100],
@@ -170,13 +170,12 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   aspect={item.aspect}
                   objectFit={item.orientation === 'portrait' ? 'contain' : 'cover'}
                   sx={{
-                    position: 'absolute',
                     top: 0,
                     left: 0,
                     width: '100%',
                     height: '100%',
                     background: theme.palette.grey[100],
-                    borderRadius: theme.shape.borderRadius
+                    borderRadius: 0
                   }}
                 />
               )}
@@ -184,7 +183,6 @@ const ProjectGallery = ({ images = [], title = '' }) => {
           </Grid>
         ))}
       </Grid>
-
       {/* Full screen overlay for viewing images */}
       <Dialog
         fullScreen
@@ -278,7 +276,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                           display: 'block',
                           margin: '0 auto',
                           background: theme.palette.grey[100],
-                          borderRadius: theme.shape.borderRadius
+                          borderRadius: 0
                         }}
                       />
                     )}
@@ -324,7 +322,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   width: item.isPhone ? 60 : 100,
                   height: 60,
                   flexShrink: 0,
-                  borderRadius: 1,
+                  borderRadius: 0,
                   overflow: 'hidden',
                   border: selectedImage && selectedImage.id === item.id ? `2px solid ${theme.palette.primary.main}` : '2px solid transparent',
                   cursor: 'pointer',
@@ -340,7 +338,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
                   aspect={item.aspect}
                   objectFit="cover"
                   sx={{
-                    borderRadius: theme.shape.borderRadius
+                    borderRadius: 0
                   }}
                 />
               </Box>
