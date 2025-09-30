@@ -39,6 +39,8 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
   const contentBody = contentArray.filter((child) => child !== extractedHeading);
 
   const isWhoAmI = tabData?.title === 'WhoAmI';
+  // Timeline is now coupled per-row inside the bento components (Experience/Education)
+  // No separate compact timeline here
 
   return (
     <Box
@@ -113,7 +115,7 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         </Box>
       )}
 
-      {/* Bottom Row: Full Width Content */}
+      {/* Bottom Row: Full Width Content (per-row timelines are rendered inside bento components) */}
       <Box
         id={`about-tab-content-section-${tabIndex}`}
         sx={{

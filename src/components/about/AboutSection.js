@@ -10,7 +10,8 @@ import aboutData from './AboutData'; // Import default export
  * Uses direct data import instead of async loading
  */
 const AboutSection = () => {
-  const [activeSection, setActiveSection] = useState(0);
+  // Initialize to null to match useScrollSpy's initial state
+  const [activeSection, setActiveSection] = useState(null);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
@@ -102,7 +103,8 @@ const AboutSection = () => {
   
   const handleSectionChange = (newSection) => {
     try {
-      if (newSection >= 0 && newSection < aboutData.length) {
+      // Allow null for initial state
+      if (newSection === null || (newSection >= 0 && newSection < aboutData.length)) {
         setActiveSection(newSection);
       } else {
         console.warn(`Invalid section index: ${newSection}, max index is ${aboutData.length - 1}`);

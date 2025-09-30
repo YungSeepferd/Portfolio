@@ -150,7 +150,7 @@ const FooterContact = ({ projectContext }) => {
                         </a>
                         
                         <IconButton 
-                          href="https://www.linkedin.com/in/vincent-g-193124194/"
+                          href="https://www.linkedin.com/in/vincent-goeke"
                           target="_blank"
                           variant="glassmorphic"
                           sx={{

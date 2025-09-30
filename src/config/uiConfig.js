@@ -10,7 +10,7 @@ export const navItems = [
 export const socialLinks = [
   {
     name: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/vincent-g-193124194/',
+    url: 'https://www.linkedin.com/in/vincent-goeke',
     icon: 'LinkedIn',
     ariaLabel: 'LinkedIn profile'
   },

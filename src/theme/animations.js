@@ -220,4 +220,36 @@ export const getThemeTransition = (theme, type = 'medium') => {
   return { duration: duration / 1000, ease };
 };
 
+// --- Parallax Scroll Animations ---
+/**
+ * Parallax animation variants for scroll-linked motion
+ * Use with framer-motion's useScroll and motion.div style prop
+ */
+export const parallaxVariants = {
+  // Subtle parallax for background elements
+  subtle: {
+    distance: 50,
+    easing: animations.easings.motion.standard
+  },
+  // Medium parallax for midground content
+  medium: {
+    distance: 150,
+    easing: animations.easings.motion.decelerate
+  },
+  // Strong parallax for focal elements
+  strong: {
+    distance: 300,
+    easing: animations.easings.motion.decelerate
+  }
+};
+
+/**
+ * Spring configuration presets for smooth parallax
+ */
+export const springPresets = {
+  gentle: { stiffness: 50, damping: 20, restDelta: 0.001 },
+  smooth: { stiffness: 100, damping: 30, restDelta: 0.001 },
+  snappy: { stiffness: 200, damping: 40, restDelta: 0.001 }
+};
+
 export default animations;

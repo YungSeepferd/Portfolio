@@ -42,13 +42,13 @@ const skillTagCategories = [
   { title: 'Evaluation & Workshops', color: 'success', items: ['Heuristic Reviews', 'Expert Review', 'Task Analysis', 'Workshop Facilitation', 'Design Ops'] },
   { title: 'Testing Types', color: 'success', items: ['A/B Testing', 'Tree Testing', 'Card Sorting'] },
   // Other Technologies (warning)
-  { title: 'Languages', color: 'warning', items: ['JavaScript', 'TypeScript', 'C', 'C++', 'C#'] },
+  { title: 'Languages', color: 'warning', items: ['JavaScript', 'TypeScript', 'CSS', 'Java', 'C', 'C++', 'C#'] },
   { title: 'Frameworks & Libraries', color: 'warning', items: ['React', 'Three.js', 'Material UI', 'Bootstrap'] },
-  { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs'] },
+  { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs', 'Max/MSP'] },
   { title: 'Tools', color: 'warning', items: ['Figma', 'Adobe CC', 'Unity', 'Git', 'GitHub Copilot', 'Windsurf', 'Cursor', 'Ableton Live', 'Logic Pro', 'Pro Tools'] },
   { title: 'Data & ML', color: 'warning', items: ['TensorFlow'] },
-  { title: 'Creative Coding', color: 'warning', items: ['Processing', 'Max/MSP'] },
-  { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Analytical Sketching'] },
+  { title: 'Creative Coding', color: 'warning', items: [] },
+  { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Analytical Sketching', 'Rust', 'AI Code Prompt Engineering & Automation', 'QA Basics', 'LLM UX Design & Implementation'] },
 ];
 // Original core competency items with icons and skills (now for Skills & Technologies tab)
 const coreCompetencyItems = [
@@ -305,8 +305,8 @@ const aboutData = [
       <Box sx={{ position: 'relative', zIndex: 1 }}>
         <Typography variant="h4" sx={{ mb: 4 }}>Technical Stack & Tools</Typography>
         
-        {/* Grid of 3 comprehensive cards */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, mb: 4 }}>
+        {/* Stack cards 1x1 for all breakpoints */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr' }, gap: 3, mb: 4 }}>
           {/* Card 1: Tools & Workflow */}
           <Box sx={{ 
             p: 3, 
@@ -342,22 +342,22 @@ const aboutData = [
               Languages & Technical Stack
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
-              Multi-paradigm technical foundation spanning frontend (JS/TS, React, Three.js), embedded systems (C, C++, C#), creative coding (Processing, Max/MSP), and specialized audio-UX/haptic interfaces (Tone.js, RNBO, Interhaptics)—bridging digital and physical experiences.
+              Multi-paradigm technical foundation spanning frontend (JS/TS, React, Three.js), embedded systems (C, C++, C#), creative coding (Processing), and specialized audio-UX/haptic interfaces (Tone.js, RNBO, Interhaptics, Max/MSP)—bridging digital and physical experiences.
             </Typography>
             <Box sx={{ mt: 'auto' }}>
               <CategorizedTags categories={skillTagCategories.filter(cat => 
-                ['Languages', 'Frameworks & Libraries', 'Haptics & Audio‑UX', 'Creative Coding'].includes(cat.title)
+                ['Languages', 'Frameworks & Libraries', 'Haptics & Audio‑UX'].includes(cat.title)
               )} />
             </Box>
           </Box>
 
-          {/* Card 3: Currently Improving - Full width */}
+          {/* Card 3: Currently Improving */}
           <Box sx={{ 
             p: 3, 
             borderRadius: 2, 
             bgcolor: 'rgba(156, 39, 176, 0.05)',
             border: '1px solid rgba(156, 39, 176, 0.2)',
-            gridColumn: { xs: '1', md: 'span 2' },
+            gridColumn: { xs: '1', md: '1' },
             display: 'flex',
             flexDirection: 'column'
           }}>
@@ -444,6 +444,6 @@ export const getAboutData = () => {
 };
 
 // Export both competency arrays for use in other components
-export { coreCompetencyItems, designCompetencyItems };
+export { coreCompetencyItems, designCompetencyItems, experienceItems };
 
 export default aboutData;

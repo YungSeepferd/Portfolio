@@ -148,6 +148,22 @@ const easings = {
 };
 ```
 
+### Parallax Scroll Animations
+Location: `src/hooks/useParallax.js`, `src/theme/animations.js`
+
+```javascript
+import { useParallax, parallaxPresets } from '../hooks/useParallax';
+import { useScroll } from 'framer-motion';
+
+// Basic usage
+const ref = useRef(null);
+const { scrollYProgress } = useScroll({ target: ref });
+const y = useParallax(scrollYProgress, parallaxPresets.medium);
+
+// Available presets: subtle (50px), medium (150px), strong (300px), extreme (500px)
+// Spring configs: gentle, smooth, snappy (from springPresets)
+```
+
 ## Custom Theme Extensions
 
 ### Portfolio-Specific Properties

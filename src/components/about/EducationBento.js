@@ -114,66 +114,92 @@ const EducationBento = () => {
   ];
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-        gridTemplateRows: { xs: 'repeat(3, auto)', md: 'repeat(2, auto)' },
-        gridTemplateAreas: {
-          xs: `
-            "master"
-            "bachelor"
-            "diploma"
-          `,
-          md: `
-            "master bachelor"
-            "diploma diploma"
-          `
-        },
-        gap: spacingTokens.about.gridGap,
-        width: '100%',
-        mt: 3,
-        mb: 4
-      }}
-    >
-      {educationItems.map(({ title, subtitle, description, link, courses, modules, highlights, audioCourses, competencies, icon: Icon, color, gridArea, bgImage }) => {
-        const [base, tone] = (color || 'primary.main').split('.');
-        const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: spacingTokens.about.gridGap, width: '100%', mt: 3, mb: 4 }}>
+      {educationItems.map((item, idx) => {
+        const { title, subtitle, description, link, courses, modules, highlights, audioCourses, competencies, icon: Icon, color, gridArea, bgImage } = item;
+        const anchorId = `edu-item-${idx}`;
+        const hasPipe = typeof subtitle === 'string' && subtitle.includes('|');
+        const rangeLabel = hasPipe ? subtitle.split('|').pop().trim() : '';
         return (
         <Box
           key={title}
           sx={{
             gridArea,
-            p: 3,
-            borderRadius: 2,
-            position: 'relative',
-            overflow: 'hidden',
-            backgroundColor: 'rgba(245, 245, 245, 0.6)',
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              boxShadow: 3,
-            },
-            transition: theme.transitions.create(['transform', 'box-shadow'], {
-              duration: theme.transitions.duration.standard,
-            }),
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: bgImage,
-              opacity: 0.3,
-              transition: 'opacity 0.3s ease-in-out',
-              zIndex: 0,
-            },
-            '& > *': {
-              position: 'relative',
-              zIndex: 1,
-            }
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '180px 1fr', lg: '220px 1fr' },
+            columnGap: 2,
           }}
         >
+          {/* Timeline gutter (separate from card) */}
+          <Box sx={{ position: 'relative', display: { xs: 'none', md: 'block' }, pt: 1 }}>
+            {/* Range label */}
+            <Typography variant="caption" sx={{ color: 'text.secondary', textAlign: 'right', display: 'block', pr: 3 }}>
+              {rangeLabel || ' '}
+            </Typography>
+            {/* Connectors and dot */}
+            {idx > 0 && (
+              <Box aria-hidden sx={(t) => ({ position: 'absolute', left: 'calc(100% - 10px)', top: `calc(-${t.spacing(spacingTokens.about.gridGap / 2)})`, height: `calc(18px + ${t.spacing(spacingTokens.about.gridGap / 2)})`, width: '2px', bgcolor: t.palette.divider })} />
+            )}
+            <Box
+              role="button"
+              aria-label={`Jump to ${title}`}
+              tabIndex={0}
+              onClick={() => { const el = document.getElementById(anchorId); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { const el = document.getElementById(anchorId); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }}
+              sx={{
+                position: 'absolute',
+                left: 'calc(100% - 10px)',
+                top: '18px',
+                width: 12,
+                height: 12,
+                transform: 'translate(-50%, -50%)',
+                borderRadius: '50%',
+                bgcolor: theme.palette.primary.main,
+                boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+                cursor: 'pointer',
+                zIndex: 2,
+                '&:hover': { boxShadow: `0 0 0 3px ${theme.palette.primary.light}` },
+              }}
+            />
+            {idx < educationItems.length - 1 && (
+              <Box aria-hidden sx={(t) => ({ position: 'absolute', left: 'calc(100% - 10px)', top: '24px', height: `calc(100% - 24px + ${t.spacing(spacingTokens.about.gridGap / 2)})`, width: '2px', bgcolor: t.palette.divider })} />
+            )}
+          </Box>
+
+          {/* Card content */}
+          <Box
+            id={anchorId}
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              position: 'relative',
+              overflow: 'hidden',
+              backgroundColor: 'rgba(245, 245, 245, 0.6)',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: 3,
+              },
+              transition: theme.transitions.create(['transform', 'box-shadow'], {
+                duration: theme.transitions.duration.standard,
+              }),
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: bgImage,
+                opacity: 0.3,
+                transition: 'opacity 0.3s ease-in-out',
+                zIndex: 0,
+              },
+              '& > *': {
+                position: 'relative',
+                zIndex: 1,
+              }
+            }}
+          >
           <Box
             sx={{
               display: 'flex',
@@ -217,29 +243,28 @@ const EducationBento = () => {
               Program page ↗
             </Typography>
           )}
+          {/* Subtle link to related project in Work section (by slug) */}
+          {(title?.includes('M.Sc.') || title?.includes('B.Sc.')) && (
+            <Box sx={{ mt: 0.75 }}>
+              <Typography
+                variant="body2"
+                component="a"
+                href="#work"
+                sx={{ color: 'text.secondary', textDecoration: 'none', fontStyle: 'italic' }}
+              >
+                See project →
+              </Typography>
+            </Box>
+          )}
           {Array.isArray(modules) && modules.length > 0 && (
             <Box sx={{ mt: 1.5 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Selected modules
+                Selected courses
               </Typography>
               <Box component="ul" sx={(theme) => ({ pl: 2.5, m: 0, columnCount: { xs: 1, md: 2 }, columnGap: theme.spacing(2) })}>
                 {modules.slice(0, 8).map((m) => (
                   <Typography key={m} component="li" variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.5 }}>
                     {m}
-                  </Typography>
-                ))}
-              </Box>
-            </Box>
-          )}
-          {Array.isArray(highlights) && highlights.length > 0 && (
-            <Box sx={{ mt: 1.5 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Highlights
-              </Typography>
-              <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
-                {highlights.map((h) => (
-                  <Typography key={h} component="li" variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.5 }}>
-                    {h}
                   </Typography>
                 ))}
               </Box>
@@ -257,6 +282,34 @@ const EducationBento = () => {
                   </Typography>
                 ))}
               </Box>
+            </Box>
+          )}
+          {Array.isArray(highlights) && highlights.length > 0 && (
+            <Box sx={{ mt: 1.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                Highlights
+              </Typography>
+              <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
+                {highlights.map((h, i) => (
+                  <Typography key={`${title}-hl-${i}`} component="li" variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.5 }}>
+                    {h}
+                  </Typography>
+                ))}
+              </Box>
+              {/* Master-specific related WIP paper subtle link */}
+              {title?.includes('M.Sc.') && (
+                <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mt: 0.75 }}>
+                  Related: Work-in-Progress paper (EuroHaptics 2024)
+                  {' '}
+                  <Box
+                    component="a"
+                    href="#work"
+                    sx={{ color: 'primary.main', textDecoration: 'none' }}
+                  >
+                    see project →
+                  </Box>
+                </Typography>
+              )}
             </Box>
           )}
           {Array.isArray(competencies) && competencies.length > 0 && (
@@ -288,11 +341,12 @@ const EducationBento = () => {
             </Box>
           )}
           
+          </Box>
         </Box>
         );
       })}
     </Box>
   );
-};
+}
 
 export default EducationBento;

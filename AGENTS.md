@@ -77,7 +77,7 @@ If a command fails due to sandbox/network limits, report the failure, why it hap
 - **Theme preview**: `src/pages/ThemePreviewPage.js` is a playground. Do not ship heavy dev-only tooling outside `process.env.NODE_ENV === 'development'` guards.
 - **Analytics guards**: Some files call `window.gtag`. Wrap new analytics with existence checks to avoid runtime errors in development.
 - **Dependency hygiene**: Do not add GSAP (unused, scheduled for removal). Avoid styled-components (use MUI `sx` or Framer Motion). react-bits is reference-only, not integrated.
-- **Content pipeline**: When adding new section types to Work projects, update `sectionNormalizer.js` schema and `sectionAnalyzer.js` rendering strategies.
+- **Content pipeline**: When adding new section types to Work projects or the About section, update `sectionNormalizer.js` schema and `sectionAnalyzer.js` rendering strategies. Do not use "-" in your content writing. Sound like a professional and experienced designer, but write in a way that is easy to understand for a layman.
 
 ## 7. Communication Protocol
 
