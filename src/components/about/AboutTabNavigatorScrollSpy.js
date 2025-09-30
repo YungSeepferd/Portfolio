@@ -201,7 +201,10 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
               mb: 3,
               pl: theme.spacing(spacingTokens.tabs.labelPaddingLeft),
               fontWeight: 700,
-              color: theme.palette.text.primary,
+              background: `linear-gradient(45deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.light} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              display: 'inline-block',
             }}
           >
             About

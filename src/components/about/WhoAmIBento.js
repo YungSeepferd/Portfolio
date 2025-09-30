@@ -46,7 +46,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          I believe in evidence‑based design that carefully balances user needs, business goals, and technical feasibility. Accessibility and inclusion aren't optional—they're foundational. Every design decision is guided by three core principles: clarity for understanding, calmness for focus, and learnability for long‑term adoption.
+          I aim for evidence‑based design that balances what people need, what the business wants, and what is realistic to build. Accessibility and inclusion are not add‑ons. They are the foundation. I try to keep things clear, calm, and easy to learn so people can use them with confidence.
         </Typography>
       )
     },
@@ -58,7 +58,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          My journey began with Media Informatics and evolved into specialized Human‑Computer Interaction studies. I combine academic research with hands‑on prototyping and front‑end development, while maintaining a strong interest in audio and haptic interfaces. Workshop facilitation has become a natural extension of this practice.
+          I started in Media Informatics and later focused on Human‑Computer Interaction. I mix research with hands‑on prototyping and front‑end code. I am also curious about audio and haptic interfaces. Over time, I began running workshops to help teams move from ideas to working solutions.
         </Typography>
       )
     },

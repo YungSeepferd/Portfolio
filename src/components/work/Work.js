@@ -87,6 +87,7 @@ const Work = () => {
                 background: `linear-gradient(45deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.light} 100%)`,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
+                fontWeight: 700,
                 display: 'inline-block',
               }}
             >

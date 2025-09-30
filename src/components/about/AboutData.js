@@ -40,15 +40,13 @@ const skillTagCategories = [
     'ATLAS.ti (AI‑assisted Thematic Analysis)'
   ] },
   { title: 'Evaluation & Workshops', color: 'success', items: ['Heuristic Reviews', 'Expert Review', 'Task Analysis', 'Workshop Facilitation', 'Design Ops'] },
-  { title: 'Testing Types', color: 'success', items: ['A/B Testing', 'Tree Testing', 'Card Sorting'] },
+  { title: 'Testing Types', color: 'success', items: ['A/B Testing', 'Tree Testing', 'Card Sorting', 'User Testing', 'Usability Testing'] },
   // Other Technologies (warning)
-  { title: 'Languages', color: 'warning', items: ['JavaScript', 'TypeScript', 'CSS', 'Java', 'C', 'C++', 'C#'] },
-  { title: 'Frameworks & Libraries', color: 'warning', items: ['React', 'Three.js', 'Material UI', 'Bootstrap'] },
-  { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs', 'Max/MSP'] },
+  { title: 'Languages', color: 'warning', items: ['JavaScript', 'TypeScript', 'CSS', 'HTML', 'Java', 'C', 'C++', 'C#', 'Python', 'RegEx', 'LaTeX'] },
+  { title: 'Frameworks & Libraries', color: 'warning', items: ['React', 'Three.js', 'Material UI', 'Bootstrap', 'Framer Motion', 'React Three Fiber', 'react-scroll', 'react-bits'] },
+  { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs', 'Max/MSP', 'Unity', 'SuperCollider'] },
   { title: 'Tools', color: 'warning', items: ['Figma', 'Adobe CC', 'Unity', 'Git', 'GitHub Copilot', 'Windsurf', 'Cursor', 'Ableton Live', 'Logic Pro', 'Pro Tools'] },
-  { title: 'Data & ML', color: 'warning', items: ['TensorFlow'] },
-  { title: 'Creative Coding', color: 'warning', items: [] },
-  { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Analytical Sketching', 'Rust', 'AI Code Prompt Engineering & Automation', 'QA Basics', 'LLM UX Design & Implementation'] },
+  { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Hugo','Analytical Sketching', 'Rust', 'AI Code Prompt Engineering & Automation', 'QA Basics', 'LLM UX Design & Implementation', 'SwiftUI', 'TensorFlow', 'Playwright', 'Supabase']},
 ];
 // Original core competency items with icons and skills (now for Skills & Technologies tab)
 const coreCompetencyItems = [
@@ -60,7 +58,7 @@ const coreCompetencyItems = [
       'Clear Processes',
       'Thorough Documentation',
       'Shared Ownership',
-      'Role Definition',
+      'Collaborative Learning',
       'Handoff Management',
       'Calm Communication',
       'Respectful Teamwork'
@@ -76,7 +74,7 @@ const coreCompetencyItems = [
       'Thematic Analysis',
       'Digital Ethnography',
       'Expert Reviews',
-      'ATLAS.ti',
+      'Diary Studies',
       'Human Insight'
     ]
   },
@@ -103,7 +101,6 @@ const coreCompetencyItems = [
       'Workflow Optimization',
       'LLM Prompt Engineering',
       'Creative Problem-Solving',
-      'Process Design',
       'Tool Integration'
     ]
   },
@@ -127,21 +124,22 @@ const coreCompetencyItems = [
 const designCompetencyItems = [
   {
     title: 'Design',
-    description: 'Crafting intuitive and engaging multimodal user experiences through thoughtful design',
+    description: 'I design simple, clear interfaces that help people get things done. I focus on structure, flows, and visuals that feel natural to use.',
     icon: BrushIcon,
     skills: [
       'UI/UX Design',
       'Interaction Design',
       'Wireframing',
-      'Prototyping',
-      'Visual Design',
+      'Rapid Prototyping',
+      'Visual Design/ Graphic Design',
       'User Flows',
-      'Information Architecture'
+      'Information Architecture',
+      'Front End Handoff'
     ]
   },
   {
     title: 'Research',
-    description: 'Uncovering user needs and validating design decisions through research',
+    description: 'I talk to users, run tests, and review designs to learn what works and what does not. This helps the team make better choices.',
     icon: AccessibilityNewIcon,
     skills: [
       'User Research',
@@ -150,12 +148,16 @@ const designCompetencyItems = [
       'Heuristic Evaluation',
       'User Interviews',
       'Data Analysis',
-      'Thematic Analysis'
+      'Thematic Analysis',
+      'Digital Ethnography',
+      'Contextual Inquiry',
+      'Literature Review',
+      'Market Research'
     ]
   },
   {
     title: 'Development',
-    description: 'Bringing designs to life with clean, accessible code',
+    description: 'I turn ideas into working products with clean, accessible code. I care about performance and small details that improve the experience.',
     icon: CodeIcon,
     skills: [
       'Frontend Development',
@@ -164,26 +166,28 @@ const designCompetencyItems = [
       'Accessibility',
       'Mobile Development',
       'Sensor Integration',
+      'Audio Feedback',
       'Haptic Feedback'
     ]
   },
   {
     title: 'Audio',
-    description: 'Designing immersive audio experiences and sound interactions',
+    description: 'I create sound and build audio interactions. This adds feedback, mood, and clarity to the interface when it helps people.',
     icon: HeadsetMicIcon,
     skills: [
       'Sound Design',
+      'Audio Mixing',
       'Audio Programming',
       'Music Production',
       'Interactive Audio',
       'Spatial Audio',
       'Signal Processing',
-      'Audio-Visual Integration'
-    ]
+      'Audio-Haptic Prototyping'
+    ] 
   },
   {
     title: 'Teaching',
-    description: 'Empowering others through knowledge sharing and mentorship',
+    description: 'I share what I know through workshops and mentoring. I like to make complex topics feel simple and useful.',
     icon: LocalLibraryIcon,
     skills: [
       'Workshop Facilitation',
@@ -197,16 +201,16 @@ const designCompetencyItems = [
   },
   {
     title: 'Project Management',
-    description: 'Leading projects from concept to successful delivery',
+    description: 'I plan, align teams, and ship. I work with stakeholders, set goals, and keep work moving in the right direction.',
     icon: BusinessCenterIcon,
     skills: [
       'Agile Methodologies',
       'Scrum',
-      'Kanban',
       'Team Leadership',
       'Stakeholder Management',
       'Requirements Gathering',
-      'Roadmapping'
+      'Roadmapping',
+      'Asana'
     ]
   }
 ];
@@ -233,7 +237,13 @@ const experienceItems = [
     icon: WorkIcon,
     isFullWidth: false,
     bullets: [
-      'Researched market and user trends in media domains',
+      'Researched music technology and interaction topics for djay',
+      'Designed and implemented an interactive prototype for intuitive music control',
+      'Presented findings to product and engineering teams in clear English',
+      'Created slide decks that became a reference for an industry overview',
+      'Defined personas and mapped user flows for key scenarios',
+      'Built tablet UI wireframes and prototypes; collaborated directly with the Head of R&D',
+      'Used modern design tools to iterate quickly',
       'Supported UX prototyping and concept validation'
     ]
   },
@@ -320,7 +330,7 @@ const aboutData = [
               Tools & Workflow Automation
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
-              From design tools (Figma, Adobe CC) to AI-assisted development (GitHub Copilot, Windsurf, Cursor), audio production (Ableton, Logic Pro), and workflow automation (n8n, local LLM APIs)—I integrate modern tooling to eliminate repetitive tasks and create space for creative problem-solving.
+              I use Figma and Adobe CC for design. For development I work with GitHub Copilot, Windsurf, and Cursor. For audio I use tools like Ableton and Logic Pro. I also automate routine work with n8n and local LLMs. The goal is to spend less time on busywork and more time solving real problems.
             </Typography>
             <Box sx={{ mt: 'auto' }}>
               <CategorizedTags categories={skillTagCategories.filter(cat => 
@@ -342,12 +352,14 @@ const aboutData = [
               Languages & Technical Stack
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
-              Multi-paradigm technical foundation spanning frontend (JS/TS, React, Three.js), embedded systems (C, C++, C#), creative coding (Processing), and specialized audio-UX/haptic interfaces (Tone.js, RNBO, Interhaptics, Max/MSP)—bridging digital and physical experiences.
+              My stack covers the frontend (JS/TS, React, Three.js), some embedded work (C, C++, C#), and creative coding (Processing). I also explore audio and haptics (RNBO, Interhaptics, Max/MSP). I like building things that connect the digital and the physical.
             </Typography>
             <Box sx={{ mt: 'auto' }}>
-              <CategorizedTags categories={skillTagCategories.filter(cat => 
-                ['Languages', 'Frameworks & Libraries', 'Haptics & Audio‑UX'].includes(cat.title)
-              )} />
+              <CategorizedTags 
+                categories={skillTagCategories
+                  .filter(cat => ['Languages', 'Frameworks & Libraries', 'Haptics & Audio‑UX'].includes(cat.title))
+                  .map(cat => ({ ...cat, color: 'info' }))}
+              />
             </Box>
           </Box>
 
@@ -365,7 +377,7 @@ const aboutData = [
               Currently Improving
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
-              Expanding capabilities in two strategic directions: Golang for backend/systems programming (complementing frontend expertise for full-stack development) and analytical sketching for visual communication (essential for workshop facilitation and collaborative design). This reflects my commitment to both technical depth and effective human communication.
+              I am learning Golang to get better at backend and systems work. I am also practicing analytical sketching to explain ideas faster in workshops. It helps me ship better and work better with people.
             </Typography>
             <Box sx={{ mt: 'auto' }}>
               <CategorizedTags categories={skillTagCategories.filter(cat => 
