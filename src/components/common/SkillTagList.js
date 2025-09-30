@@ -38,6 +38,13 @@ const SkillTagList = ({ label, size = "medium", onClick, variant = "outlined", c
         '& .MuiChip-label': {
           color: theme.palette.common.white,
         },
+        '& .MuiChip-icon, & .MuiSvgIcon-root': {
+          color: theme.palette.common.white,
+          fill: theme.palette.common.white,
+        },
+        '& .MuiChip-deleteIcon': {
+          color: theme.palette.common.white,
+        },
         '&:hover': {
           background: theme.palette.mode === 'dark'
             ? 'rgba(255, 255, 255, 0.25)'

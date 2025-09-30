@@ -95,6 +95,53 @@ const masterThesis = {
       navigable: true
     },
     {
+      id: 'section-gallery',
+      type: 'gallery',
+      title: 'Project Gallery',
+      content: 'A selection of workshop moments, prototypes, and templates used during the study.',
+      media: [
+        { src: media.images.workshop, alt: 'Workshop session' },
+        { src: media.images.prototype, alt: 'On-body prototyping' },
+        { src: media.images.bodyMapping, alt: 'Body mapping template' },
+        { src: media.images.metaphorElicitation, alt: 'Metaphor elicitation template' },
+        { src: media.images.hapticLabs, alt: 'Hapticlabs DevKit' },
+        { src: media.images.affectivePrototype1, alt: 'Affective prototype variant 1' }
+      ],
+      layout: 'gallery-small',
+      anchor: 'gallery',
+      navigable: true
+    },
+    {
+      id: 'section-process-flow',
+      type: 'process',
+      title: 'Process Flow',
+      steps: [
+        {
+          label: 'Research',
+          content: [
+            'Reviewed emotion theory and existing haptic design literature to set a clear baseline.',
+            'Defined goals, scope, and participant criteria for the workshop study.'
+          ]
+        },
+        {
+          label: 'Prototyping',
+          content: [
+            'Built quick tactile sketches with the Hapticlabs DevKit and refined them in short cycles.',
+            'Ran on-body tests and captured feedback focusing on emotional intent and perception.'
+          ]
+        },
+        {
+          label: 'Results',
+          content: [
+            'Derived patterns for mapping emotions to haptic parameters and actuator placement.',
+            'Packaged templates and teaching material into a practical toolkit for newcomers.'
+          ]
+        }
+      ],
+      anchor: 'process-flow',
+      navigable: true
+    },
+    {
       id: 'section-problem',
       type: 'default',
       title: 'Motivation & Problem Statement',

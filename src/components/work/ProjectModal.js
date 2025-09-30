@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useRef } from 'react';
-import { Modal, Box, IconButton, useTheme, Fab } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Box, IconButton, useTheme, Fab, useMediaQuery, Typography } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -21,6 +22,7 @@ const ProjectModal = ({
 }) => {
   const theme = useTheme();
   const contentRef = useRef(null);
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Reset scroll position when project changes
   useEffect(() => {
@@ -73,40 +75,80 @@ const ProjectModal = ({
   if (!project) return null;
 
   return (
-    <Modal
+    <Dialog
       open={open}
       onClose={onClose}
       aria-labelledby={`project-modal-${project.id}-title`}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        '& .MuiBackdrop-root': {
+      fullScreen={fullScreen}
+      maxWidth="xl"
+      fullWidth
+      scroll="paper"
+      BackdropProps={{
+        sx: {
           backgroundColor: 'rgba(0, 0, 0, 0.9)',
           backdropFilter: 'blur(4px)',
           WebkitBackdropFilter: 'blur(4px)',
         }
       }}
-    >
-      <Box
-        sx={{
-          width: { xs: '100%', sm: '95vw' },
-          height: { xs: '100%', sm: '95vh' },
-          maxWidth: { sm: '95vw' }, 
-          maxHeight: { sm: '95vh' },
-          bgcolor: 'background.paper',
+      PaperProps={{
+        sx: {
           borderRadius: 0,
-          boxShadow: theme.shadows[24],
           overflow: 'hidden',
+          boxShadow: theme.shadows[24],
           position: 'relative',
-          opacity: 1,
-          transition: theme.transitions.create(['opacity', 'transform'], {
-            duration: theme.transitions.duration.enteringScreen,
-            easing: theme.transitions.easing.easeInOut,
-          }),
+        }
+      }}
+      data-testid="project-modal"
+    >
+      <DialogTitle
+        id={`project-modal-${project.id}-title`}
+        sx={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          left: 0,
+          p: 0,
+          // visually hidden title bar; we keep semantic title via aria but place close button
         }}
-        data-testid="project-modal"
       >
+        {/* Accessible title for screen readers (Dialog's aria-labelledby targets the DialogTitle id) */}
+        <Typography component="h2" sx={visuallyHidden}>
+          {project.title}
+        </Typography>
+        <Tooltip title="Close Project">
+          <IconButton
+            aria-label="close project"
+            onClick={onClose}
+            size="large"
+            sx={{
+              position: 'absolute',
+              top: { xs: 8, sm: 16 },
+              right: { xs: 8, sm: 16 },
+              zIndex: theme.zIndex.modal + 1,
+              color: 'text.primary',
+              backgroundColor: 'background.paper',
+              boxShadow: theme.shadows[2],
+              border: `1px solid`,
+              borderColor: 'divider',
+              '&:hover': {
+                backgroundColor: 'action.hover',
+                color: 'text.primary',
+                transform: 'rotate(90deg)',
+                boxShadow: theme.shadows[4],
+              },
+              transition: theme.transitions.create(['transform', 'background-color', 'box-shadow'], {
+                duration: theme.transitions.duration.shorter,
+                easing: theme.transitions.easing.easeInOut,
+              }),
+            }}
+            data-testid="project-modal-close"
+          >
+            <CloseIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+      </DialogTitle>
+
+      <DialogContent dividers ref={contentRef} sx={{ p: 0 }}>
         {/* Navigation Buttons - Floating Action Buttons positioned on sides */}
         {onPreviousProject && (
           <Tooltip title="Previous Project (←)" placement="right">
@@ -177,68 +219,12 @@ const ProjectModal = ({
             </Fab>
           </Tooltip>
         )}
-
-        {/* Close Button - Top Right, Design System Styling */}
-        <Tooltip title="Close Project">
-          <IconButton
-            aria-label="close project"
-            onClick={onClose}
-            size="large"
-            sx={{
-              position: 'absolute',
-              top: { xs: 8, sm: 16 },
-              right: { xs: 8, sm: 16 },
-              zIndex: theme.zIndex.modal + 1,
-              color: 'text.primary',
-              backgroundColor: 'background.paper',
-              boxShadow: theme.shadows[2],
-              border: `1px solid`,
-              borderColor: 'divider',
-              '&:hover': {
-                backgroundColor: 'action.hover',
-                color: 'text.primary',
-                transform: 'rotate(90deg)',
-                boxShadow: theme.shadows[4],
-              },
-              transition: theme.transitions.create(['transform', 'background-color', 'box-shadow'], {
-                duration: theme.transitions.duration.shorter,
-                easing: theme.transitions.easing.easeInOut,
-              }),
-            }}
-            data-testid="project-modal-close"
-          >
-            <CloseIcon fontSize="large" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Scrollable Content Area with ref */}
-        <Box 
-          ref={contentRef}
-          sx={{
-            width: '100%',
-            height: '100%',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-              height: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              background: 'transparent',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: 0,
-              '&:hover': {
-                backgroundColor: theme.palette.action.disabledBackground,
-              },
-            },
-          }}
-        >
+        {/* Content */}
+        <Box sx={{ width: '100%' }}>
           <ProjectFullContent project={project} />
         </Box>
-      </Box>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 

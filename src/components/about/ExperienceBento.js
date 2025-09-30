@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { Box, Typography, useTheme, Grid } from '@mui/material';
+import { Box, Typography, useTheme, Grid, Button } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import WorkIcon from '@mui/icons-material/Work';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import SchoolIcon from '@mui/icons-material/School';
@@ -193,6 +194,25 @@ const ExperienceBento = ({ items = [] }) => {
                         </Typography>
                       ))}
                     </Box>
+                  </Box>
+                )}
+
+                {item.attachments && item.attachments.length > 0 && (
+                  <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {item.attachments.map((att, i) => (
+                      <Button
+                        key={`${att.label}-${i}`}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<PictureAsPdfIcon />}
+                        href={att.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ textTransform: 'none' }}
+                      >
+                        {att.label}
+                      </Button>
+                    ))}
                   </Box>
                 )}
                 

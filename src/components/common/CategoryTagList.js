@@ -14,7 +14,7 @@ import { getSpacingPreset } from '../../theme/presets';
  * @param {number} [props.previewCount=6] - Number of tags shown before expanding
  * @param {Object} props.sx - Optional styles to override default styles
  */
-function CategoryTagList({ tags = [], onTagClick, previewCount = 6, sx }) {
+function CategoryTagList({ tags = [], onTagClick, previewCount = 6, textColor, sx }) {
   const theme = useTheme();
   const groupSpacing = getSpacingPreset('chipGroup');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -82,9 +82,9 @@ function CategoryTagList({ tags = [], onTagClick, previewCount = 6, sx }) {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                color: theme.palette.mode === 'light' 
+                color: textColor || (theme.palette.mode === 'light' 
                   ? 'rgba(8, 88, 104, 0.85)' // Dark grey/teal for light theme
-                  : 'rgba(255, 255, 255, 0.7)', // Light grey for dark theme
+                  : 'rgba(255, 255, 255, 0.7)'), // Light grey for dark theme
               }}
             >
               {tag}

@@ -13,6 +13,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import SchoolIcon from '@mui/icons-material/School';
+import AlgoriddimLetterPDF from '../../assets/information/letterofrecommendation/Vincent Letter of Recommendation.pdf';
 
 // Import images directly
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
@@ -245,6 +246,9 @@ const experienceItems = [
       'Built tablet UI wireframes and prototypes; collaborated directly with the Head of R&D',
       'Used modern design tools to iterate quickly',
       'Supported UX prototyping and concept validation'
+    ],
+    attachments: [
+      { label: 'Letter of Recommendation (PDF)', url: AlgoriddimLetterPDF }
     ]
   },
   {

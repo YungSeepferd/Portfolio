@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Divider, Typography, useTheme, Paper } from '@mui/material';
-import ProjectSections from './ProjectSections';
+// ProjectSections replaced by ProjectSectionRenderer for modern rendering
+import ProjectSectionRenderer from './ProjectSectionRenderer';
 import PrototypeShowcase from './PrototypeShowcase';
 import HeroVideo from './HeroVideo';
 import TitleOverlay from './TitleOverlay';
@@ -82,7 +83,7 @@ const ProjectFullContent = ({ project }) => {
         backgroundColor: theme.palette.background.paper
       }}>
         {/* Project Content Sections */}
-        <ProjectSections sections={sections} projectId={project.id} />
+        <ProjectSectionRenderer sections={sections} projectId={project.id} />
         {/* Prototype Showcase (if available) */}
         {prototype && (
           <PrototypeShowcase

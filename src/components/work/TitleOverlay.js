@@ -65,7 +65,7 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
       
       {/* Categories */}
       {categories.length > 0 && (
-        <CategoryTagList tags={categories} sx={{ mt: 1 }} />
+        <CategoryTagList tags={categories} textColor={theme.palette.common.white} sx={{ mt: 1 }} />
       )}
     </Box>
   );
