@@ -6,7 +6,7 @@ This file defines the expectations for AI coding agents collaborating on the **V
 
 ## 1. Mission Context
 
-- **Tech stack**: React 18 (CRA), Material UI 5, Framer Motion, React Three Fiber + Three.js, react-scroll, Selenium for smoke tests.
+- **Tech stack**: React 18 (CRA), Material UI 7 (Grid v2), Framer Motion, React Three Fiber + Three.js, react-scroll, Selenium for smoke tests.
 - **Dependencies removed**: GSAP (removed Sept 30, 2025), styled-components (removed Sept 30, 2025). react-bits remains (installed but not integrated).
 - **Structure**: Single-page portfolio with distinct feature sections (Hero, Work, About, Contact) rendered inside `src/App.js`.
 - **Design system first**: Styling is token-driven. All colours, spacing, and typography originate from `src/theme/`. Use the least amount of overrides possible.
@@ -88,6 +88,16 @@ After coding:
 - **Analytics guards**: Some files call `window.gtag`. Wrap new analytics with existence checks to avoid runtime errors in development.
 - **Dependency hygiene**: Do not re-add GSAP or styled-components (removed Sept 30, 2025). Use MUI `sx` or Framer Motion for styling/animations. react-bits is reference-only, not integrated.
 - **Content pipeline**: When adding new section types to Work projects or the About section, update `sectionNormalizer.js` schema and `sectionAnalyzer.js` rendering strategies. Do not use "-" in your content writing. Sound like a professional and experienced designer, but write in a way that is easy to understand for a layman.
+
+### Material UI 7 specifics (migration and usage)
+
+- **Grid v2 only**: Import `Grid` from `@mui/material/Grid` and use the `size` prop.
+  - Do: `<Grid container spacing={3}><Grid size={{ xs: 12, md: 6 }}></Grid></Grid>`
+  - Don’t: use `item`, `xs`, `md` props or `Unstable_Grid2`/`GridLegacy`.
+- **No deep imports**: Avoid paths like `@mui/material/styles/createTheme`. Always import from package roots, e.g. `import { createTheme } from '@mui/material/styles`.
+- **DefaultPropsProvider**: Prefer default props via `DefaultPropsProvider` instead of theme `components[..].defaultProps`.
+- **Deprecated APIs**: Prefer `slot`/`slotProps` patterns where applicable; avoid legacy class-based overrides.
+- **Pigment CSS (optional)**: We stay on Emotion runtime for CRA. Pigment CSS is optional; if adopted later, follow the official adapter imports and codemods.
 
 ## 7. Communication Protocol
 

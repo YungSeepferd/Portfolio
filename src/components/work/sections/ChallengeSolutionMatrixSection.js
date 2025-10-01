@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Card, CardContent, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { alpha } from '@mui/material/styles';
-import { getTypographyPreset } from '../../../theme/presets';
+import { getTypographyPreset, getSpacingPreset } from '../../../theme/presets';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 /**
@@ -31,6 +31,7 @@ const ChallengeSolutionMatrixSection = ({
     : (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
 
   const accent = theme.palette[projectColor] || theme.palette.primary;
+  const horizontal = getSpacingPreset('pageHorizontal');
   const accentMain = accent.main;
   const accentLight = accent.light || accent.main;
   const accentDark = accent.dark || accent.main;
@@ -156,7 +157,7 @@ const ChallengeSolutionMatrixSection = ({
   };
 
   return (
-    <Box id={id} sx={{ scrollMarginTop: theme.spacing(10), mb: 8 }}>
+    <Box id={id} sx={{ scrollMarginTop: theme.spacing(10), mb: 8, maxWidth: '1200px', mx: 'auto', px: horizontal.px }}>
       {/* Section Header */}
       <Box sx={{ mb: 3 }}>
         {formattedNumber && (

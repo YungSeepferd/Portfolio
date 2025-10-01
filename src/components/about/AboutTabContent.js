@@ -34,13 +34,17 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
   );
   // Always mirror the tab label for the content headline
   const headingNode = (
-    <Typography variant="h4" sx={{ mb: 2 }}>{tabData.title}</Typography>
+    <Typography 
+      variant="h4" 
+      sx={{ 
+        mb: 2,
+        color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.text.primary
+      }}
+    >
+      {tabData.title}
+    </Typography>
   );
   const contentBody = contentArray.filter((child) => child !== extractedHeading);
-
-  const isWhoAmI = tabData?.title === 'WhoAmI';
-  // Timeline is now coupled per-row inside the bento components (Experience/Education)
-  // No separate compact timeline here
 
   return (
     <Box
@@ -59,8 +63,8 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         scrollMarginTop: { xs: theme.spacing(12), md: theme.spacing(14) },
       }}
     >
-      {/* Top Row: Image and Heading (hidden for WhoAmI) */}
-      {!isWhoAmI && (
+      {/* Top Row: Image and Heading (shown for all tabs with pictures) */}
+      {tabData.pictures && tabData.pictures.length > 0 && (
         <Box 
           sx={{
             display: 'grid',

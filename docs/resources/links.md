@@ -6,7 +6,7 @@ This document contains all the documentation sources and resources used during t
 
 - **Start at the hub**: `docs/README.md` provides the index to all documentation categories.
 - **Navigate by category**: Architecture docs for system understanding, design-system for theming/components, development for current work.
-- **Official sources first**: Always prefer official documentation for React 18, MUI 5, React Three Fiber, Drei, and Framer Motion over blog posts.
+- **Official sources first**: Always prefer official documentation for React 18, MUI 7, React Three Fiber, Drei, and Framer Motion over blog posts.
 - **Cross-linking**: Use relative paths (`../design-system/overview.md`) and section anchors (`#theme-system`) to connect related docs.
 - **Search efficiently**: Use editor search (Cmd/Ctrl+P) to locate files; grep for symbols and imports across the codebase.
 - **Update policy**: When modifying docs, update the "Last Updated" date and cross-reference related files that may need updates.
@@ -33,6 +33,14 @@ This document contains all the documentation sources and resources used during t
 - **Theme System**: [Theming](https://mui.com/material-ui/customization/theming/)
 - **Material Icons**: [Material Icons](https://mui.com/material-ui/material-icons/)
 - **Box Component**: [Box](https://mui.com/material-ui/react-box/)
+
+### Migration & Guidelines (v7)
+
+- **Upgrade to v7**: https://mui.com/material-ui/migration/upgrade-to-v7/
+- **Upgrade to v6** (context): https://mui.com/material-ui/migration/upgrade-to-v6/
+- **Upgrade to Grid v2**: https://mui.com/material-ui/migration/upgrade-to-grid-v2/
+- **Deprecated APIs → slot/slotProps**: https://mui.com/material-ui/migration/migrating-from-deprecated-apis/
+- **Pigment CSS (optional)**: https://mui.com/material-ui/migration/upgrade-to-v6/migrating-to-pigment-css/
 
 ### Styling
 

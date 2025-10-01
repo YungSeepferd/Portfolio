@@ -98,22 +98,26 @@ import { Container } from '@mui/material';
 </Container>
 ```
 
-### Grid
+### Grid (v7, Grid v2)
 
-`Grid` creates flexible layouts:
+`Grid` creates flexible layouts. Use Grid v2 with the `size` prop and no `item`/`xs`/`md` props:
 
 ```jsx
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 <Grid container spacing={3}>
-  <Grid item xs={12} md={6}>
+  <Grid size={{ xs: 12, md: 6 }}>
     <Content />
   </Grid>
-  <Grid item xs={12} md={6}>
+  <Grid size={{ xs: 12, md: 6 }}>
     <Content />
   </Grid>
 </Grid>
 ```
+
+Notes:
+- Prefer package-root imports, e.g. `import { createTheme } from '@mui/material/styles'`.
+- For default props, use `DefaultPropsProvider` instead of `theme.components[..].defaultProps`.
 
 ## Benefits Over Styled Components
 

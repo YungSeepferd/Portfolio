@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails,
          useTheme } from '@mui/material';
+import { getSpacingPreset, getTypographyPreset } from '../../../theme/presets';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { motion } from 'framer-motion';
 
@@ -22,12 +23,17 @@ const AccordionSection = ({
   items = [], 
   content,
   defaultExpanded = null,
-  allowMultiple = false
+  allowMultiple = false,
+  sectionNumber,
+  sectionIndex,
+  projectColor = 'primary'
 }) => {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(
     defaultExpanded !== null ? defaultExpanded : (allowMultiple ? [] : false)
   );
+  const horizontal = getSpacingPreset('pageHorizontal');
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
 
   if (!items || items.length === 0) {
     return null;
@@ -52,6 +58,11 @@ const AccordionSection = ({
     return expanded === panel;
   };
 
+  // format section number
+  const formattedNumber = sectionNumber 
+    ? (typeof sectionNumber === 'number' ? sectionNumber.toString().padStart(2, '0') : sectionNumber)
+    : (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
+
   return (
     <Box 
       id={id}
@@ -61,23 +72,39 @@ const AccordionSection = ({
       transition={{ duration: 0.6 }}
       sx={{ 
         mb: 8,
-        scrollMarginTop: theme.spacing(10)
+        scrollMarginTop: theme.spacing(10),
+        px: horizontal.px
       }}
     >
-      {/* Section Title */}
-      {title && (
-        <Typography 
-          variant="h4" 
-          component="h3"
-          sx={{ 
-            mb: 4,
-            fontWeight: theme.typography.fontWeightBold,
-            color: theme.palette.text.primary
-          }}
-        >
-          {title}
-        </Typography>
-      )}
+      {/* Section header with optional number */}
+      <Box sx={{ mb: 4 }}>
+        {formattedNumber && (
+          <Typography
+            variant={eyebrowPreset.variant}
+            component={eyebrowPreset.component}
+            sx={{
+              ...eyebrowPreset.sx,
+              color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+              fontWeight: 700,
+            }}
+          >
+            {formattedNumber}
+          </Typography>
+        )}
+        {title && (
+          <Typography 
+            variant="h4" 
+            component="h3"
+            sx={{ 
+              mb: 0,
+              fontWeight: theme.typography.fontWeightBold,
+              color: theme.palette.text.primary
+            }}
+          >
+            {title}
+          </Typography>
+        )}
+      </Box>
 
       {/* Optional introductory content */}
       {content && (

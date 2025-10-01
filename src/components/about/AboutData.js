@@ -304,7 +304,7 @@ const aboutData = [
     title: "Skills & Technology",
     subtitle: "Core competencies, tools and frameworks",
     pictures: [
-      createAboutImage(SkillsImage, 'Skills background', 'center 30%', {
+      createAboutImage(SkillsImage, 'Skills background', 'center 2%', {
         objectFit: 'cover',
       }),
     ],
@@ -463,7 +463,7 @@ const aboutData = [
     title: "Education",
     subtitle: "Academic Background",
     pictures: [
-      createAboutImage(EducationImage, 'Academic journey photo', 'center center', {
+      createAboutImage(EducationImage, 'Academic journey photo', 'center 35%', {
         width: 2624,
         height: 2436,
         objectFit: 'cover',

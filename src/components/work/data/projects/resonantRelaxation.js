@@ -355,6 +355,7 @@ const resonantRelaxation = {
             <Button
               size="small"
               variant="outlined"
+              color="secondary"
               endIcon={<OpenInNewIcon />}
               href="https://doi.org/10.1007/978-3-319-58628-1_23"
               target="_blank"
@@ -370,6 +371,7 @@ const resonantRelaxation = {
             <Button
               size="small"
               variant="outlined"
+              color="secondary"
               endIcon={<OpenInNewIcon />}
               href="https://doi.org/10.1109/ACII.2019.8925531"
               target="_blank"
@@ -385,6 +387,7 @@ const resonantRelaxation = {
             <Button
               size="small"
               variant="outlined"
+              color="secondary"
               endIcon={<OpenInNewIcon />}
               href="https://doi.org/10.1016/j.cobeha.2022.101113"
               target="_blank"
@@ -400,6 +403,7 @@ const resonantRelaxation = {
             <Button
               size="small"
               variant="outlined"
+              color="secondary"
               endIcon={<OpenInNewIcon />}
               href="https://eprints.whiterose.ac.uk/141387/"
               target="_blank"

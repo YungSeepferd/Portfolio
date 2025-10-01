@@ -10,7 +10,7 @@ import { getSpacingPreset, getTypographyPreset } from '../../../theme/presets';
  * - Desktop: vertical Stepper with expandable content
  * - Mobile: single-step view with MobileStepper controls
  */
-const ProcessSection = ({ id, title, steps = [], sx = {} }) => {
+const ProcessSection = ({ id, title, steps = [], sx = {}, sectionNumber, sectionIndex, projectColor = 'primary' }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [activeStep, setActiveStep] = useState(0);
@@ -18,19 +18,40 @@ const ProcessSection = ({ id, title, steps = [], sx = {} }) => {
   const vertical = getSpacingPreset('sectionVertical');
   const horizontal = getSpacingPreset('pageHorizontal');
   const titlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
 
   if (!Array.isArray(steps) || steps.length === 0) return null;
 
   const handleNext = () => setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
   const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
 
+  // Format section number
+  const formattedNumber = sectionNumber
+    ? (typeof sectionNumber === 'number' ? sectionNumber.toString().padStart(2, '0') : sectionNumber)
+    : (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
+
   return (
     <Box id={id} sx={{ maxWidth: '1200px', mx: 'auto', px: horizontal.px, pt: vertical.pt, pb: vertical.pb, ...sx }}>
-      {title && (
-        <Typography variant={titlePreset.variant} component={titlePreset.component} sx={{ ...titlePreset.sx, mb: 2 }}>
-          {title}
-        </Typography>
-      )}
+      <Box sx={{ mb: 2 }}>
+        {formattedNumber && (
+          <Typography
+            variant={eyebrowPreset.variant}
+            component={eyebrowPreset.component}
+            sx={{
+              ...eyebrowPreset.sx,
+              color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+              fontWeight: 700,
+            }}
+          >
+            {formattedNumber}
+          </Typography>
+        )}
+        {title && (
+          <Typography variant={titlePreset.variant} component={titlePreset.component} sx={{ ...titlePreset.sx, mb: 0 }}>
+            {title}
+          </Typography>
+        )}
+      </Box>
 
       {!isMobile ? (
         <Stepper activeStep={activeStep} orientation="vertical" nonLinear>

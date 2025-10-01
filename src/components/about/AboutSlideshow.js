@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Box, CircularProgress, Fade, useTheme } from '@mui/material';
+import { Box, CircularProgress, useTheme } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * AboutSlideshow Component
@@ -22,19 +23,10 @@ const AboutSlideshow = React.memo(({ pictures }) => {
   const [current, setCurrent] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [loadedImages, setLoadedImages] = useState({});
-  const [aspectRatioValue, setAspectRatioValue] = useState(null);
-  const [aspectRatioNumeric, setAspectRatioNumeric] = useState(null);
 
   // Handle image loading for current image
-  const handleImageLoad = useCallback((event) => {
+  const handleImageLoad = useCallback(() => {
     setLoaded(true);
-
-    if (!event?.target) return;
-    const { naturalWidth, naturalHeight } = event.target;
-    if (naturalWidth && naturalHeight) {
-      setAspectRatioValue(`${naturalWidth} / ${naturalHeight}`);
-      setAspectRatioNumeric(naturalWidth / naturalHeight);
-    }
   }, []);
 
   // Helper function to get image source from either string or object format
@@ -92,39 +84,6 @@ const AboutSlideshow = React.memo(({ pictures }) => {
     return defaultPics[current];
   }, [current, defaultPics]);
 
-  useEffect(() => {
-    if (!currentImage || typeof currentImage !== 'object') {
-      setAspectRatioValue(null);
-      setAspectRatioNumeric(null);
-      return;
-    }
-
-    if (currentImage.aspectRatioValue) {
-      setAspectRatioValue(currentImage.aspectRatioValue);
-    } else if (currentImage.width && currentImage.height) {
-      setAspectRatioValue(`${currentImage.width} / ${currentImage.height}`);
-    } else if (typeof currentImage.aspectRatio === 'string') {
-      setAspectRatioValue(currentImage.aspectRatio);
-    } else if (typeof currentImage.aspectRatio === 'number') {
-      setAspectRatioValue(currentImage.aspectRatio.toString());
-    } else {
-      setAspectRatioValue(null);
-    }
-
-    if (typeof currentImage.aspectRatio === 'number') {
-      setAspectRatioNumeric(currentImage.aspectRatio);
-    } else if (currentImage.width && currentImage.height) {
-      setAspectRatioNumeric(currentImage.width / currentImage.height);
-    } else {
-      setAspectRatioNumeric(null);
-    }
-  }, [currentImage]);
-
-  const resolvedAspectRatio = useMemo(() => {
-    if (aspectRatioValue) return aspectRatioValue;
-    if (aspectRatioNumeric) return aspectRatioNumeric;
-    return null;
-  }, [aspectRatioValue, aspectRatioNumeric]);
 
   const imageDisplay = useMemo(() => (
     <Box 
@@ -136,9 +95,8 @@ const AboutSlideshow = React.memo(({ pictures }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        aspectRatio: resolvedAspectRatio || { xs: '4 / 3', sm: '16 / 9' },
-        minHeight: resolvedAspectRatio ? { xs: 260, sm: 320 } : { xs: 240, sm: 300 },
-        maxHeight: resolvedAspectRatio ? { xs: 500, sm: 540, md: 640 } : { xs: 360, sm: 420, md: 460 },
+        // Fixed height for consistent layout across all tabs
+        height: { xs: 260, sm: 320, md: 380 },
         overflow: 'hidden',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: theme.palette.background.paper,
@@ -169,24 +127,30 @@ const AboutSlideshow = React.memo(({ pictures }) => {
         </Box>
       )}
       
-      <Fade in={loaded} timeout={400} key={`fade-${current}`}>
-        <Box component="div" sx={{ width: '100%', height: '100%' }}>
+      <AnimatePresence mode="wait">
+        <Box component={motion.div}
+          key={`motion-${current}`}
+          initial={{ opacity: 0, y: 8, scale: 0.995 }}
+          animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 8, scale: loaded ? 1 : 0.995 }}
+          exit={{ opacity: 0, y: -6, scale: 0.995 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          sx={{ width: '100%', height: '100%' }}
+        >
           <Box
             component="img"
             src={getCurrentImageSrc(currentImage)}
-            alt={`About section content ${current + 1}`} 
+            alt={`About section content ${current + 1}`}
             onLoad={handleImageLoad}
             sx={{
               width: '100%',
               height: '100%',
-              objectFit: (typeof currentImage === 'object' && currentImage?.objectFit)
-                || (aspectRatioNumeric && aspectRatioNumeric < 1 ? 'contain' : 'cover'),
+              objectFit: (typeof currentImage === 'object' && currentImage?.objectFit) || 'cover',
               objectPosition: getCurrentImagePosition(currentImage),
               display: 'block',
             }}
           />
         </Box>
-      </Fade>
+      </AnimatePresence>
 
       {/* Indicator dots - only show if multiple images */}
       {defaultPics.length > 1 && (
@@ -232,7 +196,7 @@ const AboutSlideshow = React.memo(({ pictures }) => {
         </Box>
       )}
     </Box>
-  ), [current, defaultPics, loaded, theme, handleImageLoad, getCurrentImageSrc, getCurrentImagePosition, currentImage, resolvedAspectRatio, aspectRatioNumeric]);
+  ), [current, defaultPics, loaded, theme, handleImageLoad, getCurrentImageSrc, getCurrentImagePosition, currentImage]);
 
   return imageDisplay;
 });

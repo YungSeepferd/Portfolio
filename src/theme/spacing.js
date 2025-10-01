@@ -66,7 +66,7 @@ themeSpacing.card = {
   gap: 2,           // 16px gap between card elements
   // Project card specific spacing
   project: {
-    width: { xs: '100%', sm: '98%', md: '96%', lg: '95%' },
+    width: { xs: '90%', sm: '88%', md: '86%', lg: '85%' },
     paddingX: { xs: 2, sm: 2.5, md: 3 },
     paddingY: { xs: 2, sm: 2.5, md: 3 },
     titlePaddingY: { xs: 1.5, sm: 2, md: 2.5 },

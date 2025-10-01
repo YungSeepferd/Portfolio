@@ -64,6 +64,9 @@ const ProjectSectionRenderer = ({ sections = [], projectId, projectColor = 'prim
               orientation={section.orientation}
               interactive={section.interactive}
               content={content}
+              sectionNumber={normalized.sectionNumber}
+              sectionIndex={index}
+              projectColor={projectColor}
             />
           );
         }
@@ -116,6 +119,9 @@ const ProjectSectionRenderer = ({ sections = [], projectId, projectColor = 'prim
               content={content}
               defaultExpanded={section.defaultExpanded}
               allowMultiple={section.allowMultiple}
+              sectionNumber={normalized.sectionNumber}
+              sectionIndex={index}
+              projectColor={projectColor}
             />
           );
         }
@@ -130,7 +136,7 @@ const ProjectSectionRenderer = ({ sections = [], projectId, projectColor = 'prim
               title={title}
               items={normalized.media?.items || []}
               content={content}
-              sectionNumber={section.sectionNumber}
+              sectionNumber={normalized.sectionNumber}
               sectionIndex={index}
               projectColor={projectColor}
             />
@@ -147,6 +153,9 @@ const ProjectSectionRenderer = ({ sections = [], projectId, projectColor = 'prim
               id={id}
               title={title}
               steps={steps}
+              sectionNumber={normalized.sectionNumber}
+              sectionIndex={index}
+              projectColor={projectColor}
             />
           );
         }

@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useRef, forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { Box, useTheme, Tabs, Tab, Typography, useMediaQuery } from '@mui/material';
+import { motion } from 'framer-motion';
 import spacingTokens from '../../theme/spacing';
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
@@ -44,12 +45,14 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
   } = useScrollSpy({ 
     sectionCount: aboutData.length,
     // Align right viewport start with left "About" heading by increasing top offset
-    scrollOffset: typeof stickyTop === 'number' ? stickyTop + 56 : 96,
+    scrollOffset: typeof stickyTop === 'number' ? stickyTop + 96 : 136,
     useWindowRoot: isMobile
     // Use default granular thresholds for responsive detection
   });
   
   const programmaticScrollRef = useRef(false);
+  const scrollEndTimerRef = useRef(null);
+  const detachScrollWatcherRef = useRef(null);
   const lastTouchYRef = useRef(0);
   // Local UI override to ensure the selected state updates immediately on click
   const [selectedTab, setSelectedTab] = useState(0);
@@ -62,6 +65,43 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
       setSelectedTab(activeSection);
     }
   }, [activeSection]);
+  
+  // Helpers to manage programmatic scroll lifecycle (more robust than fixed timeout)
+  const endProgrammaticScroll = useCallback(() => {
+    programmaticScrollRef.current = false;
+    if (scrollEndTimerRef.current) {
+      clearTimeout(scrollEndTimerRef.current);
+      scrollEndTimerRef.current = null;
+    }
+    if (detachScrollWatcherRef.current) {
+      try { detachScrollWatcherRef.current(); } catch (_) {}
+      detachScrollWatcherRef.current = null;
+    }
+  }, []);
+
+  const beginProgrammaticScroll = useCallback(() => {
+    // Cancel any prior watcher
+    endProgrammaticScroll();
+    programmaticScrollRef.current = true;
+    const target = isMobile ? window : containerRef.current;
+    if (!target) return;
+    const onAnyScroll = () => {
+      if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+      // Consider scroll finished after quiet period
+      scrollEndTimerRef.current = setTimeout(() => {
+        endProgrammaticScroll();
+      }, 180);
+    };
+    const onScrollEnd = () => endProgrammaticScroll();
+    try { target.addEventListener('scroll', onAnyScroll, { passive: true }); } catch (_) {}
+    try { target.addEventListener('scrollend', onScrollEnd); } catch (_) {}
+    // Kick off initial timer in case there are no events
+    onAnyScroll();
+    detachScrollWatcherRef.current = () => {
+      try { target.removeEventListener('scroll', onAnyScroll); } catch (_) {}
+      try { target.removeEventListener('scrollend', onScrollEnd); } catch (_) {}
+    };
+  }, [containerRef, isMobile, endProgrammaticScroll]);
   
   // Helper function to scroll to element with offset for sticky header
   const scrollToElementWithOffset = useCallback((element, offset = 0) => {
@@ -132,6 +172,7 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     scrollToTop: () => {
       if (containerRef.current) {
+        beginProgrammaticScroll();
         containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
@@ -139,15 +180,12 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
       if (sectionIndex >= 0 && sectionIndex < aboutData.length) {
         const targetElement = sectionRefs.current[sectionIndex];
         if (targetElement) {
-          programmaticScrollRef.current = true;
+          beginProgrammaticScroll();
           scrollToElementWithOffset(targetElement, typeof stickyTop === 'number' ? stickyTop + 56 : 96);
-          setTimeout(() => {
-            programmaticScrollRef.current = false;
-          }, 1000);
         }
       }
     }
-  }), [aboutData, sectionRefs, stickyTop, scrollToElementWithOffset]);
+  }), [aboutData, sectionRefs, stickyTop, scrollToElementWithOffset, beginProgrammaticScroll, containerRef]);
 
   // Handle tab click - pure state-based navigation (no URL hash)
   const handleTabChange = useCallback((event, newValue) => {
@@ -156,15 +194,14 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
 
     const targetElement = sectionRefs.current[newValue];
     if (targetElement) {
-      programmaticScrollRef.current = true;
-      const offset = typeof stickyTop === 'number' ? stickyTop + 56 : 96;
+      beginProgrammaticScroll();
+      const offset = typeof stickyTop === 'number' ? stickyTop + 96 : 136;
       scrollToElementWithOffset(targetElement, offset);
-
-      setTimeout(() => {
-        programmaticScrollRef.current = false;
-      }, 1000);
     }
-  }, [sectionRefs, stickyTop, scrollToElementWithOffset]);
+  }, [sectionRefs, stickyTop, scrollToElementWithOffset, beginProgrammaticScroll]);
+
+  // Cleanup on unmount
+  useEffect(() => () => endProgrammaticScroll(), [endProgrammaticScroll]);
 
   if (!aboutData || aboutData.length === 0) {
     return null;
@@ -225,7 +262,7 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
                   alignItems: 'flex-start',
                   textTransform: 'none',
                   minHeight: theme.spacing(spacingTokens.tabs.minHeight),
-                  borderLeft: `2px solid ${theme.palette.divider}`,
+                  borderLeft: `3px solid ${theme.palette.divider}`,
                   color: theme.palette.text.primary,
                   borderRadius: 0,
                   mr: 0,
@@ -245,7 +282,7 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
                 },
                 '& .MuiTabs-indicator': {
                   left: 0,
-                  width: spacingTokens.tabs.indicatorThicknessPx,
+                  width: '3px',
                 },
               }}
             >
@@ -275,7 +312,7 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
           position: 'relative',
           scrollSnapType: 'none', // Disabled for free scrolling
           scrollBehavior: 'smooth',
-          scrollPaddingTop: { md: stickyTop },
+          scrollPaddingTop: { md: (typeof stickyTop === 'number' ? stickyTop + 96 : stickyTop) },
           pr: { xs: 2, sm: 4, md: 6, lg: 8 },
           pl: { xs: 2, sm: 4, md: 0 },
           // Ensure this container captures scroll events
@@ -299,7 +336,14 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
       >
         {/* Mobile horizontal tabs */}
         <Box sx={{ display: { xs: 'block', md: 'none' }, mb: 3, position: 'sticky', top: stickyTop, zIndex: 10, backgroundColor: theme.palette.background.default, py: 2 }}>
-          <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              mb: 2, 
+              fontWeight: 700,
+              color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.text.primary
+            }}
+          >
             About
           </Typography>
           <Tabs
@@ -351,9 +395,16 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
               containerRef={containerRef}
               intensity={0.8} // Subtle parallax (0.8x of default 40px = 32px range)
             >
-              <AboutCard variant="transparent" sx={{ width: '100%', height: '100%', borderRadius: 0 }}>
-                <AboutTabContent tabData={tab} tabIndex={index} />
-              </AboutCard>
+              <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: activeSection === index ? 1 : 0.85, y: activeSection === index ? 0 : 8 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <AboutCard variant="transparent" sx={{ width: '100%', height: '100%', borderRadius: 0 }}>
+                  <AboutTabContent tabData={tab} tabIndex={index} />
+                </AboutCard>
+              </Box>
             </ParallaxSection>
           </Box>
           );

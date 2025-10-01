@@ -69,7 +69,7 @@ The content quality is excellent, but presentation can be significantly enhanced
 ### Available MUI Components (Underutilized)
 
 **Layout & Structure**:
-- `Grid2` (new Grid system) - Advanced responsive layouts
+- `Grid` (v7 Grid v2) - Advanced responsive layouts
 - `Stack` - Flexible spacing and direction
 - `Container` - Responsive containers
 - `Accordion` - Collapsible sections
@@ -144,12 +144,14 @@ The content quality is excellent, but presentation can be significantly enhanced
 
 #### 1.3 Card Grid Section
 **Use Case**: Feature showcases, benefit lists  
-**MUI Components**: `Grid2`, `Card`, `CardMedia`, `CardContent`  
+**MUI Components**: `Grid`, `Card`, `CardMedia`, `CardContent`  
 **Projects**: All projects (features, outcomes, benefits)
 
 ```javascript
-<Grid2 container spacing={3}>
-  <Grid2 xs={12} md={6} lg={4}>
+import Grid from '@mui/material/Grid';
+
+<Grid container spacing={3}>
+  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
     <Card elevation={2}>
       <CardMedia component="img" image={...} />
       <CardContent>
@@ -157,8 +159,8 @@ The content quality is excellent, but presentation can be significantly enhanced
         <Typography variant="body2">Description...</Typography>
       </CardContent>
     </Card>
-  </Grid2>
-</Grid2>
+  </Grid>
+</Grid>
 ```
 
 #### 1.4 Accordion Section
@@ -191,7 +193,7 @@ The content quality is excellent, but presentation can be significantly enhanced
 
 #### 2.3 Split-Screen Layout
 **Use Case**: Before/after, comparison content  
-**MUI Components**: `Grid2` with `Stack`  
+**MUI Components**: `Grid` with `Stack`  
 **Pattern**: 50/50 split with divider
 
 #### 2.4 Hero Sections
@@ -549,7 +551,7 @@ src/components/work/data/projects/
 - Stepper: https://mui.com/material-ui/react-stepper/
 - Card: https://mui.com/material-ui/react-card/
 - Accordion: https://mui.com/material-ui/react-accordion/
-- Grid2: https://mui.com/material-ui/react-grid2/
+- Grid: https://mui.com/material-ui/react-grid/
 - ImageList: https://mui.com/material-ui/react-image-list/
 
 ### Internal Documentation

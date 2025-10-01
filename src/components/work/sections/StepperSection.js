@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Stepper, Step, StepLabel, StepContent, Button,
          useTheme, useMediaQuery, Paper } from '@mui/material';
+import { getSpacingPreset, getTypographyPreset } from '../../../theme/presets';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -21,7 +22,10 @@ const StepperSection = ({
   orientation = 'vertical',
   interactive = false,
   content,
-  defaultActiveStep = 0
+  defaultActiveStep = 0,
+  sectionNumber,
+  sectionIndex,
+  projectColor = 'primary'
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -29,6 +33,13 @@ const StepperSection = ({
 
   // Force vertical on mobile
   const stepperOrientation = isMobile ? 'vertical' : orientation;
+  const horizontal = getSpacingPreset('pageHorizontal');
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+
+  // Format section number
+  const formattedNumber = sectionNumber ? 
+    (typeof sectionNumber === 'number' ? sectionNumber.toString().padStart(2, '0') : sectionNumber) :
+    (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
 
   if (!steps || steps.length === 0) {
     return null;
@@ -55,23 +66,38 @@ const StepperSection = ({
       transition={{ duration: 0.6 }}
       sx={{ 
         mb: 8,
-        scrollMarginTop: theme.spacing(10)
+        scrollMarginTop: theme.spacing(10),
+        px: horizontal.px
       }}
     >
-      {/* Section Title */}
-      {title && (
-        <Typography 
-          variant="h4" 
-          component="h3"
-          sx={{ 
-            mb: 4,
-            fontWeight: theme.typography.fontWeightBold,
-            color: theme.palette.text.primary
-          }}
-        >
-          {title}
-        </Typography>
-      )}
+      {/* Section Header */}
+      <Box sx={{ mb: 3 }}>
+        {formattedNumber && (
+          <Typography
+            variant={eyebrowPreset.variant}
+            component={eyebrowPreset.component}
+            sx={{
+              ...eyebrowPreset.sx,
+              color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+              fontWeight: 700,
+            }}
+          >
+            {formattedNumber}
+          </Typography>
+        )}
+        {title && (
+          <Typography 
+            variant="h4" 
+            component="h3"
+            sx={{ 
+              fontWeight: theme.typography.fontWeightBold,
+              color: theme.palette.text.primary
+            }}
+          >
+            {title}
+          </Typography>
+        )}
+      </Box>
 
       {/* Optional introductory content */}
       {content && (

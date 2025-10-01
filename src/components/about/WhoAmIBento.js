@@ -1,9 +1,18 @@
 import React from 'react';
-import { Box, Typography, useTheme, Grid } from '@mui/material';
+import { Box, Typography, useTheme, Chip } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
 import spacingTokens from '../../theme/spacing';
 // Removed SkillsBento in WhoAmI to avoid redundancy with narrative boxes
 
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
+import BrushIcon from '@mui/icons-material/Brush';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import CodeIcon from '@mui/icons-material/Code';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
+import GroupsIcon from '@mui/icons-material/Groups';
+import { coreCompetencyItems, designCompetencyItems } from './AboutData';
 
 const WhoAmIBento = () => {
   const theme = useTheme();
@@ -72,6 +81,7 @@ const WhoAmIBento = () => {
       key: 'design',
       title: 'Design',
       color: 'info',
+      icon: BrushIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -84,6 +94,7 @@ const WhoAmIBento = () => {
       key: 'research',
       title: 'Research',
       color: 'success',
+      icon: AccessibilityNewIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -96,6 +107,7 @@ const WhoAmIBento = () => {
       key: 'development',
       title: 'Development',
       color: 'warning',
+      icon: CodeIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -110,6 +122,7 @@ const WhoAmIBento = () => {
       key: 'audio',
       title: 'Audio',
       color: 'secondary',
+      icon: HeadsetMicIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -122,6 +135,7 @@ const WhoAmIBento = () => {
       key: 'teaching',
       title: 'Teaching',
       color: 'info',
+      icon: LocalLibraryIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -134,6 +148,7 @@ const WhoAmIBento = () => {
       key: 'collaboration',
       title: 'Collaboration',
       color: 'primary',
+      icon: GroupsIcon,
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
@@ -143,6 +158,59 @@ const WhoAmIBento = () => {
       )
     },
   ];
+
+  const getSkillsForItem = (key, title) => {
+    const titleMap = {
+      design: 'Design',
+      research: 'Research',
+      development: 'Development',
+      audio: 'Audio',
+      teaching: 'Teaching',
+      collaboration: 'Collaboration',
+    };
+    const normalized = titleMap[key] || title;
+    // Try designCompetencyItems first
+    const fromDesign = Array.isArray(designCompetencyItems)
+      ? designCompetencyItems.find((d) => d.title === normalized)?.skills
+      : undefined;
+    if (fromDesign && fromDesign.length) return fromDesign;
+    // Fallback to coreCompetencyItems
+    const fromCore = Array.isArray(coreCompetencyItems)
+      ? coreCompetencyItems.find((c) => c.title === normalized)?.skills
+      : undefined;
+    return fromCore || [];
+  };
+
+  const getDescriptionForItem = (key, title, fallbackNode) => {
+    const titleMap = {
+      design: 'Design',
+      research: 'Research',
+      development: 'Development',
+      audio: 'Audio',
+      teaching: 'Teaching',
+      collaboration: 'Collaboration',
+    };
+    const normalized = titleMap[key] || title;
+    const fromDesign = Array.isArray(designCompetencyItems)
+      ? designCompetencyItems.find((d) => d.title === normalized)?.description
+      : undefined;
+    const fromCore = Array.isArray(coreCompetencyItems)
+      ? coreCompetencyItems.find((c) => c.title === normalized)?.description
+      : undefined;
+
+    const text = fromDesign || fromCore;
+    if (typeof text === 'string') return text;
+
+    // Fallback: try extracting text from the existing body node
+    const raw = (fallbackNode && fallbackNode.props && fallbackNode.props.children) || '';
+    return typeof raw === 'string' ? raw : '';
+  };
+
+  const toFirstSentence = (txt) => {
+    if (!txt) return '';
+    const idx = txt.indexOf('.');
+    return idx !== -1 ? txt.slice(0, idx + 1) : txt;
+  };
 
   return (
     <Box>
@@ -227,6 +295,119 @@ const WhoAmIBento = () => {
                   </Box>
                 </Box>
               )}
+            </Grid>
+          );
+        })}
+      </Grid>
+
+      {/* Bottom rows - Core competencies (6 bentos) */}
+      <Grid container rowSpacing={spacingTokens.bento.rowGap} columnSpacing={spacingTokens.bento.columnGap} sx={{ mt: 0 }}>
+        {items.slice(3).map((item) => {
+          const colorKey = `${item.color}.main`;
+          const bgGradient = getBgGradient(colorKey);
+
+          return (
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.key}>
+              <Box
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  minHeight: 'auto',
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 3,
+                  },
+                  transition: theme.transitions.create(['transform', 'box-shadow'], {
+                    duration: theme.transitions.duration.standard,
+                  }),
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: bgGradient,
+                    opacity: 0.25,
+                    transition: 'opacity 0.3s ease-in-out',
+                    zIndex: 0,
+                  },
+                  '& > *': {
+                    position: 'relative',
+                    zIndex: 1,
+                  }
+                }}
+              >
+                {item.icon && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 48,
+                        height: 48,
+                        borderRadius: '50%',
+                        bgcolor: (theme) => alpha(theme.palette[item.color]?.main || theme.palette.primary.main, 0.18),
+                        color: colorKey,
+                        border: (theme) => `1px solid ${alpha(theme.palette[item.color]?.main || theme.palette.primary.main, 0.35)}`,
+                        backdropFilter: 'blur(6px)',
+                        mr: 2,
+                        flexShrink: 0
+                      }}
+                    >
+                      <item.icon />
+                    </Box>
+                    {item.title && (
+                      <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                        {item.title}
+                      </Typography>
+                    )}
+                  </Box>
+                )}
+                {!item.icon && item.title && (
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
+                    {item.title}
+                  </Typography>
+                )}
+                {/* One-sentence summary */}
+                {(() => {
+                  const desc = toFirstSentence(getDescriptionForItem(item.key, item.title, item.body));
+                  return desc ? (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                      {desc}
+                    </Typography>
+                  ) : null;
+                })()}
+
+                {/* Neutral glassmorphism skill tags with subtle tint */}
+                {(() => {
+                  const skills = getSkillsForItem(item.key, item.title);
+                  const main = theme.palette[item.color]?.main || theme.palette.primary.main;
+                  return skills && skills.length > 0 ? (
+                    <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                      {skills.map((skill, idx) => (
+                        <Chip
+                          key={idx}
+                          label={skill}
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            borderRadius: 1.5,
+                            color: theme.palette.text.primary,
+                            borderColor: alpha(main, 0.28),
+                            backgroundColor: alpha(main, theme.palette.mode === 'dark' ? 0.08 : 0.06),
+                            backdropFilter: 'blur(6px)',
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  ) : null;
+                })()}
+              </Box>
             </Grid>
           );
         })}

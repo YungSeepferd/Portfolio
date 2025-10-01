@@ -41,6 +41,7 @@ const ActionButton = ({
     return color;
   };
   const buttonColor = determineColor();
+  const outlineColor = (theme.palette[buttonColor] && theme.palette[buttonColor].main) || theme.palette.primary.main;
 
   const handleClick = (e) => {
     if (onClick) {
@@ -132,7 +133,7 @@ const ActionButton = ({
             : 'rgba(5, 38, 45, 0.25)',
         },
         '&:focus': {
-          outline: `2px solid ${theme.palette.primary.main}`,
+          outline: `2px solid ${outlineColor}`,
           outlineOffset: 2,
         },
         ...sx

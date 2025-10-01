@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Card, CardContent, CardMedia, CardActions, Button,
          Grid, useTheme, Avatar, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
-import { getTypographyPreset } from '../../../theme/presets';
+import { getTypographyPreset, getSpacingPreset } from '../../../theme/presets';
 
 /**
  * CardGridSection Component
@@ -26,10 +26,12 @@ const CardGridSection = ({
   elevation = 2,
   sectionNumber,
   sectionIndex,
-  projectColor = 'primary'
+  projectColor = 'primary',
+  maxFeatures = 4
 }) => {
   const theme = useTheme();
   const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+  const horizontal = getSpacingPreset('pageHorizontal');
   
   // Format section number
   const formattedNumber = sectionNumber ? 
@@ -72,7 +74,9 @@ const CardGridSection = ({
       sx={{ 
         scrollMarginTop: '80px',
         mb: 8,
-        px: { xs: 2, sm: 3, md: 4 },
+        px: horizontal.px,
+        maxWidth: '1200px',
+        mx: 'auto'
       }}
     >
       {/* Section Header with Number */}
@@ -126,27 +130,37 @@ const CardGridSection = ({
         initial="hidden"
         animate="visible"
       >
-        {items.map((item, index) => (
-          <Grid 
-            key={item.id || index}
-            size={{ xs: columns.xs || 12, sm: columns.sm || 6, md: columns.md || 4, lg: columns.lg || columns.md || 4 }}
-            component={motion.div}
-            variants={cardVariants}
-          >
-            <Card 
-              elevation={cardVariant === 'elevation' ? elevation : 0}
-              variant={cardVariant === 'outlined' ? 'outlined' : 'elevation'}
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: theme.shadows[8]
-                }
-              }}
+        {items.map((item, index) => {
+          // Convert column counts to Grid v2 size (12-based)
+          const colCounts = {
+            xs: (columns && columns.xs) || 1,
+            sm: (columns && columns.sm) || 2,
+            md: (columns && columns.md) || 3,
+            lg: (columns && columns.lg) || ((columns && columns.md) || 3),
+          };
+          const gridSizes = {
+            xs: Math.max(1, Math.min(12, Math.round(12 / colCounts.xs))),
+            sm: Math.max(1, Math.min(12, Math.round(12 / colCounts.sm))),
+            md: Math.max(1, Math.min(12, Math.round(12 / colCounts.md))),
+            lg: Math.max(1, Math.min(12, Math.round(12 / colCounts.lg))),
+          };
+
+          return (
+            <Grid 
+              key={item.id || index}
+              size={gridSizes}
+              component={motion.div}
+              variants={cardVariants}
             >
+              <Card 
+                elevation={cardVariant === 'elevation' ? elevation : 0}
+                variant={cardVariant === 'outlined' ? 'outlined' : 'elevation'}
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
               {/* Card Media (image or icon) */}
               {item.image && (
                 <CardMedia
@@ -225,7 +239,7 @@ const CardGridSection = ({
                 {/* Benefits/Features List */}
                 {item.benefits && Array.isArray(item.benefits) && item.benefits.length > 0 && (
                   <Box component="ul" sx={{ pl: 2, mt: 2, mb: 0 }}>
-                    {item.benefits.map((benefit, idx) => (
+                    {(maxFeatures ? item.benefits.slice(0, maxFeatures) : item.benefits).map((benefit, idx) => (
                       <Typography 
                         key={idx}
                         component="li" 
@@ -242,7 +256,7 @@ const CardGridSection = ({
                 {/* Features List (alternative) */}
                 {item.features && Array.isArray(item.features) && item.features.length > 0 && (
                   <Box component="ul" sx={{ pl: 2, mt: 2, mb: 0 }}>
-                    {item.features.map((feature, idx) => (
+                    {(maxFeatures ? item.features.slice(0, maxFeatures) : item.features).map((feature, idx) => (
                       <Typography 
                         key={idx}
                         component="li" 
@@ -285,12 +299,14 @@ const CardGridSection = ({
                   </Button>
                 </CardActions>
               )}
-            </Card>
-          </Grid>
-        ))}
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );
+
 };
 
 export default CardGridSection;

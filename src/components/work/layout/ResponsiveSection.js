@@ -107,6 +107,9 @@ const ResponsiveSection = ({
         title={title}
         priority={sectionIndex === 0 ? 'primary' : 'normal'}
         enableAnimation={true}
+        imageProps={{
+          ...(type === 'outcomes' ? { objectFit: 'contain' } : {})
+        }}
       />
     ) : null
   );

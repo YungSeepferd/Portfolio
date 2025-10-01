@@ -101,7 +101,8 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     position: 'relative',
     width: '100%',
     height: 0,
-    paddingBottom: themeSpacing.card.project.imageAspectRatio, // 16:9 aspect ratio
+    // Keep default aspect ratio on small/medium; shrink ~20% on large screens
+    paddingBottom: { xs: themeSpacing.card.project.imageAspectRatio, lg: '45%' }, // 56.25% * 0.8 ≈ 45%
     flexShrink: 0, // Prevent image from shrinking
     // Dark overlay on hover for better button contrast
     '&::before': {

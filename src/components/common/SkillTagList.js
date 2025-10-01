@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Chip, useTheme } from '@mui/material';
+import effects from '../../theme/effects';
 
 /**
  * SkillTagList Component
@@ -14,6 +15,7 @@ const SkillTagList = ({ label, size = "medium", onClick, variant = "outlined", c
   
   // Use MUI default styling for primary color, glassmorphic for others
   const isPrimary = color === 'primary' && variant === 'filled';
+  const isDark = theme.palette.mode === 'dark';
   
   const baseStyles = {
     mx: 0.5,
@@ -32,31 +34,50 @@ const SkillTagList = ({ label, size = "medium", onClick, variant = "outlined", c
     },
   };
   
-  // Glassmorphic styling for non-primary chips
-  const glassmorphicStyles = !isPrimary ? {
-    background: theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.15)'
-      : 'rgba(5, 38, 45, 0.20)',
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    border: `1px solid ${theme.palette.divider}`,
-    color: theme.palette.common.white,
-    '& .MuiChip-label': {
-      color: theme.palette.common.white,
+  // Glassmorphic styling for chips
+  // In light theme, always apply glass (black glass with light copy)
+  // In dark theme, apply glass to non-primary chips only
+  const chipGlassTokens = isDark ? effects.chipGlass.dark : effects.chipGlass.light;
+  const applyGlass = !isDark || !isPrimary;
+  const glassmorphicStyles = applyGlass ? {
+    background: chipGlassTokens.background,
+    backdropFilter: `blur(${chipGlassTokens.blur})`,
+    WebkitBackdropFilter: `blur(${chipGlassTokens.blur})`,
+    border: `1px solid ${chipGlassTokens.border}`,
+    color: `${chipGlassTokens.text} !important`,
+    // Force all nested content to adopt the glass foreground
+    '& *': {
+      color: `${chipGlassTokens.text} !important`,
     },
-    '& .MuiChip-icon': {
-      color: theme.palette.common.white,
-      fill: theme.palette.common.white,
+    '&& .MuiChip-label': {
+      color: `${chipGlassTokens.text} !important`,
     },
-    '& .MuiChip-deleteIcon': {
-      color: theme.palette.common.white,
+    '&& .MuiChip-icon': {
+      color: `${chipGlassTokens.icon} !important`,
+      // Ensure nested SvgIcon adopts the light color
+      '& .MuiSvgIcon-root': {
+        color: `${chipGlassTokens.icon} !important`,
+        fill: `${chipGlassTokens.icon} !important`,
+      },
+      '& svg': {
+        color: `${chipGlassTokens.icon} !important`,
+        fill: `${chipGlassTokens.icon} !important`,
+      },
+      '& path, & circle, & rect, & polygon, & line, & polyline': {
+        fill: `${chipGlassTokens.icon} !important`,
+        stroke: `${chipGlassTokens.icon} !important`,
+      },
+    },
+    '&& .MuiChip-deleteIcon': {
+      color: `${chipGlassTokens.icon} !important`,
     },
     '&:hover': {
-      background: theme.palette.mode === 'dark'
-        ? 'rgba(255, 255, 255, 0.25)'
-        : 'rgba(5, 38, 45, 0.30)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
+      background: chipGlassTokens.hoverBackground,
+      backdropFilter: `blur(${chipGlassTokens.blurHover})`,
+      WebkitBackdropFilter: `blur(${chipGlassTokens.blurHover})`,
+    },
+    '&:active': {
+      background: chipGlassTokens.activeBackground,
     },
   } : {};
   

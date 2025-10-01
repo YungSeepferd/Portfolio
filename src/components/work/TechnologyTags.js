@@ -15,6 +15,7 @@ import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstruct
 import AdobeIcon from '@mui/icons-material/PhotoCamera';
 import { getSpacingPreset } from '../../theme/presets';
 import modalMobileTokens from '../../theme/components/modalMobile';
+import effects from '../../theme/effects';
 
 // Map technology names to icons
 const techIconMap = {
@@ -65,6 +66,8 @@ const TechnologyTags = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isDark = theme.palette.mode === 'dark';
+  const chipGlassTokens = isDark ? effects.chipGlass.dark : effects.chipGlass.light;
   const groupSpacing = getSpacingPreset('chipGroup');
 
   // Map size to valid values for SkillTagList
@@ -104,13 +107,21 @@ const TechnologyTags = ({
     >
       {technologies.map((tech, index) => {
         const label = normalizeLabel(tech);
-        const isPrimary = showHierarchy && index === 0;
+        // In light theme, use glass chips for all (no filled primary) to ensure white/grey text on black glass
+        const isPrimary = showHierarchy && index === 0 && isDark;
         
+        // Force icon color in light theme (and ensure consistent dark theme)
+        const baseIcon = getTechIcon(label);
+        const iconEl = React.cloneElement(baseIcon, {
+          htmlColor: chipGlassTokens.icon,
+          sx: { color: `${chipGlassTokens.icon} !important`, fill: `${chipGlassTokens.icon} !important` },
+        });
+
         return (
           <SkillTag
             key={label}
             label={label}
-            icon={getTechIcon(label)}
+            icon={iconEl}
             size={chipSize}
             color={isPrimary ? projectColor : 'default'}
             variant={isPrimary ? 'filled' : 'outlined'}
