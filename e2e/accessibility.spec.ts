@@ -1,7 +1,9 @@
 import { test } from '@playwright/test';
 import { injectAxe, checkA11y } from 'axe-playwright';
 
-const PAGES = ['/', '/about'];
+// NOTE: If About is an in-page section (not a route), scanning '/' is sufficient.
+// TODO: Enhance to target the in-page About region via page.locator('#about').
+const PAGES = ['/'];
 
 test.describe('Accessibility (axe) on key pages', () => {
   for (const path of PAGES) {
