@@ -1,0 +1,72 @@
+
+
+============================================================
+PAGE 1
+============================================================
+
+Chords
+Triads based on the baseline
+frequency
+Ladders
+Split chords played
+up and down 
+Twinkles
+Random but harmonious short notes
+ that create a vibrant soundscape
+RESONANT
+RELAXATION:
+AFFECTIVE STATE CHANGE VIA
+PROCEDURALLY GENERATED HAPTICS
+The ongoing shift towards digital sedentary lifestyles has increased
+ stress in daily life and calls for innovative approaches to improve menta
+l and physical health. Resonant Relaxation explores the capabilities of A
+I-generated audio for affective haptic feedback to create experiences th
+at induce relaxation and enhance emotional well-being and productivity. 
+Keywords: Affective Haptics · Generative AI · Audio-Haptic Feedback ·
+ Personalised Relaxation · Emotional Well-being
+OUR PRIMARY GOAL
+was to enhance users' emotional well-being during productivity or
+ relaxation  sessions  by  providing  personalised  audio-based  hapti
+c experiences . W e focuse d o n creatin g a baselin e stat e fo r relaxatio
+n, which could serve as an emotional baseline to facilitate a flow state. 
+We developed a React-based web application to generate customised
+ haptic patterns. The haptic output included an amplitude-modulated sin
+e wave as the baseline and AI-generated "sparkles", harmonically bas
+ed on the baseline frequency representing the closest musical note to t
+hat frequen cy. Ba sed  on t his musi cal n ote us ing the Chat GPT A PI
+, we created MIDI compositions, converted them into waveforms with Ton
+e.j s, an OpenS ource Javas cript Li bary , and p layed  them th rough voic
+e coil actuators. 
+BASELINE
+“AI SPARKLES”
+An amplitude-modulated sine tone that gradually decreases in
+ frequency  and  in  wavelength  (tempo),  resulting  in  a  calmin
+g effec t tha t graduall y decrease s th e breathin g rat e fro m 1 1 t o
+ 6 breaths per minute.
+SPARKLES
+Nuanced notes that are created based on the baseline to add
+ texture and variety to a soundscape, preventing it from becomin
+g monotonous and enhancing its richness and interest.
+COMBINED
+Vincent Göke (2,3) - goeke.vincent@gmail.com
+Jose Maria Santiago III (2,3) - jmsantiagoiii@gmail.com
+Moritz Sendner (2,3) - moritz.sendner@gmail.com
+Daniel Shor (1) - dshor@innovobot.com
+(1)
+(2)
+(3)
+For the sparkles, we prompted the LLM with harmonic
+ and  disharmonic  components  based  on  the  baseline
+. Using few-shot prompting, we provided examples of t
+he note notations needed for correct parsing into a MIDI f
+ile that can generate output with Tone.js instruments. 
+This allowed us to generate adjustable haptic outputs
+ that  maintained  harmony  with  the  baseline  frequency
+, effectivel y integratin g musica l theor y int o th e hapt
+ic feedback system. To further reduce haptic numbness,
+ we conceptualised three types of “sparkles”:
+AUTHORS
+Eurohaptics 2024
+WIP ID: 1077
+*WIP Paper
+*Github Repo

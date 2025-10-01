@@ -36,7 +36,16 @@ const GallerySection = ({ id, title, items = [], content = null, sx = {} }) => {
   return (
     <Box
       id={id}
-      sx={{ maxWidth: '1400px', mx: 'auto', px: horizontal.px, pt: vertical.pt, pb: vertical.pb, ...sx }}
+      sx={{ 
+        maxWidth: '1400px',
+        mx: 'auto',
+        px: horizontal.px,
+        pt: vertical.pt,
+        pb: vertical.pb,
+        // Enable container queries for adaptive columns inside the dialog
+        containerType: 'inline-size',
+        ...sx 
+      }}
       role="region"
       aria-labelledby={`${id}-title`}
     >
@@ -82,7 +91,19 @@ const GallerySection = ({ id, title, items = [], content = null, sx = {} }) => {
           />
         </Box>
       ) : (
-        <ImageList variant="masonry" cols={3} gap={8} sx={{ gridAutoRows: '8px', columnCount: { xs: '1 !important', sm: '2 !important', md: '3 !important' }, m: 0 }}>
+        <ImageList 
+          variant="masonry" 
+          cols={3} 
+          gap={8} 
+          sx={{ 
+            gridAutoRows: '8px', 
+            // Prefer container queries over viewport breakpoints
+            columnCount: '3 !important',
+            '@container (max-width: 900px)': { columnCount: '2 !important' },
+            '@container (max-width: 600px)': { columnCount: '1 !important' },
+            m: 0 
+          }}
+        >
           {items.map((item, idx) => (
             <ImageListItem
               key={`${id}-img-${idx}`}

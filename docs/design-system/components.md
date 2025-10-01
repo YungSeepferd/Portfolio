@@ -151,6 +151,27 @@ Notes:
 </ProjectModal>
 ```
 
+**Project Meta Bar** - Technologies and Actions
+```javascript
+<ProjectMetaBar
+  technologies={['Figma', 'Miro', 'Arduino', 'Unity']}
+  actions={[
+    { label: 'View Demo', href: '/demo', icon: <LaunchIcon /> },
+    { label: 'GitHub', href: 'https://github.com/...', icon: <GitHubIcon /> }
+  ]}
+  variant="full"
+  useSplitButton={true}    // Enable split button pattern (default: false)
+  showHierarchy={true}     // Highlight first chip as primary (default: true)
+/>
+```
+
+Features:
+- **Visual Hierarchy**: First technology chip displays as primary (filled), others outlined
+- **Split Button Pattern**: Primary action + dropdown for additional actions
+- **Responsive**: Adapts button count based on screen size (2 mobile, 3 tablet, 6 desktop)
+- **Horizontal Scroll**: Technology chips scroll horizontally on mobile
+- **Backward Compatible**: Feature flags allow gradual adoption
+
 ### About Section
 
 **Tabbed Interface**

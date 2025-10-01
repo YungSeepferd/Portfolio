@@ -164,8 +164,8 @@ const ThemeDebugger = () => {
         onClick={() => setOpen(true)}
         sx={{ 
           position: 'fixed', 
-          bottom: 24, 
-          right: 24, 
+          bottom: { xs: 324, sm: 24 }, // 300px higher on mobile
+          right: { xs: 16, sm: 24 }, 
           zIndex: 2000
         }}
         aria-label="Open Theme Debugger"
@@ -173,7 +173,14 @@ const ThemeDebugger = () => {
         <ExtensionIcon />
       </Fab>
       <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-        <Box sx={{ width: 400, p: 3, bgcolor: 'background.default', height: '100vh', overflowY: 'auto' }}>
+        <Box sx={{ 
+          width: { xs: '100vw', sm: 400 }, // Full width on mobile
+          maxWidth: { xs: '100%', sm: 400 },
+          p: { xs: 2, sm: 3 }, 
+          bgcolor: 'background.default', 
+          height: '100vh', 
+          overflowY: 'auto' 
+        }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <PaletteIcon color="primary" sx={{ mr: 1 }} />
             <Typography variant="h5" sx={{ flex: 1 }}>Design System Debugger</Typography>

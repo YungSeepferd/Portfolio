@@ -3,6 +3,8 @@ import { Box, Typography, useTheme, Grid } from '@mui/material';
 import spacingTokens from '../../theme/spacing';
 import SkillsBento from './SkillsBento';
 import { designCompetencyItems } from './AboutData';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import PersonIcon from '@mui/icons-material/Person';
 
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 
@@ -41,6 +43,7 @@ const WhoAmIBento = () => {
     {
       key: 'philosophy',
       title: 'Design Philosophy',
+      icon: LightbulbIcon,
       color: 'secondary',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
@@ -53,6 +56,7 @@ const WhoAmIBento = () => {
     {
       key: 'background',
       title: 'Background',
+      icon: PersonIcon,
       color: 'info',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
@@ -151,7 +155,7 @@ const WhoAmIBento = () => {
           const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
           
           return (
-            <Grid item xs={12} sm={6} md={4} key={item.key}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.key}>
               {item.raw ? (
                 <Box sx={{ borderRadius: 2, overflow: 'hidden', height: '100%' }}>
                   {item.body}
@@ -190,7 +194,32 @@ const WhoAmIBento = () => {
                     }
                   }}
                 >
-                  {item.title && (
+                  {item.icon && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 48,
+                          height: 48,
+                          borderRadius: '50%',
+                          bgcolor: `${colorKey}20`,
+                          color: colorKey,
+                          mr: 2,
+                          flexShrink: 0
+                        }}
+                      >
+                        <item.icon />
+                      </Box>
+                      {item.title && (
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                          {item.title}
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
+                  {!item.icon && item.title && (
                     <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
                       {item.title}
                     </Typography>

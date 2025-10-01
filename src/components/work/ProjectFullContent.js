@@ -74,6 +74,9 @@ const ProjectFullContent = ({ project }) => {
         technologies={technologies}
         actions={links}
         variant="full"
+        useSplitButton={false}
+        showHierarchy={false}
+        useMobileAccordion={true}
       />
 
       <Divider sx={{ borderColor: theme.palette.divider }} />

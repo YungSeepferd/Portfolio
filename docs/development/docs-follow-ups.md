@@ -5,21 +5,47 @@ _Status: Active tracking document_
 
 This file captures documentation tasks and improvements identified during the comprehensive docs sweep on September 30, 2025.
 
-## High Priority
+## Highest Priority
 
-### 1. Dependency Cleanup Documentation
-**Priority**: High  
-**Effort**: Medium
+### 1. Project Modal Section Generation Refinement
+**Priority**: **HIGHEST** 🔥  
+**Effort**: High (3-4 weeks)  
+**Status**: Planning Complete
 
-- Create migration guide for removing styled-components from `animations.js`
-- Document GSAP removal process (currently unused but in package.json)
-- Clarify react-bits status: remove or integrate per design system plan
-- Update `package.json` and create changelog entry for dependency changes
+Refine project modal section rendering to leverage advanced MUI components for more creative, engaging content presentation.
+
+**Objectives**:
+- Implement 6 new section types (Timeline, Stepper, CardGrid, Accordion, Magazine, Comparison)
+- Enhance sectionAnalyzer.js with new content detection
+- Update ProjectSectionRenderer.js with new routing logic
+- Migrate all 6 projects to use enhanced layouts
+- Maintain 100% accessibility and performance
+
+**Deliverables**:
+- 6 new section components in `src/components/work/sections/`
+- Enhanced content analysis in `sectionAnalyzer.js`
+- Updated project data files with new section types
+- Comprehensive testing across all devices
+- Updated documentation
 
 **Related Files**:
-- `src/theme/animations.js`
-- `package.json`
-- `docs/design-system/react-bits.md`
+- `docs/development/project-modal-refinement-plan.md` (COMPLETE PLAN)
+- `src/components/work/ProjectSectionRenderer.js`
+- `src/utils/sectionAnalyzer.js`
+- `src/components/work/data/projects/*.js`
+
+**Dependencies**:
+- MUI Timeline, Stepper, Card, Accordion, Grid2, ImageList components
+- Existing content pipeline (normalizer, analyzer)
+- Fact-check verification complete (100% accuracy)
+
+**Timeline**:
+- Week 1: Foundation (Timeline, Stepper components)
+- Week 2: Expansion (CardGrid, Accordion components)
+- Week 3: Advanced (Magazine, Comparison components)
+- Week 4: Documentation and polish
+
+## High Priority
 
 ### 2. E2E Testing Guide
 **Priority**: High  
@@ -112,7 +138,39 @@ Document Framer Motion integration:
 
 ## Low Priority
 
-### 7. Design Token Extension Guide
+### 7. Emotion/MUI Styling Best Practices
+**Priority**: Low  
+**Effort**: Low
+
+Document comprehensive styling patterns:
+- When to use `sx` prop vs `styled()` API
+- Theme token access patterns (`theme.palette`, `theme.spacing`)
+- Performance considerations (static vs dynamic styles)
+- Integration with Framer Motion
+- Common patterns from existing components
+
+**Related Files**:
+- `src/theme/`
+- `docs/design-system/mui-usage.md`
+- Component files using MUI styling
+
+### 8. Project Data Schema Reference
+**Priority**: Low  
+**Effort**: Medium
+
+Create comprehensive schema documentation:
+- Required fields for project data files
+- Optional fields and their purposes
+- Content pipeline expectations (normalizer → analyzer)
+- Media object structures (images, videos, galleries)
+- Example project file with annotations
+
+**Related Files**:
+- `src/components/work/data/projects/`
+- `src/utils/sectionNormalizer.js`
+- `docs/design-system/overview.md`
+
+### 9. Design Token Extension Guide
 **Priority**: Low  
 **Effort**: Low
 
@@ -122,7 +180,39 @@ Expand `docs/design-system/theme-system.md` with:
 - Testing tokens with ThemeDebugger
 - Propagating changes through component overrides
 
-### 8. Daily Notes Template
+### 10. Deployment Workflow Guide
+**Priority**: Low  
+**Effort**: Low
+
+Document the automated deployment process:
+- GitHub Actions workflow breakdown
+- Custom domain configuration (goekevincent.me)
+- CNAME and .nojekyll file purposes
+- Manual deployment steps if needed
+- Troubleshooting common deployment issues
+
+**Related Files**:
+- `.github/workflows/deploy.yml`
+- `public/CNAME`
+- `docs/project/deployment.md` (update existing)
+
+### 11. Performance Optimization Guide
+**Priority**: Low  
+**Effort**: Medium
+
+Consolidate performance best practices:
+- 3D scene optimization (geometry caching, useFrame patterns)
+- Image/video optimization workflow
+- Bundle size monitoring and analysis
+- Lazy loading strategies
+- Performance monitoring in production
+
+**Related Files**:
+- `src/components/hero/background3d/`
+- `src/hooks/useIntersectionObserver.js`
+- Component-specific optimization notes
+
+### 12. Daily Notes Template
 **Priority**: Low  
 **Effort**: Low
 
@@ -132,7 +222,7 @@ Create template for daily dev notes based on successful examples:
 - Acceptance checklist
 - Files touched and tests run
 
-### 9. Markdown Lint Cleanup
+### 13. Markdown Lint Cleanup
 **Priority**: Low  
 **Effort**: Low
 
@@ -171,6 +261,39 @@ Address 50+ markdownlint warnings in docs files:
 - Corrected "March 2026" future date
 - Expanded hooks documentation
 - Added new utils to list
+
+### ✓ E2E Testing Guide (Sept 30, 2025)
+- Created `docs/development/e2e-testing.md` with local/CI run steps, headless config, troubleshooting, and template for new tests
+- Cross-referenced: `tests/e2e/` and scroll fixes daily notes
+
+### ✓ Content Pipeline Documentation (Sept 30, 2025)
+- Created `docs/development/content-pipeline.md` documenting normalizer → analyzer → renderer, schema, and validator usage
+- Cross-referenced: `sectionNormalizer.js`, `sectionAnalyzer.js`, `contentAnalysis.js`, `projectGalleryValidator.js`, `ProjectFullContent.js`
+
+### ✓ 3D Scene Integration Guide (Sept 30, 2025)
+- Created `docs/development/3d-scene-integration.md` covering `SceneContext`, camera, theming, performance, and adding scenes
+- Cross-referenced: `src/components/hero/background3d/` files
+
+### ✓ Dependency Cleanup Plan (Sept 30, 2025)
+- Created `docs/development/dependency-cleanup.md` with steps to remove `styled-components` and `gsap` after refactor
+- Will follow up with separate PR for actual removal post-refactor
+
+### ✓ Dependency Cleanup Execution (Sept 30, 2025)
+- Refactored `src/theme/animations.js` to remove styled-components (removed lines 8, 122-156)
+- Removed `gsap` from package.json (completely unused, zero imports)
+- Removed `styled-components` from package.json (now unused after refactor)
+- Verified zero residual imports via grep search
+- Updated `docs/development/dependency-cleanup.md` with completion status
+- See `docs/development/daily-notes/2025-09-30.md` for detailed implementation notes
+
+### ✓ Documentation and Links Sweep (Sept 30, 2025 - Evening)
+- Updated `docs/resources/links.md` to reflect completed dependency cleanup
+- Changed styled-components status from "removal candidate" to "REMOVED"
+- Changed GSAP status from "unused" to "REMOVED"
+- Verified all external documentation links are official and current
+- Added 4 new documentation tasks to docs-follow-ups.md (Emotion/MUI patterns, project schema, deployment guide, performance guide)
+- Confirmed legacy/resources.md is properly archived and unreferenced
+- All major dependencies documented with official links
 
 ## Notes
 

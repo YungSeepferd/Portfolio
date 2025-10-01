@@ -30,7 +30,7 @@ const SkillsBento = ({ items = [] }) => {
         const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
         
         return (
-          <Grid item xs={12} sm={6} md={4} key={item.title}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.title}>
             <Box
               sx={{
                 p: 3,

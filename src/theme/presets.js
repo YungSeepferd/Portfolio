@@ -111,12 +111,14 @@ const TYPOGRAPHY_PRESETS = {
     component: 'h1',
     sx: typographyMerge(typography.h2, {
       fontWeight: 700,
-      lineHeight: 1.2,
+      lineHeight: { xs: 1.3, sm: 1.2 }, // Increased for better readability when wrapped
       fontSize: {
-        xs: '2rem',
+        xs: '1.5rem', // Reduced from 2rem for better mobile fit
         sm: '2.5rem',
         md: '3rem',
       },
+      wordBreak: 'break-word', // Prevent overflow on long words
+      hyphens: 'auto', // Enable hyphenation for long words
     }),
   }),
   overlaySubtitle: () => ({

@@ -76,7 +76,7 @@ const ContentAwareGrid = ({
         {...props}
       >
         <Grid container justifyContent="center">
-          <Grid item {...gridConfig.text}>
+          <Grid size={gridConfig.text}>
             <Box
               component={enableAnimation ? motion.div : 'div'}
               {...(enableAnimation ? { variants: itemVariants } : {})}
@@ -129,7 +129,7 @@ const ContentAwareGrid = ({
           
           {/* Centered text content */}
           <Grid container justifyContent="center">
-            <Grid item xs={12} md={8} lg={6}>
+            <Grid size={{ xs: 12, md: 8, lg: 6 }}>
               <Box
                 component={enableAnimation ? motion.div : 'div'}
                 {...(enableAnimation ? { variants: itemVariants } : {})}
@@ -171,19 +171,15 @@ const ContentAwareGrid = ({
         spacing={gridConfig.spacing}
         alignItems="stretch"
         sx={{
-          // Ensure equal heights for content alignment
-          '& .MuiGrid-item': {
+          // Ensure equal heights for content alignment (target direct Grid children)
+          '& > .MuiGrid-root': {
             display: 'flex',
             flexDirection: 'column'
           }
         }}
       >
         {/* Text Content */}
-        <Grid 
-          item 
-          {...gridConfig.text}
-          order={textOrder}
-        >
+        <Grid size={gridConfig.text} sx={{ order: textOrder }}>
           <Box
             component={enableAnimation ? motion.div : 'div'}
             {...(enableAnimation ? { variants: itemVariants } : {})}
@@ -208,11 +204,7 @@ const ContentAwareGrid = ({
 
         {/* Media Content */}
         {gridConfig.image && (
-          <Grid 
-            item 
-            {...gridConfig.image}
-            order={imageOrder}
-          >
+          <Grid size={gridConfig.image} sx={{ order: imageOrder }}>
             <Box
               component={enableAnimation ? motion.div : 'div'}
               {...(enableAnimation ? { variants: itemVariants } : {})}

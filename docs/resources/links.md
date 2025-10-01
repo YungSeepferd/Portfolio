@@ -88,13 +88,11 @@ This document contains all the documentation sources and resources used during t
 
 ### Styling System
 
-- **Styled Components**: [Styled Components Docs](https://styled-components.com/)
-  - **Package**: `styled-components@^6.1.17`
-  - **Status**: ⚠️ **Minimal usage - removal candidate**
-  - **Current Usage**: Only imported in `src/theme/animations.js` for keyframe definitions (lines 8, 122-149)
-  - **Issue**: Redundant with Emotion (MUI's styling engine) - creates bundle bloat
-  - **Recommendation**: Refactor animations.js to use pure CSS keyframes or Framer Motion, then remove dependency
-  - **Memory Note**: Previously flagged as redundant; styled-components exports in animations.js are unused elsewhere
+- **Styled Components**: ✓ **REMOVED (September 30, 2025)**
+  - **Previous Package**: `styled-components@^6.1.17`
+  - **Reason**: Redundant with Emotion (MUI's styling engine)
+  - **Refactor**: Removed from `src/theme/animations.js` - all animations now use Framer Motion exclusively
+  - **See**: `docs/development/dependency-cleanup.md` and `docs/development/daily-notes/2025-09-30.md`
 
 ## Animation Libraries
 
@@ -109,11 +107,11 @@ This document contains all the documentation sources and resources used during t
 
 ### GSAP (Green Sock Animation Platform)
 
-- **Status**: ⚠️ **Dependency present but UNUSED in codebase**
-- **Package**: `gsap@^3.13.0` in package.json
-- **Usage**: Zero imports found across entire `src/` directory
-- **Recommendation**: Remove in next dependency cleanup (`npm uninstall gsap`)
-- **Note**: All animations currently handled by Framer Motion and CSS transitions
+- **Status**: ✓ **REMOVED (September 30, 2025)**
+- **Previous Package**: `gsap@^3.13.0`
+- **Reason**: Completely unused - zero imports found across entire `src/` directory
+- **Note**: All animations handled by Framer Motion and CSS transitions
+- **See**: `docs/development/dependency-cleanup.md` and `docs/development/daily-notes/2025-09-30.md`
 
 ## Project-Specific Resources
 
@@ -189,5 +187,5 @@ These utilities enable adaptive, intelligent rendering of project content:
 **Usage**: Work section project modals use these to dynamically adapt layouts based on content characteristics.
 
 ---
-*Last Updated: September 30, 2025*
+*Last Updated: September 30, 2025 (Evening - Dependency Cleanup Reflected)*
 *Project: React Portfolio with 3D Background*

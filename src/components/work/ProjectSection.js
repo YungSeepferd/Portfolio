@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, useTheme, List, ListItem, ListItemIcon, ListItemText, Chip } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { ProjectActionButtonsBar } from './ProjectMetaBar';
 import ResponsiveSection from './layout/ResponsiveSection';
 import { normalizeSection } from '../../utils/sectionNormalizer';
@@ -83,9 +83,9 @@ const ProjectSection = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start', // Center horizontally
-        justifyContent: 'center', // Center vertically if needed
-        textAlign: 'left', // Center text
+        alignItems: 'flex-start', // Align to left
+        justifyContent: 'flex-start', // Align to top
+        textAlign: 'left', // Left-align text
         width: '100%',
       }}
     >
@@ -118,28 +118,46 @@ const ProjectSection = ({
   // Helper: Render outcomes and takeaways side-by-side or stacked
   const renderOutcomesTakeaways = () => {
     if (!outcomes && !takeaways) return null;
-    const isSideBySide = layout === 'sideBySide' || layout === 'outcomesTakeaways';
     return (
-      <Grid container spacing={4} sx={{ mt: 3, mb: 2 }} direction={isSideBySide ? 'row' : 'column'}>
+      <Grid container spacing={4} sx={{ mt: 3, mb: 2 }}>
         {takeaways && takeaways.length > 0 && (
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
               Key Takeaways
             </Typography>
-            <List dense disablePadding>
+            <Box sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1.5,
+              mt: 1
+            }}>
               {takeaways.map((item, idx) => (
-                <ListItem key={idx} disableGutters>
-                  <ListItemIcon sx={{ minWidth: '32px' }}>
-                    <StarBorderIcon fontSize="small" color="primary" />
-                  </ListItemIcon>
-                  <ListItemText primary={item} primaryTypographyProps={{ variant: 'body1' }} />
-                </ListItem>
+                <Chip
+                  key={idx}
+                  label={item}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  sx={{
+                    fontSize: '0.875rem',
+                    height: 'auto',
+                    py: 1,
+                    px: 1.5,
+                    borderRadius: 2,
+                    '& .MuiChip-label': {
+                      px: 0.5,
+                      whiteSpace: 'normal',
+                      textAlign: 'left',
+                      lineHeight: 1.3
+                    }
+                  }}
+                />
               ))}
-            </List>
+            </Box>
           </Grid>
         )}
         {outcomes && outcomes.points && outcomes.points.length > 0 && (
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="h6" sx={{ mb: 2, color: theme.palette.text.secondary }}>
               {outcomes.title || 'Project Outcomes'}
             </Typography>

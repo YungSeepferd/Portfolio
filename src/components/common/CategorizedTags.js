@@ -22,7 +22,7 @@ const CategorizedTags = ({ categories = [], columns = { xs: 1, md: 2, lg: 3 } })
   return (
     <Grid container spacing={2} sx={{ mt: 0 }}>
       {categories.map((cat) => (
-        <Grid item xs={12} md={mdSpan} lg={lgSpan} key={cat.title}>
+        <Grid size={{ xs: 12, md: mdSpan, lg: lgSpan }} key={cat.title}>
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, color: `${cat.color}.main` }}>
               {cat.title}

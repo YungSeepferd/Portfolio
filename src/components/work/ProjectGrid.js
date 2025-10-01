@@ -3,6 +3,7 @@ import { Grid, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProjectCardImproved from './ProjectCardImproved';
 import { fadeInUp, staggerChildren } from '../../theme/animations';
+import themeSpacing from '../../theme/spacing';
 
 /**
  * ProjectGrid Component
@@ -30,22 +31,17 @@ const ProjectGrid = ({ projects = [], onCardClick }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      sx={{ width: '100%', mt: 4 }}
+      sx={{ width: '100%', mt: themeSpacing.projectGrid.containerMarginTop }}
     >
       <Grid
         id="project-grid-root"
         container
-        rowSpacing={{ xs: 2, sm: 3, lg: 3 }}
-        columnSpacing={{ xs: 2, sm: 3, lg: 3 }}
+        rowSpacing={themeSpacing.projectGrid.rowSpacing}
+        columnSpacing={themeSpacing.projectGrid.columnSpacing}
       >
         {projects.map((project, index) => (
           <Grid
-            item
-            xs={12} // 1 per row on mobile
-            sm={12}  // Stack sooner on small screens
-            md={12}  // Maintain single column through medium breakpoints
-            lg={6}  // 2 per row on large screens
-            xl={6}  // 2 per row on extra large screens
+            size={{ xs: 12, sm: 12, md: 12, lg: 6, xl: 6 }}
             key={project.id || index}
             component={motion.div}
             variants={itemVariants}

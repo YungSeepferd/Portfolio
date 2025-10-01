@@ -80,7 +80,7 @@ const FooterContact = ({ projectContext }) => {
           >
             <Grid container spacing={4} justifyContent="center">
               {/* Enhanced Interactive Card with 3D Tilt Effects */}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ maxWidth: '900px', mx: 'auto' }}>
                   <EnhancedFooterCard>
                     <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>

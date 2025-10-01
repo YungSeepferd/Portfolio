@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Stack, useTheme } from '@mui/material';
+import { Button, Stack, useTheme, useMediaQuery } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useModalContext } from '../../context/ModalContext';
 import { resolveMediaPath } from '../../utils/MediaPathResolver';
 import { getTypographyPreset } from '../../theme/presets';
+import modalMobileTokens from '../../theme/components/modalMobile';
+import ActionButtonGroup from './ActionButtonGroup';
 
 const ActionButton = ({ 
   label, 
@@ -59,8 +61,18 @@ const ActionButton = ({
   };
 
   const isCompact = density === 'compact' || size === 'small';
-  const paddingX = isCompact ? { xs: theme.spacing(0.6), sm: theme.spacing(1.25) } : { xs: theme.spacing(0.9), sm: theme.spacing(1.6) };
-  const paddingY = isCompact ? { xs: theme.spacing(0.2), sm: theme.spacing(0.4) } : { xs: theme.spacing(0.3), sm: theme.spacing(0.55) };
+  
+  // Use responsive tokens from modalMobileTokens
+  const buttonHeight = modalMobileTokens.actionButtons.height;
+  const buttonFontSize = modalMobileTokens.actionButtons.fontSize;
+  const iconSizeValue = modalMobileTokens.actionButtons.iconSize;
+  
+  const paddingX = isCompact 
+    ? { xs: theme.spacing(1), sm: theme.spacing(1.5), md: theme.spacing(2) } 
+    : { xs: theme.spacing(1.25), sm: theme.spacing(1.75), md: theme.spacing(2.25) };
+  const paddingY = isCompact 
+    ? { xs: theme.spacing(0.5), sm: theme.spacing(0.625), md: theme.spacing(0.75) } 
+    : { xs: theme.spacing(0.625), sm: theme.spacing(0.75), md: theme.spacing(0.875) };
 
   return (
     <Button
@@ -72,11 +84,20 @@ const ActionButton = ({
       onClick={handleClick}
       startIcon={icon}
       sx={{
-        minWidth: 'auto',
+        minWidth: { xs: 'auto', sm: 100, md: 120 },
+        height: buttonHeight,
+        minHeight: modalMobileTokens.actionButtons.minHeight,
         ...buttonPreset.sx,
+        fontSize: buttonFontSize,
         textTransform: 'none',
         px: paddingX,
         py: paddingY,
+        '& .MuiButton-startIcon': {
+          marginRight: { xs: theme.spacing(0.5), sm: theme.spacing(0.75), md: theme.spacing(1) },
+          '& > *:nth-of-type(1)': {
+            fontSize: iconSizeValue,
+          },
+        },
         // Glassmorphic overrides
         background: theme.palette.mode === 'dark'
           ? 'rgba(255, 255, 255, 0.15)'
@@ -182,27 +203,57 @@ const ProjectActionButtons = ({
   maxButtons = 4,
   size = 'small',
   density = 'compact',
+  useSplitButton = false, // Feature flag for new ActionButtonGroup
   ...rest
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  
   if (!actions.length) return null;
+  
+  // Standardize all actions
+  const standardizedActions = actions.map(action => standardizeAction(action));
+  
+  // Use new ActionButtonGroup if enabled
+  if (useSplitButton) {
+    return (
+      <ActionButtonGroup
+        actions={standardizedActions}
+        maxVisible={maxButtons}
+        size={size}
+        density={density}
+        {...rest}
+      />
+    );
+  }
+  
+  // Legacy implementation (original behavior)
+  // Responsive max buttons based on screen size
+  const responsiveMaxButtons = isMobile 
+    ? modalMobileTokens.actionButtons.maxVisible.xs 
+    : isTablet 
+      ? modalMobileTokens.actionButtons.maxVisible.sm 
+      : maxButtons;
+  
   const shouldWrap = layout === 'column' ? false : actions.length > 3 || density === 'compact';
   const stackSpacing = layout === 'column'
-    ? 1
-    : { xs: 0.4, sm: density === 'compact' ? 0.6 : 0.8 };
+    ? modalMobileTokens.actionButtons.gap
+    : { xs: 0.5, sm: density === 'compact' ? 0.75 : 1, md: 1 };
 
   return (
     <Stack
       direction={layout === 'column' ? 'column' : 'row'}
       spacing={stackSpacing}
       flexWrap={layout === 'column' ? 'nowrap' : { xs: 'wrap', sm: shouldWrap ? 'wrap' : 'nowrap' }}
-      alignItems="center"
-      justifyContent="center"
+      alignItems={layout === 'column' ? 'flex-start' : 'center'}
+      justifyContent={layout === 'column' ? 'flex-start' : 'center'}
       sx={{ width: '100%', rowGap: layout === 'column' ? 0.5 : undefined }}
     >
-      {actions.slice(0, maxButtons).map((action, idx) => (
+      {standardizedActions.slice(0, responsiveMaxButtons).map((action, idx) => (
         <ActionButton
           key={action.label + idx}
-          {...standardizeAction(action)}
+          {...action}
           size={size}
           density={density}
           {...rest}
@@ -223,6 +274,7 @@ ProjectActionButtons.propTypes = {
   maxButtons: PropTypes.number,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   density: PropTypes.oneOf(['compact', 'comfortable']),
+  useSplitButton: PropTypes.bool,
 };
 
 export default ProjectActionButtons;

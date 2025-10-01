@@ -23,6 +23,14 @@ This design system provides a comprehensive set of guidelines and components for
 8. [Usage Guidelines](#usage-guidelines)
 9. [Project Section Schema & Modal Structure](#project-section-schema--modal-structure)
 
+## Related Documentation
+
+- [Glassmorphism Pattern](./glassmorphism.md) - Frosted glass visual effects
+- [Button Patterns](./button-patterns.md) - Button variants and usage
+- [Theme System](./theme-system.md) - Core theme architecture
+- [MUI Usage](./mui-usage.md) - Material-UI integration
+- [Components](./components.md) - Component-specific patterns
+
 ## Core System Structure
 
 The design system is modularized into specialized files:

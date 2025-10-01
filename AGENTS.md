@@ -7,7 +7,7 @@ This file defines the expectations for AI coding agents collaborating on the **V
 ## 1. Mission Context
 
 - **Tech stack**: React 18 (CRA), Material UI 5, Framer Motion, React Three Fiber + Three.js, react-scroll, Selenium for smoke tests.
-- **Dependencies to remove**: GSAP (unused, 0 imports), styled-components (minimal use in animations.js only), react-bits (installed but not integrated).
+- **Dependencies removed**: GSAP (removed Sept 30, 2025), styled-components (removed Sept 30, 2025). react-bits remains (installed but not integrated).
 - **Structure**: Single-page portfolio with distinct feature sections (Hero, Work, About, Contact) rendered inside `src/App.js`.
 - **Design system first**: Styling is token-driven. All colours, spacing, and typography originate from `src/theme/`. Use the least amount of overrides possible.
 - **Data-driven content**: Project and about sections are defined via structured JS objects. Updating content almost always means editing data files rather than JSX.
@@ -76,14 +76,14 @@ If a command fails due to sandbox/network limits, report the failure, why it hap
 - **Slideshow images**: Keep `createAboutImage` payloads accurate; improper `objectPosition` values lead to cropped portraits.
 - **Theme preview**: `src/pages/ThemePreviewPage.js` is a playground. Do not ship heavy dev-only tooling outside `process.env.NODE_ENV === 'development'` guards.
 - **Analytics guards**: Some files call `window.gtag`. Wrap new analytics with existence checks to avoid runtime errors in development.
-- **Dependency hygiene**: Do not add GSAP (unused, scheduled for removal). Avoid styled-components (use MUI `sx` or Framer Motion). react-bits is reference-only, not integrated.
+- **Dependency hygiene**: Do not re-add GSAP or styled-components (removed Sept 30, 2025). Use MUI `sx` or Framer Motion for styling/animations. react-bits is reference-only, not integrated.
 - **Content pipeline**: When adding new section types to Work projects or the About section, update `sectionNormalizer.js` schema and `sectionAnalyzer.js` rendering strategies. Do not use "-" in your content writing. Sound like a professional and experienced designer, but write in a way that is easy to understand for a layman.
 
 ## 7. Communication Protocol
 
 - Surface uncertainties early: if requirements conflict with existing design tokens or data schemas, summarise options and recommend next steps.
 - Document skipped work (tests not run, assets not optimised) with reasons so maintainers can follow up.
-- When introducing new dependencies, justify necessity and add them to documentation (`docs/resources/links.md` with usage status and recommendation). See dependency cleanup candidates: GSAP (unused), styled-components (minimal use), react-bits (not integrated).
+- When introducing new dependencies, justify necessity and add them to documentation (`docs/resources/links.md` with usage status and recommendation). Note: GSAP and styled-components were removed Sept 30, 2025. react-bits remains but is not integrated.
 
 ## 8. Quick Reference
 

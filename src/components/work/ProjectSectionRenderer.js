@@ -5,6 +5,10 @@ import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
 import ProjectSection from './ProjectSection';
 import ProcessSection from './sections/ProcessSection';
 import GallerySection from './sections/GallerySection';
+import TimelineSection from './sections/TimelineSection';
+import StepperSection from './sections/StepperSection';
+import CardGridSection from './sections/CardGridSection';
+import AccordionSection from './sections/AccordionSection';
 
 /**
  * ProjectSectionRenderer
@@ -24,9 +28,69 @@ const ProjectSectionRenderer = ({ sections = [], projectId }) => {
     <Box id="project-section-renderer-root" sx={{ width: '100%' }}>
       {sections.map((section, index) => {
         const normalized = normalizeSection(section, index);
+        const sectionType = section.type || normalized.type;
 
-        // Heuristic: treat as gallery when media is a collection or explicit type is 'gallery'
-        const isGallery = normalized.media?.type === 'collection' || section.type === 'gallery';
+        // Timeline Section - for chronological processes, research phases
+        if (sectionType === 'timeline' && section.steps) {
+          return (
+            <TimelineSection
+              key={normalized.id || `section-${index}`}
+              id={normalized.id}
+              title={normalized.title}
+              steps={section.steps}
+              orientation={section.orientation}
+              content={normalized.content}
+            />
+          );
+        }
+
+        // Stepper Section - for interactive step-by-step flows
+        if (sectionType === 'stepper' && section.steps) {
+          return (
+            <StepperSection
+              key={normalized.id || `section-${index}`}
+              id={normalized.id}
+              title={normalized.title}
+              steps={section.steps}
+              orientation={section.orientation}
+              interactive={section.interactive}
+              content={normalized.content}
+            />
+          );
+        }
+
+        // Card Grid Section - for feature showcases, benefits
+        if (sectionType === 'cardGrid' && section.items) {
+          return (
+            <CardGridSection
+              key={normalized.id || `section-${index}`}
+              id={normalized.id}
+              title={normalized.title}
+              items={section.items}
+              columns={section.columns}
+              content={normalized.content}
+              cardVariant={section.cardVariant}
+            />
+          );
+        }
+
+        // Accordion Section - for expandable content
+        if (sectionType === 'accordion' && section.items) {
+          return (
+            <AccordionSection
+              key={normalized.id || `section-${index}`}
+              id={normalized.id}
+              title={normalized.title}
+              items={section.items}
+              content={normalized.content}
+              defaultExpanded={section.defaultExpanded}
+              allowMultiple={section.allowMultiple}
+            />
+          );
+        }
+
+        // Gallery Section - treat as gallery when media is a collection or explicit type is 'gallery'
+        const isGallery = normalized.media?.type === 'collection' || sectionType === 'gallery';
         if (isGallery) {
           return (
             <GallerySection
@@ -39,8 +103,8 @@ const ProjectSectionRenderer = ({ sections = [], projectId }) => {
           );
         }
 
-        // Process section (steps-based)
-        const isProcess = section.type === 'process' || normalized.legacy?.originalType === 'process';
+        // Process section (steps-based) - legacy support
+        const isProcess = sectionType === 'process' || normalized.legacy?.originalType === 'process';
         const steps = section.steps || normalized.legacy?.originalData?.steps;
         if (isProcess && Array.isArray(steps) && steps.length > 0) {
           return (
@@ -63,7 +127,7 @@ const ProjectSectionRenderer = ({ sections = [], projectId }) => {
             mediaData={normalized.media}
             layout={section.layout || undefined}
             sectionIndex={index}
-            type={section.type || 'adaptive'}
+            type={sectionType || 'adaptive'}
             outcomes={normalized.outcomes}
             takeaways={normalized.takeaways}
             sx={{ mb: 6 }}

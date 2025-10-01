@@ -60,16 +60,32 @@ themeSpacing.section = {
 // Card and element spacing
 themeSpacing.card = {
   padding: 3,       // Default card padding in units (24px)
-  paddingX: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
-  paddingY: { xs: 1.5, md: 2 },
+  paddingX: { xs: 1.5, sm: 2, md: 2.5, lg: 3 },
+  paddingY: { xs: 1.25, sm: 1.5, md: 2 },
   marginBottom: 4,  // 32px margin below cards
   gap: 2,           // 16px gap between card elements
+  // Project card specific spacing
+  project: {
+    width: { xs: '100%', sm: '98%', md: '96%', lg: '95%' },
+    paddingX: { xs: 2, sm: 2.5, md: 3 },
+    paddingY: { xs: 2, sm: 2.5, md: 3 },
+    titlePaddingY: { xs: 1.5, sm: 2, md: 2.5 },
+    contentGap: { xs: 1, sm: 1.25, md: 1.5 },
+    imageAspectRatio: '56.25%', // 16:9
+  },
 };
 
 // Bento grid spacing tokens
 themeSpacing.bento = {
   rowGap: 3,      // 24px vertical gap between bento rows
   columnGap: 3,   // 24px horizontal gap between bento columns
+};
+
+// Project grid spacing tokens
+themeSpacing.projectGrid = {
+  rowSpacing: { xs: 2.5, sm: 3, md: 3.5, lg: 4 },
+  columnSpacing: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
+  containerMarginTop: { xs: 3, sm: 4, md: 4 },
 };
 
 // Tabs spacing tokens (used in About left nav and mobile tabs)

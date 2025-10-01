@@ -11,9 +11,10 @@ import { useEffect, useState, useRef, useCallback } from 'react';
  * @param {number} options.threshold - Intersection threshold (0-1), default 0.5
  * @param {string} options.rootMargin - Root margin for observer, default '0px'
  * @param {number} options.scrollOffset - Scroll offset in pixels (for sticky headers)
+ * @param {boolean} options.useWindowRoot - When true, uses the viewport (window) as the observer root (helpful on mobile when container doesn't scroll)
  * @returns {Object} { activeSection, sectionRefs, isAtBottom }
  */
-const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px', scrollOffset = 0 }) => {
+const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px', scrollOffset = 0, useWindowRoot = false }) => {
   // Initialize to null to indicate "not yet determined" state
   const [activeSection, setActiveSection] = useState(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
@@ -72,7 +73,7 @@ const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px
     }
 
     // Wait for container to be mounted before creating observer
-    if (!containerRef.current) {
+    if (!useWindowRoot && !containerRef.current) {
       return;
     }
 
@@ -152,7 +153,7 @@ const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px
         }
       },
       {
-        root: containerRef.current,
+        root: useWindowRoot ? null : containerRef.current,
         rootMargin: calculatedRootMargin, // Account for sticky header + buffer
         // More granular thresholds for better detection across scroll positions
         threshold: thresholds,
@@ -171,7 +172,7 @@ const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px
     return () => {
       observer.disconnect();
     };
-  }, [sectionCount, scrollOffset, threshold, containerMounted, activeSection]);
+  }, [sectionCount, scrollOffset, threshold, containerMounted, activeSection, useWindowRoot]);
 
   // Set ref for a specific section
   const setSectionRef = useCallback((index) => {
@@ -199,12 +200,12 @@ const useScrollSpy = ({ sectionCount, threshold, rootMargin = '-20% 0px -20% 0px
   useEffect(() => {
     if (containerMounted) return;
     const id = window.requestAnimationFrame(() => {
-      if (containerRef.current && !containerMounted) {
+      if ((useWindowRoot || containerRef.current) && !containerMounted) {
         setContainerMounted(true);
       }
     });
     return () => window.cancelAnimationFrame(id);
-  }, [containerMounted]);
+  }, [containerMounted, useWindowRoot]);
 
   return {
     activeSection,

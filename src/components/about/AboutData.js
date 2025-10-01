@@ -13,7 +13,16 @@ import WorkIcon from '@mui/icons-material/Work';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import SchoolIcon from '@mui/icons-material/School';
-import AlgoriddimLetterPDF from '../../assets/information/letterofrecommendation/Vincent Letter of Recommendation.pdf';
+// Additional icons for better semantic clarity
+import GroupsIcon from '@mui/icons-material/Groups';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import PersonIcon from '@mui/icons-material/Person';
+import ScienceIcon from '@mui/icons-material/Science';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import BuildIcon from '@mui/icons-material/Build';
+import letterOfRecommendationPDF from '../../assets/information/letterofrecommendation/Vincent_Letter_of_Recommendation.pdf';
 
 // Import images directly
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
@@ -54,7 +63,7 @@ const coreCompetencyItems = [
   {
     title: 'Collaboration',
     description: 'Effective teamwork requires more than talent—it needs structure. I value clear processes, thorough documentation, and genuine shared ownership of outcomes.',
-    icon: BusinessCenterIcon,
+    icon: GroupsIcon,
     skills: [
       'Clear Processes',
       'Thorough Documentation',
@@ -95,7 +104,7 @@ const coreCompetencyItems = [
   {
     title: 'Workflow & Tools',
     description: 'I currently explore local LLM APIs and n8n workflow automation to streamline repetitive tasks.',
-    icon: WorkIcon,
+    icon: BuildIcon,
     skills: [
       'Local Ollama LLM APIs',
       '(Local) embedded n8n Automation',
@@ -203,7 +212,7 @@ const designCompetencyItems = [
   {
     title: 'Project Management',
     description: 'I plan, align teams, and ship. I work with stakeholders, set goals, and keep work moving in the right direction.',
-    icon: BusinessCenterIcon,
+    icon: AccountTreeIcon,
     skills: [
       'Agile Methodologies',
       'Scrum',
@@ -239,16 +248,13 @@ const experienceItems = [
     isFullWidth: false,
     bullets: [
       'Researched music technology and interaction topics for djay',
-      'Designed and implemented an interactive prototype for intuitive music control',
-      'Presented findings to product and engineering teams in clear English',
-      'Created slide decks that became a reference for an industry overview',
+      'Designed an interactive audio-visual prototype for intuitive music control',
       'Defined personas and mapped user flows for key scenarios',
-      'Built tablet UI wireframes and prototypes; collaborated directly with the Head of R&D',
-      'Used modern design tools to iterate quickly',
-      'Supported UX prototyping and concept validation'
+      'Built tablet UI wireframes and prototypes in Figma and Adobe XD',
+      'Researched modern design tools to iterate the prototypes and explore'
     ],
     attachments: [
-      { label: 'Letter of Recommendation (PDF)', url: AlgoriddimLetterPDF }
+      { label: 'Letter of Recommendation (PDF)', url: letterOfRecommendationPDF }
     ]
   },
   {
@@ -330,9 +336,27 @@ const aboutData = [
             display: 'flex',
             flexDirection: 'column'
           }}>
-            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'warning.main' }}>
-              Tools & Workflow Automation
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  bgcolor: 'rgba(255, 152, 0, 0.2)',
+                  color: 'warning.main',
+                  mr: 2,
+                  flexShrink: 0
+                }}
+              >
+                <BuildIcon />
+              </Box>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: 'warning.main' }}>
+                Tools & Workflow Automation
+              </Typography>
+            </Box>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
               I use Figma and Adobe CC for design. For development I work with GitHub Copilot, Windsurf, and Cursor. For audio I use tools like Ableton and Logic Pro. I also automate routine work with n8n and local LLMs. The goal is to spend less time on busywork and more time solving real problems.
             </Typography>
@@ -352,9 +376,27 @@ const aboutData = [
             display: 'flex',
             flexDirection: 'column'
           }}>
-            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'info.main' }}>
-              Languages & Technical Stack
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  bgcolor: 'rgba(3, 169, 244, 0.2)',
+                  color: 'info.main',
+                  mr: 2,
+                  flexShrink: 0
+                }}
+              >
+                <IntegrationInstructionsIcon />
+              </Box>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: 'info.main' }}>
+                Languages & Technical Stack
+              </Typography>
+            </Box>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
               My stack covers the frontend (JS/TS, React, Three.js), some embedded work (C, C++, C#), and creative coding (Processing). I also explore audio and haptics (RNBO, Interhaptics, Max/MSP). I like building things that connect the digital and the physical.
             </Typography>
@@ -377,9 +419,27 @@ const aboutData = [
             display: 'flex',
             flexDirection: 'column'
           }}>
-            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600, color: 'secondary.main' }}>
-              Currently Improving
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  bgcolor: 'rgba(156, 39, 176, 0.2)',
+                  color: 'secondary.main',
+                  mr: 2,
+                  flexShrink: 0
+                }}
+              >
+                <TrendingUpIcon />
+              </Box>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: 'secondary.main' }}>
+                Currently Improving
+              </Typography>
+            </Box>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.6 }}>
               I am learning Golang to get better at backend and systems work. I am also practicing analytical sketching to explain ideas faster in workshops. It helps me ship better and work better with people.
             </Typography>

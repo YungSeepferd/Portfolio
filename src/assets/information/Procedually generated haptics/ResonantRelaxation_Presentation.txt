@@ -1,0 +1,218 @@
+
+
+============================================================
+PAGE 1
+============================================================
+
+Affective State
+Change
+via Procedurally Generated Haptics
+Vincent Göke
+JM Santiago III
+Moritz Sendner
+Daniel Shor
+Bernhard Maurer
+INNOVOBOT INC.
+
+
+============================================================
+PAGE 2
+============================================================
+
+What the goal of our project?
+“The goal of the project is to develop a proof of concept that utilizes
+procedurally generated long-form audio and haptics to induce
+affect state changes such as relaxation and/or flow, thus enhancing
+user’s emotional well-being during study or work sessions.”
+
+
+============================================================
+PAGE 3
+============================================================
+
+State of the art technology
+Endle
+LUCID Therapeutics
+AudioCraft
+Supercollider
+
+
+============================================================
+PAGE 4
+============================================================
+
+Review of Related
+Literature (1)
+Van der Linden et al. 2021
+Go with the flow: A neuroscientific
+view on being fully engaged
+“[..]in order to experience flow, a
+key dimension is the match
+between a person’s skill and
+the tasks challenges.”
+“People who experienced flow
+often [..] having a clear sense of
+direction (i.e., clear goals)”
+
+
+============================================================
+PAGE 5
+============================================================
+
+Review of Related
+Literature for Flow (2)
+Source: van der Linden et al., 2021
+The Locus Coeruleus
+Norepinephrine System
+The LC-NE system influences our
+choice to engage or disengage with
+tasks.
+It controls this through varying
+norepinephrine release patterns.
+Stimulating the pons might
+result in more effective
+relaxation/ guide into flow
+states
+
+
+============================================================
+PAGE 6
+============================================================
+
+Review of Related
+Literature (3)
+Source: Bravo et al., 2023
+We see what we hear: dissonant
+music engages early visual
+processing
+Highlights the cross-modal impact of
+auditory stimuli, suggesting our
+soundscapes must be carefully curated
+to avoid cognitive dissonance that
+could disrupt flow
+Good environmental influences might
+positively alter the perception of the
+user and ease the way into comfort
+
+
+============================================================
+PAGE 7
+============================================================
+
+Review of Related
+Literature (4)
+Source: Haruvi et al., 2021
+Modeling The Effect of Background Sounds on Human Focus Using Brain
+Decoding Technology
+“For example, it has been found that listening to music with lyrics while reading or
+working can decrease concentration or cognitive performance (H. Liu et al., 2021;
+Shih et al., 2012), while several studies have shown oppositely that natural-
+occurring sounds such as white noise, as well as classical music, can be beneficial
+for increasing focus and can improve learning outcomes (Angwin et al., 2017; Chou,
+2010; Davies, 2000; Gao et al., 2020).”
+
+
+============================================================
+PAGE 8
+============================================================
+
+Review of Related
+Literature (5)
+Source: Haruvi et al., 2021
+By Daniels definition of waves : Do
+musically pleasing frequencies
+translate also into positive haptic
+experiences?
+
+
+============================================================
+PAGE 9
+============================================================
+
+Our Approach
+"Developing a tool to transition users from relaxation to flow states,
+setting clear goals to reduce anxiety and increase motivation,
+thereby fostering more effective flow experiences."
+
+
+============================================================
+PAGE 10
+============================================================
+
+from 12 - 20 BrPM
+(breaths per minute)
+to 6 - 8 BrPM
+for 5 - 10 mins
+Relaxation
+“Reduce stress/anxiety and
+give motivation by setting
+feasible goals.”
+Our Framework
+Relaxation Mode: Create a
+baseline for the user’s
+emotional state.
+Flow Mode: Slowly raise
+BPM to the preferred speed
+and complexity and create
+a rhythm pattern 
+having around 60 - 88
+BPM  (beats per minute)
+for a minimum of 15
+minutes
+Flow
+“Gradually ease into flow
+and keeping focused
+for longer”
+
+
+============================================================
+PAGE 11
+============================================================
+
+Technical Implementation
+Affective Waveforms (Baseline) - Rhythmic -  Sinewave
+Dynamic - Melodic -  “fun sparks”
+
+
+============================================================
+PAGE 12
+============================================================
+
+Prototype Ideas
+Individualized
+frequencies
+positively
+influence ease
+into comfort?
+Musical
+frequencies
+translate also into
+similar haptic
+experiences?
+Stimulating neck
+area might result
+in more effective
+relaxation/ guide
+into flow states?
+Lower prefrontal cortex activity (Loss of self,
+self-awareness and perception(time))
+Higher LCNS activity
+(arrousal, optimism & hope,
+positive mood, motivation)
+
+
+============================================================
+PAGE 13
+============================================================
+
+1. Generate Custom Waveforms
+Develop a script for procedurally generating waveforms as a baseline
+Explore AI-generated audio to create a dynamic melody layered on-top
+2. Design a Physical Prototype
+Design a physical haptic prototype to deliver the customised waveforms
+Explore how this can be achieved in non-obtrusive ways for long periods
+3. Develop a Mobile App
+Build a mobile app that connects both waveform and haptic prototype
+4. Evaluation
+(Conduct a user study to determine the effectiveness of the prototype)
+Project Plan

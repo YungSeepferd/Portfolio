@@ -1,0 +1,143 @@
+
+
+============================================================
+PAGE 1
+============================================================
+
+Resonant Relaxation: Affective State Change via
+Procedurally Generated Haptics
+Vincent Göke1,2[0009−0002−7682−8296], Jose Maria Santiago III1,2[0000−0002−4730−7865],
+Moritz Sendner1,2[0009−0003−0453−4587], and Daniel Shor3[0000−0003−3545−4961]
+1 Fachhochschule Salzburg GmbH, Urstein Süd 1, A-5412 Puch/Salzburg, Austria
+vgoeke.hcie-m2022@fh-salzburg.ac.at
+2 Paris-Lodron-Universität Salzburg, Jakob-Haringer-Straße 8 / Techno 5, 5020 Salzburg,
+Austria
+vincent.goeke@stud.plus.ac.at
+3 Innovobot Labs
+dshor@innovobot.com
+Abstract. The ongoing shift towards digital sedentary lifestyles has increased
+stress in daily life and calls for innovative approaches to improve mental and
+physical health. This project explores the capabilities of AI-generated audio for
+affective haptic feedback to create experiences that induce relaxation and enhance
+emotional well-being and productivity. We designed a web application that al-
+lows haptic designers to create customized haptic patterns for respiration-based
+relaxation practices. Our system offers customizable parameters and leverages AI-
+driven audio-haptic composition to tailor relaxation experiences to individual user
+needs. Initial findings suggest that generative AI supports designers in creating
+personalized audio-haptic experiences, potentially reducing stress and improving
+relaxation. This lays the groundwork for future exploration into broader emotional
+state management.
+Keywords: Affective Haptics · Generative AI · Audio-Haptic Feedback · Person-
+alized Relaxation · Emotional Well-being
+1
+Introduction
+In recent years, the shift towards sedentary lifestyles due to ongoing digitalization and
+globalization has highlighted the need for innovative approaches to maintaining mental
+and physical health. Traditional relaxation methods are often limited by modern living
+conditions, leading to the need for seamless solutions. Recent work has shown the poten-
+tial of haptics to produce affective shifts in users [3]. Other work has shown the ability of
+AI to produce music to foster mindfulness, specifically with relaxation [4], potentially
+improving emotional well-being and productivity. In this paper, we explore the research
+question: "How could generative AI support designers in creating relaxation-inducing
+haptic experiences to enhance emotional well-being during sedentary activities?" We
+build on previous work using personalized audio to reduce breathing rates and induce
+relaxation [1, 2], and apply it within a haptic framework. Initial results highlight the
+challenge posed by the highly contextual nature of haptic stimulation — affected by
+
+
+============================================================
+PAGE 2
+============================================================
+
+2
+Göke et al.
+factors like baseline emotional state and environmental conditions — showing that in-
+telligent and highly customizable solutions are needed to meet individual relaxation
+needs effectively.
+2
+Methodology
+Our primary goal was to enhance users’ emotional well-being during concentrated
+productivity or relaxation sessions by providing personalized audio-based haptic expe-
+riences that could promote relaxation and potentially facilitate a flow state. We focused
+on creating a baseline state for relaxation, upon which we could then create follow-up
+shifts in the emotional state. To achieve this, we developed a React-based web application
+capable of generating customized haptic patterns to induce relaxation. Using a ChatGPT
+API call, we generated initial MIDI compositions via a series of prompts. These MIDI
+compositions were converted into waveforms using a browser-based synthesizer, Tone.js,
+and played through various voice coil actuators as wristband or neckband wearables. The
+haptic output consisted of two sub-patterns: Firstly, an amplitude-modulated sine tone,
+which started at a frequency slightly higher than normal breathing and slowed down
+according to user-defined parameters to induce slower breathing; secondly, AI-generated
+MIDI "Sparkles", aligning with the music theory of the baseline note frequency, ensured
+the haptic experience remained engaging and novel. The web application combined the
+two in real time to create therapeutic soundscapes for haptic relaxation. We conducted
+an initial user test with three participants, each with a different sedentary workload, to
+collect qualitative feedback for our development process. Participants reported increased
+feelings of calm after using the system and preferred a variety of sparkles along with
+a relaxing baseline over a simple haptic baseline output. However, the user testing was
+limited and more extensive testing is planned for future iterations.
+Fig. 1. Visualization of different types of musical note structures, generated using GPT-4 to add
+MIDI ’sparkles’ on top of the baseline frequency.
+
+
+============================================================
+PAGE 3
+============================================================
+
+Resonant Relaxation: Affective State Change via Procedurally Generated Haptics
+3
+3
+Conclusion and Future Work
+We developed a web application that enables haptic designers to procedurally generate
+fine-tuned haptic patterns4. It successfully met its primary objective by allowing de-
+signers to innovate and experiment with personalized relaxation experiences. However,
+there are areas for improvement, such as the need for more rigorous user testing. Future
+work will focus on expanding the prototype’s capabilities based on initial findings. We
+will implement a more structured and extensive user testing phase to gather quantitative
+data on the system’s performance and user satisfaction. Long-term studies are needed
+to assess the effects of regular use on emotional well-being and productivity. Also,
+the exploration of different embodiments and integration methods for haptic actuators
+could refine the comfort and usability of the system. Additionally, we aim to include
+sophisticated features such as Cycling ’74’s RNBO patches5, which facilitate adjustable
+and deployable virtual instruments for audio-haptic playback. Utilizing technologies like
+local Large Language Models (LLMs) for generating procedurally-generated haptics or
+creating biofeedback loops can provide more effective, personalized experiences. These
+advancements could revolutionize interaction with affective haptic technology, making
+these experiences more immersive and tailored to individual needs. We invite haptic de-
+signers and researchers to build on this foundation and explore its potential to transform
+affective haptic user experiences across various domains.
+Acknowledgments. We would like to express our appreciation to our academic supervisors
+Bernhard Maurer and Alexander Metscherjakov along with the Innovobot Labs team, particularly
+Daniel Shor, for their supportive roles in guiding us through this industry project.
+Disclosure of Interests. The authors have no competing interests to declare that are relevant to
+the content of this WIP paper.
+References
+1. Bumatay, A., Seo, J.: Investigating the Role of Biofeedback and Haptic Stimulation in Mobile
+Paced Breathing Tools. pp. 287–303 (May 2017). https://doi.org/10.1007/978-3-319-58628-
+1_23
+2. Leslie,
+G.,
+Ghandeharioun,
+A.,
+Zhou,
+D.,
+Picard,
+R.W.:
+Engineering
+Music
+to
+Slow Breathing and Invite Relaxed Physiology. In: 2019 8th International Confer-
+ence on Affective Computing and Intelligent Interaction (ACII). pp. 1–7 (Sep 2019).
+https://doi.org/10.1109/ACII.2019.8925531,
+https://ieeexplore.ieee.org/document/8925531,
+iSSN: 2156-8111
+3. MacLean, K.E.: Designing affective haptic experience for wellness and social communi-
+cation: where designers need affective neuroscience and psychology. Current Opinion in
+Behavioral Sciences 45, 101113 (Jun 2022). https://doi.org/10.1016/j.cobeha.2022.101113,
+https://www.sciencedirect.com/science/article/pii/S2352154622000195
+4. Williams, D., Hodge, V.J., Gega, L., Murphy, D., Cowling, P.I., Drachen, A.: AI and Automatic
+Music Generation for Mindfulness. In: 2019 AES International Conference on Immersive and
+Interactive Audio: Creating the Next Dimension of Sound Experience. York, GBR (Mar 2019),
+https://eprints.whiterose.ac.uk/141387/, num Pages: 10
+4 Project Github: https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main
+5 RNBO: https://cycling74.com/products/rnbo

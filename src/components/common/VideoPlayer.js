@@ -62,7 +62,13 @@ const VideoPlayer = ({
   
   const handleLoadedData = (e) => {
     setIsLoading(false);
+    console.log('Video loaded successfully:', src);
     onLoad(e);
+  };
+
+  const handleError = (e) => {
+    setIsLoading(false);
+    console.error('Video failed to load:', src, e);
   };
 
   return (
@@ -108,6 +114,7 @@ const VideoPlayer = ({
         controls={false} 
         playsInline
         onLoadedData={handleLoadedData}
+        onError={handleError}
         style={{
           width: '100%',
           height: '100%',

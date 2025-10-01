@@ -47,7 +47,7 @@ const ProjectContentRenderer = ({ content, layout = 'standard' }) => {
         <ContentWrapper>
           <Grid container spacing={3}>
             {content.map((item, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                 <Paper elevation={1} sx={{ p: 2, height: '100%' }}>
                   {typeof item === 'string' ? (
                     <Typography>{item}</Typography>

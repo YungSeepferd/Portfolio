@@ -6,7 +6,8 @@ import ProjectCardPreview from './ProjectCardPreview';
 import CategoryTagList from '../common/CategoryTagList';
 import projectUtils from '../../utils/projectUtils';
 import VideoPlayer from '../common/VideoPlayer';
-import { getSpacingPreset, getTypographyPreset } from '../../theme/presets';
+import { getTypographyPreset } from '../../theme/presets';
+import themeSpacing from '../../theme/spacing';
 
 /**
  * Improved ProjectCard with memoization and consistent theme usage
@@ -71,7 +72,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
   const cardStyles = useMemo(() => ({
     cursor: 'pointer',
     position: 'relative',
-    width: '95%',
+    width: themeSpacing.card.project.width,
     mx: 'auto',
     height: '100%', // Consistent height
     display: 'flex',
@@ -85,7 +86,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
       easing: theme.transitions.easing.easeInOut,
     }),
     '&:hover': {
-      transform: 'translateY(-4px)',
+      transform: { xs: 'translateY(-2px)', sm: 'translateY(-3px)', md: 'translateY(-4px)' },
       boxShadow: theme.shadows[8],
     },
     // Accent border moved to left side with 40% opacity
@@ -100,7 +101,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     position: 'relative',
     width: '100%',
     height: 0,
-    paddingBottom: '56.25%', // 16:9 aspect ratio (9/16 * 100%)
+    paddingBottom: themeSpacing.card.project.imageAspectRatio, // 16:9 aspect ratio
     flexShrink: 0, // Prevent image from shrinking
     // Dark overlay on hover for better button contrast
     '&::before': {
@@ -134,7 +135,10 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
     // Removed flex centering to allow image to fill completely
   }), []);
 
-  const contentSpacing = useMemo(() => getSpacingPreset('cardContent'), []);
+  const contentSpacing = useMemo(() => ({
+    px: themeSpacing.card.project.paddingX,
+    py: themeSpacing.card.project.paddingY,
+  }), []);
   const titlePreset = useMemo(() => getTypographyPreset(theme, 'cardTitle'), [theme]);
   const isTouchLayout = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -244,14 +248,14 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
           </Box>
 
           <CardContent sx={{ width: '100%', px: contentSpacing.px, py: contentSpacing.py }}>
-            <Stack spacing={1} alignItems="flex-start">
+            <Stack spacing={themeSpacing.card.project.contentGap} alignItems="flex-start">
               <Typography
                 variant={titlePreset.variant}
                 component={titlePreset.component}
                 sx={{ 
                   ...titlePreset.sx, 
                   color: 'text.primary',
-                  py: 2.5
+                  py: themeSpacing.card.project.titlePaddingY
                 }}
               >
                 {title}
@@ -260,7 +264,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
                 <CategoryTagList 
                   tags={categories} 
                   previewCount={isTouchLayout ? 8 : 6}
-                  sx={{ pb: 2 }}
+                  sx={{ pb: { xs: 1, sm: 1.5, md: 2 } }}
                 />
               )}
             </Stack>

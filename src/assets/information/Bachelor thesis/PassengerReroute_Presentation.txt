@@ -1,0 +1,713 @@
+
+
+============================================================
+PAGE 1
+============================================================
+
+Passenger Reroute: Phone-Based 
+Intervention In Self-Driving Cars
+Bachelor Thesis
+Vincent Göke
+21. Dezember 2021
+Wissenschaftliche Betreuerin: 
+Jingyi Li
+Verantwortlicher Professor:
+Prof. Dr. Andreas Butz
+
+
+============================================================
+PAGE 2
+============================================================
+
+Presentation Outline
+1. Introduction
+2. Related Work
+3. Research Questions
+4. Concept
+5. Implementation
+6. Main Study
+7. Results
+8. Conclusion
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+2
+
+
+============================================================
+PAGE 3
+============================================================
+
+3
+1. Introduction
+Source: https://s3-prod-europe.autonews.com/s3fs-public/Volvo%20AV.jpg
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+In autonomous vehicles (AV) passengers could…
+• …engage in non-driving related activities (NDRA)  
+• …react to non-critital spontaneous situations (NCSS)
+Papersource: https://link.springer.com/article/10.1007/s42154-019-00087-9
+Terken, 2020; Toward Shared Control Between Automated Vehicles and Users
+Papersource: https://doi-org.emedien.ub.uni-
+muenchen.de/10.1145/3409120.3410652
+ Wang, 2020; “Watch out!”: Prediction-Level Intervention for Automated Driving
+
+
+============================================================
+PAGE 4
+============================================================
+
+1. Introduction
+• Travel with AVs
+– No driver/ steeringwheel
+– New IT-> Trust issues
+– Individual expectations for information displayment
+– Need for safety, autonomy
+4
+Mercedes LVL 3 source: https://auto.hindustantimes.com/auto/news/mercedesbenz-becomes-world-s-first-to-get-level-3-autonomous-driving-approval-41639196499051.html
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+Pony.ai Car: https://static.cdn.xiaomazhixing.com/images/home/car_1615998576.png
+Waymo Sensors and Camera: https://static.cdn.xiaomazhixing.com/images/home/car_1615998576.png
+
+
+============================================================
+PAGE 5
+============================================================
+
+2. Related Work – NDRA vs. Trust
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+5
+• Tradeoff in AVs: 
+comfortability of NDRA 
+and the perceived 
+trustworthiness of the 
+car
+• Imbalanced UIs might 
+cause Mis- or even 
+Disuse
+Paper source: https://dl.acm.org/doi/10.1145/3004323.3004331 
+Miglani, Diels - Compatibility between Trust and Non - Driving Related Tasks in UI Design for Highly and Fully Automated Driving
+
+
+============================================================
+PAGE 6
+============================================================
+
+2. Related Work– Use cases
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+6
+Papersource: https://link.springer.com/article/10.1007/s42154-019-00087-9
+Terken, 2020; Toward Shared Control Between Automated Vehicles and Users
+
+
+============================================================
+PAGE 7
+============================================================
+
+7
+2. Related Work– AV Framework
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+Papersource: https://doi-org.emedien.ub.uni-muenchen.de/10.1145/3409120.3410652
+ Wang, 2020; “Watch out!”: Prediction-Level Intervention for Automated Driving
+
+
+============================================================
+PAGE 8
+============================================================
+
+8
+2. Related Work – Measurement
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+What factors establish trust?
+Important factors of UIs fostering user 
+trust
+1. Anthropomorphism
+2. Transparency
+3. System perceived as an expert (by 
+neatness/ aesthetics)
+4. Customization of noncritical 
+information
+5. Brand reputation
+6. System knowledge and experience
+Paper source: https://dl.acm.org/doi/abs/10.1145/3004323.3004331, 
+Diels, Migliani  2016 - Compatibility between Trust and Non - Driving Related Tasks in UI Design for Highly and Fully Automated Driving
+ 
+Early design , all information
+Source: htps:/ www.gogle.de/ maps/@48.1502068,11.5810582,3a, 75y,19.03h, 89.64t/data=! 3m 7! 1e1!3m5! 1s0xWceYKdW_QNj H9PVLU75w!2e0! 6shtps:%2F%2Fstr etviewpixel s-
+pa. googl eapis.com %2Fv1%2Ft humbnail %3Fpanoid%3D0xWceYKdW_QNj H9PVLU75w%26cb_cli ent%3Dmaps_sv. tact ile.gps%26w%3D203%26h%3D100%26yaw%3D350.58984%26pitch%3D0%26thum bf ov%3D100!7i1312! 8i 656
+
+
+============================================================
+PAGE 9
+============================================================
+
+3. Research Questions
+• RQ1: How do varying amounts of information in an 
+AV navigation UI affect passenger‘s UX, cooperative
+performance and trust in the system? 
+Is the time restraint relevant?
+• RQ2: How much information is adequate for
+navigation level AV UIs? 
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+9
+
+
+============================================================
+PAGE 10
+============================================================
+
+4. Concept - Inspiration
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+10
+Source: top left: htt ps://www.pinter est.com /pin/27 795722 678420 817/
+Source: top right: htt ps://dr ibbble.com /shots/ 148031 42-Self-dr iving-Taxi-App
+Source: bottom: htt ps://dr ibbble.com /shots/ 401248 4-Autom ated-Driving-UI
+
+
+============================================================
+PAGE 11
+============================================================
+
+11
+4. Concept – Preset Route
+Source: https://www.google.de/maps/dir/48.1504449,11.5812516/48.1457715,11.5642941/@48.1475748,11.5681677,16z/data=!3m1!4b1!4m2!4m1!3e0
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+
+
+============================================================
+PAGE 12
+============================================================
+
+4. Concept  – Pilot Study 
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+12
+Purpose:
+• Test design frames for viability 
+• Functionalities and aesthetics, useful and necessary?
+• Is any information missing?
+• Can something be left out?
+Details:
+• N=11 participants
+• Limesurvey
+• Personal interview
+Bottom menu
+
+
+============================================================
+PAGE 13
+============================================================
+
+4. Concept  – Pilot Study 
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+13
+Result:
+• Deletion of notification screen  
+• Integrated restaurant information (address, menu 
+with top dishes) 
+• Integrated route information (varying across 
+levels)
+• Demand to display the traffic situation (picture-in-
+picture live camera view, situational awareness)
+
+
+============================================================
+PAGE 14
+============================================================
+
+4. Concept  – Pilot Study 
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+14
+Next Step:
+• 2 videos of starting point 
+(parked car, moving car)
+• Inserted AR visuals 
+(Mark, Route, Arrow)
+• GIF loops (Figma 
+compatible)
+• Parked car = Slow Thinking 
+• Implementation of 6 Levels
+• FT1, FT2, FT3
+• ST1, ST2, ST3
+
+
+============================================================
+PAGE 15
+============================================================
+
+5. Implementation - Interaction
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+15
+ST3
+FT2
+FT1
+
+
+============================================================
+PAGE 16
+============================================================
+
+16
+5. Implementation – Aid tools
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+UX design:
+• Design tool: “Figma”
+• Android/IOS application: 
+“Figma Mirror” (remote 
+testing)
+• Plan-level application 
+-
+add stopover to route
+Online Study: 
+•
+Zoom conference & screen share
+•
+Limesurvey questionnaire
+•
+Mobile screen capture
+
+
+============================================================
+PAGE 17
+============================================================
+
+17
+5. Implementation – Homescreen
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+FT3
+ST3
+
+
+============================================================
+PAGE 18
+============================================================
+
+18
+5. Implementation – Navigation
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+Slow Thinking Overview
+
+
+============================================================
+PAGE 19
+============================================================
+
+19
+5. Implementation – Level 1
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+• Level 1: Ice cream
+• 2 shops
+• 2 routes for each shop (new time of arrival (TOA))
+• Menu for selected shop
+
+
+============================================================
+PAGE 20
+============================================================
+
+20
+5. Implementation – Level 2
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+• Level 2: Quick Snack
+• Route Information for Selection: ToA, Mins added
+
+
+============================================================
+PAGE 21
+============================================================
+
+21
+5. Implementation– Level 3
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+• Level 3: Coffee
+• Route Information for Selection: ToA, Mins added, Distance in km
+
+
+============================================================
+PAGE 22
+============================================================
+
+22
+5. Implementation – Confirmation
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+• Confirm shop and route selection by
+pressing „GO“
+• X- Button to undo previous step
+• Participant notifies about finished task
+Recordings contains:
+Time measured
+Chosen location
+Interaction steps
+After all Levels, upload of recordings to
+matching ID Folder on Google Drive
+
+
+============================================================
+PAGE 23
+============================================================
+
+6. Main Study – Introduction
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+23
+Details:
+• Guided online-study on Zoom
+• Limesurvey questionnaire (Demographics, T0)
+▪For each of the 3 levels:
+▪Figma Mirror screen capture
+▪Limesurvey questionnaire (T1, SUS, UX)
+▪Final interview
+▪Google drive upload
+• N=30 participants [9 = F, 20 = M, 1 undisclosed]
+▪Fast Thinking (FT)
+▪Slow Thinking (ST)
+• Time: 1 hour
+
+
+============================================================
+PAGE 24
+============================================================
+
+24
+6. Concept – Measurement
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+Situational Trust Scale (STS) – rephrased for AV rerouting situations
+• Comparison between base trust T0 vs. trust after prototype T1
+Paper source: https://doi-org.emedien.ub.uni-muenchen.de/10.1145/3409120.3410637, 
+Holthausen, Wintersberger 2020 – Situational Trust Scale for Automated Driving (STS-AD)
+• System Usability Scale (SUS)
+▪10 questions to get system usablity reference
+▪Answer after every level
+
+
+============================================================
+PAGE 25
+============================================================
+
+6. Concept – Measurement
+• 3 self defined questions
+• Considered separately
+• Get rough picture if prototype fullfilled pilot study information
+demands
+Control (C), Shop information (SI), Time (T)
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+25
+• Final semi-structured interview (10 Mins)
+
+
+============================================================
+PAGE 26
+============================================================
+
+7. Results – Interaction Steps
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+26
+• FT group finished Task with less interaction steps than ST
+• FT123 Mean = 30.78, StdDev = 20.133; 
+• ST123 Mean = 50.56, StdDev: 81.457; 
+• [N=30] Mean = 40.67, StdDev = 59.830
+
+
+============================================================
+PAGE 27
+============================================================
+
+7. Results – Average Time
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+27
+• FT group tend to finish the tasks more quickly than ST 
+• FT123 Mean = 00:51, StdDev: 20.134; 
+• ST123 Mean = 01:08, StdDev: 81.457; 
+• [N=30] Mean = 01:00, StdDev: 59.830.
+
+
+============================================================
+PAGE 28
+============================================================
+
+7. Results – Selected Shop
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+28
+• (N=21, 70%) opted for detour to level 3 shop "Café im Vorhoelzer Forum„ 
+(closest to the destination address, route is mostly identical)
+• FT predominantly chose the further shop
+• ST predominantly chose the closer shop
+= closer
+= further
+
+
+============================================================
+PAGE 29
+============================================================
+
+7. Results - Trust
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+29
+Baseline Trust T0
+Trust T1
+FT-T0: Mean = 4.37, StdDev = 0.965
+FT-T1: Mean = 5.83, StdDev = 0.748
+ST-T0: Mean = 4.88,StdDev = 0.724
+ST-T1: Mean= 5.8, StdDev = 0.752
+T0-[n=30]: Mean = 4.63, StdDev = 0.877
+T1-[n=30]: Mean = 5.82, StdDev = 0.746
+
+
+============================================================
+PAGE 30
+============================================================
+
+7. Results - Trust
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+30
+Level 1 – simple highest trust rating
+1-T1 Mean = 5.99, StdDev = 0.619
+Level 3 – complex second highest rating
+3-T1 Mean = 5.76, StdDev = 0.909
+Level 2 – medium in last place 
+2-T1 Mean = 5.7, StdDev = 0.672).
+Final Interview rating:
+Level 3 ranked highest
+ (n=21 [70%]; FT=11, ST=10)
+Level 1 second ranking 
+(n=15 [50%]; FT=9, ST=6)
+Level 2 lowest ranking
+(n=14 [46.67%]; FT=9, ST=5)
+
+
+============================================================
+PAGE 31
+============================================================
+
+7. Results - Usability 
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+31
+Overall score = 75.38 on a scale of 100, r=0.7538, StdDev = 15.619)
+Normalised rating > 68; adjectives "good" and "excellent"
+Paper source: htps ://dl.acm .org/doi/10.5555/2835587.2835589      Kortum Bangor 2009 - 
+Determining What Individual SUS Scores Mean: Adding an 
+Adjective Rating Scale
+
+
+============================================================
+PAGE 32
+============================================================
+
+7. Results - Experience
+Likert 7 scalar questions:
+• Control (C) = mean = 5.93, StdDev-C = 1.261
+• Shop Information (SI) = mean = 4.42, StdDev-SI= 1.761 
+• Enough time to reroute (T) = mean = 5.79, StdDev-T =1.222
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+32
+Strongly
+Disagree
+Strongly
+Agree
+SI
+C
+T
+Agree
+Slightly
+Agree
+Neutral
+Slightly
+Disagree
+Disgree
+-
+Shop information: not sufficient
+-
+Percieved control: OK
+-
+Time for NCSS: OK
+
+
+============================================================
+PAGE 33
+============================================================
+
+7. Results – Semi-Structured Interview
+AV Control Interface: Hand-Held Device vs. Built-In
+– N=16 (53.33%) would like to interact with a built-in interface 
+– N=14 (46.67%) would prefer to have a mobile interface
+Shop filter for simpler reroute under time restraint:
+Likelihood of use: Mean = 6.4, StdDev = 0.724
+Comment: 
+Useful tool under time pressure, but room for improvement
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+33
+
+
+============================================================
+PAGE 34
+============================================================
+
+7. Results – Semi-Structured Interview
+•
+Traffic camera on trust (Mostly positive, some negative)
+•
+Learning effect (Levels similar in their structure)
+•
+Too similar information split (Level 2 & 3 too similar)
+•
+Still some concerns about IT security and
+•
+Complications with mobile phones (i.e. low battery, no internet, 
+slow-response times, device receives a call)
+Improvement:
+•
+Trusted Sound Landscape 
+•
+Sound cues for warnings [N=9 (30%)]
+•
+Voice control [N=7 (23.33%)]
+•
+Placement of smiley away from center (no actual help)
+•
+Shop Symbols do not always correspond to shop
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+34
+
+
+============================================================
+PAGE 35
+============================================================
+
+8. Conclusion
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+35
+-
+UI: Raise in trust level towards the AV in 
+participants, especially FT
+-
+Level 3 complex first in user rank 
+-
+Level 1 simple had best survey score
+-
+Time frame influences the decision making
+process (Interaction steps, time, location)
+- Time limit for reroute can result in stress 
+→Indecisive behavior, discomfort
+- Shop filter supports time sensitive reroutes
+
+
+============================================================
+PAGE 36
+============================================================
+
+Bachelor Thesis Bibliography
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+36
+References
+[1] Jackie Ayoub, Feng Zhou, Shan Bao, and X. Jessie Yang. From manual
+driving to automated driving: A review of 10 years of autoui. In Proceedings of
+the 11th International Conference on Automotive User Interfaces and Interactive 
+Vehicular Applications, AutomotiveUI ’19, pages 70–90, New York, NY, USA, 
+2019. Association for Computing Machinery.
+[2] Aaron Bangor, Philip Kortum, and James Miller. Determining what individual 
+sus scores mean: Adding an adjective rating scale. J. Usability Studies, 
+4(3):114–123, 2009.
+[3] Melanie Berger, Aditya Dandekar, Regina Bernhaupt, and Bastian Pfleging. 
+An ar-enabled interactive car door to extend in-car infotainment systems for rear
+seat passengers. In Extended Abstracts of the 2021 CHI Conference on Human 
+Factors in Computing Systems, CHI EA ’21, New York, NY, USA, 2021. 
+Association for Computing Machinery.
+[4] Amber Case. Calm technology: Principles and patterns for non-intrusive 
+design. O’Reilly Media, Sebastopol, CA, first edition edition, 2015.
+[5] Anna-Katharina Frison, Philipp Wintersberger, Andreas Riener, Clemens 
+Schartmüller, Linda Ng Boyle, Erika Miller, and Klemens Weigl. In ux we trust: 
+Investigation of aesthetics and usability of driver-vehicle interfaces and their
+impact on the perception of automated driving. In Proceedings of the 2019 CHI 
+Conference on Human Factors in Computing Systems, CHI ’19, pages 1–13, 
+New York, NY, USA, 2019. Association for Computing Machinery.
+[6] Brittany E. Holthausen, Philipp Wintersberger, Bruce N. Walker, and Andreas 
+Riener. Situational trust scale for automated driving (sts-ad): Development and 
+initial validation. In 12th International Conference on Automotive User Interfaces 
+and Interactive Vehicular Applications, AutomotiveUI ’20, pages 40–47, New 
+York, NY, USA, 2020. Association for Computing Machinery.
+[7] Abhijai Miglani, Cyriel Diels, and Jacques Terken. Compatibility between trust
+and non-driving related tasks in ui design for highly and fully automated driving. 
+In Adjunct Proceedings of the 8th International Conference on Automotive User 
+Interfaces and Interactive Vehicular Applications, AutomotiveUI ’16 Adjunct, 
+pages 75–80, New York, NY, USA, 2016. Association for Computing Machinery.
+[8] Bastian Pfleging, Maurice Rang, and Nora Broy. Investigating user needs for non-
+driving-related activities during automated driving. In Proceedings of the 15th 
+International Conference on Mobile and Ubiquitous Multimedia, MUM ’16, pages 91–
+99, New York, NY, USA, 2016. Association for Computing Machinery.
+[9] Sonja Rümelin. The cockpit for the 21st century.
+[10] Sonja Rümelin, P. Siegl, and A. Butz. Could you please ... ? investigating
+cooperation in the car. In Adjunct Proceedings of the 5th International 
+Conference on Automotive User Interfaces and Interactive Vehicular Applications
+(AutomotiveUI ’13), pages 61–64. AutomotiveUI ’13, 2013.
+[11] Jacques Terken and Bastian Pfleging. Toward shared control between
+automated vehicles and users. Automotive Innovation, 3(1):53–61, 2020.
+[12] Marcel Walch, Stacey Li, Ilan Mandel, David Goedicke, Natalie Friedman, and 
+Wendy Ju. Crosswalk cooperation: A phone-integrated driver-vehicle
+cooperation approach to predict the crossing intentions of pedestrians in 
+automated driving. In 12th International Conference 31 on Automotive User 
+Interfaces and Interactive Vehicular Applications, AutomotiveUI ’20,
+pages 74–77, New York, NY, USA, 2020. Association for Computing Machinery.
+[13] Chao Wang. A framework of the non-critical spontaneous intervention in 
+highly automated driving scenarios. In Proceedings of the 11th International 
+Conference on Automotive User Interfaces and Interactive Vehicular
+Applications: Adjunct Proceedings, AutomotiveUI ’19, pages 421–426, New York, 
+NY, USA, 2019. Association for Computing Machinery.
+[14] Chao Wang, Matti Krüger, and Christiane B. Wiebel-Herboth. “watch out!”: 
+Prediction-level intervention for automated driving. In 12th International 
+Conference on Automotive User Interfaces and Interactive Vehicular
+Applications, AutomotiveUI ’20, pages 169–180, New York, NY, USA, 2020. 
+Association for Computing Machinery.
+[15] Philipp Wintersberger, Hannah Nicklas, Thomas Martlbauer, Stephan 
+Hammer, and Andreas Riener. Explainable automation: Personalized and 
+adaptive uis to foster trust and understanding of driving automation systems. In 
+12th International Conference on Automotive User Interfaces and Interactive 
+Vehicular Applications, AutomotiveUI ’20, pages 252–261, New York, NY, USA, 
+2020. Association for Computing Machinery.
+
+
+============================================================
+PAGE 37
+============================================================
+
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+37
+Future work:
+-
+Soundscape for subtle but meaningful notification
+-
+Voice control/ assistance
+-
+Shop filter questions
+-
+In-car or simulator testing
+-
+Better shop information
+Limitations:
+- Hardly realistic (online study)
+- Figma functionalities (no zoom in, no sound, no haptic
+feedback)
+- Mostly young participants with technological preknowledge
+and trust
+
+
+============================================================
+PAGE 38
+============================================================
+
+Participants car usage
+Vincent Göke - Passenger Reroute: Phone-Based Intervention In Self-Driving Cars
+38
+-
+13 participants ( 43.33%) reported travelling weekly as a passenger in a 
+car 
+-
+1 ( 36.67 %) reported monthly 
+-
+4 (13.33%) daily  
+-
+2 (6.67 %) rarely
+-
+11 (36,67%) participants average trip duration of 1-2 hours 
+-
+8 (26,67 %) a duration of 30 minutes-1 hour 
+-
+7 (23,33 %) a duration of less than 30minutes  
+-
+4 (13,33 %) a duration of 3-5 hours per trip
+-
+Not all participants wanted to disclose their travel behaviour

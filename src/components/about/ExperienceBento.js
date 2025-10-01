@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, Grid, Button } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import WorkIcon from '@mui/icons-material/Work';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import SchoolIcon from '@mui/icons-material/School';
+import ScienceIcon from '@mui/icons-material/Science';
 import spacingTokens from '../../theme/spacing';
 
 const ExperienceBento = ({ items = [] }) => {
@@ -16,7 +16,7 @@ const ExperienceBento = ({ items = [] }) => {
       case 'freelance':
         return BusinessCenterIcon;
       case 'education':
-        return SchoolIcon;
+        return ScienceIcon;
       default:
         return WorkIcon;
     }
@@ -60,7 +60,7 @@ const ExperienceBento = ({ items = [] }) => {
         const rangeLabel = item.duration || rangeFromSubtitle || '';
         
         return (
-          <Grid item xs={12} md={12} key={`${item.id || item.title}-${index}`}>
+          <Grid size={{ xs: 12, md: 12 }} key={`${item.id || item.title}-${index}`}>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '180px 1fr', lg: '220px 1fr' }, columnGap: 2 }}>
               {/* Timeline gutter (separate from card) */}
               <Box sx={{ position: 'relative', display: { xs: 'none', md: 'block' }, pt: 1 }}>

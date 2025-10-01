@@ -91,7 +91,7 @@ const ProjectGallery = ({ images = [], title = '' }) => {
       {/* Grid of thumbnails */}
       <Grid container spacing={2} id="project-gallery-grid">
         {mediaInfo.map((item) => (
-          <Grid item xs={6} sm={4} md={gridItemSize} key={item.id}>
+          <Grid size={{ xs: 6, sm: 4, md: gridItemSize }} key={item.id}>
             <Box
               id={`project-gallery-thumb-${item.id}`}
               onClick={() => handleImageClick(item)}

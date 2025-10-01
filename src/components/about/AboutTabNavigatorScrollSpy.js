@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef, forwardRef, useImperativeHandle, useMemo, useState } from 'react';
-import { Box, useTheme, Tabs, Tab, Typography } from '@mui/material';
+import { Box, useTheme, Tabs, Tab, Typography, useMediaQuery } from '@mui/material';
 import spacingTokens from '../../theme/spacing';
 import AboutCard from './AboutCard';
 import AboutTabContent from './AboutTabContent';
@@ -18,6 +18,7 @@ import useScrollSpy from '../../hooks/useScrollSpy';
 const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
   const { onSectionChange, aboutData = [], onScrollLock } = props;
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   // Calculate sticky top position first
   const stickyTop = useMemo(() => {
@@ -43,7 +44,8 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
   } = useScrollSpy({ 
     sectionCount: aboutData.length,
     // Align right viewport start with left "About" heading by increasing top offset
-    scrollOffset: typeof stickyTop === 'number' ? stickyTop + 56 : 96
+    scrollOffset: typeof stickyTop === 'number' ? stickyTop + 56 : 96,
+    useWindowRoot: isMobile
     // Use default granular thresholds for responsive detection
   });
   
@@ -63,21 +65,21 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
   
   // Helper function to scroll to element with offset for sticky header
   const scrollToElementWithOffset = useCallback((element, offset = 0) => {
-    if (!element || !containerRef.current) return;
-
+    if (!element) return;
+    const elementRect = element.getBoundingClientRect();
+    if (isMobile) {
+      const target = window.pageYOffset + elementRect.top - offset;
+      window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      return;
+    }
+    if (!containerRef.current) return;
     const container = containerRef.current;
     const containerRect = container.getBoundingClientRect();
-    const elementRect = element.getBoundingClientRect();
     const currentTop = container.scrollTop;
-    // Compute element's position relative to container viewport, then add current scrollTop
     const relativeTop = elementRect.top - containerRect.top;
     const targetTop = currentTop + relativeTop - offset;
-
-    container.scrollTo({
-      top: Math.max(0, targetTop),
-      behavior: 'smooth',
-    });
-  }, [containerRef]);
+    container.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+  }, [containerRef, isMobile]);
 
   // Edge-aware scroll bridging: keep scroll in the content area until edges, then let page scroll
   const handleWheel = useCallback((e) => {
@@ -264,9 +266,9 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
       {/* Right: Scrollable content area with snap */}
       <Box
         ref={containerRef}
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
+        onWheel={isMobile ? undefined : handleWheel}
+        onTouchStart={isMobile ? undefined : handleTouchStart}
+        onTouchMove={isMobile ? undefined : handleTouchMove}
         sx={{
           height: { xs: 'auto', md: '100%' },
           overflowY: { xs: 'visible', md: 'scroll' },
@@ -296,7 +298,7 @@ const AboutTabNavigatorScrollSpy = forwardRef((props, ref) => {
         }}
       >
         {/* Mobile horizontal tabs */}
-        <Box sx={{ display: { xs: 'block', md: 'none' }, mb: 3, position: 'sticky', top: 0, zIndex: 10, backgroundColor: theme.palette.background.default, py: 2 }}>
+        <Box sx={{ display: { xs: 'block', md: 'none' }, mb: 3, position: 'sticky', top: stickyTop, zIndex: 10, backgroundColor: theme.palette.background.default, py: 2 }}>
           <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
             About
           </Typography>

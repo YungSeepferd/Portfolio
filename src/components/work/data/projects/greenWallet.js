@@ -6,6 +6,12 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
 // Import all project images and videos directly
 import OverviewImage from '../../../../assets/images/GreenWallet/green_wallet_logo.png';
@@ -67,7 +73,7 @@ const cardVariant = 'success';
 const greenWallet = {
   id: 'greenWallet',
   title: "Green Wallet – Sustainable Tourism",
-  description: "A gamified cashless payment system for sustainable tourism developed during a hackathon.",
+  description: "A gamified cashless payment system promoting sustainable tourism, developed at a 24 hour hackathon.",
   categories: ["UI Design", "UX Research", "Sustainable UX", "Tourism", "Gamification"],
   technologies: ["Figma", "Adobe Illustrator", "Adobe Premiere Pro"],
   cardVariant: cardVariant,
@@ -97,9 +103,14 @@ const greenWallet = {
       type: 'default',
       title: 'Project Overview',
       content: (
-        <Typography variant="body1" paragraph>
-          The Green Wallet was developed during the Tourism Technology Festival 2023 Hackathon in Salzburg, as part of Mastercard's challenge to promote the adoption of cashless payments in tourism and gastronomy sectors. Our team, representing FH Salzburg, created an innovative gamified solution that simultaneously benefits tourists, local shop owners, Mastercard, and regional sustainability efforts.
-        </Typography>
+        <>
+          <Typography variant="body1" paragraph>
+            Green Wallet emerged from the Tourism Technology Festival 2023 Hackathon in Salzburg as a response to Mastercard's challenge: increase cashless payment adoption in tourism and gastronomy.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Our FH Salzburg team created a gamified solution that benefits tourists, shop owners, Mastercard, and regional sustainability simultaneously.
+          </Typography>
+        </>
       ),
       media: { type: 'image', src: media.images.overview },
       layout: 'textLeft',
@@ -112,7 +123,7 @@ const greenWallet = {
       title: 'Hackathon Context',
       content: (
         <Typography variant="body1" paragraph>
-          The Tourism Technology Festival 2023 brought together tech innovators, tourism experts, and students to address challenges in the rapidly evolving tourism industry. Our team participated in Mastercard's specific challenge track focused on increasing cashless payment adoption while enhancing the overall tourist experience.
+          The Tourism Technology Festival 2023 united tech innovators, tourism experts, and students to solve challenges in the evolving tourism industry. Our team tackled Mastercard's challenge track focused on cashless payment adoption and enhanced tourist experiences.
         </Typography>
       ),
       media: { type: 'image', src: media.images.hackathonTeam },
@@ -127,14 +138,14 @@ const greenWallet = {
       content: (
         <>
           <Typography variant="body1" paragraph>
-            Many smaller gastronomy businesses and tourist-oriented shops continue to prefer cash over cashless transactions, despite proven advantages. Our on-site research revealed common obstacles:
+            Many smaller gastronomy businesses and tourist shops prefer cash despite the advantages of digital payments. Onsite research revealed key obstacles:
           </Typography>
           <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li><Typography variant="body1">Perceived high transaction fees for digital payments</Typography></li>
-            <li><Typography variant="body1">Security concerns about electronic payment systems</Typography></li>
-            <li><Typography variant="body1">Lack of immediate visible incentives for shop owners</Typography></li>
-            <li><Typography variant="body1">Inefficient tourist distribution across regional attractions</Typography></li>
-            <li><Typography variant="body1">Limited mechanisms for promoting sustainable tourism</Typography></li>
+            <li><Typography variant="body1"><strong>Transaction costs:</strong> Perceived high fees for digital payments</Typography></li>
+            <li><Typography variant="body1"><strong>Security concerns:</strong> Worries about electronic payment system safety</Typography></li>
+            <li><Typography variant="body1"><strong>Missing incentives:</strong> No immediate visible benefits for shop owners</Typography></li>
+            <li><Typography variant="body1"><strong>Tourist distribution:</strong> Uneven visitor flow across regional attractions</Typography></li>
+            <li><Typography variant="body1"><strong>Sustainability gaps:</strong> Limited mechanisms promoting responsible tourism</Typography></li>
           </Box>
         </>
       ),
@@ -150,26 +161,14 @@ const greenWallet = {
       content: (
         <>
           <Typography variant="body1" paragraph>
-            Green Wallet addresses these multi-faceted challenges through an engaging, gamified user experience that motivates both tourists and shop owners to shift towards cashless transactions, aligning commercial incentives with environmental responsibility.
+            Green Wallet addresses these challenges through gamification that motivates tourists and shop owners to adopt cashless transactions while aligning commercial goals with environmental responsibility.
           </Typography>
           
-          <Typography variant="h4">Core Functionalities</Typography>
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>Core Features</Typography>
           <Box component="ul" sx={{ pl: 3, mb: 2 }}>
-            <li>
-              <Typography variant="body1">
-                <strong>Gamified Events:</strong> Shop owners create limited-time special events where Mastercard users receive increased reward points, attracting customers and distributing tourists to less crowded areas
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Eco-conscious Reward System:</strong> Users accumulate points from transactions redeemable for environmentally positive actions like planting trees
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Real-time Analytics:</strong> Shop owners receive immediate insights into sales performance, event participation, and customer demographics
-              </Typography>
-            </li>
+            <li><Typography variant="body1"><strong>Gamified events:</strong> Shop owners create limited time events with bonus reward points, attracting customers and distributing tourists to less crowded areas</Typography></li>
+            <li><Typography variant="body1"><strong>Eco reward system:</strong> Transaction points redeem for environmental actions like tree planting</Typography></li>
+            <li><Typography variant="body1"><strong>Real time analytics:</strong> Shop owners track sales, event participation, and customer demographics instantly</Typography></li>
           </Box>
         </>
       ),
@@ -185,29 +184,13 @@ const greenWallet = {
       content: (
         <>
           <Typography variant="body1" paragraph>
-            Our team employed a robust user-centered approach during the 24-hour hackathon:
+            The team used a user centered approach during the 24 hour hackathon:
           </Typography>
           <Box component="ol" sx={{ pl: 3, mb: 2 }}>
-            <li>
-              <Typography variant="body1">
-                <strong>Stakeholder Interviews (On-site Research):</strong> We interviewed local businesses to identify pain points regarding cashless payment adoption, revealing needs for tangible incentives and simplified systems
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Rapid Prototyping:</strong> Created detailed Figma prototypes with separate customer and shop owner user interfaces
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Gamification Mechanics:</strong> Designed visually appealing elements like reward multipliers, event countdown timers, and sustainability achievements
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body1">
-                <strong>Interactive User Flow Presentation:</strong> Scripted and presented a live demonstration walking through realistic usage scenarios from both user perspectives
-              </Typography>
-            </li>
+            <li><Typography variant="body1"><strong>Stakeholder interviews:</strong> Local business conversations identified pain points, revealing needs for tangible incentives and simplified systems</Typography></li>
+            <li><Typography variant="body1"><strong>Rapid prototyping:</strong> Figma prototypes with separate customer and shop owner interfaces</Typography></li>
+            <li><Typography variant="body1"><strong>Gamification design:</strong> Visual elements including reward multipliers, countdown timers, and sustainability achievements</Typography></li>
+            <li><Typography variant="body1"><strong>Live demonstration:</strong> Interactive presentation walking through realistic scenarios from both user perspectives</Typography></li>
           </Box>
         </>
       ),
@@ -217,23 +200,104 @@ const greenWallet = {
       navigable: true
     },
     {
+      id: 'section-user-journey',
+      type: 'default',
+      title: 'User Journey & Stakeholder Flows',
+      content: (
+        <>
+          <Typography variant="body1" paragraph>
+            Green Wallet supports three interconnected user journeys, creating a sustainable ecosystem benefiting tourists, local businesses, and tourism regions.
+          </Typography>
+          <Box sx={{ minHeight: 400, flexGrow: 1, maxWidth: 800 }}>
+            <SimpleTreeView>
+              <TreeItem itemId="tourist" label="Tourist Journey">
+                <TreeItem itemId="tourist-arrive" label="1. Arrive in Tourism Region" />
+                <TreeItem itemId="tourist-discover" label="2. Discover Green Wallet">
+                  <TreeItem itemId="tourist-download" label="Download App" />
+                  <TreeItem itemId="tourist-link" label="Link Mastercard" />
+                  <TreeItem itemId="tourist-onboard" label="Complete Onboarding" />
+                </TreeItem>
+                <TreeItem itemId="tourist-explore" label="3. Explore Region">
+                  <TreeItem itemId="tourist-map" label="View Interactive Map" />
+                  <TreeItem itemId="tourist-events" label="See Nearby Events & Offers" />
+                  <TreeItem itemId="tourist-recommendations" label="Get Less Crowded Recommendations" />
+                </TreeItem>
+                <TreeItem itemId="tourist-engage" label="4. Engage with Local Business">
+                  <TreeItem itemId="tourist-visit" label="Visit Participating Shop/Restaurant" />
+                  <TreeItem itemId="tourist-pay" label="Pay with Linked Mastercard" />
+                  <TreeItem itemId="tourist-earn" label="Earn Green Points (4x during events)" />
+                </TreeItem>
+                <TreeItem itemId="tourist-impact" label="5. Environmental Impact">
+                  <TreeItem itemId="tourist-dashboard" label="View Impact Dashboard" />
+                  <TreeItem itemId="tourist-redeem" label="Redeem Points to Plant Trees" />
+                  <TreeItem itemId="tourist-share" label="Share Achievements" />
+                </TreeItem>
+              </TreeItem>
+              
+              <TreeItem itemId="owner" label="Shop Owner Journey">
+                <TreeItem itemId="owner-join" label="1. Join Green Wallet Program">
+                  <TreeItem itemId="owner-register" label="Register Business" />
+                  <TreeItem itemId="owner-setup" label="Set Up Payment Integration" />
+                </TreeItem>
+                <TreeItem itemId="owner-create" label="2. Create Events & Offers">
+                  <TreeItem itemId="owner-schedule" label="Schedule Pop-up Events" />
+                  <TreeItem itemId="owner-multiplier" label="Set Point Multipliers" />
+                  <TreeItem itemId="owner-promote" label="Add Promotional Details" />
+                </TreeItem>
+                <TreeItem itemId="owner-manage" label="3. Manage Operations">
+                  <TreeItem itemId="owner-analytics" label="View Real-time Analytics" />
+                  <TreeItem itemId="owner-track" label="Track Customer Engagement" />
+                  <TreeItem itemId="owner-earnings" label="See Earnings Instantly" />
+                </TreeItem>
+                <TreeItem itemId="owner-grow" label="4. Grow Customer Base">
+                  <TreeItem itemId="owner-attract" label="Attract New Customers via App" />
+                  <TreeItem itemId="owner-retain" label="Build Loyalty through Rewards" />
+                  <TreeItem itemId="owner-sustainability" label="Promote Sustainability Initiatives" />
+                </TreeItem>
+              </TreeItem>
+              
+              <TreeItem itemId="region" label="Tourism Region Benefits">
+                <TreeItem itemId="region-distribution" label="1. Even Visitor Distribution">
+                  <TreeItem itemId="region-overcrowding" label="Reduce Overcrowding in Hotspots" />
+                  <TreeItem itemId="region-promote" label="Promote Hidden Gems" />
+                </TreeItem>
+                <TreeItem itemId="region-data" label="2. Data-Driven Insights">
+                  <TreeItem itemId="region-patterns" label="Track Visitor Movement Patterns" />
+                  <TreeItem itemId="region-optimize" label="Optimize Regional Planning" />
+                </TreeItem>
+                <TreeItem itemId="region-sustainability" label="3. Sustainability Goals">
+                  <TreeItem itemId="region-carbon" label="Reduce Carbon Footprint" />
+                  <TreeItem itemId="region-greening" label="Increase Regional Greening" />
+                  <TreeItem itemId="region-image" label="Improve Green Tourism Image" />
+                </TreeItem>
+              </TreeItem>
+            </SimpleTreeView>
+          </Box>
+        </>
+      ),
+      media: { type: 'image', src: media.images.phoneScreen1 },
+      layout: 'textLeft',
+      anchor: 'user-journey',
+      navigable: true
+    },
+    {
       id: 'section-user-interfaces',
       type: 'default',
       title: 'User Interfaces',
       content: (
         <>
           <Typography variant="body1" paragraph>
-            The Green Wallet features two distinct but interconnected interfaces:
+            Green Wallet features two interconnected interfaces:
           </Typography>
           
-          <Typography variant="h5" sx={{ mb: 1 }}>Tourist Interface</Typography>
+          <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>Tourist Interface</Typography>
           <Typography variant="body1" paragraph>
-            Designed with a focus on simplicity and engagement, the tourist interface includes interactive maps showing nearby event locations, a progress dashboard tracking environmental impact, and a reward redemption system.
+            Emphasizes simplicity and engagement with interactive maps showing nearby events, a progress dashboard tracking environmental impact, and a reward redemption system.
           </Typography>
           
-          <Typography variant="h5" sx={{ mb: 1 }}>Shop Owner Interface</Typography>
+          <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>Shop Owner Interface</Typography>
           <Typography variant="body1" paragraph>
-            The business-oriented interface provides tools for creating and managing special events, viewing real-time analytics, and tracking customer engagement patterns to optimize business strategies.
+            Provides tools for creating and managing events, viewing real time analytics, and tracking customer engagement to optimize strategies.
           </Typography>
         </>
       ),
@@ -244,42 +308,65 @@ const greenWallet = {
     },
     {
       id: 'section-benefits',
-      type: 'default',
-      title: 'Multi-stakeholder Benefits',
-      content: (
-        <>
-          <Typography variant="body1" paragraph>
-            The Green Wallet creates a win-win scenario for all involved parties:
-          </Typography>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Tourists</Typography>
-            <Box component="ul" sx={{ pl: 3 }}>
-              <li><Typography variant="body1">Financial incentives through rewards and special offers</Typography></li>
-              <li><Typography variant="body1">Discovery of new local businesses and experiences</Typography></li>
-              <li><Typography variant="body1">Contribution to environmental sustainability</Typography></li>
-            </Box>
-          </Box>
-          
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Shop Owners</Typography>
-            <Box component="ul" sx={{ pl: 3 }}>
-              <li><Typography variant="body1">Increased customer traffic through gamified events</Typography></li>
-              <li><Typography variant="body1">Improved brand image through sustainable practices</Typography></li>
-              <li><Typography variant="body1">Enhanced analytics and customer insights</Typography></li>
-            </Box>
-          </Box>
-          
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Mastercard</Typography>
-            <Box component="ul" sx={{ pl: 3 }}>
-              <li><Typography variant="body1">Increased card usage and transaction volume</Typography></li>
-              <li><Typography variant="body1">Enhanced brand image as environmentally responsible</Typography></li>
-              <li><Typography variant="body1">Valuable customer behavior data and insights</Typography></li>
-            </Box>
-          </Box>
-        </>
-      ),
-      layout: 'textOnly',
+      type: 'cardGrid',
+      title: 'Multi-Stakeholder Benefits',
+      content: 'Green Wallet creates value for all participants in the tourism ecosystem through a carefully balanced approach.',
+      items: [
+        {
+          title: 'Tourists',
+          icon: '🧳',
+          color: 'primary.main',
+          description: 'Enhanced travel experiences with sustainable rewards and local discovery.',
+          benefits: [
+            'Earn rewards and special offers through eco friendly choices',
+            'Discover authentic local businesses and hidden gems',
+            'Contribute to environmental sustainability',
+            'Seamless cashless payment experience',
+            'Gamified exploration of the region'
+          ]
+        },
+        {
+          title: 'Shop Owners',
+          icon: '🏪',
+          color: 'success.main',
+          description: 'Increased visibility and customer engagement through sustainable practices.',
+          benefits: [
+            'Attract more customers through gamified events',
+            'Improve brand image via sustainability commitment',
+            'Access to customer analytics and insights',
+            'Reduced cash handling costs and risks',
+            'Participation in regional tourism network'
+          ]
+        },
+        {
+          title: 'Mastercard',
+          icon: '💳',
+          color: 'warning.main',
+          description: 'Strategic positioning as a sustainability leader in payment solutions.',
+          benefits: [
+            'Increased card usage and transaction volume',
+            'Brand positioning as environmentally responsible',
+            'Valuable customer behavior data and insights',
+            'Competitive advantage in sustainable tourism',
+            'Partnership opportunities with local businesses'
+          ]
+        },
+        {
+          title: 'Environment',
+          icon: '🌱',
+          color: 'success.dark',
+          description: 'Measurable positive impact on regional sustainability goals.',
+          benefits: [
+            'Reduced paper waste from receipts and vouchers',
+            'Incentivized sustainable business practices',
+            'Trackable environmental impact metrics',
+            'Support for local eco friendly initiatives',
+            'Long term behavioral change toward sustainability'
+          ]
+        }
+      ],
+      columns: { xs: 1, sm: 2, md: 2, lg: 2 },
+      cardVariant: 'elevation',
       anchor: 'benefits',
       navigable: true
     },
@@ -289,7 +376,7 @@ const greenWallet = {
       title: 'Hackathon Outcome',
       content: (
         <Typography variant="body1" paragraph>
-          The Green Wallet concept was awarded first place in the hackathon, recognized for its innovative approach to sustainable tourism and business viability. The judges particularly appreciated our multi-stakeholder benefit model, scalability potential, and measurable environmental impact metrics.
+          Green Wallet won first place at the hackathon. Judges recognized the innovative approach to sustainable tourism, multi stakeholder benefit model, scalability potential, and measurable environmental impact metrics.
         </Typography>
       ),
       media: { type: 'video', src: media.videos.presentation },
@@ -303,7 +390,7 @@ const greenWallet = {
       title: 'Future Directions',
       content: (
         <Typography variant="body1" paragraph>
-          Future refinements could include geolocation-based event notifications, expanded eco-friendly activities, enhanced analytics tools, and scaling to broader geographic contexts to maximize environmental and commercial impacts.
+          Future development opportunities include geolocation based event notifications, expanded eco friendly activities, enhanced analytics, and geographic scaling to maximize environmental and commercial impact.
         </Typography>
       ),
       media: { type: 'image', src: media.images.exhibition },
@@ -311,20 +398,123 @@ const greenWallet = {
       anchor: 'future',
       navigable: true,
       takeaways: [
-        "Gamification can effectively drive sustainable behaviors",
-        "Creating mutual benefit is key to adoption of eco-friendly solutions",
-        "Visual feedback on environmental impact increases user motivation",
-        "Digital wallets can bridge economic and environmental incentives",
-        "Rapid prototyping techniques are essential for time-constrained projects"
+        "Gamification drives sustainable behaviors",
+        "Mutual benefit is key to eco friendly solution adoption",
+        "Visual environmental impact feedback increases motivation",
+        "Digital wallets bridge economic and environmental incentives",
+        "Rapid prototyping is essential for time constrained projects"
       ],
       outcomes: {
         title: "Project Achievements",
         points: [
-          "First place in the Tourism Technology Festival 2023 Hackathon",
-          "Solution recommended for pilot implementation by Mastercard",
-          "Positive reception from local tourism stakeholders"
+          "Competed in the Tourism Technology Festival 2023 Hackathon (November 11, 2023)",
+          "Developed solution addressing Mastercard's challenge track",
+          "Created gamified concept connecting sustainability with tourism economics"
         ]
       }
+    },
+    {
+      id: 'section-references',
+      type: 'default',
+      title: 'References & Resources',
+      content: (
+        <>
+          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
+            Project Resources
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<SlideshowIcon />}
+              href={presentationPDF}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontWeight: 600,
+              }}
+            >
+              View Presentation
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<DesignServicesIcon />}
+              href="https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontWeight: 600,
+              }}
+            >
+              Try Prototype
+            </Button>
+            <Button
+              variant="outlined"
+              color="warning"
+              startIcon={<EmojiEventsIcon />}
+              href="https://www.linkedin.com/posts/alles-fuer-den-gast_allesfaesrdengast-gastmesse-gastrohackathon-activity-7129517120463192064-_11i"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontWeight: 600,
+              }}
+            >
+              Winner Announcement
+            </Button>
+          </Box>
+
+          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
+            Related Topics & Concepts
+          </Typography>
+          <Box component="ul" sx={{ pl: 3, mb: 2 }}>
+            <li>
+              <Typography variant="body2">
+                <strong>Sustainable tourism:</strong> Balancing economic growth with environmental responsibility
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                <strong>Gamification in fintech:</strong> Using game mechanics to drive behavioral change
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                <strong>Cashless payment adoption:</strong> Reducing barriers for small businesses
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                <strong>Multi-stakeholder design:</strong> Creating value for tourists, businesses, and regions
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                <strong>Environmental impact tracking:</strong> Measurable sustainability metrics in digital products
+              </Typography>
+            </li>
+          </Box>
+
+          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            24-hour hackathon project developed at Tourism Technology Festival 2023, Salzburg. Winner of Mastercard's challenge track for cashless payment innovation.
+          </Typography>
+        </>
+      ),
+      layout: 'textOnly',
+      anchor: 'references',
+      navigable: true
     }
   ]
 };

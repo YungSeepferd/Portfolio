@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
 import TechnologyTags from './TechnologyTags';
 import ProjectActionButtons from './ProjectActionButtons';
+import MobileActionAccordion from './MobileActionAccordion';
 import SkillTags from '../hero/SkillTags';
 import { getSpacingPreset } from '../../theme/presets';
 
@@ -19,10 +20,14 @@ const ProjectMetaBar = ({
   actions = [],
   variant = 'full',
   maxButtons = 4,
+  useSplitButton = false, // Feature flag for new ActionButtonGroup
+  showHierarchy = true, // Feature flag for primary chip emphasis
+  useMobileAccordion = true, // Feature flag for mobile accordion
   sx = {},
   ...rest
 }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const metaSpacing = variant === 'full' ? getSpacingPreset('metaBar') : null;
 
   // Map variant to valid ActionButton size
@@ -42,17 +47,19 @@ const ProjectMetaBar = ({
     <Box
       sx={{
         width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
         display: 'flex',
-        flexDirection: variant === 'full' ? 'column' : 'row',
-        alignItems: variant === 'full' ? 'stretch' : 'center',
-        justifyContent: variant === 'full' ? 'flex-start' : 'space-between',
-        flexWrap: variant === 'full' ? 'nowrap' : 'nowrap',
+        flexDirection: { xs: 'column', sm: 'row' }, // Column on mobile, row on tablet+
+        alignItems: { xs: 'stretch', sm: 'center' }, // Center align vertically on tablet+
+        justifyContent: { xs: 'flex-start', sm: 'space-between' },
+        flexWrap: 'nowrap',
+        overflow: 'hidden',
         ...(variant === 'full'
           ? {
               px: metaSpacing?.px,
               py: metaSpacing?.py,
-              rowGap: metaSpacing?.rowGap,
-              columnGap: metaSpacing?.columnGap,
+              gap: { xs: metaSpacing?.rowGap, sm: metaSpacing?.columnGap },
               backgroundColor: 'background.paper',
               borderRadius: theme.shape.borderRadius,
             }
@@ -60,41 +67,68 @@ const ProjectMetaBar = ({
         ...sx,
       }}
     >
+      {/* Technology Chips - Left side */}
       {technologies.length > 0 && (
         <Box
           sx={{
-            flex: variant === 'full' ? '1 1 auto' : 1,
+            flex: { xs: '1 1 auto', sm: '1 1 auto' },
             display: 'flex',
             justifyContent: 'flex-start',
+            alignItems: 'center',
             minWidth: 0,
+            maxWidth: { xs: '100%', sm: '60%' },
+            overflow: 'hidden',
           }}
         >
-          <TechnologyTags technologies={technologies} variant={variant} size={skillTagSize} />
+          <TechnologyTags 
+            technologies={technologies} 
+            variant={variant} 
+            size={skillTagSize}
+            showHierarchy={showHierarchy}
+          />
         </Box>
       )}
+      
+      {/* Skills (if any) */}
       {skills.length > 0 && (
-        <SkillTags skills={skills} size={skillTagSize} />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <SkillTags skills={skills} size={skillTagSize} />
+        </Box>
       )}
+      
+      {/* Action Buttons - Right side, center-aligned (or accordion on mobile) */}
       {actions.length > 0 && (
         <Box
           sx={{
             display: 'flex',
-            flexDirection: variant === 'full' ? 'column' : 'row',
-            justifyContent: variant === 'full' ? 'flex-start' : { xs: 'flex-start', md: 'flex-end' },
-            alignItems: variant === 'full' ? 'stretch' : 'center',
+            flexDirection: 'row',
+            justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+            alignItems: 'center',
             minWidth: 0,
-            columnGap: variant === 'full' ? 0 : theme.spacing(1),
-            rowGap: variant === 'full' ? metaSpacing?.rowGap : theme.spacing(0.5),
-            flex: variant === 'full' ? '0 0 auto' : undefined,
+            maxWidth: '100%',
+            flexWrap: 'wrap',
+            columnGap: theme.spacing(1),
+            rowGap: theme.spacing(1),
+            flex: { xs: '1 1 auto', sm: '0 0 auto' },
           }}
         >
-          <ProjectActionButtons
-            actions={actions}
-            layout={variant === 'full' ? 'column' : 'row'}
-            maxButtons={resolvedMaxButtons}
-            size={actionButtonSize}
-            density={actionButtonDensity}
-          />
+          {isMobile && useMobileAccordion ? (
+            <MobileActionAccordion
+              actions={actions}
+              label="Project Actions"
+              defaultExpanded={false}
+              sx={{ width: '100%' }}
+            />
+          ) : (
+            <ProjectActionButtons
+              actions={actions}
+              layout="row"
+              maxButtons={resolvedMaxButtons}
+              size={actionButtonSize}
+              density={actionButtonDensity}
+              useSplitButton={useSplitButton}
+            />
+          )}
         </Box>
       )}
     </Box>

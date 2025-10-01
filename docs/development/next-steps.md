@@ -180,16 +180,17 @@ Goal: Restore full, dynamic project display functionality within the modal.
 - Comprehensive documentation sweep completed with all files updated to current state
 
 ## Known Issues / Removal Candidates
-- **GSAP**: Dependency present but completely unused (0 imports) - removal candidate
-- **styled-components**: Only used in `src/theme/animations.js` for keyframe exports (lines 8, 122-149), which are unused elsewhere - removal candidate after refactoring animations.js
+- **GSAP**: ✓ Removed (September 30, 2025) - was completely unused with 0 imports
+- **styled-components**: ✓ Removed (September 30, 2025) - refactored animations.js to use Framer Motion exclusively
 - **react-bits**: Installed but not integrated in production code - keep as reference or remove
 - **Markdown linting**: 50+ style warnings in docs (pre-existing, non-functional) - low priority cleanup
 
 ## Next Development Priorities
-1. **Dependency cleanup**: Remove GSAP, refactor animations.js to eliminate styled-components
+1. **Dependency cleanup**: ✓ Completed (September 30, 2025) - Removed GSAP and styled-components
 2. **E2E test coverage**: Expand smoke tests based on new components and scroll behaviors
 3. **Performance monitoring**: Profile content pipeline utilities for large project datasets
 4. **Accessibility audit**: Verify ARIA labels and keyboard navigation in new scroll-spy implementation
+5. **react-bits decision**: Evaluate whether to integrate or remove from package.json
 
 ## Documentation Priorities
 See `docs/development/docs-follow-ups.md` for full prioritized list. Top items:

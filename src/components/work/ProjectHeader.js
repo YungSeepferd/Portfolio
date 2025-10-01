@@ -30,7 +30,7 @@ const ProjectHeader = ({ title, description, categories = [], project }) => {
   return (
     <HeaderWrapper>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography 
             variant="h3" 
             component="h1" 
