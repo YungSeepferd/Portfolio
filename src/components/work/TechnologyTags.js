@@ -60,6 +60,7 @@ const TechnologyTags = ({
   variant = 'default', 
   size = 'small', 
   showHierarchy = false,
+  projectColor = 'primary',
   sx = {} 
 }) => {
   const theme = useTheme();
@@ -111,7 +112,7 @@ const TechnologyTags = ({
             label={label}
             icon={getTechIcon(label)}
             size={chipSize}
-            color={isPrimary ? 'primary' : 'default'}
+            color={isPrimary ? projectColor : 'default'}
             variant={isPrimary ? 'filled' : 'outlined'}
             sx={{ 
               ...theme.chip,

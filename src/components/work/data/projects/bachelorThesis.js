@@ -1,14 +1,13 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Icon from '@mui/material/Icon';
-import Button from '@mui/material/Button';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import ArticleIcon from '@mui/icons-material/Article';
 
 // Import project images and videos with standardized names
 import PrototypeFlowsImage from '../../../../assets/images/Bachelorthesis/prototype_flows_overview.png';
@@ -58,14 +57,14 @@ const bachelorThesis = {
   cardVariant: cardVariant,
   links: [
     {
-      label: "View Presentation",
-      url: presentationPDF,
+      label: "View Thesis",
+      url: thesisPDF,
       contentType: 'pdf',
       openInPopup: true
     },
     {
-      label: "View Thesis",
-      url: thesisPDF,
+      label: "View Presentation",
+      url: presentationPDF,
       contentType: 'pdf',
       openInPopup: true
     }
@@ -86,54 +85,6 @@ const bachelorThesis = {
           <Typography variant="body1" paragraph>
             With autonomous driving progressing toward SAE automation levels 4 and 5 where an active driver is no longer needed, simple and intuitive controls are required to maintain passenger trust while passengers intervene in the system's driving process.
           </Typography>
-          <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Box
-              component="a"
-              href="https://doi.org/10.1037/h0077714"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Russell (1980) - Circumplex Model
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1017/S0954579405050340"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Posner et al. (2005)
-            </Box>
-          </Box>
         </>
       ),
       media: { type: 'image', src: media.images.prototypeFlows },
@@ -677,12 +628,82 @@ const bachelorThesis = {
     {
       id: 'section-references',
       type: 'default',
-      title: 'References & Resources',
+      title: 'Academic References',
       content: (
         <>
-          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-            Academic References
+          <Typography variant="body2" paragraph sx={{ mb: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            Thesis completed at LMU Munich, Department of Media Informatics, under the supervision of Jingyi Li and Prof. Dr. Andreas Butz. All project resources are available via the action buttons above.
           </Typography>
+          
+          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
+            Key Academic References
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 3 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              color="info"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/3371382.3378253"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Ayoub et al. (2019)
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="info"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/3409251.3411717"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Holthausen et al. (2020) - STS-AD
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="info"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/3173574.3174234"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Frison et al. (2019)
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="info"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/3409251.3411730"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Walch et al. (2020)
+            </Button>
+          </Box>
           <Box component="ul" sx={{ pl: 3, mb: 3 }}>
             <li>
               <Typography variant="body2">
@@ -740,50 +761,6 @@ const bachelorThesis = {
               </Typography>
             </li>
           </Box>
-
-          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
-            Project Resources
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArticleIcon />}
-              href={thesisPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Thesis
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<SlideshowIcon />}
-              href={presentationPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Presentation
-            </Button>
-          </Box>
-
-          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
-            Thesis completed at LMU Munich, Department of Media Informatics, under the supervision of Jingyi Li and Prof. Dr. Andreas Butz.
-          </Typography>
         </>
       ),
       layout: 'textOnly',

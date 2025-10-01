@@ -18,7 +18,7 @@ const SkillTagList = ({ label, size = "medium", onClick, variant = "outlined", c
   const baseStyles = {
     mx: 0.5,
     my: 0.5,
-    borderRadius: 0,
+    borderRadius: theme.shape?.radius?.pill || 999,
     fontWeight: 500,
     transition: theme.transitions.create(['background-color', 'transform'], {
       duration: theme.transitions.duration.shorter,
@@ -45,12 +45,8 @@ const SkillTagList = ({ label, size = "medium", onClick, variant = "outlined", c
       color: theme.palette.common.white,
     },
     '& .MuiChip-icon': {
-      color: theme.palette.mode === 'dark' 
-        ? theme.palette.common.white 
-        : theme.palette.primary.main,
-      fill: theme.palette.mode === 'dark' 
-        ? theme.palette.common.white 
-        : theme.palette.primary.main,
+      color: theme.palette.common.white,
+      fill: theme.palette.common.white,
     },
     '& .MuiChip-deleteIcon': {
       color: theme.palette.common.white,

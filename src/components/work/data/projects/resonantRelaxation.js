@@ -7,11 +7,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ArticleIcon from '@mui/icons-material/Article';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ImageIcon from '@mui/icons-material/Image';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Import project images
 import ProcedurallyGenHaptic from '../../../../assets/images/ProdecualHaptics/ProceduallyGenHaptic.png';
@@ -26,19 +22,8 @@ import posterPDF from '../../../../assets/information/Procedually generated hapt
 const cardVariant = 'secondary';
 
 // Define links array with consistent format
+// Define links array with consistent format (main project resources only)
 const links = [
-  {
-    label: "Try Demo",
-    url: "https://react-midi.netlify.app/",
-    contentType: 'iframe',
-    openInPopup: true
-  },
-  {
-    label: "View Presentation",
-    url: presentationPDF,
-    contentType: 'pdf',
-    openInPopup: true
-  },
   {
     label: "View Paper",
     url: paperPDF,
@@ -52,10 +37,22 @@ const links = [
     openInPopup: true
   },
   {
-    label: "GitHub",
+    label: "View Presentation",
+    url: presentationPDF,
+    contentType: 'pdf',
+    openInPopup: true
+  },
+  {
+    label: "GitHub Repository",
     url: "https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main",
     contentType: 'external',
-    openInPopup: true
+    openInPopup: false
+  },
+  {
+    label: "Try Live Demo",
+    url: "https://react-midi.netlify.app/",
+    contentType: 'external',
+    openInPopup: false
   }
 ];
 
@@ -83,100 +80,6 @@ const resonantRelaxation = {
           <Typography variant="body1" paragraph>
             <strong>Research Question:</strong> "How could generative AI support designers in creating relaxation inducing haptic experiences to enhance emotional well-being during sedentary activities?"
           </Typography>
-          <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Box
-              component="a"
-              href="https://doi.org/10.1007/978-3-319-58628-1_23"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Bumatay & Seo (2017)
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1109/ACII.2019.8925531"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Leslie et al. (2019)
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1016/j.cobeha.2022.101113"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 MacLean (2022)
-            </Box>
-            <Box
-              component="a"
-              href="https://eprints.whiterose.ac.uk/141387/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Williams et al. (2019)
-            </Box>
-          </Box>
         </>
       ),
       media: { type: 'image', src: ProcedurallyGenHaptic },
@@ -427,9 +330,13 @@ const resonantRelaxation = {
     {
       id: 'section-references',
       type: 'default',
-      title: 'References & Resources',
+      title: 'Publication & Technologies',
       content: (
         <>
+          <Typography variant="body2" paragraph sx={{ mb: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            Industry project completed at FH Salzburg in collaboration with Innovobot Labs and Paris-Lodron-Universität Salzburg. Presented at EuroHaptics 2024, Lille, France. All project resources and citations are available via the action buttons above.
+          </Typography>
+          
           <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
             Academic Publication
           </Typography>
@@ -441,97 +348,72 @@ const resonantRelaxation = {
             </li>
           </Box>
 
-          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
-            Project Resources
+          <Typography variant="h6" sx={{ mb: 2, mt: 4, color: 'text.secondary' }}>
+            Key Academic References
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 3 }}>
             <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArticleIcon />}
-              href={paperPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Paper
-            </Button>
-            <Button
+              size="small"
               variant="outlined"
-              color="primary"
-              startIcon={<ImageIcon />}
-              href={posterPDF}
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1007/978-3-319-58628-1_23"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
                 textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
               }}
             >
-              View Poster
+              Bumatay & Seo (2017) - Haptic Breathing
             </Button>
             <Button
+              size="small"
               variant="outlined"
-              color="primary"
-              startIcon={<SlideshowIcon />}
-              href={presentationPDF}
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1109/ACII.2019.8925531"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
                 textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
               }}
             >
-              View Presentation
+              Leslie et al. (2019) - Affective Haptics
             </Button>
             <Button
+              size="small"
               variant="outlined"
-              color="info"
-              startIcon={<GitHubIcon />}
-              href="https://github.com/NesR0M/Resonant-Relaxation-Project/tree/main"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1016/j.cobeha.2022.101113"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
                 textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
               }}
             >
-              GitHub
+              MacLean (2022) - Haptic Interaction
             </Button>
             <Button
-              variant="contained"
-              color="success"
-              startIcon={<DesignServicesIcon />}
-              href="https://react-midi.netlify.app/"
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://eprints.whiterose.ac.uk/141387/"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
                 textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
               }}
             >
-              Try Demo
+              Williams et al. (2019) - Haptic Relaxation
             </Button>
           </Box>
-
+          
           <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
             Key Technologies & Frameworks
           </Typography>
@@ -562,10 +444,6 @@ const resonantRelaxation = {
               </Typography>
             </li>
           </Box>
-
-          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
-            Industry project completed at FH Salzburg in collaboration with Innovobot Labs and Paris-Lodron-Universität Salzburg. Presented at EuroHaptics 2024, Lille, France.
-          </Typography>
         </>
       ),
       layout: 'textOnly',

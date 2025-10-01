@@ -8,7 +8,7 @@ import ProjectActionButtons from './ProjectActionButtons';
  * 
  * Displays technology tags (top) and action buttons (bottom) in a hover overlay.
  */
-const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = 'compact' }) => {
+const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = 'compact', projectColor = 'primary' }) => {
   const theme = useTheme();
   const isComfortable = size === 'comfortable';
   const hasContent = (technologies.length > 0 || links.length > 0);
@@ -59,6 +59,7 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
                 technologies={technologies}
                 variant="hover"
                 size={isComfortable ? 'medium' : 'small'}
+                projectColor={projectColor}
               />
             </Box>
           </Box>

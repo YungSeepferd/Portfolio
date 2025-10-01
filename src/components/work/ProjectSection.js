@@ -46,7 +46,8 @@ const ProjectSection = ({
   sectionNumber,
   sectionIndex,
   fallbackContent,
-  type, 
+  type,
+  projectColor = 'primary',
   sx = {}
 }) => {
   const theme = useTheme();
@@ -93,7 +94,11 @@ const ProjectSection = ({
         <Typography
           variant={eyebrowPreset.variant}
           component={eyebrowPreset.component}
-          sx={eyebrowPreset.sx}
+          sx={{
+            ...eyebrowPreset.sx,
+            color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+            fontWeight: 700,
+          }}
         >
           {formattedNumber}
         </Typography>
@@ -277,6 +282,7 @@ const ProjectSection = ({
       mediaData={normalizedSection.media}
       sectionNumber={sectionNumber}
       sectionIndex={sectionIndex}
+      projectColor={projectColor}
       type={renderingStrategy.primaryRenderer}
       layout={renderingStrategy.layoutHint}
       sx={{

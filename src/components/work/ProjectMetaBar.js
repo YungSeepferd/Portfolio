@@ -23,6 +23,7 @@ const ProjectMetaBar = ({
   useSplitButton = false, // Feature flag for new ActionButtonGroup
   showHierarchy = true, // Feature flag for primary chip emphasis
   useMobileAccordion = true, // Feature flag for mobile accordion
+  projectColor = 'primary',
   sx = {},
   ...rest
 }) => {
@@ -43,6 +44,9 @@ const ProjectMetaBar = ({
   // Map variant to valid SkillTag size
   const skillTagSize = variant === 'full' || variant === 'hover' ? 'medium' : 'small';
 
+  // Determine if we should center the chips (no actions)
+  const shouldCenterChips = actions.length === 0;
+
   return (
     <Box
       sx={{
@@ -52,7 +56,9 @@ const ProjectMetaBar = ({
         display: 'flex',
         flexDirection: { xs: 'column', sm: 'row' }, // Column on mobile, row on tablet+
         alignItems: { xs: 'stretch', sm: 'center' }, // Center align vertically on tablet+
-        justifyContent: { xs: 'flex-start', sm: 'space-between' },
+        justifyContent: shouldCenterChips 
+          ? 'center' 
+          : { xs: 'flex-start', sm: 'space-between' },
         flexWrap: 'nowrap',
         overflow: 'hidden',
         ...(variant === 'full'
@@ -67,16 +73,16 @@ const ProjectMetaBar = ({
         ...sx,
       }}
     >
-      {/* Technology Chips - Left side */}
+      {/* Technology Chips - Centered when no actions, left-aligned when actions present */}
       {technologies.length > 0 && (
         <Box
           sx={{
-            flex: { xs: '1 1 auto', sm: '1 1 auto' },
+            flex: shouldCenterChips ? '0 1 auto' : { xs: '1 1 auto', sm: '1 1 auto' },
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: shouldCenterChips ? 'center' : 'flex-start',
             alignItems: 'center',
             minWidth: 0,
-            maxWidth: { xs: '100%', sm: '60%' },
+            maxWidth: shouldCenterChips ? '100%' : { xs: '100%', sm: '60%' },
             overflow: 'hidden',
           }}
         >
@@ -85,6 +91,7 @@ const ProjectMetaBar = ({
             variant={variant} 
             size={skillTagSize}
             showHierarchy={showHierarchy}
+            projectColor={projectColor}
           />
         </Box>
       )}

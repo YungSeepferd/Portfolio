@@ -21,7 +21,7 @@ This document contains all the documentation sources and resources used during t
 
 ### Drei Library
 
-- **Stats Component Documentation**: [Drei Stats](https://drei.docs.pmnd.rs/misc/stats)
+- **Stats Component Documentation**: [Drei Stats](https://docs.pmnd.rs/react-three-drei/performance/stats)
   - Used for performance monitoring (later removed due to positioning limitations)
 - **Performance Monitor**: [Performance Monitor](https://docs.pmnd.rs/react-three-drei/performance/performance-monitor)
   - Advanced performance monitoring component for dynamic quality adjustment
@@ -39,6 +39,12 @@ This document contains all the documentation sources and resources used during t
 - **useTheme Hook**: Access to theme variables and palette
 - **Theme Palette**: [Palette](https://mui.com/material-ui/customization/palette/)
 - **Shadows**: Material Design elevation system
+
+## MUI X (Tree View)
+
+- **Official Docs**: [MUI X Tree View](https://mui.com/x/react-tree-view/)
+- **Components Used**: `SimpleTreeView`, `TreeItem` from `@mui/x-tree-view`
+- **Usage**: Master Thesis interactive structure in `src/components/work/data/projects/masterThesis.js` ("Workshop Flow & Structure")
 
 ## React Documentation
 
@@ -186,6 +192,14 @@ These utilities enable adaptive, intelligent rendering of project content:
 
 **Usage**: Work section project modals use these to dynamically adapt layouts based on content characteristics.
 
+## React PDF (Not Currently Used)
+
+- **Status**: ⚠️ **NOT in package.json**
+- **Previous Usage**: Considered for portfolio case study rendering
+- **Current Approach**: Direct media embedding via `mediaUtils.js`
+- **Recommendation**: Add if PDF rendering becomes a requirement
+- **Official Docs**: [react-pdf](https://react-pdf.org/)
+
 ---
-*Last Updated: September 30, 2025 (Evening - Dependency Cleanup Reflected)*
+*Last Updated: October 1, 2025*
 *Project: React Portfolio with 3D Background*

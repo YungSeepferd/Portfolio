@@ -19,7 +19,7 @@ import CodeIcon from '@mui/icons-material/Code';
  */
 
 // Centralized icon and color logic (migrated from buttonStyles.js)
-const getLinkIcon = (label) => {
+export const getLinkIcon = (label) => {
   if (!label) return <OpenInNewIcon />;
   const normalizedLabel = label.toLowerCase();
   if (normalizedLabel.includes('github')) return <GitHubIcon />;
@@ -27,15 +27,17 @@ const getLinkIcon = (label) => {
   if (normalizedLabel.includes('pdf') || normalizedLabel.includes('presentation')) return <SlideshowIcon />;
   if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return <DesignServicesIcon />;
   if (normalizedLabel.includes('view') || normalizedLabel.includes('visit')) return <OpenInNewIcon />;
+  if (normalizedLabel.includes('devkit') || normalizedLabel.includes('tool')) return <CodeIcon />;
   return <OpenInNewIcon />;
 };
 
-const getLinkColor = (label) => {
+export const getLinkColor = (label) => {
   if (!label) return 'primary';
   const normalizedLabel = label.toLowerCase();
   if (normalizedLabel.includes('github')) return 'info';
   if (normalizedLabel.includes('paper') || normalizedLabel.includes('pdf')) return 'secondary';
   if (normalizedLabel.includes('demo') || normalizedLabel.includes('try')) return 'success';
+  if (normalizedLabel.includes('devkit') || normalizedLabel.includes('tool')) return 'success';
   return 'primary';
 };
 

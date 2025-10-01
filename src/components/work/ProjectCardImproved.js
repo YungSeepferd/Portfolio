@@ -244,6 +244,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
             technologies={technologies}
             links={linksArray}
             size={isTouchLayout ? 'comfortable' : 'compact'}
+            projectColor={projectData?.cardVariant || 'primary'}
           />
           </Box>
 
@@ -264,6 +265,7 @@ const ProjectCardImproved = React.memo(({ project, onClick }) => {
                 <CategoryTagList 
                   tags={categories} 
                   previewCount={isTouchLayout ? 8 : 6}
+                  accentColor={theme.palette[projectData?.cardVariant]?.main || theme.palette.primary.main}
                   sx={{ pb: { xs: 1, sm: 1.5, md: 2 } }}
                 />
               )}

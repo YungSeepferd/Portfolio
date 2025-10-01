@@ -54,7 +54,9 @@ While coding:
 
 After coding:
 - ☐ Format and lint via CRA conventions (the project relies on Prettier defaults; respect existing style).
-- ☐ Run `npm run build` to catch bundler/TypeScript regressions.
+- ☐ **Check running dev server**: Review terminal output from `npm start` for compilation warnings/errors.
+- ☐ **Check browser console**: Ask user to share console errors or use Playwright browser tools to verify no runtime errors (theme access, undefined props, React warnings).
+- ☐ Run `npm run build` only if changing imports, asset paths, or configuration—not for every component edit.
 - ☐ When UI or flow changes, run `npm run test:e2e` (requires `npm start` in another terminal) or explain why it was skipped.
 - ☐ Update documentation if behaviour, schemas, or workflows changed.
 - ☐ Summarise the change, impacted files (with line references), tests run, and follow-up actions in your final message.
@@ -63,17 +65,25 @@ After coding:
 
 | Scenario | Command | Notes |
 | --- | --- | --- |
-| Build verification | `npm run build` | Required for any code change; surfaces asset path issues and TypeScript/babel errors. |
+| **Runtime verification** | `npm start` (running) + browser console | **PRIMARY check for React/runtime errors**. Always verify the dev server terminal and browser console when making component changes. Build errors ≠ runtime errors. |
+| Build verification | `npm run build` | Surfaces bundler/TypeScript/babel errors and missing imports. Does NOT catch runtime errors (undefined props, theme issues, etc.). Use sparingly—only when changing imports, assets, or configs. |
+| Browser smoke check | Playwright `browser_snapshot` or manual console review | Use `mcp6_browser_snapshot` to capture page state or ask user to share browser console errors. More reliable than build for component/theme bugs. |
 | Unit/Jest tests | `npm test -- --watch=false --passWithNoTests` | Optional until suites are added; mention if skipped. |
 | End-to-end smoke | `npm run test:e2e` | Requires running `npm start` (in another terminal) and Google Chrome. Use headless mode by default. |
 
-If a command fails due to sandbox/network limits, report the failure, why it happened, and how to rerun locally.
+**Critical workflow change**: When making component edits (especially header, theme, nav), prioritize checking the running dev server output and browser console over running builds. Builds compile successfully but miss runtime errors like undefined theme properties, missing props, or hook violations.
 
 ## 6. Common Pitfalls & Safeguards
 
+- **Runtime vs build errors**: Builds passing ≠ app working. Always verify the running dev server and browser console. Common runtime errors missed by builds:
+  - Undefined theme properties (`theme.shape.radius.full` when only `borderRadiusScale` exists)
+  - Missing prop validations
+  - React Hook violations
+  - Component lifecycle errors
 - **Modal state**: `useProjectModal` manages sequencing and scroll reset. When modifying modal navigation, ensure scroll resets and keyboard shortcuts survive.
 - **Scroll-spy navigation**: `useScrollSpy` requires proper `scrollOffset` configuration to account for sticky headers. Detection zone and buffer values affect tab activation sensitivity. See 9 iterations documented in `docs/development/daily-notes/2025-09-29-scroll-fixes.md`.
 - **Slideshow images**: Keep `createAboutImage` payloads accurate; improper `objectPosition` values lead to cropped portraits.
+- **Theme tokens**: Always use safe fallbacks when accessing `theme.shape.radius` (project uses `borderRadiusScale`, not `radius`). Check existing theme structure before assuming token paths.
 - **Theme preview**: `src/pages/ThemePreviewPage.js` is a playground. Do not ship heavy dev-only tooling outside `process.env.NODE_ENV === 'development'` guards.
 - **Analytics guards**: Some files call `window.gtag`. Wrap new analytics with existence checks to avoid runtime errors in development.
 - **Dependency hygiene**: Do not re-add GSAP or styled-components (removed Sept 30, 2025). Use MUI `sx` or Framer Motion for styling/animations. react-bits is reference-only, not integrated.

@@ -113,20 +113,6 @@ const coreCompetencyItems = [
       'Creative Problem-Solving',
       'Tool Integration'
     ]
-  },
-  {
-    title: 'Beyond Work',
-    description: 'Outside of design, I explore electronic music production and creative coding projects.',
-    icon: HeadsetMicIcon,
-    skills: [
-      'Cooking',
-      'Creative Coding',
-      'Music Production',
-      'Gaming',
-      'Personal Projects',
-      'Football',
-      'FC Schalke 04'
-    ]
   }
 ];
 
@@ -222,7 +208,8 @@ const designCompetencyItems = [
       'Roadmapping',
       'Asana'
     ]
-  }
+  },
+  
 ];
 
 const experienceItems = [

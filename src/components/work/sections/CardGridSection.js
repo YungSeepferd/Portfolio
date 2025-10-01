@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Card, CardContent, CardMedia, CardActions, Button,
          Grid, useTheme, Avatar, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
+import { getTypographyPreset } from '../../../theme/presets';
 
 /**
  * CardGridSection Component
@@ -22,9 +23,18 @@ const CardGridSection = ({
   columns = { xs: 1, sm: 2, md: 3 },
   content,
   cardVariant = 'elevation',
-  elevation = 2
+  elevation = 2,
+  sectionNumber,
+  sectionIndex,
+  projectColor = 'primary'
 }) => {
   const theme = useTheme();
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+  
+  // Format section number
+  const formattedNumber = sectionNumber ? 
+    (typeof sectionNumber === 'number' ? sectionNumber.toString().padStart(2, '0') : sectionNumber) :
+    (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
 
   if (!items || items.length === 0) {
     return null;
@@ -60,24 +70,39 @@ const CardGridSection = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       sx={{ 
+        scrollMarginTop: '80px',
         mb: 8,
-        scrollMarginTop: theme.spacing(10)
+        px: { xs: 2, sm: 3, md: 4 },
       }}
     >
-      {/* Section Title */}
-      {title && (
-        <Typography 
-          variant="h4" 
-          component="h3"
-          sx={{ 
-            mb: 4,
-            fontWeight: theme.typography.fontWeightBold,
-            color: theme.palette.text.primary
-          }}
-        >
-          {title}
-        </Typography>
-      )}
+      {/* Section Header with Number */}
+      <Box sx={{ mb: 4 }}>
+        {formattedNumber && (
+          <Typography
+            variant={eyebrowPreset.variant}
+            component={eyebrowPreset.component}
+            sx={{
+              ...eyebrowPreset.sx,
+              color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+              fontWeight: 700,
+            }}
+          >
+            {formattedNumber}
+          </Typography>
+        )}
+        {title && (
+          <Typography 
+            variant="h4" 
+            component="h3"
+            sx={{ 
+              fontWeight: theme.typography.fontWeightBold,
+              color: theme.palette.text.primary
+            }}
+          >
+            {title}
+          </Typography>
+        )}
+      </Box>
 
       {/* Optional introductory content */}
       {content && (

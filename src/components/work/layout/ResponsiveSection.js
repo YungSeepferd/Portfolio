@@ -21,6 +21,7 @@ const ResponsiveSection = ({
   type = 'adaptive',
   layout = null,
   children,
+  projectColor = 'primary',
   sx = {},
   ...props
 }) => {
@@ -46,7 +47,11 @@ const ResponsiveSection = ({
         <Typography
           variant={eyebrowPreset.variant}
           component={eyebrowPreset.component}
-          sx={eyebrowPreset.sx}
+          sx={{
+            ...eyebrowPreset.sx,
+            color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+            fontWeight: 700,
+          }}
         >
           {formattedNumber}
         </Typography>
@@ -174,7 +179,7 @@ const ResponsiveSection = ({
         <Box
           id={id}
           sx={{
-            maxWidth: '1000px',
+            maxWidth: '1200px',
             mx: 'auto',
             px: horizontalPadding.px,
             pt: verticalPadding.pt,

@@ -6,9 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
@@ -77,7 +74,7 @@ const adhdeer = {
       openInPopup: true
     },
     {
-      label: "Try Prototype",
+      label: "Try Figma Prototype",
       url: "https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share",
       contentType: 'iframe',
       openInPopup: true
@@ -391,50 +388,14 @@ const adhdeer = {
     {
       id: 'section-references',
       type: 'default',
-      title: 'References & Resources',
+      title: 'Project Context',
       content: (
         <>
-          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-            Project Resources
+          <Typography variant="body2" paragraph sx={{ mb: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            Design Thinking project completed at FH Salzburg in collaboration with a multidisciplinary team focused on mental health UX. All project resources are available via the action buttons above.
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<SlideshowIcon />}
-              href={presentationPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Presentation
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              startIcon={<DesignServicesIcon />}
-              href="https://embed.figma.com/design/XJZe9gLj6NkgA05QERnsmD/ADHDeer---Group?node-id=0-1&embed-host=share"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              Try Prototype
-            </Button>
-          </Box>
-
-          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
+          
+          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
             Related Topics & Resources
           </Typography>
           <Box component="ul" sx={{ pl: 3, mb: 2 }}>
@@ -459,10 +420,6 @@ const adhdeer = {
               </Typography>
             </li>
           </Box>
-
-          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
-            Design Thinking project completed at FH Salzburg in collaboration with a multidisciplinary team focused on mental health UX.
-          </Typography>
         </>
       ),
       layout: 'textOnly',

@@ -6,13 +6,35 @@ import { getSpacingPreset, getTypographyPreset } from '../../../theme/presets';
 import GalleryLightbox from './GalleryLightbox';
 import { validateGalleryMedia } from '../../../utils/projectGalleryValidator';
 
-const GallerySection = ({ id, title, items = [], content = null, sx = {} }) => {
+/**
+ * Helper function to format section numbers
+ */
+function useSectionNumber(providedNumber, index) {
+  // If a section number is explicitly provided, use it
+  if (providedNumber) {
+    // Format as 2-digit string if it's a number
+    return typeof providedNumber === 'number' 
+      ? providedNumber.toString().padStart(2, '0')
+      : providedNumber;
+  }
+  
+  // If no number provided but we have an index, generate a section number
+  if (typeof index === 'number') {
+    return (index + 1).toString().padStart(2, '0');
+  }
+  
+  // No section number available
+  return null;
+}
+
+const GallerySection = ({ id, title, items = [], content = null, sectionNumber, sectionIndex, projectColor = 'primary', sx = {} }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const horizontal = getSpacingPreset('pageHorizontal');
   const vertical = getSpacingPreset('sectionVertical');
   const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
   const titlePreset = getTypographyPreset(theme, 'sectionTitle');
+  const formattedNumber = useSectionNumber(sectionNumber, sectionIndex);
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -49,14 +71,26 @@ const GallerySection = ({ id, title, items = [], content = null, sx = {} }) => {
       role="region"
       aria-labelledby={`${id}-title`}
     >
-      {(title) && (
+      {(title || formattedNumber) && (
         <Box sx={{ mb: 3 }}>
-          <Typography variant={eyebrowPreset.variant} component={eyebrowPreset.component} sx={eyebrowPreset.sx}>
-            {/* optional eyebrow could be added here if needed */}
-          </Typography>
-          <Typography id={`${id}-title`} variant={titlePreset.variant} component={titlePreset.component} sx={{ ...titlePreset.sx, scrollMarginTop: '80px' }}>
-            {title}
-          </Typography>
+          {formattedNumber && (
+            <Typography 
+              variant={eyebrowPreset.variant} 
+              component={eyebrowPreset.component} 
+              sx={{ 
+                ...eyebrowPreset.sx, 
+                color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+                fontWeight: 700,
+              }}
+            >
+              {formattedNumber}
+            </Typography>
+          )}
+          {title && (
+            <Typography id={`${id}-title`} variant={titlePreset.variant} component={titlePreset.component} sx={{ ...titlePreset.sx, scrollMarginTop: '80px' }}>
+              {title}
+            </Typography>
+          )}
         </Box>
       )}
 

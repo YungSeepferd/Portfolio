@@ -1,10 +1,7 @@
 import React from 'react';
 import { Box, Typography, useTheme, Grid } from '@mui/material';
 import spacingTokens from '../../theme/spacing';
-import SkillsBento from './SkillsBento';
-import { designCompetencyItems } from './AboutData';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import PersonIcon from '@mui/icons-material/Person';
+// Removed SkillsBento in WhoAmI to avoid redundancy with narrative boxes
 
 import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 
@@ -41,28 +38,31 @@ const WhoAmIBento = () => {
       )
     },
     {
-      key: 'philosophy',
-      title: 'Design Philosophy',
-      icon: LightbulbIcon,
-      color: 'secondary',
+      key: 'intro',
+      title: 'Introduction',
+      color: 'text.primary',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
-        <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          I aim for evidence‑based design that balances what people need, what the business wants, and what is realistic to build. Accessibility and inclusion are not add‑ons. They are the foundation. I try to keep things clear, calm, and easy to learn so people can use them with confidence.
-        </Typography>
+        <>
+          <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5, mb: 2 }}>
+            Research-driven design grounded in evidence. I balance user needs with technical constraints through systematic inquiry—contextual interviews, usability testing, and thematic analysis. Accessibility is foundational, not optional. My work prioritizes clarity and calm interaction patterns that build user confidence through consistent, well-tested design systems.
+          </Typography>
+          <Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 0 }}>
+            B.Sc. Media Informatics (LMU Munich), M.Sc. Human-Computer Interaction (FH Salzburg). Specialized in multimodal interaction design through two thesis projects: autonomous vehicle passenger interfaces and affective haptic prototyping methodologies. Currently exploring LLM integration for design workflows and teaching analytical sketching at Taipei Tech.
+          </Typography>
+        </>
       )
     },
     {
-      key: 'background',
-      title: 'Background',
-      icon: PersonIcon,
-      color: 'info',
+      key: 'beyond-work',
+      title: 'Beyond Work',
+      color: 'text.primary',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          I started in Media Informatics and later focused on Human‑Computer Interaction. I mix research with hands‑on prototyping and front‑end code. I am also curious about audio and haptic interfaces. Over time, I began running workshops to help teams move from ideas to working solutions.
+          Outside of design, I explore electronic music production and creative coding projects. I enjoy cooking, gaming, and supporting FC Schalke 04. These interests fuel my creativity and keep me curious about new forms of interaction and expression.
         </Typography>
       )
     },
@@ -76,7 +76,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Crafting intuitive and engaging user experiences through thoughtful design: UI/UX Design, Interaction Design, Wireframing, Prototyping, Visual Design, User Flows, Information Architecture.
+          Systems-focused interaction design. Rapid prototyping from wireframes to high-fidelity mockups in Figma. Design system development with attention to component reusability and front-end handoff. Information architecture informed by card sorting and tree testing.
         </Typography>
       )
     },
@@ -88,7 +88,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Uncovering user needs and validating design decisions through research: User Research, Usability Testing, A/B Testing, Heuristic Evaluation, User Interviews, Data Analysis, Thematic Analysis.
+          Methodical user research. SUS and STS-AD evaluation, semi-structured interviews, diary studies, contextual inquiry. ATLAS.ti for AI-assisted thematic analysis. Workshop facilitation for participatory design. Literature review and systematic comparison of interaction patterns.
         </Typography>
       )
     },
@@ -100,7 +100,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Bringing designs to life with clean, accessible code: Frontend Development, Responsive Design, Design Systems, Accessibility, Mobile Development, Sensor Integration, Haptic Feedback.
+          Frontend implementation with React, TypeScript, and Three.js. Responsive layouts with Material UI. WCAG accessibility standards. Hardware prototyping with Arduino for embedded systems. On-body haptic actuators (ERM/LRA/VC) and audio-to-haptic mapping.
         </Typography>
       )
     },
@@ -114,7 +114,7 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Designing immersive audio experiences and sound interactions: Sound Design, Audio Programming, Music Production, Interactive Audio, Spatial Audio, Signal Processing, Audio-Visual Integration.
+          Audio design and engineering since 2015. Procedural audio systems with Tone.js and RNBO. Postproduction for streaming publications. Music production in Ableton Live and Logic Pro. Signal processing for interactive installations and procedurally generated relaxation feedback.
         </Typography>
       )
     },
@@ -126,19 +126,19 @@ const WhoAmIBento = () => {
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Empowering others through knowledge sharing and mentorship: Workshop Facilitation, Curriculum Development, Technical Instruction, Mentoring, Public Speaking, Knowledge Transfer, Documentation.
+          Workshop design and facilitation for design teams. Developed modular toolkit for teaching novice designers haptic prototyping. Educational UX work at MM-Mental Motions—curriculum templates, interactive workbook PDFs, video editing, teaching stack standardization.
         </Typography>
       )
     },
     {
-      key: 'project-management',
-      title: 'Project Management',
+      key: 'collaboration',
+      title: 'Collaboration',
       color: 'primary',
       colSpan: { xs: 1, sm: 1, md: 1 },
       rowSpan: { xs: 1, md: 1 },
       body: (
         <Typography variant="body2" color="text.secondary" paragraph sx={{ mt: 1.5 }}>
-          Leading projects from concept to successful delivery: Agile Methodologies, Scrum, Kanban, Team Leadership, Stakeholder Management, Requirements Gathering, Roadmapping.
+          Cross-functional teamwork with developers, stakeholders, and researchers. Clear handoff documentation. Asana for task management. Preference for calm, structured communication. Co-winning Tourism Tech Festival Hackathon (first place, Mastercard challenge) demonstrated collaborative execution under tight constraints.
         </Typography>
       )
     },
@@ -151,8 +151,6 @@ const WhoAmIBento = () => {
         {items.slice(0, 3).map((item, idx) => {
           const colorKey = `${item.color}.main`;
           const bgGradient = getBgGradient(colorKey);
-          const [base, tone] = colorKey.split('.');
-          const paletteColor = (theme.palette[base] && theme.palette[base][tone]) || theme.palette.primary.main;
           
           return (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.key}>
@@ -234,8 +232,7 @@ const WhoAmIBento = () => {
         })}
       </Grid>
 
-      {/* Bottom rows - SkillsBento with icons and tags */}
-      <SkillsBento items={designCompetencyItems} />
+      {/* Skills chips removed in WhoAmI to avoid duplication; see Skills & Technology tab for detailed chips. */}
     </Box>
   );
 };

@@ -6,10 +6,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
@@ -416,67 +412,14 @@ const greenWallet = {
     {
       id: 'section-references',
       type: 'default',
-      title: 'References & Resources',
+      title: 'Project Context',
       content: (
         <>
-          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
-            Project Resources
+          <Typography variant="body2" paragraph sx={{ mb: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            24-hour hackathon project developed at Tourism Technology Festival 2023, Salzburg. Winner of Mastercard's challenge track for cashless payment innovation. All project resources are available via the action buttons above.
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<SlideshowIcon />}
-              href={presentationPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Presentation
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              startIcon={<DesignServicesIcon />}
-              href="https://embed.figma.com/proto/9BlQKTEFOIPKA1qSexIQMP/Mastercard-App--Copy-?node-id=89-9677&starting-point-node-id=89%3A9677&embed-host=share"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              Try Prototype
-            </Button>
-            <Button
-              variant="outlined"
-              color="warning"
-              startIcon={<EmojiEventsIcon />}
-              href="https://www.linkedin.com/posts/alles-fuer-den-gast_allesfaesrdengast-gastmesse-gastrohackathon-activity-7129517120463192064-_11i"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              Winner Announcement
-            </Button>
-          </Box>
-
-          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
+          
+          <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
             Related Topics & Concepts
           </Typography>
           <Box component="ul" sx={{ pl: 3, mb: 2 }}>
@@ -506,10 +449,6 @@ const greenWallet = {
               </Typography>
             </li>
           </Box>
-
-          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
-            24-hour hackathon project developed at Tourism Technology Festival 2023, Salzburg. Winner of Mastercard's challenge track for cashless payment innovation.
-          </Typography>
         </>
       ),
       layout: 'textOnly',

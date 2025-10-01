@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, useTheme, Grid } from '@mui/material';
 import spacingTokens from '../../theme/spacing';
 
-const SkillsBento = ({ items = [] }) => {
+const SkillsBento = ({ items = [], showChips = true, maxChips }) => {
   const theme = useTheme();
   
   // Define colors for different skill categories
@@ -97,9 +97,9 @@ const SkillsBento = ({ items = [] }) => {
                 {item.description}
               </Typography>
               
-              {item.skills && item.skills.length > 0 && (
+              {showChips && item.skills && item.skills.length > 0 && (
                 <Box sx={{ mt: 1.5, display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
-                  {item.skills.map((skill, i) => (
+                  {(maxChips ? item.skills.slice(0, maxChips) : item.skills).map((skill, i) => (
                     <Box 
                       key={i}
                       sx={{

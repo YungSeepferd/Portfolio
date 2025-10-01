@@ -29,7 +29,6 @@ const ProjectFullContent = ({ project }) => {
     description,
     categories = [],
     technologies = [],
-    links = [],
     sections = [],
     prototype
   } = project;
@@ -66,27 +65,34 @@ const ProjectFullContent = ({ project }) => {
           title={title}
           description={description}
           categories={categories}
+          projectColor={project.cardVariant || 'primary'}
         />
       </Box>
 
-      {/* Actions Bar - Technologies and Links */}
+      {/* Technology Bar - Centered (Actions removed, now only in footer and cards) */}
       <ProjectMetaBar
         technologies={technologies}
-        actions={links}
+        actions={[]}
         variant="full"
         useSplitButton={false}
         showHierarchy={false}
         useMobileAccordion={true}
+        projectColor={project.cardVariant || 'primary'}
       />
 
       <Divider sx={{ borderColor: theme.palette.divider }} />
 
       <Paper id="project-full-content-paper" sx={{
         p: { xs: 2, sm: 3, md: 4 },
+        pb: { xs: 28, sm: 30, md: 32 }, // Extra bottom padding to clear footer
         backgroundColor: theme.palette.background.paper
       }}>
         {/* Project Content Sections */}
-        <ProjectSectionRenderer sections={sections} projectId={project.id} />
+        <ProjectSectionRenderer 
+          sections={sections} 
+          projectId={project.id}
+          projectColor={project.cardVariant || 'primary'}
+        />
         {/* Prototype Showcase (if available) */}
         {prototype && (
           <PrototypeShowcase

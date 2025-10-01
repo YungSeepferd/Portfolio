@@ -72,13 +72,14 @@ const TYPOGRAPHY_PRESETS = {
     component: 'span',
     sx: {
       display: 'block',
-      fontWeight: 600,
+      fontWeight: 700,
       letterSpacing: '0.08em',
       textTransform: 'uppercase',
       color: theme.palette ? theme.palette.secondary.main : undefined,
       fontSize: {
-        xs: '1rem',
-        md: '1.125rem',
+        xs: '1.5rem',
+        sm: '1.75rem',
+        md: '2rem',
       },
       mb: theme.spacing ? theme.spacing(1.5) : themeSpacing(1.5),
     },

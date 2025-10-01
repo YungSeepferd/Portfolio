@@ -12,6 +12,7 @@ const shape = {
     lg: 12,      // Large components
     xl: 16,      // Extra large components
     xxl: 24,     // Special cases like floating buttons
+    pill: 999,   // Pill-style rounded corners (navigation, tags)
     full: '50%', // Circular elements
   },
   

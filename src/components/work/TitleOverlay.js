@@ -9,7 +9,7 @@ import { getTypographyPreset } from '../../theme/presets';
  * Displays title, description, and categories as an overlay on the hero image
  * with a dark gradient background for readability.
  */
-const TitleOverlay = ({ title, description, categories = [] }) => {
+const TitleOverlay = ({ title, description, categories = [], projectColor = 'primary' }) => {
   const theme = useTheme();
   const overlayTitlePreset = getTypographyPreset(theme, 'overlayTitle');
   const overlaySubtitlePreset = getTypographyPreset(theme, 'overlaySubtitle');
@@ -65,7 +65,12 @@ const TitleOverlay = ({ title, description, categories = [] }) => {
       
       {/* Categories */}
       {categories.length > 0 && (
-        <CategoryTagList tags={categories} textColor={theme.palette.common.white} sx={{ mt: 1 }} />
+        <CategoryTagList 
+          tags={categories} 
+          textColor={theme.palette.common.white} 
+          accentColor={theme.palette[projectColor]?.main || theme.palette.primary.main}
+          sx={{ mt: 1 }} 
+        />
       )}
     </Box>
   );

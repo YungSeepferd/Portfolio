@@ -7,12 +7,10 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import ArticleIcon from '@mui/icons-material/Article';
-import BuildIcon from '@mui/icons-material/Build';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Icon from '@mui/material/Icon';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
@@ -57,17 +55,17 @@ const media = {
 // Define card variant without direct theme dependency
 const cardVariant = 'primary';
 
-// Define links array with consistent format
+// Define links array with consistent format (main project resources only)
 const links = [
   {
-    label: "View Presentation",
-    url: presentationPDF,
+    label: "View Thesis",
+    url: thesisPDF,
     contentType: 'pdf',
     openInPopup: true
   },
   {
-    label: "View Thesis",
-    url: thesisPDF,
+    label: "View Presentation",
+    url: presentationPDF,
     contentType: 'pdf',
     openInPopup: true
   },
@@ -104,146 +102,6 @@ const masterThesis = {
           <Typography variant="body1" paragraph>
             The modular methodological toolkit draws on these principles to adjust to the fact that single modal haptic experiences are highly personal and context dependent. The toolkit provides novice interaction designers with a structured approach to acquiring and employing methodologies applicable to single modal affective haptic design, including body maps, embodied metaphor elicitation, Emotion Typology, the Circumplex Model of Affect, and Experience Prototyping principles.
           </Typography>
-          <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Box
-              component="a"
-              href="https://doi.org/10.1037/h0077714"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Russell (1980)
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1007/s00779-011-0410-4"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Bakker et al. (2012)
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1145/3569009.3573838"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Turmo Vidal et al. (2023)
-            </Box>
-            <Box
-              component="a"
-              href="https://doi.org/10.1145/347642.347802"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Buchenau & Suri (2000)
-            </Box>
-            <Box
-              component="a"
-              href="https://emotiontypology.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Emotion Typology Tool
-            </Box>
-            <Box
-              component="a"
-              href="https://www.hapticlabs.io/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                fontSize: '0.75rem',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 1,
-                color: 'primary.light',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
-            >
-              🔗 Hapticlabs DevKit
-            </Box>
-          </Box>
         </>
       ),
       media: { type: 'image', src: media.images.overview },
@@ -1034,9 +892,142 @@ const masterThesis = {
       title: 'References & Resources',
       content: (
         <>
+          <Typography variant="body2" paragraph sx={{ mb: 3, fontStyle: 'italic', color: 'text.secondary' }}>
+            Master's thesis completed at FH Salzburg, Human-Computer Interaction program, in collaboration with Hapticlabs for hardware prototyping.
+          </Typography>
+          
           <Typography variant="h6" sx={{ mb: 2, color: 'text.secondary' }}>
             Key Academic References
           </Typography>
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 3 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1037/h0077714"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Russell (1980) - Circumplex Model
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1017/S0954579405050340"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Posner et al. (2005)
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1007/s00779-011-0410-4"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Bakker et al. (2012)
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/3569009.3573838"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Turmo Vidal et al. (2023)
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://doi.org/10.1145/347642.347802"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Buchenau & Suri (2000)
+            </Button>
+          </Box>
+          
+          <Typography variant="h6" sx={{ mb: 2, mt: 4, color: 'text.secondary' }}>
+            Tools & Resources
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 3 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://www.hapticlabs.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Hapticlabs DevKit
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://www.hapticlabs.io/tutorial"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Hapticlabs Tutorial
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<OpenInNewIcon />}
+              href="https://emotiontypology.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                borderRadius: 1.5,
+              }}
+            >
+              Emotion Typology Framework
+            </Button>
+          </Box>
+          
           <Box component="ul" sx={{ pl: 3, mb: 3 }}>
             <li>
               <Typography variant="body2">
@@ -1045,7 +1036,22 @@ const masterThesis = {
             </li>
             <li>
               <Typography variant="body2">
-                Posner, J., Russell, J. A., & Peterson, B. S. (2005). The circumplex model of affect: An integrative approach to affective neuroscience, cognitive development, and psychopathology. <em>Development and Psychopathology</em>, 17(3), 715–734.
+                Posner, J., Russell, J. A., & Peterson, B. S. (2005). The circumplex model of affect: An integrative approach to affective neuroscience, cognitive development, and psychopathology. <em>Development and Psychopathology</em>, 17(3), 715–734. DOI: 10.1017/S0954579405050340
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                Bakker, S., Antle, A. N., & van den Hoven, E. (2012). Embodied metaphors in tangible interaction design. <em>Personal and Ubiquitous Computing</em>, 16(4), 433–449. DOI: 10.1007/s00779-011-0410-4
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                Turmo Vidal, L., et al. (2023). Towards Advancing Body Maps as Research Tool. <em>CHI EA '23</em>. DOI: 10.1145/3569009.3573838
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body2">
+                Buchenau, M. & Fulton Suri, J. (2000). Experience prototyping. <em>DIS '00</em>, 424–433. DOI: 10.1145/347642.347802
               </Typography>
             </li>
             <li>
@@ -1063,73 +1069,7 @@ const masterThesis = {
                 Alhejaili, R. (2023). Wearable technology for mental wellness monitoring and feedback. Thesis, Queen Mary University of London.
               </Typography>
             </li>
-            <li>
-              <Typography variant="body2">
-                Hapticlabs. (2024). Haptic feedback tutorial and DevKit documentation. Retrieved from <a href="https://www.hapticlabs.io/tutorial" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>hapticlabs.io</a>
-              </Typography>
-            </li>
           </Box>
-
-          <Typography variant="h6" sx={{ mb: 2, mt: 3, color: 'text.secondary' }}>
-            Project Resources
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArticleIcon />}
-              href={thesisPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Thesis
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<SlideshowIcon />}
-              href={presentationPDF}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              View Presentation
-            </Button>
-            <Button
-              variant="outlined"
-              color="success"
-              startIcon={<BuildIcon />}
-              href="https://www.hapticlabs.io/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 3,
-                py: 1.5,
-                fontWeight: 600,
-              }}
-            >
-              Hapticlabs DevKit
-            </Button>
-          </Box>
-
-          <Typography variant="body2" sx={{ mt: 3, fontStyle: 'italic', color: 'text.secondary' }}>
-            Master's thesis completed at FH Salzburg, Human-Computer Interaction program, in collaboration with Hapticlabs for hardware prototyping.
-          </Typography>
         </>
       ),
       layout: 'textOnly',

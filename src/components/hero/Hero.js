@@ -384,7 +384,7 @@ const Hero = () => {
             backdropFilter: 'blur(8px)',
             color: theme.palette.common.white,
             padding: theme.spacing(1, 2),
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: theme.shape?.radius?.pill || 999,
             zIndex: theme.zIndex.tooltip,
             pointerEvents: 'none',
             typography: 'body1',

@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, Box, IconButton, useTheme, useMediaQuery, Typography, Paper, Chip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Box, IconButton, useTheme, useMediaQuery, Typography, Paper, Chip, Button } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -12,6 +12,7 @@ import ProjectFullContent from './ProjectFullContent';
 import ThemeToggle from '../common/ThemeToggle';
 import { useThemeMode } from '../../context/ThemeContext';
 import modalFooterTokens from '../../theme/components/modalFooter';
+import { getLinkIcon } from './ProjectLinks';
 
 /**
  * ProjectModal Component
@@ -31,8 +32,9 @@ const ProjectModal = ({
   const contentRef = useRef(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [isFooterOpen, setIsFooterOpen] = useState(true);
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
   
-  // Animation variants for footer collapse
+  // Animation variants for footer collapse (now shows minimal bar when closed)
   const footerVariants = {
     open: {
       height: 'auto',
@@ -43,8 +45,8 @@ const ProjectModal = ({
       }
     },
     closed: {
-      height: 0,
-      opacity: 0,
+      height: 'auto', // Changed from 0 to auto to show minimal bar
+      opacity: 1, // Changed from 0 to 1 to keep visible
       transition: {
         opacity: { duration: 0.15 },
         height: { duration: 0.3, ease: 'easeInOut', delay: 0.05 }
@@ -61,8 +63,26 @@ const ProjectModal = ({
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
+      setShowStickyHeader(false);
     }
   }, [project?.id]);
+
+  // Handle scroll to show/hide sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (contentRef.current) {
+        const scrollTop = contentRef.current.scrollTop;
+        // Show sticky header after scrolling 300px (past hero section)
+        setShowStickyHeader(scrollTop > 300);
+      }
+    };
+
+    const scrollContainer = contentRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e) => {
@@ -141,6 +161,12 @@ const ProjectModal = ({
       fullWidth
       scroll="paper"
       disableScrollLock={false}
+      sx={{
+        '& .MuiDialog-container': {
+          alignItems: 'center', // Center vertically
+          justifyContent: 'center', // Center horizontally
+        }
+      }}
       slotProps={{
         backdrop: {
           sx: {
@@ -155,10 +181,11 @@ const ProjectModal = ({
             overflow: 'hidden',
             boxShadow: theme.shadows[24],
             position: 'relative',
-            height: { xs: '100vh', md: '95vh' },
-            maxHeight: { xs: '100vh', md: '95vh' },
+            height: { xs: '90vh', md: '90vh' },
+            maxHeight: { xs: '90vh', md: '90vh' },
             display: 'flex',
             flexDirection: 'column',
+            m: { xs: 0, md: 'auto' }, // Center with auto margins on desktop
           }
         }
       }}
@@ -232,6 +259,143 @@ const ProjectModal = ({
           },
         }}
       >
+        {/* Sticky Header - appears after scrolling */}
+        <motion.div
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ 
+            y: showStickyHeader ? 0 : -100,
+            opacity: showStickyHeader ? 1 : 0
+          }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          style={{
+            position: 'sticky',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: theme.zIndex.modal + 1,
+            pointerEvents: showStickyHeader ? 'auto' : 'none',
+          }}
+        >
+          <Paper
+            elevation={4}
+            sx={{
+              background: theme.palette.mode === 'dark'
+                ? modalFooterTokens.footer.glassmorphic.dark.background
+                : modalFooterTokens.footer.glassmorphic.light.background,
+              backdropFilter: theme.palette.mode === 'dark'
+                ? modalFooterTokens.footer.glassmorphic.dark.backdropFilter
+                : modalFooterTokens.footer.glassmorphic.light.backdropFilter,
+              WebkitBackdropFilter: theme.palette.mode === 'dark'
+                ? modalFooterTokens.footer.glassmorphic.dark.WebkitBackdropFilter
+                : modalFooterTokens.footer.glassmorphic.light.WebkitBackdropFilter,
+              borderBottom: `1px solid ${theme.palette.divider}`,
+              py: 1.5,
+              px: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+              {/* Left: Navigation */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {onPreviousProject && (
+                  <Tooltip title="Previous Project (←)">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPreviousProject();
+                        if (contentRef.current) contentRef.current.scrollTop = 0;
+                      }}
+                      sx={{
+                        color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                      }}
+                    >
+                      <ArrowBackIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {onNextProject && (
+                  <Tooltip title="Next Project (→)">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNextProject();
+                        if (contentRef.current) contentRef.current.scrollTop = 0;
+                      }}
+                      sx={{
+                        color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                      }}
+                    >
+                      <ArrowForwardIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
+
+              {/* Center: Project Title */}
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  flex: 1,
+                  textAlign: 'center',
+                  fontWeight: 600,
+                  fontSize: { xs: '0.875rem', sm: '1rem' },
+                  color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {project.title}
+              </Typography>
+
+              {/* Right: Action Buttons */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap' }}>
+                {project?.links && project.links.slice(0, 2).map((link, index) => {
+                  const icon = getLinkIcon(link.label);
+                  
+                  return (
+                    <Tooltip key={`sticky-link-${index}`} title={link.label}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={icon}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          textTransform: 'none',
+                          fontSize: '0.75rem',
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 'auto',
+                          borderRadius: 1.5,
+                          display: { xs: 'none', sm: 'flex' },
+                          background: theme.palette.mode === 'dark'
+                            ? 'rgba(255, 255, 255, 0.05)'
+                            : 'rgba(5, 38, 45, 0.05)',
+                          backdropFilter: 'blur(8px)',
+                          WebkitBackdropFilter: 'blur(8px)',
+                          border: `1px solid ${theme.palette.divider}`,
+                          color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                          '&:hover': {
+                            background: theme.palette.mode === 'dark'
+                              ? 'rgba(255, 255, 255, 0.15)'
+                              : 'rgba(5, 38, 45, 0.15)',
+                          },
+                        }}
+                      >
+                        {link.label.replace('View ', '').replace('Try ', '')}
+                      </Button>
+                    </Tooltip>
+                  );
+                })}
+                <ThemeToggle onToggle={toggleTheme} mode={mode} />
+              </Box>
+            </Box>
+          </Paper>
+        </motion.div>
+
         {/* Content */}
         <Box sx={{ width: '100%' }}>
           <ProjectFullContent project={project} />
@@ -325,34 +489,134 @@ const ProjectModal = ({
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: modalFooterTokens.footer.gap,
+              flexDirection: 'column',
+              gap: 1,
               px: modalFooterTokens.footer.paddingX,
-              py: modalFooterTokens.footer.paddingY,
-              minHeight: modalFooterTokens.footer.minHeight,
+              py: isFooterOpen ? modalFooterTokens.footer.paddingY : 1,
+              transition: theme.transitions.create(['padding'], {
+                duration: theme.transitions.duration.shorter,
+              }),
             }}
           >
-            <Box sx={{ minWidth: modalFooterTokens.controls.minWidth, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: modalFooterTokens.controls.gap }}>
-              {/* WIP Disclaimer */}
-              <Chip
-                label="WIP"
-                size="small"
-                variant="outlined"
-                sx={{
-                  fontSize: modalFooterTokens.wipDisclaimer.fontSize,
-                  height: 'auto',
-                  py: modalFooterTokens.wipDisclaimer.padding,
-                  px: modalFooterTokens.wipDisclaimer.padding,
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
-                  maxWidth: modalFooterTokens.wipDisclaimer.maxWidth,
-                  '& .MuiChip-label': {
-                    px: 0.5,
-                    py: 0,
-                  },
-                }}
-              />
+            {/* Action Buttons Row - Only shown when expanded */}
+            {isFooterOpen && project?.links && project.links.length > 0 && (
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 1.5, 
+                flexWrap: 'wrap', 
+                justifyContent: 'center',
+                pb: 1,
+                borderBottom: `1px solid ${theme.palette.divider}`,
+              }}>
+                {project.links.map((link, index) => {
+                  const icon = getLinkIcon(link.label);
+                  
+                  return (
+                    <Button
+                      key={`footer-link-${index}`}
+                      variant="text"
+                      size="small"
+                      startIcon={icon}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        textTransform: 'none',
+                        fontSize: '0.75rem',
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: 1.5,
+                        fontWeight: 600,
+                        background: theme.palette.mode === 'dark'
+                          ? modalFooterTokens.controls.glassmorphic.dark.background
+                          : modalFooterTokens.controls.glassmorphic.light.background,
+                        backdropFilter: theme.palette.mode === 'dark'
+                          ? modalFooterTokens.controls.glassmorphic.dark.backdropFilter
+                          : modalFooterTokens.controls.glassmorphic.light.backdropFilter,
+                        WebkitBackdropFilter: theme.palette.mode === 'dark'
+                          ? modalFooterTokens.controls.glassmorphic.dark.WebkitBackdropFilter
+                          : modalFooterTokens.controls.glassmorphic.light.WebkitBackdropFilter,
+                        border: `1px solid ${theme.palette.divider}`,
+                        color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                        '&:hover': {
+                          background: theme.palette.mode === 'dark'
+                            ? modalFooterTokens.controls.glassmorphic.dark.hover.background
+                            : modalFooterTokens.controls.glassmorphic.light.hover.background,
+                          backdropFilter: theme.palette.mode === 'dark'
+                            ? modalFooterTokens.controls.glassmorphic.dark.hover.backdropFilter
+                            : modalFooterTokens.controls.glassmorphic.light.hover.backdropFilter,
+                          WebkitBackdropFilter: theme.palette.mode === 'dark'
+                            ? modalFooterTokens.controls.glassmorphic.dark.hover.WebkitBackdropFilter
+                            : modalFooterTokens.controls.glassmorphic.light.hover.WebkitBackdropFilter,
+                          transform: 'translateY(-2px)',
+                        },
+                        '&:active': {
+                          background: theme.palette.mode === 'dark'
+                            ? modalFooterTokens.controls.glassmorphic.dark.active.background
+                            : modalFooterTokens.controls.glassmorphic.light.active.background,
+                        },
+                        transition: theme.transitions.create(['background', 'transform', 'backdrop-filter'], {
+                          duration: theme.transitions.duration.shorter,
+                        }),
+                      }}
+                    >
+                      {link.label}
+                    </Button>
+                  );
+                })}
+              </Box>
+            )}
+            
+            {/* Minimal Navigation Row - Always visible */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: modalFooterTokens.footer.gap,
+                minHeight: isFooterOpen ? modalFooterTokens.footer.minHeight : 40,
+                transition: theme.transitions.create(['min-height'], {
+                  duration: theme.transitions.duration.shorter,
+                }),
+              }}
+            >
+              {/* Left: Navigation arrows */}
+              <Box sx={{ 
+                minWidth: isFooterOpen ? modalFooterTokens.controls.minWidth : 'auto', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'flex-start', 
+                gap: modalFooterTokens.controls.gap 
+              }}>
+                {/* WIP Disclaimer - Only shown when expanded */}
+                {isFooterOpen && (
+                  <Chip
+                    label="WIP"
+                    size="small"
+                    sx={{
+                      fontSize: modalFooterTokens.wipDisclaimer.fontSize,
+                      height: 'auto',
+                      py: modalFooterTokens.wipDisclaimer.padding,
+                      px: modalFooterTokens.wipDisclaimer.padding,
+                      maxWidth: modalFooterTokens.wipDisclaimer.maxWidth,
+                      color: theme.palette.mode === 'dark' ? 'text.primary' : 'background.paper',
+                      background: theme.palette.mode === 'dark'
+                        ? modalFooterTokens.controls.glassmorphic.dark.background
+                        : modalFooterTokens.controls.glassmorphic.light.background,
+                      backdropFilter: theme.palette.mode === 'dark'
+                        ? modalFooterTokens.controls.glassmorphic.dark.backdropFilter
+                        : modalFooterTokens.controls.glassmorphic.light.backdropFilter,
+                      WebkitBackdropFilter: theme.palette.mode === 'dark'
+                        ? modalFooterTokens.controls.glassmorphic.dark.WebkitBackdropFilter
+                        : modalFooterTokens.controls.glassmorphic.light.WebkitBackdropFilter,
+                      border: 'none',
+                      '& .MuiChip-label': {
+                        px: 0.5,
+                        py: 0,
+                      },
+                    }}
+                  />
+                )}
               {onPreviousProject && (
                 <Tooltip title="Previous Project (←)">
                   <span>
@@ -430,8 +694,16 @@ const ProjectModal = ({
               </Typography>
             </Box>
 
-            <Box sx={{ minWidth: modalFooterTokens.controls.minWidth, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: modalFooterTokens.controls.gap }}>
-              <ThemeToggle onToggle={toggleTheme} mode={mode} />
+            {/* Right: Theme toggle and next button */}
+            <Box sx={{ 
+              minWidth: isFooterOpen ? modalFooterTokens.controls.minWidth : 'auto', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'flex-end', 
+              gap: modalFooterTokens.controls.gap 
+            }}>
+              {/* Theme Toggle - Only shown when expanded */}
+              {isFooterOpen && <ThemeToggle onToggle={toggleTheme} mode={mode} />}
               {onNextProject && (
                 <Tooltip title="Next Project (→)">
                   <span>
@@ -484,6 +756,7 @@ const ProjectModal = ({
                   </span>
                 </Tooltip>
               )}
+            </Box>
             </Box>
           </Box>
             </Paper>

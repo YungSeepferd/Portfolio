@@ -1,8 +1,10 @@
 import React from 'react';
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { Timeline, TimelineItem, TimelineSeparator, 
          TimelineConnector, TimelineContent, TimelineDot, TimelineOppositeContent } from '@mui/lab';
 import { motion } from 'framer-motion';
+import { getTypographyPreset, getSpacingPreset } from '../../../theme/presets';
+import { alpha } from '@mui/material/styles';
 
 /**
  * TimelineSection Component
@@ -20,13 +22,21 @@ const TimelineSection = ({
   title, 
   steps = [], 
   orientation = 'alternate',
-  content 
+  content,
+  sectionNumber,
+  sectionIndex,
+  projectColor = 'primary'
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const eyebrowPreset = getTypographyPreset(theme, 'sectionEyebrow');
+  const horizontal = getSpacingPreset('pageHorizontal');
   
-  // Force left alignment on mobile for better readability
-  const timelinePosition = isMobile ? 'right' : orientation;
+  // Format section number
+  const formattedNumber = sectionNumber ? 
+    (typeof sectionNumber === 'number' ? sectionNumber.toString().padStart(2, '0') : sectionNumber) :
+    (typeof sectionIndex === 'number' ? (sectionIndex + 1).toString().padStart(2, '0') : null);
+  // Enforce consistent layout: duration (left) • timeline • content (right)
+  const timelinePosition = 'right';
 
   if (!steps || steps.length === 0) {
     return null;
@@ -38,26 +48,39 @@ const TimelineSection = ({
       component={motion.div}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
       sx={{ 
         mb: 8,
-        scrollMarginTop: theme.spacing(10)
+        scrollMarginTop: theme.spacing(10),
+        px: horizontal.px
       }}
     >
-      {/* Section Title */}
-      {title && (
-        <Typography 
-          variant="h4" 
-          component="h3"
-          sx={{ 
-            mb: 4,
-            fontWeight: theme.typography.fontWeightBold,
-            color: theme.palette.text.primary
-          }}
-        >
-          {title}
-        </Typography>
-      )}
+      {/* Section Header with Number */}
+      <Box sx={{ mb: 4, textAlign: 'left' }}>
+        {formattedNumber && (
+          <Typography
+            variant={eyebrowPreset.variant}
+            component={eyebrowPreset.component}
+            sx={{
+              ...eyebrowPreset.sx,
+              color: theme.palette[projectColor]?.main || theme.palette.primary.main,
+              fontWeight: 700,
+            }}
+          >
+            {formattedNumber}
+          </Typography>
+        )}
+        {title && (
+          <Typography 
+            variant="h4" 
+            component="h3"
+            sx={{ 
+              fontWeight: theme.typography.fontWeightBold
+            }}
+          >
+            {title}
+          </Typography>
+        )}
+      </Box>
 
       {/* Optional introductory content */}
       {content && (
@@ -76,34 +99,38 @@ const TimelineSection = ({
       <Timeline position={timelinePosition}>
         {steps.map((step, index) => {
           const isLast = index === steps.length - 1;
-          const dotColor = step.color || 'primary';
+          const project = theme.palette[projectColor] || theme.palette.primary;
+          const accentMain = project.main;
+          const accentLight = project.light || project.main;
+          const accentDark = project.dark || project.main;
           const dotVariant = step.variant || (step.completed ? 'filled' : 'outlined');
+          const dotBg = [accentMain, accentLight, accentDark][index % 3];
 
           return (
             <TimelineItem key={step.id || index}>
-              {/* Opposite content (duration/date) - hidden on mobile */}
-              {!isMobile && (
-                <TimelineOppositeContent 
-                  color="text.secondary"
-                  sx={{ 
-                    py: 2,
-                    px: 2,
-                    flex: 0.3
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="medium">
-                    {step.duration || step.date || step.timeframe}
-                  </Typography>
-                </TimelineOppositeContent>
-              )}
+              {/* Opposite content (duration/date) - always shown on the left */}
+              <TimelineOppositeContent 
+                color="text.secondary"
+                sx={{ 
+                  py: 2,
+                  px: 2,
+                  flex: 0.28
+                }}
+              >
+                <Typography variant="body2" fontWeight="medium">
+                  {step.duration || step.date || step.timeframe}
+                </Typography>
+              </TimelineOppositeContent>
 
               {/* Timeline separator with dot and connector */}
               <TimelineSeparator>
                 <TimelineDot 
-                  color={dotColor} 
                   variant={dotVariant}
+                  color="inherit"
                   sx={{
                     boxShadow: theme.shadows[2],
+                    bgcolor: dotVariant === 'filled' ? dotBg : 'transparent',
+                    border: `2px solid ${dotBg}`,
                     ...(step.icon && {
                       bgcolor: 'transparent',
                       border: 'none',
@@ -116,8 +143,8 @@ const TimelineSection = ({
                 {!isLast && (
                   <TimelineConnector 
                     sx={{ 
-                      bgcolor: theme.palette.divider,
-                      minHeight: isMobile ? 40 : 60
+                      bgcolor: alpha(accentMain, 0.35),
+                      minHeight: 60
                     }} 
                   />
                 )}
@@ -128,7 +155,7 @@ const TimelineSection = ({
                 sx={{ 
                   py: 2, 
                   px: 2,
-                  flex: isMobile ? 1 : 0.7
+                  flex: 0.72
                 }}
               >
                 {/* Phase/Step title */}
@@ -144,20 +171,7 @@ const TimelineSection = ({
                   {step.phase || step.title || step.label}
                 </Typography>
 
-                {/* Duration on mobile (moved from opposite content) */}
-                {isMobile && (step.duration || step.date || step.timeframe) && (
-                  <Typography 
-                    variant="caption" 
-                    color="text.secondary"
-                    sx={{ 
-                      display: 'block',
-                      mb: 1,
-                      fontWeight: 'medium'
-                    }}
-                  >
-                    {step.duration || step.date || step.timeframe}
-                  </Typography>
-                )}
+                {/* Duration now stays on left; do not duplicate in content */}
 
                 {/* Step description/content */}
                 {step.content && (

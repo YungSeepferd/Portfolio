@@ -10,12 +10,18 @@ import { useThemeMode } from '../../context/ThemeContext';
 import ThemeToggle from '../common/ThemeToggle';
 import { navItems, socialLinks } from '../../config/uiConfig';
 import NavLinks from './NavLinks';
+import useActiveSection from '../../hooks/useActiveSection';
+import { modalFooterTokens } from '../../theme/components/modalFooter';
 
 const Header = () => {
   const theme = useTheme();
   const { mode, toggleTheme } = useThemeMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  // Track active section for navigation indicators
+  const sectionIds = useMemo(() => navItems.map(item => item.target), []);
+  const activeSection = useActiveSection(sectionIds, 0.4, '-10% 0px -50% 0px');
   
   const isFirstMount = React.useRef(true);
   
@@ -51,10 +57,11 @@ const Header = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const transparentBgColor = useMemo(() => 
+  // Use modal footer glassmorphism tokens for consistency
+  const glassTokens = useMemo(() => 
     mode === 'dark' 
-      ? 'rgba(10, 22, 40, 0.7)'  
-      : 'rgba(248, 250, 252, 0.7)'
+      ? modalFooterTokens.footer.glassmorphic.dark
+      : modalFooterTokens.footer.glassmorphic.light
   , [mode]);
 
   return (
@@ -66,22 +73,21 @@ const Header = () => {
     >
       <AppBar 
         position="fixed" 
-        elevation={isScrolled ? 4 : 0}
+        elevation={0}
         sx={{
-          backgroundColor: isScrolled 
-            ? theme.palette.background.paper
-            : transparentBgColor,
+          background: glassTokens.background,
+          backdropFilter: glassTokens.backdropFilter,
+          WebkitBackdropFilter: glassTokens.WebkitBackdropFilter,
           transition: theme.transitions.create(
-            ['background-color', 'box-shadow'],
+            ['border-bottom'],
             { duration: 0.3 }
           ),
-          backdropFilter: 'blur(10px)',
           borderBottom: isScrolled 
             ? `1px solid ${theme.palette.divider}`
             : 'none',
           color: theme.palette.text.primary,
-          width: '100vw', // Ensure full viewport width
-          maxWidth: '100vw', // Prevent any maxWidth restriction
+          width: '100vw',
+          maxWidth: '100vw',
           left: 0,
         }}
       >
@@ -118,15 +124,21 @@ const Header = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <Box
-                    component="img"
-                    src="/favicon.svg"
-                    alt="VG Logo"
-                    sx={{
-                      height: { xs: '28px', sm: '32px' },
-                      width: { xs: '28px', sm: '32px' }
-                    }}
-                  />
+                  <motion.div
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  >
+                    <Box
+                      component="img"
+                      src="/favicon.svg"
+                      alt="VG Logo"
+                      sx={{
+                        height: { xs: '24px', sm: '28px' },
+                        width: { xs: '24px', sm: '28px' },
+                        display: 'block'
+                      }}
+                    />
+                  </motion.div>
                 </Box>
               </ScrollLink>
               {/* Social icons OUTSIDE ScrollLink to avoid nested <a> */}
@@ -145,15 +157,23 @@ const Header = () => {
             </Box>
 
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              <NavLinks navItems={navItems} variant="desktop" />
+              <NavLinks 
+                navItems={navItems} 
+                variant="desktop" 
+                activeSection={activeSection}
+                endSlot={<ThemeToggle mode={mode} onToggle={toggleTheme} />}
+              />
               <Box 
                 sx={{ 
                   mx: 2, 
-                  px: 2, 
-                  py: 0.5,
-                  backgroundColor: 'rgba(194, 247, 80, 0.15)',
-                  borderRadius: 1,
-                  border: `1px solid ${theme.palette.primary.main}`,
+                  px: 2.5, 
+                  py: 0.75,
+                  backgroundColor: (theme) => theme.palette.mode === 'dark'
+                    ? theme.palette.background.subtle
+                    : (theme.palette.background.subtle || 'rgba(0,0,0,0.03)'),
+                  borderRadius: (theme) => theme.shape?.radius?.pill || 999,
+                  border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                  backdropFilter: 'blur(10px)',
                 }}
               >
                 <Box
@@ -170,9 +190,7 @@ const Header = () => {
                   WORK IN PROGRESS
                 </Box>
               </Box>
-              <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
-                <ThemeToggle mode={mode} onToggle={toggleTheme} />
-              </Box>
+              {/* ThemeToggle moved into NavLinks via endSlot */}
             </Box>
 
             <IconButton
@@ -234,7 +252,13 @@ const Header = () => {
           </Box>
 
           <List>
-            <NavLinks navItems={navItems} variant="mobile" onClick={handleDrawerToggle} />
+            <NavLinks 
+              navItems={navItems} 
+              variant="mobile" 
+              activeSection={activeSection} 
+              onClick={handleDrawerToggle}
+              endSlot={<ThemeToggle mode={mode} onToggle={toggleTheme} />}
+            />
           </List>
         </Box>
       </Drawer>
