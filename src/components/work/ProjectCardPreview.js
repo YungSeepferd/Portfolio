@@ -73,7 +73,6 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
               bottom: 0,
               left: 0,
               pt: 2,
-              pb: 2,
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
