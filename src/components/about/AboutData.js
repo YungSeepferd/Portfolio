@@ -55,7 +55,7 @@ const skillTagCategories = [
   { title: 'Languages', color: 'warning', items: ['JavaScript', 'TypeScript', 'CSS', 'HTML', 'Java', 'C', 'C++', 'C#', 'Python', 'RegEx', 'LaTeX'] },
   { title: 'Frameworks & Libraries', color: 'warning', items: ['React', 'Three.js', 'Material UI', 'Bootstrap', 'Framer Motion', 'React Three Fiber', 'react-scroll', 'react-bits'] },
   { title: 'Haptics & Audio‑UX', color: 'warning', items: ['Tone.js', 'RNBO', 'Interhaptics', 'Hapticlabs', 'Max/MSP', 'Unity', 'SuperCollider'] },
-  { title: 'Tools', color: 'warning', items: ['Figma', 'Adobe CC', 'Unity', 'Git', 'GitHub Copilot', 'Windsurf', 'Cursor', 'Ableton Live', 'Logic Pro', 'Pro Tools'] },
+  { title: 'Tools', color: 'warning', items: ['Figma', 'Adobe CC', 'Unity', 'Git', 'GitHub Copilot', 'VS Code', 'Windsurf', 'Cursor', 'Docker', 'N8N', 'Ableton Live', 'Logic Pro', 'Pro Tools'] },
   { title: 'Currently Improving', color: 'secondary', items: ['Golang', 'Hugo','Analytical Sketching', 'Rust', 'AI Code Prompt Engineering & Automation', 'QA Basics', 'LLM UX Design & Implementation', 'SwiftUI', 'TensorFlow', 'Playwright', 'Supabase']},
 ];
 // Original core competency items with icons and skills (now for Skills & Technologies tab)

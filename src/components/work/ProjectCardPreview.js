@@ -72,6 +72,8 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
               position: 'absolute',
               bottom: 0,
               left: 0,
+              pt: 2,
+              pb: 2,
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
@@ -86,7 +88,7 @@ const ProjectCardPreview = ({ isVisible, technologies = [], links = [], size = '
                 // Removed opaque background to allow glassmorphic effect
                 px: isComfortable ? { xs: 1.5, sm: 2.5 } : { xs: 1, sm: 2 },
                 py: isComfortable ? { xs: 0.75, sm: 1.1 } : { xs: 0.5, sm: 1 },
-                maxWidth: { xs: '100%', sm: '95%' },
+                maxWidth: { xs: '800%', sm: '75%' },
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',

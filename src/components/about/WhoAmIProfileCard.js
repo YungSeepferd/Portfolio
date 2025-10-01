@@ -22,6 +22,14 @@ const WhoAmIProfileCard = () => {
   const cardRef = useRef(null);
   const [isActive, setIsActive] = useState(false);
   const [pointerPos, setPointerPos] = useState({ x: 50, y: 50 });
+  const [isShaking, setIsShaking] = useState(false);
+  const [shakeVariant, setShakeVariant] = useState(0);
+  const [shakeDuration, setShakeDuration] = useState(0.6);
+  const [waveScale, setWaveScale] = useState(30);
+  
+  // Track mouse velocity for intensity-based animation
+  const lastMousePosRef = useRef({ x: 0, y: 0, time: 0 });
+  const velocityRef = useRef(0);
   
   // Calculate rotation based on mouse position
   const updateCardTransform = useCallback((offsetX, offsetY) => {
@@ -51,7 +59,7 @@ const WhoAmIProfileCard = () => {
     });
   }, []);
 
-  // Handle mouse move
+  // Handle mouse move and track velocity
   const handlePointerMove = useCallback((event) => {
     if (!isDesktop) return;
     
@@ -62,13 +70,76 @@ const WhoAmIProfileCard = () => {
     const offsetX = event.clientX - rect.left;
     const offsetY = event.clientY - rect.top;
 
+    // Calculate velocity
+    const now = Date.now();
+    const deltaTime = now - lastMousePosRef.current.time;
+    
+    if (deltaTime > 0) {
+      const deltaX = event.clientX - lastMousePosRef.current.x;
+      const deltaY = event.clientY - lastMousePosRef.current.y;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const velocity = distance / deltaTime; // pixels per millisecond
+      
+      velocityRef.current = velocity;
+    }
+    
+    lastMousePosRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      time: now,
+    };
+
     updateCardTransform(offsetX, offsetY);
   }, [isDesktop, updateCardTransform]);
 
-  // Handle mouse enter
+  // Handle mouse enter with velocity-based shake animation
   const handlePointerEnter = useCallback(() => {
     if (!isDesktop) return;
     setIsActive(true);
+    setIsShaking(true);
+    
+    // Map velocity to intensity (0-7) and duration
+    // Adjusted thresholds: normal behavior is less intense
+    const velocity = velocityRef.current;
+    let variant;
+    let duration;
+    let waveScale;
+    
+    if (velocity < 0.5) {
+      // Very slow entry: Subtle variants (6)
+      variant = 6;
+      duration = 1.2;
+      waveScale = 15; // Smaller expansion
+    } else if (velocity < 1.0) {
+      // Slow/Normal entry: Gentle variants (0, 1)
+      variant = Math.random() < 0.5 ? 0 : 1;
+      duration = 1.0;
+      waveScale = 20;
+    } else if (velocity < 2.0) {
+      // Medium entry: Balanced variants (2, 5)
+      variant = Math.random() < 0.5 ? 2 : 5;
+      duration = 0.8;
+      waveScale = 30;
+    } else if (velocity < 3.5) {
+      // Fast entry: Dynamic variants (3, 4)
+      variant = Math.random() < 0.5 ? 3 : 4;
+      duration = 0.6;
+      waveScale = 40;
+    } else {
+      // Very fast entry: Aggressive variant (7)
+      variant = 7;
+      duration = 0.5;
+      waveScale = 50; // Maximum expansion
+    }
+    
+    setShakeVariant(variant);
+    setShakeDuration(duration);
+    setWaveScale(waveScale);
+    
+    // Reset shake after animation
+    setTimeout(() => {
+      setIsShaking(false);
+    }, duration * 1000);
   }, [isDesktop]);
 
   // Handle mouse leave - reset
@@ -116,6 +187,102 @@ const WhoAmIProfileCard = () => {
             : 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
           willChange: isDesktop ? 'transform' : 'auto',
           transformStyle: 'preserve-3d',
+          animation: isShaking ? `impactShake${shakeVariant} ${shakeDuration}s cubic-bezier(0.36, 0.07, 0.19, 0.97)` : 'none',
+          // Variant 0: Original - balanced shake
+          '@keyframes impactShake0': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.95) translate(0px, 0px)' },
+            '20%': { transform: 'scale(1.05) translate(2px, -1px)' },
+            '30%': { transform: 'scale(1.02) translate(-2px, 1px)' },
+            '40%': { transform: 'scale(1.01) translate(1px, -1px)' },
+            '50%': { transform: 'scale(1.005) translate(-1px, 0px)' },
+            '60%': { transform: 'scale(1.002) translate(0.5px, 0.5px)' },
+            '70%': { transform: 'scale(1.001) translate(-0.5px, -0.5px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 1: Horizontal emphasis
+          '@keyframes impactShake1': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.96) translate(0px, 0px)' },
+            '20%': { transform: 'scale(1.04) translate(3px, -0.5px)' },
+            '30%': { transform: 'scale(1.02) translate(-3px, 0.5px)' },
+            '40%': { transform: 'scale(1.01) translate(2px, 0px)' },
+            '50%': { transform: 'scale(1.005) translate(-1.5px, 0px)' },
+            '60%': { transform: 'scale(1.002) translate(0.8px, 0px)' },
+            '70%': { transform: 'scale(1.001) translate(-0.4px, 0px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 2: Vertical emphasis
+          '@keyframes impactShake2': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.94) translate(0px, 0px)' },
+            '20%': { transform: 'scale(1.06) translate(0.5px, -2.5px)' },
+            '30%': { transform: 'scale(1.03) translate(-0.5px, 2px)' },
+            '40%': { transform: 'scale(1.015) translate(0px, -1.5px)' },
+            '50%': { transform: 'scale(1.008) translate(0px, 1px)' },
+            '60%': { transform: 'scale(1.003) translate(0px, -0.5px)' },
+            '70%': { transform: 'scale(1.001) translate(0px, 0.3px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 3: Quick snap
+          '@keyframes impactShake3': {
+            '0%': { transform: 'scale(1)' },
+            '8%': { transform: 'scale(0.93) translate(0px, 0px)' },
+            '18%': { transform: 'scale(1.07) translate(2.5px, -1.5px)' },
+            '28%': { transform: 'scale(1.01) translate(-1.5px, 1px)' },
+            '38%': { transform: 'scale(1.005) translate(1px, -0.5px)' },
+            '50%': { transform: 'scale(1.002) translate(-0.5px, 0.5px)' },
+            '65%': { transform: 'scale(1.001) translate(0.3px, -0.3px)' },
+            '80%': { transform: 'scale(1) translate(-0.1px, 0.1px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 4: Bouncy
+          '@keyframes impactShake4': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.92) translate(0px, 0px)' },
+            '25%': { transform: 'scale(1.08) translate(1.5px, -2px)' },
+            '40%': { transform: 'scale(0.98) translate(-1.5px, 1.5px)' },
+            '55%': { transform: 'scale(1.02) translate(1px, -1px)' },
+            '70%': { transform: 'scale(0.99) translate(-0.5px, 0.5px)' },
+            '85%': { transform: 'scale(1.005) translate(0.3px, -0.3px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 5: Diagonal emphasis
+          '@keyframes impactShake5': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.95) translate(0px, 0px)' },
+            '20%': { transform: 'scale(1.05) translate(2.5px, -2.5px)' },
+            '30%': { transform: 'scale(1.02) translate(-2px, 2px)' },
+            '40%': { transform: 'scale(1.01) translate(1.5px, -1.5px)' },
+            '50%': { transform: 'scale(1.005) translate(-1px, 1px)' },
+            '60%': { transform: 'scale(1.002) translate(0.6px, -0.6px)' },
+            '70%': { transform: 'scale(1.001) translate(-0.3px, 0.3px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 6: Subtle pulse
+          '@keyframes impactShake6': {
+            '0%': { transform: 'scale(1)' },
+            '12%': { transform: 'scale(0.97) translate(0px, 0px)' },
+            '24%': { transform: 'scale(1.03) translate(1px, -0.8px)' },
+            '36%': { transform: 'scale(1.01) translate(-1px, 0.8px)' },
+            '48%': { transform: 'scale(1.005) translate(0.7px, -0.5px)' },
+            '60%': { transform: 'scale(1.002) translate(-0.5px, 0.3px)' },
+            '75%': { transform: 'scale(1.001) translate(0.3px, -0.2px)' },
+            '90%': { transform: 'scale(1) translate(-0.1px, 0.1px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
+          // Variant 7: Aggressive snap
+          '@keyframes impactShake7': {
+            '0%': { transform: 'scale(1)' },
+            '10%': { transform: 'scale(0.91) translate(0px, 0px)' },
+            '20%': { transform: 'scale(1.09) translate(3px, -2px)' },
+            '30%': { transform: 'scale(1.03) translate(-2.5px, 1.5px)' },
+            '40%': { transform: 'scale(1.015) translate(2px, -1px)' },
+            '50%': { transform: 'scale(1.008) translate(-1.5px, 0.8px)' },
+            '60%': { transform: 'scale(1.003) translate(1px, -0.5px)' },
+            '70%': { transform: 'scale(1.001) translate(-0.5px, 0.3px)' },
+            '100%': { transform: 'scale(1) translate(0px, 0px)' },
+          },
         }}
       >
         {/* Cursor-following radial gradient overlay */}
@@ -149,7 +316,7 @@ const WhoAmIProfileCard = () => {
             borderRadius: theme.shape.borderRadiusScale[4],
             pointerEvents: 'none',
             zIndex: 0.3,
-            overflow: 'hidden',
+            overflow: 'visible', // Allow orb to expand in easter egg mode
             opacity: isActive ? 0.9 : 0.6,
             transition: 'opacity 0.4s ease',
           }}
@@ -158,6 +325,8 @@ const WhoAmIProfileCard = () => {
             color={theme.palette.accent.main}
             isActive={isActive}
             enableMouseInteraction={isDesktop && isActive}
+            waveDuration={shakeDuration}
+            waveScale={waveScale}
           />
         </Box>
 
@@ -272,7 +441,7 @@ const WhoAmIProfileCard = () => {
                 letterSpacing: '-0.02em',
               }}
             >
-              WhoAmI
+              Vincent Göke
             </Typography>
 
             {/* Subtitle with pipe separators */}
@@ -281,10 +450,37 @@ const WhoAmIProfileCard = () => {
               sx={{
                 fontWeight: 500,
                 fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem' },
-                color: theme.palette.text.secondary,
                 letterSpacing: '0.05em',
                 textTransform: 'uppercase',
                 opacity: 0.9,
+                transition: 'all 0.3s ease',
+                color: isShaking ? theme.palette.accent.light : theme.palette.text.secondary,
+                textShadow: isShaking 
+                  ? `0 0 20px ${theme.palette.accent.main}80, 0 0 40px ${theme.palette.accent.main}40, 0 0 60px ${theme.palette.accent.main}20`
+                  : 'none',
+                animation: isShaking ? `textGlow ${shakeDuration}s ease-out` : 'none',
+                '@keyframes textGlow': {
+                  '0%': {
+                    textShadow: 'none',
+                    filter: 'brightness(1)',
+                  },
+                  '20%': {
+                    textShadow: `0 0 20px ${theme.palette.accent.main}80, 0 0 40px ${theme.palette.accent.main}40`,
+                    filter: 'brightness(1.5)',
+                  },
+                  '40%': {
+                    textShadow: `0 0 15px ${theme.palette.accent.main}60, 0 0 30px ${theme.palette.accent.main}30`,
+                    filter: 'brightness(1.3)',
+                  },
+                  '60%': {
+                    textShadow: `0 0 10px ${theme.palette.accent.main}40, 0 0 20px ${theme.palette.accent.main}20`,
+                    filter: 'brightness(1.15)',
+                  },
+                  '100%': {
+                    textShadow: 'none',
+                    filter: 'brightness(1)',
+                  },
+                },
               }}
             >
               UX | PROTOTYPING | FRONTEND | AUDIO | HAPTICS
