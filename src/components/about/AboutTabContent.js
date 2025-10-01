@@ -63,8 +63,8 @@ const AboutTabContent = ({ tabData, tabIndex }) => {
         scrollMarginTop: { xs: theme.spacing(12), md: theme.spacing(14) },
       }}
     >
-      {/* Top Row: Image and Heading (shown for all tabs with pictures) */}
-      {tabData.pictures && tabData.pictures.length > 0 && (
+      {/* Top Row: Image and Heading (shown for all tabs with pictures, except WhoAmI which has its own card) */}
+      {tabData.pictures && tabData.pictures.length > 0 && tabIndex !== 0 && (
         <Box 
           sx={{
             display: 'grid',

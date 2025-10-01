@@ -4,6 +4,7 @@ import { Typography, Box } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import EducationBento from './EducationBento';
 import WhoAmIBento from './WhoAmIBento';
+import WhoAmIProfileCard from './WhoAmIProfileCard';
 import CategorizedTags from '../common/CategorizedTags';
 import ExperienceBento from './ExperienceBento';
 import BrushIcon from '@mui/icons-material/Brush';
@@ -25,7 +26,6 @@ import BuildIcon from '@mui/icons-material/Build';
 import letterOfRecommendationPDF from '../../assets/information/letterofrecommendation/Vincent_Letter_of_Recommendation.pdf';
 
 // Import images directly
-import WhoamiImage from '../../assets/images/About Me/Whoami.JPG';
 import SkillsImage from '../../assets/images/About Me/SkillsandTechnologies.JPG';
 import ExperienceImage from '../../assets/images/About Me/Experience.jpg';
 import EducationImage from '../../assets/images/About Me/Education.JPG';
@@ -287,13 +287,12 @@ const aboutData = [
     title: "WhoAmI",
     subtitle: "UX | PROTOTYPING | FRONTEND | AUDIO | HAPTICS",
     headline: "About Me",
-    pictures: [
-      createAboutImage(WhoamiImage, 'Portrait of the author', 'center 30%', {
-        objectFit: 'cover',
-      }),
-    ],
+    // No pictures - using WhoAmIProfileCard instead
     content: (
       <Box sx={{ position: 'relative', zIndex: 1 }}>
+        {/* Interactive profile card header */}
+        <WhoAmIProfileCard />
+        
         {/* Interactive bento cards */}
         <WhoAmIBento />
       </Box>
