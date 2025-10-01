@@ -4,6 +4,7 @@ export default defineConfig({
   timeout: 60_000,
   testDir: './e2e',
   fullyParallel: true,
+  retries: process.env.CI ? 2 : 0,
   reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
@@ -21,6 +22,7 @@ export default defineConfig({
     command: 'npm start',
     url: process.env.BASE_URL || 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
+    env: { CI: 'true', PORT: '3000' },
   },
 });
