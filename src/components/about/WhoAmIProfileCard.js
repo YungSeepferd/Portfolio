@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
-import ThreadsBackground from './ThreadsBackground';
+import OrbBackground from './ThreadsBackground';
 
 /**
  * WhoAmIProfileCard
@@ -141,7 +141,7 @@ const WhoAmIProfileCard = () => {
           />
         )}
 
-        {/* Three.js animated threads background */}
+        {/* Three.js animated orb background */}
         <Box
           sx={{
             position: 'absolute',
@@ -150,14 +150,13 @@ const WhoAmIProfileCard = () => {
             pointerEvents: 'none',
             zIndex: 0.3,
             overflow: 'hidden',
-            opacity: isActive ? 0.8 : 0.5,
-            transition: 'opacity 0.3s ease',
+            opacity: isActive ? 0.9 : 0.6,
+            transition: 'opacity 0.4s ease',
           }}
         >
-          <ThreadsBackground
+          <OrbBackground
             color={theme.palette.accent.main}
-            amplitude={isActive ? 1.5 : 1}
-            distance={0}
+            isActive={isActive}
             enableMouseInteraction={isDesktop && isActive}
           />
         </Box>
