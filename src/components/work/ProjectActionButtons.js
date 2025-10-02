@@ -23,6 +23,7 @@ const ActionButton = ({
   contentType = 'external',
   forceColor,
   density = 'compact',
+  footerSizing = false,
   ...props 
 }) => {
   const theme = useTheme();
@@ -64,16 +65,21 @@ const ActionButton = ({
   const isCompact = density === 'compact' || size === 'small';
   
   // Use responsive tokens from modalMobileTokens
-  const buttonHeight = modalMobileTokens.actionButtons.height;
-  const buttonFontSize = modalMobileTokens.actionButtons.fontSize;
-  const iconSizeValue = modalMobileTokens.actionButtons.iconSize;
+  const buttonHeight = footerSizing ? undefined : modalMobileTokens.actionButtons.height;
+  const buttonMinHeight = footerSizing ? undefined : modalMobileTokens.actionButtons.minHeight;
+  const buttonFontSize = footerSizing ? '0.75rem' : modalMobileTokens.actionButtons.fontSize;
+  const iconSizeValue = footerSizing ? 18 : modalMobileTokens.actionButtons.iconSize;
   
-  const paddingX = isCompact 
-    ? { xs: theme.spacing(1), sm: theme.spacing(1.5), md: theme.spacing(2) } 
-    : { xs: theme.spacing(1.25), sm: theme.spacing(1.75), md: theme.spacing(2.25) };
-  const paddingY = isCompact 
-    ? { xs: theme.spacing(0.5), sm: theme.spacing(0.625), md: theme.spacing(0.75) } 
-    : { xs: theme.spacing(0.625), sm: theme.spacing(0.75), md: theme.spacing(0.875) };
+  const paddingX = footerSizing
+    ? { xs: 1.5, sm: 1.5, md: 1.5 }
+    : (isCompact 
+      ? { xs: theme.spacing(1), sm: theme.spacing(1.5), md: theme.spacing(2) } 
+      : { xs: theme.spacing(1.25), sm: theme.spacing(1.75), md: theme.spacing(2.25) });
+  const paddingY = footerSizing
+    ? { xs: 0.5, sm: 0.5, md: 0.5 }
+    : (isCompact 
+      ? { xs: theme.spacing(0.5), sm: theme.spacing(0.625), md: theme.spacing(0.75) } 
+      : { xs: theme.spacing(0.625), sm: theme.spacing(0.75), md: theme.spacing(0.875) });
 
   return (
     <Button
@@ -85,9 +91,8 @@ const ActionButton = ({
       onClick={handleClick}
       startIcon={icon}
       sx={{
-        minWidth: { xs: 'auto', sm: 100, md: 120 },
-        height: buttonHeight,
-        minHeight: modalMobileTokens.actionButtons.minHeight,
+        minWidth: footerSizing ? 'auto' : { xs: 'auto', sm: 100, md: 120 },
+        ...(footerSizing ? {} : { height: buttonHeight, minHeight: buttonMinHeight }),
         ...buttonPreset.sx,
         fontSize: buttonFontSize,
         textTransform: 'none',
@@ -109,7 +114,7 @@ const ActionButton = ({
           ? `1px solid rgba(255, 255, 255, 0.3)`
           : `1px solid rgba(5, 38, 45, 0.3)`,
         color: theme.palette.common.white,
-        borderRadius: 0,
+        borderRadius: footerSizing ? 1.5 : 0,
         boxShadow: theme.shadows[2],
         transition: theme.transitions.create(['background-color', 'box-shadow', 'transform'], {
           duration: theme.transitions.duration.shorter,
@@ -159,6 +164,7 @@ ActionButton.propTypes = {
   forceColor: PropTypes.string,
   id: PropTypes.string,
   density: PropTypes.oneOf(['compact', 'comfortable']),
+  footerSizing: PropTypes.bool,
 };
 
 const standardizeAction = (action) => {

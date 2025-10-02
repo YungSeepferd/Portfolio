@@ -149,6 +149,21 @@ const WhoAmIProfileCard = () => {
     setPointerPos({ x: 50, y: 50, rotateX: 0, rotateY: 0 });
   }, [isDesktop]);
 
+  // Mobile/touch: trigger a brief activation + shake so the orb reacts on tap
+  const handleTouchStart = useCallback(() => {
+    if (isDesktop) return;
+    setIsActive(true);
+    setIsShaking(true);
+    setShakeVariant(6); // subtle pulse variant on mobile
+    setShakeDuration(0.9);
+    setWaveScale(30);
+    // reset after animation
+    setTimeout(() => {
+      setIsShaking(false);
+      setIsActive(false);
+    }, 900);
+  }, [isDesktop]);
+
   // Set up event listeners
   useEffect(() => {
     const card = cardRef.current;
@@ -177,6 +192,7 @@ const WhoAmIProfileCard = () => {
       {/* Interactive Card Container */}
       <Box
         ref={cardRef}
+        onTouchStart={handleTouchStart}
         sx={{
           position: 'relative',
           transform: isDesktop && isActive

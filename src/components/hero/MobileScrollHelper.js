@@ -14,7 +14,8 @@ const MobileScrollHelper = () => {
   const theme = useTheme();
   
   const handleScrollDown = () => {
-    scrollToSection('about');
+    // Scroll to Work first to avoid skipping the section on mobile
+    scrollToSection('work');
   };
   
   return (

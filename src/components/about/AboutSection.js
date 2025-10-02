@@ -11,7 +11,7 @@ import aboutData from './AboutData'; // Import default export
  */
 const AboutSection = () => {
   // Initialize to null to match useScrollSpy's initial state
-  const [activeSection, setActiveSection] = useState(null);
+  const [, setActiveSection] = useState(null);
   const tabNavigatorRef = useRef(null);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);

@@ -31,6 +31,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:e2e": "node tests/e2e/smoke.test.js",
+    "test:pw": "playwright test",
+    "test:pw:ui": "playwright test --ui",
+    "ci:install": "npm ci",
+    "ci:build": "CI=true npm run build",
+    "ci:e2e": "playwright test",
+    "ci:lhci:serve": "npx serve -s build -l 3000 & npx wait-on http://localhost:3000",
+    "ci:lhci": "npx @lhci/cli autorun --upload.target=temporary-public-storage",
+    "ci:all": "npm run ci:install && npm run ci:build && npm run ci:e2e && npm run ci:lhci",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -53,6 +61,8 @@
   },
   "devDependencies": {
     "@emotion/is-prop-valid": "^1.3.1",
+    "@playwright/test": "^1.55.1",
+    "axe-playwright": "^2.2.2",
     "chromedriver": "^140.0.4",
     "eslint-config-react-app": "^7.0.1",
     "gh-pages": "^6.3.0",

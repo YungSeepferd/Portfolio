@@ -18,9 +18,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import GroupsIcon from '@mui/icons-material/Groups';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import PersonIcon from '@mui/icons-material/Person';
-import ScienceIcon from '@mui/icons-material/Science';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import BuildIcon from '@mui/icons-material/Build';
 import letterOfRecommendationPDF from '../../assets/information/letterofrecommendation/Vincent_Letter_of_Recommendation.pdf';
@@ -462,7 +459,7 @@ const aboutData = [
     title: "Education",
     subtitle: "Academic Background",
     pictures: [
-      createAboutImage(EducationImage, 'Academic journey photo', 'center 35%', {
+      createAboutImage(EducationImage, 'Academic journey photo', 'center 55%', {
         width: 2624,
         height: 2436,
         objectFit: 'cover',
