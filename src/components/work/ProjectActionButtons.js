@@ -161,11 +161,66 @@ ActionButton.propTypes = {
   density: PropTypes.oneOf(['compact', 'comfortable']),
 };
 
+/**
+ * Securely checks if a URL is from an allowed iframe host
+ * @param {string} url - The URL to validate
+ * @returns {boolean} - True if the URL hostname is in the allowlist
+ */
+const isAllowedIframeUrl = (url) => {
+  if (!url) return false;
+
+  try {
+    const parsedUrl = new URL(url);
+    const allowedHosts = [
+      'figma.com',
+      'www.figma.com',
+      'embed.figma.com',
+    ];
+
+    // Check if hostname matches exactly or is a subdomain of allowed hosts
+    const hostname = parsedUrl.hostname.toLowerCase();
+    return allowedHosts.some(host =>
+      hostname === host || hostname.endsWith(`.${host}`)
+    );
+  } catch (e) {
+    // Invalid URL - cannot parse
+    return false;
+  }
+};
+
+/**
+ * Checks if a URL path contains 'prototype' as a path segment
+ * @param {string} url - The URL to check
+ * @returns {boolean} - True if 'prototype' is in the path
+ */
+const isPrototypeUrl = (url) => {
+  if (!url) return false;
+
+  try {
+    const parsedUrl = new URL(url);
+    // Check if 'prototype' appears as a path segment (not just substring)
+    return parsedUrl.pathname.split('/').some(segment =>
+      segment.toLowerCase().includes('prototype')
+    );
+  } catch (e) {
+    // If URL parsing fails, fall back to safe substring check on path only
+    // Extract path portion after domain (if present)
+    const pathMatch = url.match(/^(?:https?:\/\/[^\/]+)?(\/.*)$/);
+    if (pathMatch && pathMatch[1]) {
+      return pathMatch[1].toLowerCase().includes('prototype');
+    }
+    return false;
+  }
+};
+
 const standardizeAction = (action) => {
   let contentType = action.contentType || 'external';
   if (!action.contentType && action.url) {
-    if (action.url.endsWith('.pdf')) contentType = 'pdf';
-    else if (action.url.includes('figma.com') || action.url.includes('prototype')) contentType = 'iframe';
+    if (action.url.endsWith('.pdf')) {
+      contentType = 'pdf';
+    } else if (isAllowedIframeUrl(action.url) || isPrototypeUrl(action.url)) {
+      contentType = 'iframe';
+    }
   }
   const resolvedUrl = resolveMediaPath(action.url || action.href || '#');
 
