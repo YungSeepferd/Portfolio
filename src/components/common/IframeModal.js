@@ -2,8 +2,47 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, useTheme, Alert } from '@mui/material';
 
 /**
+ * Securely validates if a URL is from an allowed embed host
+ * @param {string} url - The URL to validate
+ * @param {string} domain - The domain to check (e.g., 'figma.com')
+ * @returns {boolean} - True if the URL hostname matches the allowed domain
+ */
+const isAllowedEmbedDomain = (url, domain) => {
+  if (!url || !domain) return false;
+
+  try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname.toLowerCase();
+    const allowedDomain = domain.toLowerCase();
+
+    // Check if hostname matches exactly or is a subdomain
+    return hostname === allowedDomain || hostname.endsWith(`.${allowedDomain}`);
+  } catch (e) {
+    // Invalid URL - cannot parse
+    return false;
+  }
+};
+
+/**
+ * Checks if a URL contains 'embed' in the path
+ * @param {string} url - The URL to check
+ * @returns {boolean} - True if 'embed' is in the path
+ */
+const hasEmbedPath = (url) => {
+  if (!url) return false;
+
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.pathname.toLowerCase().includes('embed');
+  } catch (e) {
+    // For relative URLs, check path only
+    return url.toLowerCase().includes('/embed');
+  }
+};
+
+/**
  * IframeModal Component
- * 
+ *
  * Displays external content in an iframe with improved handling of
  * Figma embeds and other external content
  */
@@ -13,24 +52,24 @@ const IframeModal = ({ url, title }) => {
   const [isFigmaEmbed, setIsFigmaEmbed] = useState(false);
   const [isMiroEmbed, setIsMiroEmbed] = useState(false);
   const theme = useTheme();
-  
+
   // Check if URL is valid and determine its type
   useEffect(() => {
     if (!url) {
       setHasError(true);
       return;
     }
-    
-    // Detect Figma embeds
-    if (url.includes('figma.com') && url.includes('embed')) {
+
+    // Securely detect Figma embeds
+    if (isAllowedEmbedDomain(url, 'figma.com') && hasEmbedPath(url)) {
       setIsFigmaEmbed(true);
     }
-    
-    // Detect Miro embeds
-    if (url.includes('miro.com') && url.includes('embed')) {
+
+    // Securely detect Miro embeds
+    if (isAllowedEmbedDomain(url, 'miro.com') && hasEmbedPath(url)) {
       setIsMiroEmbed(true);
     }
-    
+
     setIsLoading(true);
   }, [url]);
   
