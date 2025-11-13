@@ -210,7 +210,7 @@ const Work = () => {
           open={isModalOpen}
           onClose={handleCloseModal}
           project={
-            selectedProjectIndex !== null ? parsedProjects[selectedProjectIndex] : null
+            selectedProjectIndex !== null && selectedProjectIndex >= 0 && selectedProjectIndex < parsedProjects.length ? parsedProjects[selectedProjectIndex] : null
           }
           onNextProject={handleNextProject}
           onPreviousProject={handlePrevProject}
