@@ -18,6 +18,18 @@ import CodeIcon from '@mui/icons-material/Code';
  * presentations, prototypes, code repositories, etc.
  */
 
+// Returns true if url is on figma.com or subdomains thereof
+function isFigmaDomain(url) {
+  try {
+    // Support relative URLs by providing origin base
+    const parsed = new URL(url, window.location.origin);
+    // Accept figma.com and any subdomain of figma.com
+    return parsed.hostname === 'figma.com' || parsed.hostname.endsWith('.figma.com');
+  } catch {
+    return false;
+  }
+}
+
 // Centralized icon and color logic (migrated from buttonStyles.js)
 export const getLinkIcon = (label) => {
   if (!label) return <OpenInNewIcon />;
@@ -104,7 +116,7 @@ const ProjectLinks = ({ prototype, presentation, links = [], title = "" }) => {
           if (!link.contentType) {
             if (link.url && link.url.endsWith('.pdf')) {
               contentType = 'pdf';
-            } else if (link.url && (link.url.includes('figma.com') || link.url.includes('prototype'))) {
+            } else if (link.url && (isFigmaDomain(link.url) || link.url.includes('prototype'))) {
               contentType = 'iframe';
             }
           }
