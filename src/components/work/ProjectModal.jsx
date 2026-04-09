@@ -33,6 +33,29 @@ const ProjectModal = ({
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [isFooterOpen, setIsFooterOpen] = useState(true);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
+  const closeButtonRef = useRef(null);
+  const triggerRef = useRef(null);
+  const projectIdentifier = project?.id ?? project?.title ?? null;
+  
+  // Store the element that triggered modal open and return focus on close
+  useEffect(() => {
+    if (open) {
+      // Store currently focused element to return focus later
+      triggerRef.current = document.activeElement;
+      
+      // Focus the close button after modal opens
+      requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+      });
+    } else {
+      // Return focus to the trigger element when modal closes
+      if (triggerRef.current && typeof triggerRef.current.focus === 'function') {
+        setTimeout(() => {
+          triggerRef.current?.focus();
+        }, 100);
+      }
+    }
+  }, [open]);
   
   // Animation variants for footer collapse (now shows minimal bar when closed)
   const footerVariants = {
@@ -61,11 +84,15 @@ const ProjectModal = ({
   
   // Reset scroll position when project changes
   useEffect(() => {
+    if (!projectIdentifier) {
+      return;
+    }
+
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
       setShowStickyHeader(false);
     }
-  }, [project?.id]);
+  }, [projectIdentifier]);
 
   // Handle scroll to show/hide sticky header
   useEffect(() => {
@@ -156,6 +183,7 @@ const ProjectModal = ({
       open={open}
       onClose={onClose}
       aria-labelledby={`project-modal-${project.id}-title`}
+      aria-describedby={`project-modal-${project.id}-description`}
       fullScreen={fullScreen}
       maxWidth="xl"
       fullWidth
@@ -208,6 +236,8 @@ const ProjectModal = ({
         </Typography>
         <Tooltip title="Close Project">
           <IconButton
+            ref={closeButtonRef}
+            data-close-button
             aria-label="close project"
             onClick={onClose}
             size="large"
@@ -351,11 +381,12 @@ const ProjectModal = ({
 
               {/* Right: Action Buttons */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap' }}>
-                {project?.links && project.links.slice(0, 2).map((link, index) => {
+                {project?.links && project.links.slice(0, 2).map((link) => {
                   const icon = getLinkIcon(link.label);
+                  const stickyKey = `sticky-link-${link.label}-${link.url}`;
                   
                   return (
-                    <Tooltip key={`sticky-link-${index}`} title={link.label}>
+                    <Tooltip key={stickyKey} title={link.label}>
                       <Button
                         variant="outlined"
                         size="small"
@@ -508,12 +539,13 @@ const ProjectModal = ({
                 pb: 1,
                 borderBottom: `1px solid ${theme.palette.divider}`,
               }}>
-                {project.links.map((link, index) => {
+                {project.links.map((link) => {
                   const icon = getLinkIcon(link.label);
+                  const footerKey = `footer-link-${link.label}-${link.url}`;
                   
                   return (
                     <Button
-                      key={`footer-link-${index}`}
+                      key={footerKey}
                       variant="text"
                       size="small"
                       startIcon={icon}

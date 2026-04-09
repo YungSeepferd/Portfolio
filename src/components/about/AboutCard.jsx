@@ -56,7 +56,9 @@ const AboutCard = ({
     try {
       return analyzeImage(image);
     } catch (err) {
-      console.error('Error analyzing image:', err);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error analyzing image:', err);
+      }
       setImageError(true);
       return null;
     }
@@ -84,7 +86,9 @@ const AboutCard = ({
 
   // Handle image error
   const handleImageError = () => {
-    console.error('Failed to load image:', image);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Failed to load image:', image);
+    }
     setImageError(true);
   };
 

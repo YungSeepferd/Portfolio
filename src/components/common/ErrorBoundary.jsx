@@ -34,9 +34,11 @@ class ErrorBoundary extends Component {
       componentStack: errorInfo?.componentStack || 'No stack trace available'
     });
 
-    // Log error to monitoring service or console
-    console.error('Error caught by ErrorBoundary:', error);
-    console.error('Component stack:', errorInfo?.componentStack);
+    // Log error to monitoring service or console (only in development)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error caught by ErrorBoundary:', error);
+      console.error('Component stack:', errorInfo?.componentStack);
+    }
 
     // Track error with analytics if available
     if (window.gtag) {

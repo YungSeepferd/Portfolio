@@ -16,6 +16,7 @@ export { default as TorusScene } from './scenes/TorusScene';
 export { default as ParticleComponent } from './ParticleComponent';
 export { default as ActiveScene } from './ActiveScene';
 export { default as SceneContext, SceneProvider, useSceneState } from './SceneContext';
+export { default as WebGLFallback } from './components/WebGLFallback';
 
 // Export utilities
 export * from './constants';

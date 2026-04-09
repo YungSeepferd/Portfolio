@@ -15,7 +15,9 @@ const ProjectPrototypeEmbed = ({ type = 'figma', url, title = "Prototype" }) => 
   const handleError = () => {
     setIsLoading(false);
     setHasError(true);
-    console.error(`Failed to load ${type} embed from:`, url);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Failed to load ${type} embed from:`, url);
+    }
   };
 
   // Basic URL validation
@@ -40,10 +42,14 @@ const ProjectPrototypeEmbed = ({ type = 'figma', url, title = "Prototype" }) => 
           const normalizedUrl = urlObj.toString();
           embedUrl = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(normalizedUrl)}`;
         } else {
-          console.warn("Provided URL doesn't look like a standard Figma link. Using as is.");
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn("Provided URL doesn't look like a standard Figma link. Using as is.");
+          }
         }
       } catch (e) {
-        console.error("Error parsing Figma URL, using as is:", e);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error("Error parsing Figma URL, using as is:", e);
+        }
       }
     }
 

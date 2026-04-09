@@ -17,7 +17,9 @@ const HeroVideo = ({ videoSrc, posterImage }) => {
   useEffect(() => {
     if (!videoSrc) {
       setHasError(true);
-      console.error('No video source provided to HeroVideo component');
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('No video source provided to HeroVideo component');
+      }
     } else {
       setHasError(false);
     }
@@ -31,7 +33,9 @@ const HeroVideo = ({ videoSrc, posterImage }) => {
   
   // Handle video loading error
   const handleVideoError = (error) => {
-    console.error('Video failed to load:', videoSrc, error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Video failed to load:', videoSrc, error);
+    }
     setIsLoading(false);
     setHasError(true);
   };

@@ -5,6 +5,7 @@ import { ModalProvider } from './context/ModalContext';
 import Header from './components/header/Header';
 import FooterContact from './components/contact/FooterContact';
 import LoadingFallback from './components/common/LoadingFallback';
+import SkipLinks from './components/common/SkipLinks';
 
 // Lazy load heavy components for better performance
 const Hero = lazy(() => import('./components/hero/Hero'));
@@ -26,8 +27,9 @@ function App() {
       <CustomThemeProvider>
         <ModalProvider>
           <div className="App">
+            <SkipLinks />
             <Header />
-            <main>
+            <main id="main-content" tabIndex={-1}>
               <Suspense fallback={<LoadingFallback />}>
                 <Hero />
                 <Work />

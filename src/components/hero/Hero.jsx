@@ -233,7 +233,7 @@ const Hero = () => {
               interaction_type: 'rapid_clicks'
             });
           } catch (err) {
-            console.error('Analytics error:', err);
+            // Silence analytics errors in production
           }
         }
       }
@@ -309,7 +309,7 @@ const Hero = () => {
           scene_type: getSceneName(newSceneIndex)
         });
       } catch (err) {
-        console.error('Analytics error:', err);
+        // Silence analytics errors in production
       }
     }
   }, [sceneIndex, getSceneName, checkForCombo]);
@@ -325,7 +325,7 @@ const Hero = () => {
           show_particles: !showParticles
         });
       } catch (err) {
-        console.error('Analytics error:', err);
+        // Silence analytics errors in production
       }
     }
   }, [showParticles]);

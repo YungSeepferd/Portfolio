@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -96,13 +96,54 @@ const InteractiveCamera = ({ enableAutoRotate = true, rotateSpeed = 0.2 }) => {
   });
   
   // Reset idle timer on user interaction
-  const handleInteraction = () => {
+  const handleInteraction = useCallback(() => {
     setLastInteraction(Date.now());
     if (isAutoRotating) {
       setIsAutoRotating(false);
       controlsRef.current.autoRotate = false;
     }
-  };
+  }, [isAutoRotating]);
+
+  const handleKeyboardInteraction = useCallback((event) => {
+    if (!controlsRef.current) {
+      return;
+    }
+
+    const { action, azimuth = 0, polar = 0 } = event.detail || {};
+
+    switch (action) {
+      case 'rotate':
+        if (azimuth !== 0) {
+          controlsRef.current.rotateLeft(azimuth);
+        }
+        if (polar !== 0) {
+          controlsRef.current.rotateUp(polar);
+        }
+        controlsRef.current.update();
+        handleInteraction();
+        break;
+      case 'reset':
+        controlsRef.current.reset();
+        controlsRef.current.update();
+        handleInteraction();
+        break;
+      default:
+        break;
+    }
+  }, [handleInteraction]);
+
+  useEffect(() => {
+    const domElement = gl.domElement;
+    if (!domElement) {
+      return undefined;
+    }
+
+    domElement.addEventListener('portfolio:camera-control', handleKeyboardInteraction);
+
+    return () => {
+      domElement.removeEventListener('portfolio:camera-control', handleKeyboardInteraction);
+    };
+  }, [gl, handleKeyboardInteraction]);
   
   return (
     <>

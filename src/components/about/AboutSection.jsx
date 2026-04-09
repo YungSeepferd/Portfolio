@@ -107,10 +107,14 @@ const AboutSection = () => {
       if (newSection === null || (newSection >= 0 && newSection < aboutData.length)) {
         setActiveSection(newSection);
       } else {
-        console.warn(`Invalid section index: ${newSection}, max index is ${aboutData.length - 1}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`Invalid section index: ${newSection}, max index is ${aboutData.length - 1}`);
+        }
       }
     } catch (error) {
-      console.error("Error changing about section:", error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error("Error changing about section:", error);
+      }
     }
   };
   

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useCallback, useRef } from 'react';
 import { Modal, Box } from '@mui/material';
 import PDFViewer from '../components/common/PDFViewer';
 import IframeModal from '../components/common/IframeModal';
@@ -41,8 +41,13 @@ export const ModalProvider = ({ children }) => {
   const [projectOpen, setProjectOpen] = useState(false);
   const [projectContent, setProjectContent] = useState(null);
   
+  // Track the trigger element for each modal type to return focus on close
+  const triggerElementRef = useRef(null);
+  
   // Open PDF modal
   const openPdf = useCallback((url, title = '') => {
+    // Store currently focused element to return focus later
+    triggerElementRef.current = document.activeElement;
     // Check if url is a string path or an imported file
     setPdfUrl(url);
     setPdfOpen(true);
@@ -54,6 +59,8 @@ export const ModalProvider = ({ children }) => {
   
   // Open iframe modal
   const openIframe = useCallback((url, title = 'External Content') => {
+    // Store currently focused element to return focus later
+    triggerElementRef.current = document.activeElement;
     setIframeUrl(url);
     setIframeTitle(title);
     setIframeOpen(true);
@@ -65,6 +72,8 @@ export const ModalProvider = ({ children }) => {
   
   // Open external content modal
   const openExternalContent = useCallback((url, title = 'External Website') => {
+    // Store currently focused element to return focus later
+    triggerElementRef.current = document.activeElement;
     setExternalUrl(url);
     setExternalTitle(title);
     setExternalOpen(true);
@@ -76,6 +85,8 @@ export const ModalProvider = ({ children }) => {
   
   // Open project modal
   const openProjectModal = useCallback((content) => {
+    // Store currently focused element to return focus later
+    triggerElementRef.current = document.activeElement;
     setProjectContent(content);
     setProjectOpen(true);
     // Close other modals
@@ -84,12 +95,19 @@ export const ModalProvider = ({ children }) => {
     setExternalOpen(false);
   }, []);
   
-  // Close all modals
+  // Close all modals and return focus to trigger element
   const closeModal = useCallback(() => {
     setPdfOpen(false);
     setIframeOpen(false);
     setExternalOpen(false);
     setProjectOpen(false);
+    // Return focus to the trigger element after modal closes
+    if (triggerElementRef.current && typeof triggerElementRef.current.focus === 'function') {
+      setTimeout(() => {
+        triggerElementRef.current?.focus();
+        triggerElementRef.current = null;
+      }, 100);
+    }
   }, []);
   
   return (

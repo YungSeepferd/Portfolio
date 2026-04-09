@@ -3,6 +3,11 @@ import { Box, useTheme, Skeleton } from '@mui/material';
 import { analyzeImage, getOptimalObjectFit } from '../../utils/mediaUtils';
 import ImageErrorHandler from './ImageErrorHandler';
 
+const buildRetrySrc = (source) => {
+  const cacheBuster = `cb=${Date.now()}`;
+  return source.includes('?') ? `${source}&${cacheBuster}` : `${source}?${cacheBuster}`;
+};
+
 /**
  * ContentAwareImage Component
  * 
@@ -57,7 +62,9 @@ const ContentAwareImage = ({
         const data = analyzeImage(src);
         setProcessedImageData(data);
       } catch (err) {
-        console.error("Error analyzing image:", err);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error("Error analyzing image:", err);
+        }
         setError({
           message: "Failed to analyze image dimensions",
           error: err
@@ -115,7 +122,9 @@ const ContentAwareImage = ({
 
   // Handle image load error with retry logic
   const handleImageError = useCallback((e) => {
-    console.error(`Error loading image: ${src}`, e);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Error loading image: ${src}`, e);
+    }
     if (retryCount < effectiveMaxRetries) {
       // Try loading again after a delay
       setTimeout(() => {
@@ -123,8 +132,7 @@ const ContentAwareImage = ({
         // Force image reload by adding timestamp to src
         const img = e.target;
         if (img) {
-          const cacheBuster = `?cb=${Date.now()}`;
-          img.src = src.includes('?') ? `${src}&cb=${Date.now()}` : `${src}${cacheBuster}`;
+          img.src = buildRetrySrc(src);
         }
       }, 1000);
     } else {
@@ -139,15 +147,17 @@ const ContentAwareImage = ({
         onError(e);
       }
     }
-  }, [src, retryCount, effectiveMaxRetries, onError]);
+  }, [retryCount, effectiveMaxRetries, onError, src]);
 
   // Reset state when source changes
   useEffect(() => {
-    setLoading(true);
+    const hasSource = Boolean(src);
+
+    setLoading(hasSource);
     setError(null);
     setRetryCount(0);
-    setProcessedImageData(null);
-  }, [src]);
+    setProcessedImageData(imageData);
+  }, [src, imageData]);
 
   // Handle manual retry from error handler
   const handleRetry = useCallback(() => {

@@ -13,13 +13,17 @@ import LoadingFallback from './components/LoadingFallback';
  * 
  * Renamed from Background3D to ThreeJSBackground to avoid confusion
  * with the Canvas-based background implementation
+ * 
+ * Accessibility: Keyboard navigation added for WCAG 2.1 compliance
  */
 const ThreeJSBackground = ({ theme, onSceneClick }) => {
   const containerRef = useRef(null);
+  const canvasRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
+  const [cameraDistance, setCameraDistance] = useState(5);
   
   // Performance monitoring flag for development
   useEffect(() => {
@@ -27,6 +31,86 @@ const ThreeJSBackground = ({ theme, onSceneClick }) => {
       setShowPerformance(true);
     }
   }, []);
+  
+  // Handle keyboard navigation for accessibility
+  const handleKeyDown = useCallback((event) => {
+    const rotateAmount = 0.3;
+    const zoomAmount = 0.5;
+    const minDistance = 2;
+    const maxDistance = 10;
+    
+    switch (event.key) {
+      case 'ArrowLeft':
+        event.preventDefault();
+        // Rotate left - dispatch to OrbitControls
+        if (canvasRef.current) {
+          canvasRef.current.dispatchEvent(new CustomEvent('camera-rotate', { 
+            detail: { azimuth: rotateAmount, polar: 0 } 
+          }));
+        }
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        // Rotate right
+        if (canvasRef.current) {
+          canvasRef.current.dispatchEvent(new CustomEvent('camera-rotate', { 
+            detail: { azimuth: -rotateAmount, polar: 0 } 
+          }));
+        }
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        // Rotate up
+        if (canvasRef.current) {
+          canvasRef.current.dispatchEvent(new CustomEvent('camera-rotate', { 
+            detail: { azimuth: 0, polar: -rotateAmount } 
+          }));
+        }
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        // Rotate down
+        if (canvasRef.current) {
+          canvasRef.current.dispatchEvent(new CustomEvent('camera-rotate', { 
+            detail: { azimuth: 0, polar: rotateAmount } 
+          }));
+        }
+        break;
+      case '+':
+      case '=':
+        event.preventDefault();
+        // Zoom in
+        setCameraDistance(prev => Math.max(minDistance, prev - zoomAmount));
+        break;
+      case '-':
+      case '_':
+        event.preventDefault();
+        // Zoom out
+        setCameraDistance(prev => Math.min(maxDistance, prev + zoomAmount));
+        break;
+      case ' ':
+        event.preventDefault();
+        // Reset camera position
+        setCameraDistance(5);
+        if (canvasRef.current) {
+          canvasRef.current.dispatchEvent(new CustomEvent('camera-reset'));
+        }
+        break;
+      default:
+        break;
+    }
+  }, []);
+  
+  // Add keyboard event listeners for accessibility
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('keydown', handleKeyDown);
+      return () => {
+        container.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [handleKeyDown]);
   
   // Handle mouse movement to update scene perspective
   const handleMouseMove = useCallback((event) => {
@@ -74,6 +158,10 @@ const ThreeJSBackground = ({ theme, onSceneClick }) => {
   return (
     <div 
       ref={containerRef} 
+      tabIndex={0}
+      role="application"
+      aria-label="Interactive 3D geometric background. Use arrow keys to rotate, plus or minus to zoom, space to reset."
+      aria-roledescription="3D canvas for decorative background with interactive camera controls"
       style={{ 
         position: 'absolute', 
         top: 0, 
@@ -83,14 +171,16 @@ const ThreeJSBackground = ({ theme, onSceneClick }) => {
         zIndex: 0,
         cursor: isDragging ? 'grabbing' : 'grab',
         overflow: 'hidden', 
+        outline: 'none',
       }}
     >
       {isLoading && <LoadingFallback />}
       
       <SceneProvider>
         <Canvas 
+          ref={canvasRef}
           camera={{ 
-            position: [0, 0, 5], 
+            position: [0, 0, cameraDistance], 
             fov: 75, 
             near: 0.1, 
             far: 1000 
@@ -113,15 +203,17 @@ const ThreeJSBackground = ({ theme, onSceneClick }) => {
             castShadow 
           />
           
-          {/* Add OrbitControls to enable dragging/rotation */}
+          {/* Add OrbitControls to enable dragging/rotation with keyboard support */}
           <OrbitControls 
-            enableZoom={false}
+            enableZoom={true}
             enablePan={false}
             rotateSpeed={0.5}
             minPolarAngle={Math.PI / 6}     // Limit vertical rotation
             maxPolarAngle={Math.PI / 1.5}   // Limit vertical rotation
             dampingFactor={0.05}            // Smooth damping effect
             enabled={true}                  // Always enabled
+            minDistance={2}
+            maxDistance={10}
           />
           
           {/* Active scene with mouse position and click handler */}

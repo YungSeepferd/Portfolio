@@ -18,7 +18,9 @@ export const analyzeImage = (src, options = {}) => {
   const imgSrc = typeof src === 'object' && src !== null ? src.src : src;
   
   if (!imgSrc) {
-    console.warn('Invalid image source provided to analyzeImage');
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Invalid image source provided to analyzeImage');
+    }
     return {
       isPortrait: false,
       isLandscape: true,

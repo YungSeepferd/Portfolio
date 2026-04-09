@@ -62,13 +62,17 @@ const VideoPlayer = ({
   
   const handleLoadedData = (e) => {
     setIsLoading(false);
-    console.log('Video loaded successfully:', src);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Video loaded successfully:', src);
+    }
     onLoad(e);
   };
 
   const handleError = (e) => {
     setIsLoading(false);
-    console.error('Video failed to load:', src, e);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Video failed to load:', src, e);
+    }
   };
 
   return (

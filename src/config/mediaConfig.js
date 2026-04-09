@@ -172,12 +172,16 @@ export const projectMedia = {
 // Helper functions to get media paths
 export const getProjectMediaPath = (projectId, mediaType = 'images', mediaItem = 'main') => {
   if (!projectMedia[projectId]) {
-    console.warn(`Project media not found for: ${projectId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Project media not found for: ${projectId}`);
+    }
     return DEFAULT_PLACEHOLDER;
   }
   
   if (!projectMedia[projectId][mediaType]) {
-    console.warn(`Media type "${mediaType}" not found for project: ${projectId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Media type "${mediaType}" not found for project: ${projectId}`);
+    }
     return DEFAULT_PLACEHOLDER;
   }
   
@@ -186,7 +190,9 @@ export const getProjectMediaPath = (projectId, mediaType = 'images', mediaItem =
   }
   
   if (!projectMedia[projectId][mediaType][mediaItem]) {
-    console.warn(`Media item "${mediaItem}" not found in ${mediaType} for project: ${projectId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Media item "${mediaItem}" not found in ${mediaType} for project: ${projectId}`);
+    }
     return DEFAULT_PLACEHOLDER;
   }
   
@@ -196,7 +202,9 @@ export const getProjectMediaPath = (projectId, mediaType = 'images', mediaItem =
 // Helper to get all image paths for a project
 export const getProjectImages = (projectId) => {
   if (!projectMedia[projectId] || !projectMedia[projectId].allImages) {
-    console.warn(`Project images not found for: ${projectId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Project images not found for: ${projectId}`);
+    }
     return [DEFAULT_PLACEHOLDER];
   }
   
@@ -206,7 +214,9 @@ export const getProjectImages = (projectId) => {
 // Helper to get featured images for a project
 export const getProjectFeaturedImages = (projectId) => {
   if (!projectMedia[projectId] || !projectMedia[projectId].featuredImages) {
-    console.warn(`Featured images not found for: ${projectId}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Featured images not found for: ${projectId}`);
+    }
     return { 
       overview: DEFAULT_PLACEHOLDER,
       problem: DEFAULT_PLACEHOLDER,

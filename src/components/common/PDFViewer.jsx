@@ -19,13 +19,17 @@ const PDFViewer = ({ url, title }) => {
   
   // Handle iframe load completion
   const handleLoad = () => {
-    console.log('PDF loaded successfully');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('PDF loaded successfully');
+    }
     setIsLoading(false);
   };
   
   // Handle iframe load error
   const handleError = () => {
-    console.error('Failed to load PDF:', pdfUrl);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Failed to load PDF:', pdfUrl);
+    }
     setIsLoading(false);
     setHasError(true);
   };

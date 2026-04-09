@@ -25,8 +25,10 @@ const GlobalErrorHandler = () => {
         stack: event.error?.stack || 'No stack trace available'
       });
       
-      // Log to console
-      console.error('Global error caught:', event.error);
+      // Log to console only in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Global error caught:', event.error);
+      }
       
       // You could also report to an error monitoring service here
       // if (window.Sentry) window.Sentry.captureException(event.error);
@@ -42,8 +44,10 @@ const GlobalErrorHandler = () => {
         type: 'promise'
       });
       
-      // Log to console
-      console.error('Unhandled promise rejection:', event.reason);
+      // Log to console only in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Unhandled promise rejection:', event.reason);
+      }
     };
 
     // Add event listeners

@@ -129,7 +129,9 @@ const ProjectCard = ({ project, onClick }) => {
                   objectFit="cover"
                   sx={{ width: '100%', height: '100%', borderRadius: 0, objectPosition: 'center' }}
                   onError={(e) => {
-                    console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
+                    if (process.env.NODE_ENV !== 'production') {
+                      console.error(`Failed to load image for ${title}: ${primaryMedia.src}`, e);
+                    }
                     e.target.src = '/assets/images/placeholders/project.jpg';
                   }}
                 />
@@ -144,7 +146,9 @@ const ProjectCard = ({ project, onClick }) => {
                   controls={true}
                   poster={primaryMedia.poster || '/assets/images/placeholders/project.jpg'}
                   onError={(e) => {
-                    console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+                    if (process.env.NODE_ENV !== 'production') {
+                      console.error(`Failed to load video for ${title}: ${primaryMedia.src}`, e);
+                    }
                   }}
                 />
               )}

@@ -18,7 +18,9 @@ export const scrollToSection = (sectionId, options = {}) => {
   try {
     const targetElement = document.getElementById(sectionId);
     if (!targetElement) {
-      console.warn(`Section with ID "${sectionId}" not found`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`Section with ID "${sectionId}" not found`);
+      }
       return;
     }
     
@@ -37,7 +39,9 @@ export const scrollToSection = (sectionId, options = {}) => {
       });
     }
   } catch (error) {
-    console.error('Error scrolling to section:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error scrolling to section:', error);
+    }
   }
 };
 

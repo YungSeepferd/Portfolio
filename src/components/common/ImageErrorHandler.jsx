@@ -57,7 +57,9 @@ const ImageErrorHandler = ({
     img.onerror = () => {
       // Still failing, stay in error state
       setIsRetrying(false);
-      console.error(`Retry failed for image: ${src}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`Retry failed for image: ${src}`);
+      }
     };
     
     // Try loading the image again

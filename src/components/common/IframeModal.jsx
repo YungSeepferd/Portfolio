@@ -75,13 +75,17 @@ const IframeModal = ({ url, title }) => {
   
   // Handle iframe load completion
   const handleLoad = () => {
-    console.log('Iframe content loaded successfully');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Iframe content loaded successfully');
+    }
     setIsLoading(false);
   };
   
   // Handle iframe load error
   const handleError = () => {
-    console.error('Failed to load iframe content:', url);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Failed to load iframe content:', url);
+    }
     setIsLoading(false);
     setHasError(true);
   };

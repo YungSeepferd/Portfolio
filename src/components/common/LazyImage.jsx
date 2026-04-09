@@ -33,7 +33,9 @@ const LazyImage = ({
 
   // Fix: Wrap handleError in useCallback to prevent recreating it on every render
   const handleError = useCallback((e) => {
-    console.error(`Image failed to load: ${src}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Image failed to load: ${src}`);
+    }
     setPermanentError(true);
     if (onError) {
       onError(e);
@@ -61,7 +63,9 @@ const LazyImage = ({
     img.onerror = (e) => {
       // Implement retry logic with progressive backoff
       if (retryCount < effectiveMaxRetries) {
-        console.log(`Retry ${retryCount + 1}/${effectiveMaxRetries} for image: ${src}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`Retry ${retryCount + 1}/${effectiveMaxRetries} for image: ${src}`);
+        }
         
         // Increase delay progressively
         const progressiveDelay = retryDelay * (1 + (retryCount * 0.5));
@@ -73,7 +77,9 @@ const LazyImage = ({
         }, progressiveDelay);
       } else {
         // Max retries reached
-        console.error(`Error loading image: ${src}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`Error loading image: ${src}`);
+        }
         handleError(e);
       }
     };
